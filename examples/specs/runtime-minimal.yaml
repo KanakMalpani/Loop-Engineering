@@ -1,0 +1,35 @@
+loop_name: runtime-minimal-loop
+version: "1.0"
+objective: "Execute task and pass evaluator within iteration budget"
+
+taxonomy_level: 2
+patterns:
+  - verification-loop
+
+workers:
+  - id: worker
+    role: actor
+    policy: Execute the assigned task
+
+evaluators:
+  - id: pass_check
+    type: command
+    command: "echo ok"
+    pass_condition: exit_code == 0
+
+termination_conditions:
+  - type: max_iterations
+    value: 5
+
+safety_constraints:
+  - id: read_only
+    rule: "No destructive actions"
+    severity: critical
+
+cost_limits:
+  max_iterations: 5
+  max_tokens: 50000
+
+metadata:
+  author: loop-engineering
+  tags: [examples, runtime]

@@ -1,0 +1,154 @@
+# LSS 1.0 — Interview Coach Loop
+# Taxonomy Level 2 (Reflective): mock interview with rubric calibration
+
+loop_name: interview-coach
+version: "1.0"
+
+objective: >
+  Prepare a candidate for technical interviews through realistic mock sessions,
+  structured feedback against role-specific rubrics, and iterative improvement
+  until rubric scores meet target across behavioral and technical dimensions.
+
+inputs:
+  - name: target_role
+    type: object
+    required: true
+    properties: [title, level, company_type, stack]
+  - name: interview_types
+    type: array
+    items: enum
+    values: [coding, system_design, behavioral, ml_theory]
+  - name: rubric
+    type: object
+    description: Weighted dimensions with level-calibrated anchors
+  - name: target_score
+    type: float
+    default: 0.80
+  - name: weak_areas
+    type: array
+    items: string
+    required: false
+  - name: session_count
+    type: integer
+    default: 5
+
+memory:
+  episodic:
+    backend: session_recording
+    retention: persistent
+    stores: [mock_transcripts, code_attempts, whiteboard_notes]
+  semantic:
+    backend: performance_model
+    retention: persistent
+    stores: [dimension_scores, recurring_gaps, improvement_trajectory]
+  procedural:
+    backend: question_bank
+    retention: persistent
+    stores: [calibrated_questions, follow_up_trees, rubric_examples]
+
+workers:
+  - id: interviewer
+    role: simulator
+    model: claude-sonnet-4-6
+    temperature: 0.4
+    responsibilities:
+      - Conduct timed mock matching target_role and interview_types
+      - Apply realistic follow-ups based on candidate responses
+  - id: proctor
+    role: observer
+    model: gpt-4.1
+    temperature: 0.0
+    responsibilities:
+      - Score responses against rubric without coaching mid-session
+      - Timestamp critical moments for playback review
+  - id: coach
+    role: feedback_author
+    model: claude-sonnet-4-6
+    temperature: 0.3
+    responsibilities:
+      - Deliver actionable feedback with exemplar answers
+      - Assign targeted drills for lowest-scoring dimensions
+  - id: drill_master
+    role: practice_designer
+    model: gpt-4.1-mini
+    temperature: 0.5
+    responsibilities:
+      - Generate micro-exercises addressing specific gaps
+
+evaluators:
+  - id: rubric_scorer
+    type: llm_rubric
+    rubric: "${inputs.rubric}"
+    pass_threshold: "${inputs.target_score}"
+  - id: calibration_check
+    type: inter_rater
+    method: dual_model_score
+    max_disagreement: 0.15
+  - id: behavioral_authenticity
+    type: checklist
+    dimensions: [star_structure, specificity, ownership_language]
+  - id: technical_correctness
+    type: oracle
+    applies_when: coding OR system_design
+    method: reference_solution_comparison
+
+feedback_channels:
+  - from: rubric_scorer
+    to: coach
+    signal: dimension_breakdown
+    action: personalized_feedback
+  - from: coach
+    to: drill_master
+    signal: priority_gaps
+    action: assign_drills
+  - from: drill_master
+    to: interviewer
+    signal: readiness_flags
+    action: increase_difficulty_or_breadth
+  - from: calibration_check
+    to: proctor
+    signal: score_disagreement
+    action: reconcile_with_anchor_examples
+
+optimization_strategy:
+  type: spaced_mock_interviews
+  parameters:
+    difficulty_ramp: linear
+    focus_weakest_dimension: true
+    inter_session_gap_hours: 48
+
+termination_conditions:
+  - type: rubric_target_met
+    consecutive_sessions: 2
+    threshold: "${inputs.target_score}"
+  - type: session_budget
+    value: "${inputs.session_count}"
+  - type: candidate_ready_declared
+    requires: rubric_scorer.overall >= 0.75
+  - type: budget_exhausted
+    resource: cost_limits.max_usd
+
+metrics:
+  - name: score_improvement_delta
+    formula: final_avg - initial_avg
+  - name: dimension_coverage
+    formula: dimensions_practiced / rubric_dimensions
+  - name: calibration_stability
+    formula: 1 - mean_inter_rater_disagreement
+  - name: time_to_target
+    unit: sessions
+
+safety_constraints:
+  - id: no_real_company_leaks
+    rule: Do not claim insider knowledge of specific company interview questions
+  - id: inclusive_language
+    rule: Feedback free of demographic bias; flag biased rubric anchors
+  - id: honesty_on_readiness
+    rule: Never certify ready below target_score without explicit waiver
+  - id: recording_consent
+    rule: Session recording requires explicit candidate consent flag
+
+cost_limits:
+  max_usd: 4.00
+  max_tokens: 150000
+  max_wall_clock_seconds: 10800

@@ -1,0 +1,40 @@
+%% Multi-Agent Architecture — Level 3 maker-checker pattern
+
+flowchart TB
+    INPUT["Inputs + LSS Spec"] --> ORCH["Orchestrator"]
+
+    ORCH --> PLAN["Planner Worker"]
+    PLAN --> IMPL["Implementer Worker"]
+    IMPL --> ART["Artifacts"]
+
+    ART --> REV["Reviewer Worker"]
+    REV -->|approve| EVALS
+    REV -->|block| PLAN
+
+    subgraph EVALS["Independent Evaluators"]
+        TEST{"Test Suite"}
+        LINT{"Linter"}
+        SCOPE{"Scope Guard"}
+    end
+
+    ART --> TEST
+    ART --> LINT
+    ART --> SCOPE
+
+    TEST -->|fail| IMPL
+    LINT -->|fail| IMPL
+    SCOPE -->|fail| IMPL
+
+    TEST & LINT & SCOPE -->|pass| OUT["Termination: Success"]
+
+    subgraph SHARED["Shared Memory"]
+        CODEIDX["Code Index"]
+        TRACE["Debug Trace"]
+    end
+
+    PLAN -.-> CODEIDX
+    IMPL -.-> TRACE
+    REV -.-> TRACE
+
+    style OUT fill:#2d6a4f,color:#fff
+    style REV fill:#457b9d,color:#fff

@@ -1,0 +1,46 @@
+%% D-D-M-I-S Framework — Loop Engineering methodology
+
+flowchart LR
+    subgraph DESIGN["Design"]
+        D1["Define objective"]
+        D2["Specify evaluators"]
+        D3["Write LSS YAML"]
+    end
+
+    subgraph DIAGNOSE["Diagnose"]
+        G1["Trace iterations"]
+        G2["Find stall points"]
+        G3["Classify failure mode"]
+    end
+
+    subgraph MEASURE["Measure"]
+        M1["Compute LES"]
+        M2["Category breakdown"]
+        M3["Compare baseline"]
+    end
+
+    subgraph IMPROVE["Improve"]
+        I1["Adjust workers"]
+        I2["Tighten evaluators"]
+        I3["Optimize memory"]
+    end
+
+    subgraph SCALE["Scale"]
+        S1["Budget envelopes"]
+        S2["Parallel instances"]
+        S3["Observability"]
+    end
+
+    DESIGN --> DIAGNOSE
+    DIAGNOSE --> MEASURE
+    MEASURE --> IMPROVE
+    IMPROVE --> SCALE
+    SCALE -.->|deploy feedback| DIAGNOSE
+
+    MEASURE --> SCORE["LES Composite Score"]
+
+    style DESIGN fill:#264653,color:#fff
+    style DIAGNOSE fill:#2a9d8f,color:#fff
+    style MEASURE fill:#e9c46a,color:#000
+    style IMPROVE fill:#f4a261,color:#000
+    style SCALE fill:#e76f51,color:#fff

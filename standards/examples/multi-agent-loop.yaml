@@ -1,0 +1,449 @@
+loop_name: multi-agent-review-loop
+version: 2.0.0
+
+objective: >
+  Given inputs.code_change and inputs.requirements, produce an approved patch
+  plan with implementation diff, consensus score >= 0.88 across reviewer agents,
+  all deterministic tests passing, zero safety violations, terminating within
+  cost_limits and max 15 iterations.
+
+inputs:
+  schema:
+    code_change:
+      type: object
+      description: "Repository context including target files and intended modification"
+      required: true
+    requirements:
+      type: string
+      description: "Functional and non-functional requirements for the change"
+      required: true
+      max_length: 4000
+    repo_context:
+      type: object
+      description: "Language, framework, test command, and style guide references"
+      required: true
+    risk_tier:
+      type: enum
+      description: "Change risk classification affecting reviewer strictness"
+      values: [low, medium, high]
+      default: medium
+  examples:
+    - code_change:
+        target_files: ["src/auth/session.ts"]
+        base_ref: "main"
+      requirements: "Add refresh token rotation with 15-minute access token TTL"
+      repo_context:
+        language: typescript
+        test_command: "npm test"
+      risk_tier: high
+
+memory:
+  type: session
+  backend: redis
+  retention:
+    unit: iteration
+    value: 15
+  write_policy:
+    allowed_writers: [planner, implementer, merger]
+    schema: ReviewBlackboardEntry
+    max_entries: 100
+  read_policy:
+    planner: [requirements_snapshot, prior_plans]
+    architect: [requirements_snapshot, plan_draft]
+    security_reviewer: [plan_draft, diff_draft, threat_model]
+    test_reviewer: [diff_draft, test_results]
+    implementer: [plan_approved, feedback_consolidated]
+    merger: [diff_candidates, reviewer_votes]
+
+workers:
+  - id: planner
+    role: "Decompose requirements into an implementation plan with file-level tasks and test strategy"
+    model:
+      provider: anthropic
+      name: claude-sonnet-4-20250514
+      temperature: 0.2
+    depends_on: []
+    inputs:
+      - from: inputs.requirements
+      - from: inputs.code_change
+      - from: inputs.repo_context
+      - from: memory.prior_plans
+    outputs:
+      name: PlanDraft
+      format: json
+      schema_ref: schemas/plan-draft.json
+    timeout_seconds: 120
+    retries: 1
+    cost_budget_usd: 0.40
+
+  - id: architect
+    role: "Review plan for architectural fit, coupling, and interface stability"
+    model:
+      provider: openai
+      name: gpt-4.1
+      temperature: 0.1
+    depends_on: [planner]
+    inputs:
+      - from: workers.planner
+      - from: inputs.repo_context
+      - from: memory.plan_draft
+    outputs:
+      name: ArchitectureReview
+      format: json
+      schema_ref: schemas/architecture-review.json
+    timeout_seconds: 90
+    retries: 0
+    cost_budget_usd: 0.35
+
+  - id: security_reviewer
+    role: "Threat-model the plan and flag auth, injection, and data exposure risks"
+    model:
+      provider: openai
+      name: gpt-4.1
+      temperature: 0
+    depends_on: [planner]
+    inputs:
+      - from: workers.planner
+      - from: inputs.risk_tier
+      - from: memory.threat_model
+    outputs:
+      name: SecurityReview
+      format: json
+      schema_ref: schemas/security-review.json
+    timeout_seconds: 90
+    retries: 0
+    cost_budget_usd: 0.35
+
+  - id: merger
+    role: "Consolidate parallel reviewer feedback into actionable plan revisions or approval"
+    model:
+      provider: anthropic
+      name: claude-sonnet-4-20250514
+      temperature: 0.1
+    depends_on: [architect, security_reviewer]
+    inputs:
+      - from: workers.architect
+      - from: workers.security_reviewer
+      - from: memory.reviewer_votes
+    outputs:
+      name: ConsolidatedFeedback
+      format: json
+      schema_ref: schemas/consolidated-feedback.json
+    timeout_seconds: 60
+    retries: 1
+    cost_budget_usd: 0.25
+
+  - id: implementer
+    role: "Generate unified diff implementing approved plan with tests"
+    model:
+      provider: anthropic
+      name: claude-sonnet-4-20250514
+      temperature: 0.2
+    depends_on: [merger]
+    inputs:
+      - from: workers.merger
+      - from: workers.planner
+      - from: inputs.code_change
+      - from: memory.feedback_consolidated
+    outputs:
+      name: DiffDraft
+      format: code
+      schema_ref: schemas/unified-diff.json
+    tools:
+      - read_file
+      - search_codebase
+    timeout_seconds: 180
+    retries: 1
+    cost_budget_usd: 0.80
+
+  - id: test_runner
+    role: "Execute repo test suite against diff in sandbox and capture results"
+    model:
+      provider: openai
+      name: gpt-4.1-mini
+      temperature: 0
+    depends_on: [implementer]
+    inputs:
+      - from: workers.implementer
+      - from: inputs.repo_context
+    outputs:
+      name: TestResults
+      format: json
+      schema_ref: schemas/test-results.json
+    tools:
+      - sandbox_exec
+    timeout_seconds: 300
+    retries: 0
+    cost_budget_usd: 0.20
+
+  - id: test_reviewer
+    role: "Assess test coverage adequacy and missing edge cases for the change"
+    model:
+      provider: openai
+      name: gpt-4.1
+      temperature: 0
+    depends_on: [test_runner]
+    inputs:
+      - from: workers.test_runner
+      - from: workers.implementer
+      - from: inputs.requirements
+    outputs:
+      name: TestReview
+      format: json
+      schema_ref: schemas/test-review.json
+    timeout_seconds: 90
+    retries: 0
+    cost_budget_usd: 0.30
+
+evaluators:
+  - id: plan_schema
+    type: deterministic
+    runs_after: [planner]
+    implementation: evaluators.schema_validate
+  - id: reviewer_consensus
+    type: llm_rubric
+    runs_after: [merger]
+    rubric:
+      dimensions:
+        - name: architectural_soundness
+          weight: 0.35
+          scale: [0, 1]
+          criteria: "ArchitectureReview approves or minor non-blocking issues only"
+        - name: security_posture
+          weight: 0.35
+          scale: [0, 1]
+          criteria: "No unresolved high-severity findings in SecurityReview"
+        - name: merge_quality
+          weight: 0.30
+          scale: [0, 1]
+          criteria: "ConsolidatedFeedback resolves conflicts without dropping requirements"
+      pass_threshold: 0.80
+    model:
+      provider: openai
+      name: gpt-4.1
+      temperature: 0
+  - id: test_pass
+    type: deterministic
+    runs_after: [test_runner]
+    implementation: evaluators.test_suite_pass
+  - id: diff_quality
+    type: llm_rubric
+    runs_after: [implementer, test_reviewer]
+    rubric:
+      dimensions:
+        - name: requirements_fit
+          weight: 0.40
+          scale: [0, 1]
+          criteria: "Diff satisfies inputs.requirements"
+        - name: code_quality
+          weight: 0.30
+          scale: [0, 1]
+          criteria: "Follows repo style; minimal scope; no unrelated changes"
+        - name: test_adequacy
+          weight: 0.30
+          scale: [0, 1]
+          criteria: "TestReview confirms coverage of change and edge cases"
+      pass_threshold: 0.88
+    model:
+      provider: openai
+      name: gpt-4.1
+      temperature: 0
+  - id: security_veto
+    type: deterministic
+    runs_after: [security_reviewer, implementer]
+    implementation: evaluators.security_veto_check
+    aggregation: veto
+
+feedback_channels:
+  - id: consensus_to_planner
+    source: evaluators.reviewer_consensus
+    destination: workers.planner
+    format: structured
+    fields: [failure_codes, dimension_scores, remediation_hints]
+    max_tokens: 700
+    when: "score < pass_threshold"
+  - id: tests_to_implementer
+    source: evaluators.test_pass
+    destination: workers.implementer
+    format: structured
+    fields: [failure_codes, remediation_hints]
+    max_tokens: 800
+  - id: diff_quality_to_implementer
+    source: evaluators.diff_quality
+    destination: workers.implementer
+    format: structured
+    fields: [failure_codes, dimension_scores, remediation_hints]
+    max_tokens: 800
+  - id: security_veto_to_implementer
+    source: evaluators.security_veto
+    destination: workers.implementer
+    format: structured
+    fields: [failure_codes, remediation_hints]
+    max_tokens: 500
+  - id: diff_to_optimizer
+    source: evaluators.diff_quality
+    destination: optimization_strategy
+    format: structured
+    fields: [failure_codes, dimension_scores]
+    max_tokens: 400
+
+optimization_strategy:
+  type: prompt_refinement
+  max_steps: 10
+  config:
+    refinement_target: workers.implementer
+    secondary_targets: [workers.planner]
+    preserve_sections: [safety_rules, diff_format, test_requirements]
+    human_gate_on:
+      risk_tier: high
+      after_step: 5
+  rollback:
+    on_metric_drop: 0.04
+    on_safety_failure: true
+
+termination_conditions:
+  success:
+    - metric: consensus_score
+      operator: gte
+      value: 0.88
+      consecutive: 2
+    - metric: test_pass_rate
+      operator: eq
+      value: 1.0
+      consecutive: 1
+  failure:
+    - type: safety_violation
+      action: halt
+    - type: max_iterations
+      value: 15
+      action: halt
+    - type: evaluator_error
+      consecutive: 2
+      action: halt
+    - type: human_rejected
+      action: halt
+  stall:
+    - metric: consensus_score
+      window_iterations: 4
+      min_improvement: 0.03
+      action: escalate_human
+
+metrics:
+  - name: consensus_score
+    primary: true
+    definition: "Weighted score from diff_quality rubric after reviewer consensus"
+    source: evaluators.diff_quality
+    unit: ratio
+    target: 0.88
+    regression_threshold: 0.04
+  - name: test_pass_rate
+    definition: "Fraction of tests passing in sandbox execution"
+    source: evaluators.test_pass
+    unit: ratio
+    target: 1.0
+  - name: reviewer_agreement
+    definition: "Agreement between architect and security reviewer on blocker count"
+    source: evaluators.reviewer_consensus
+    unit: ratio
+    target: 0.90
+  - name: iteration_count
+    definition: "Number of optimization iterations consumed"
+    source: telemetry.iteration
+    unit: count
+    target: 8
+  - name: cost_usd
+    definition: "Total spend across all workers and evaluators"
+    source: telemetry.cost
+    unit: usd
+    target: 6.00
+    regression_threshold: 1.00
+  - name: safety_trigger_rate
+    definition: "Count of safety constraint triggers per run"
+    source: telemetry.safety
+    unit: count
+    target: 0
+
+safety_constraints:
+  - id: injection-guard
+    type: injection_detect
+    scope: pre_worker
+    applies_to: ["*"]
+    action: quarantine
+    severity: S0
+    on_error: halt
+    config:
+      ml_classifier: true
+      max_risk_score: 0.65
+  - id: tool-gate
+    type: tool_allowlist
+    scope: pre_worker
+    applies_to: ["*"]
+    action: halt
+    severity: S0
+    on_error: halt
+    config:
+      enforce_at_runtime: true
+      validate_args_schema: true
+  - id: sandbox-only-exec
+    type: egress_monitor
+    scope: pre_worker
+    applies_to: [test_runner]
+    action: halt
+    severity: S0
+    on_error: halt
+    config:
+      allowed_domains: ["sandbox.internal"]
+      block_private_ip: false
+      block_metadata_endpoints: true
+  - id: secret-scan
+    type: secret_scan
+    scope: post_worker
+    applies_to: ["*"]
+    action: halt
+    severity: S0
+    on_error: halt
+    config:
+      entropy_threshold: 4.5
+      known_patterns: [aws_key, github_token, private_key]
+  - id: diff-scope-limit
+    type: schema_enforce
+    scope: post_worker
+    applies_to: [implementer]
+    action: quarantine
+    severity: S1
+    on_error: halt
+    config:
+      schema_ref: schemas/unified-diff.json
+      max_files_changed: 20
+      max_lines_changed: 500
+  - id: publish-human-gate
+    type: human_gate
+    scope: pre_output
+    applies_to: ["*"]
+    action: escalate_human
+    severity: S1
+    on_error: halt
+    config:
+      sla_hours: 4
+      required_for: [risk_tier_high]
+  - id: blackboard-isolation
+    type: tenant_isolation
+    scope: pre_memory_write
+    applies_to: ["*"]
+    action: halt
+    severity: S0
+    on_error: halt
+    config:
+      required_key_prefix: "run:{run_id}:"
+      cross_tenant_read_forbidden: true
+
+cost_limits:
+  per_iteration_usd: 1.20
+  cumulative_usd: 12.00
+  token_soft_cap: 200000
+  on_approach:
+    threshold_percent: 80
+    action: throttle
+  on_exceed:
+    action: halt
+  price_table_ref: standards/price-tables/blended-2026-06.json

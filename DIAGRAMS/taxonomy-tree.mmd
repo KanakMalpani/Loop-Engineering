@@ -1,0 +1,36 @@
+%% Taxonomy Tree — Six levels of cognitive depth
+
+flowchart TB
+    ROOT["Loop Engineering Taxonomy"]
+
+    ROOT --> L1["Level 1: Single-Step"]
+    ROOT --> L2["Level 2: Reflective"]
+    ROOT --> L3["Level 3: Multi-Agent"]
+    ROOT --> L4["Level 4: Evolutionary"]
+    ROOT --> L5["Level 5: Self-Modifying"]
+    ROOT --> L6["Level 6: Recursive Meta"]
+
+    L1 --> L1P["Observe → Act → Terminate"]
+    L2 --> L2P["Act → Evaluate → Revise"]
+    L3 --> L3P["Specialize → Coordinate → Merge"]
+    L4 --> L4P["Generate → Score → Select"]
+    L5 --> L5P["Execute → Instrument → Rewrite Policy"]
+    L6 --> L6P["Improve the Improver"]
+
+    L2 -.->|extends| L1
+    L3 -.->|extends| L2
+    L4 -.->|population over| L2
+    L5 -.->|modifies| L1
+    L6 -.->|optimizes| L5
+
+    subgraph LIBRARY["Loop Library Mapping"]
+        RA["research-agent"]
+        CA["coding-agent"]
+        SD["scientific-discovery"]
+        AD["autonomous-debugger"]
+    end
+
+    L2 --- RA
+    L3 --- CA
+    L3 --- AD
+    L4 --- SD

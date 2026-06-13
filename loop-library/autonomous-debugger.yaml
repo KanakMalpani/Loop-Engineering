@@ -1,0 +1,90 @@
+loop_name: autonomous-debugger
+version: "1.0"
+objective: "Repair failing tests with minimal, reviewable diffs"
+
+taxonomy_level: 3
+patterns:
+  - verification-loop
+  - maker-checker
+
+inputs:
+  - name: repository
+    type: path
+    required: true
+  - name: test_command
+    type: string
+    default: "pytest"
+
+memory:
+  - type: file
+    path: .loop-state/debugger.json
+
+workers:
+  - id: implementer
+    role: actor
+    model: gpt-4.1
+    tools: [read_file, write_file, run_shell]
+    policy: Fix failing tests with minimal diff. Never delete tests.
+  - id: reviewer
+    role: evaluator_agent
+    model: claude-sonnet-4
+    tools: [read_file, run_shell]
+    policy: Verify fix correctness. Reject test skipping or deletion.
+    dependencies: [implementer]
+
+evaluators:
+  - id: test_suite
+    type: command
+    command: "{{ test_command }}"
+    pass_condition: exit_code == 0
+  - id: diff_size
+    type: command
+    command: git diff --stat
+    threshold:
+      max_lines: 200
+
+feedback_channels:
+  - name: test_output
+    source: test_suite
+    format: text
+  - name: diff_stat
+    source: diff_size
+    format: text
+
+optimization_strategy:
+  type: hill_climbing
+  max_retries_per_error: 3
+  backoff: exponential
+
+termination_conditions:
+  - type: all_evaluators_pass
+  - type: max_iterations
+    value: 15
+  - type: cost_limit
+    field: cost_limits.total_usd
+  - type: safety_violation
+
+metrics:
+  - name: iterations
+    type: counter
+  - name: total_tokens
+    type: counter
+
+safety_constraints:
+  - id: no-force-push
+    rule: "No force push to protected branches"
+    severity: critical
+  - id: no-test-deletion
+    rule: "Reject removed or skipped tests"
+    severity: critical
+
+cost_limits:
+  max_iterations: 15
+  max_tokens: 500000
+  total_usd: 5.00
+  wall_clock_minutes: 30
+
+metadata:
+  author: loop-engineering
+  les_estimate: 85
+  tags: [coding, verification, level-3]

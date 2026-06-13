@@ -1,0 +1,42 @@
+%% Feedback Flow — Channels between evaluators and workers
+
+flowchart TB
+    subgraph WORKERS["Workers (Act)"]
+        W1["Planner"]
+        W2["Executor"]
+        W3["Author"]
+    end
+
+    subgraph EVALUATORS["Evaluators (Observe)"]
+        E1["Test Oracle"]
+        E2["Rubric Scorer"]
+        E3["Safety Gate"]
+    end
+
+    W2 --> ARTIFACT["Artifact / State Change"]
+    ARTIFACT --> E1
+    ARTIFACT --> E2
+    ARTIFACT --> E3
+
+    E1 -->|fail: stack trace| FC1["feedback_channel"]
+    E2 -->|fail: dimension scores| FC2["feedback_channel"]
+    E3 -->|block: policy violation| FC3["feedback_channel"]
+
+    FC1 --> W2
+    FC2 --> W3
+    FC3 --> W1
+
+    E1 & E2 & E3 -->|all pass| TERM["Terminate"]
+
+    subgraph MEMORY["Memory Update"]
+        EP["Episodic: iteration log"]
+        SEM["Semantic: verified facts"]
+        PROC["Procedural: fix patterns"]
+    end
+
+    ARTIFACT -.-> EP
+    FC1 -.-> PROC
+    FC2 -.-> SEM
+
+    style TERM fill:#2d6a4f,color:#fff
+    style E3 fill:#9b2226,color:#fff

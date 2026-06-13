@@ -1,0 +1,13 @@
+flowchart TB
+    subgraph Loop_Anatomy
+        INIT([Initialize s₀]) --> POLICY[Policy π]
+        POLICY --> ACT[Action a_t]
+        ACT --> OBS[Observation o_t]
+        OBS --> EVAL[Evaluator E]
+        EVAL --> TRANS[Transition T]
+        TRANS --> MEM[Memory M]
+        MEM --> TERM{Termination τ?}
+        TERM -->|continue| POLICY
+        TERM -->|stop| OUT([Output s_final])
+    end
+    ENV[(Environment)] <--> ACT

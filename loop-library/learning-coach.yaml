@@ -1,0 +1,155 @@
+# LSS 1.0 — Learning Coach Loop
+# Taxonomy Level 2 (Reflective): adaptive tutoring with mastery probes
+
+loop_name: learning-coach
+version: "1.0"
+
+objective: >
+  Guide a learner from current knowledge state to demonstrable mastery of a defined
+  skill tree through adaptive instruction, spaced practice, and verified assessments.
+  Terminates when mastery probes pass at retention interval or max attempts reached.
+
+inputs:
+  - name: learner_profile
+    type: object
+    properties: [prior_knowledge, learning_style, time_budget_minutes]
+  - name: skill_tree
+    type: object
+    required: true
+    description: Hierarchical competencies with prerequisites and probe definitions
+  - name: mastery_threshold
+    type: float
+    default: 0.85
+  - name: retention_interval_hours
+    type: integer
+    default: 24
+  - name: session_max_minutes
+    type: integer
+    default: 45
+
+memory:
+  episodic:
+    backend: learner_session_log
+    retention: persistent
+    stores: [attempts, hints_given, error_patterns, session_transcripts]
+  semantic:
+    backend: knowledge_state_model
+    retention: persistent
+    stores: [mastered_nodes, fragile_nodes, misconception_map]
+  procedural:
+    backend: curriculum_graph
+    retention: persistent
+    stores: [exercise_bank, explanation_variants, scaffolding_levels]
+
+workers:
+  - id: diagnostician
+    role: assessor
+    model: gpt-4.1
+    temperature: 0.2
+    responsibilities:
+      - Estimate knowledge state from probes and error analysis
+      - Select next skill node respecting prerequisites
+  - id: instructor
+    role: teacher
+    model: claude-sonnet-4-6
+    temperature: 0.5
+    responsibilities:
+      - Deliver explanations matched to learner_profile and misconception_map
+      - Apply fading scaffolding based on recent success rate
+  - id: exercise_generator
+    role: author
+    model: gpt-4.1-mini
+    temperature: 0.6
+    responsibilities:
+      - Create novel practice items at appropriate difficulty
+      - Avoid repeating identical prompts within session
+  - id: reflector
+    role: metacognition
+    model: gpt-4.1-mini
+    temperature: 0.3
+    responsibilities:
+      - Prompt learner self-explanation and strategy reflection
+      - Summarize session progress and next steps
+
+evaluators:
+  - id: mastery_probe
+    type: adaptive_test
+    method: irt_calibration
+    pass_threshold: "${inputs.mastery_threshold}"
+  - id: retention_probe
+    type: delayed_test
+    delay_hours: "${inputs.retention_interval_hours}"
+    pass_threshold: 0.80
+  - id: hint_dependency
+    type: metric
+    metric: hints_per_correct_answer
+    operator: lte
+    value: 0.3
+  - id: engagement_guard
+    type: heuristic
+    rule: session_duration <= session_max_minutes
+
+feedback_channels:
+  - from: mastery_probe
+    to: diagnostician
+    signal: skill_gaps
+    action: update_knowledge_state
+  - from: mastery_probe
+    to: instructor
+    signal: persistent_errors
+    action: switch_explanation_variant
+  - from: retention_probe
+    to: exercise_generator
+    signal: decay_detected
+    action: schedule_spaced_review
+  - from: reflector
+    to: learner_profile
+    signal: strategy_insights
+    action: adjust_scaffolding_policy
+
+optimization_strategy:
+  type: mastery_based_progression
+  parameters:
+    advance_on_probe_pass: true
+    remediate_on_fail: true
+    max_remediation_cycles: 5
+    spacing_multiplier: 1.5
+
+termination_conditions:
+  - type: all_skill_nodes_mastered
+    threshold: "${inputs.mastery_threshold}"
+  - type: retention_verified
+    evaluators: [retention_probe]
+  - type: learner_opt_out
+    signal: explicit_stop
+  - type: max_sessions
+    value: 30
+  - type: budget_exhausted
+    resource: cost_limits.max_usd
+
+metrics:
+  - name: learning_velocity
+    formula: nodes_mastered / total_minutes
+  - name: retention_rate
+    formula: delayed_passes / delayed_probes
+    target: 0.85
+  - name: hint_efficiency
+    formula: 1 - (hints_per_correct / baseline_hints)
+  - name: misconception_resolution
+    formula: resolved_misconceptions / detected_misconceptions
+
+safety_constraints:
+  - id: age_appropriate
+    rule: Content filtered by learner age band when provided
+  - id: no_answer_dumping
+    rule: Final exam probes require learner-generated work; no direct solutions
+  - id: wellbeing
+    rule: Suggest breaks when frustration signals detected across 3 failures
+  - id: academic_integrity
+    rule: Flag when learner requests completion of graded assignments
+
+cost_limits:
+  max_usd: 1.50
+  max_tokens: 60000
+  max_wall_clock_seconds: 2700
+  per_session_cap_usd: 0.25

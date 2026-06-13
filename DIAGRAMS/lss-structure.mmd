@@ -1,0 +1,50 @@
+%% LSS 1.0 Structure — Field relationships in loop specifications
+
+flowchart TB
+    ROOT["loop_name + version"]
+
+    ROOT --> OBJ["objective"]
+    ROOT --> INP["inputs"]
+    ROOT --> MEM["memory"]
+    ROOT --> WRK["workers"]
+    ROOT --> EVA["evaluators"]
+    ROOT --> FB["feedback_channels"]
+    ROOT --> OPT["optimization_strategy"]
+    ROOT --> TERM["termination_conditions"]
+    ROOT --> MET["metrics"]
+    ROOT --> SAF["safety_constraints"]
+    ROOT --> COST["cost_limits"]
+
+    INP --> WRK
+    MEM --> WRK
+    WRK --> EVA
+    EVA --> FB
+    FB --> WRK
+
+    EVA --> TERM
+    MET --> TERM
+    COST --> TERM
+
+    SAF -.->|constrain| WRK
+    SAF -.->|constrain| EVA
+    OPT --> WRK
+
+    subgraph WORKER_DETAIL["worker fields"]
+        WID["id / role / model"]
+        WTOOLS["tools / responsibilities"]
+    end
+
+    WRK --> WORKER_DETAIL
+
+    subgraph EVAL_DETAIL["evaluator types"]
+        CMD["command oracle"]
+        RUB["llm_rubric"]
+        METRIC["metric threshold"]
+        AUDIT["audit rule"]
+    end
+
+    EVA --> EVAL_DETAIL
+
+    style ROOT fill:#1d3557,color:#fff
+    style SAF fill:#9b2226,color:#fff
+    style TERM fill:#2d6a4f,color:#fff

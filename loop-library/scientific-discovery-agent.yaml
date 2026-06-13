@@ -1,0 +1,170 @@
+# LSS 1.0 — Scientific Discovery Agent Loop
+# Taxonomy Level 4 (Evolutionary): population of hypotheses with selection
+
+loop_name: scientific-discovery-agent
+version: "1.0"
+
+objective: >
+  Generate, experimentally evaluate, and select among competing hypotheses for a
+  stated phenomenon until a statistically supported model emerges or the search
+  space is exhausted. Outputs include ranked hypotheses, experiment logs, and
+  reproducibility package.
+
+inputs:
+  - name: phenomenon
+    type: string
+    required: true
+    description: Observable system or dataset with known constraints
+  - name: dataset_uri
+    type: uri
+    required: true
+  - name: prior_literature
+    type: array
+    items: string
+    required: false
+  - name: population_size
+    type: integer
+    default: 8
+    range: [4, 32]
+  - name: significance_level
+    type: float
+    default: 0.05
+  - name: experiment_budget
+    type: integer
+    default: 20
+    description: Maximum computational experiments per generation
+
+memory:
+  episodic:
+    backend: experiment_log
+    retention: persistent
+    stores: [raw_outputs, random_seeds, environment_hashes]
+  semantic:
+    backend: hypothesis_registry
+    retention: persistent
+    stores: [hypothesis_graph, falsified_claims, parameter_posteriors]
+  procedural:
+    backend: notebook_store
+    retention: persistent
+    stores: [analysis_templates, statistical_test_catalog]
+
+workers:
+  - id: hypothesis_generator
+    role: mutator
+    model: claude-opus-4-8
+    temperature: 0.7
+    responsibilities:
+      - Seed initial population from phenomenon and prior_literature
+      - Mutate and crossover hypotheses each generation
+  - id: experiment_designer
+    role: planner
+    model: claude-sonnet-4-6
+    temperature: 0.3
+    tools: [python_repl, stats_library]
+    responsibilities:
+      - Design falsifiable experiments with power analysis
+      - Register pre-registered analysis plans before execution
+  - id: executor
+    role: runner
+    model: gpt-4.1-mini
+    temperature: 0.0
+    tools: [python_repl, container_sandbox]
+    responsibilities:
+      - Run experiments with fixed seeds and log all artifacts
+  - id: analyst
+    role: scorer
+    model: gpt-4.1
+    temperature: 0.1
+    responsibilities:
+      - Compute fitness from p-values, effect sizes, and simplicity penalty
+      - Flag p-hacking patterns and demand replication runs
+
+evaluators:
+  - id: statistical_gate
+    type: oracle
+    method: frequentist_test
+    parameters:
+      alpha: "${inputs.significance_level}"
+      min_effect_size: 0.2
+      require_replication: true
+  - id: reproducibility_check
+    type: command
+    method: rerun_with_fixed_seed
+    pass_condition: output_hash_match
+  - id: simplicity_penalty
+    type: metric
+    metric: hypothesis_complexity_score
+    operator: lte
+    value: 0.7
+  - id: falsification_log
+    type: audit
+    rule: every_rejected_hypothesis_has_documented_failure_mode
+
+feedback_channels:
+  - from: statistical_gate
+    to: hypothesis_generator
+    signal: fitness_scores
+    action: select_and_mutate
+  - from: reproducibility_check
+    to: executor
+    signal: hash_mismatch
+    action: rerun_with_environment_capture
+  - from: analyst
+    to: experiment_designer
+    signal: underpowered_experiments
+    action: increase_sample_size
+  - from: falsification_log
+    to: hypothesis_generator
+    signal: forbidden_regions
+    action: prune_search_space
+
+optimization_strategy:
+  type: evolutionary
+  parameters:
+    selection: tournament
+    tournament_size: 3
+    mutation_rate: 0.25
+    elitism_count: 2
+    diversity_bonus: 0.1
+
+termination_conditions:
+  - type: fitness_threshold
+    metric: best_hypothesis_fitness
+    value: 0.85
+  - type: max_generations
+    value: 10
+  - type: experiment_budget_exhausted
+    value: "${inputs.experiment_budget}"
+  - type: population_collapse
+    unique_hypotheses: 1
+    generations: 3
+    action: inject_random_immigrants
+  - type: budget_exhausted
+    resource: cost_limits.max_usd
+
+metrics:
+  - name: discovery_rate
+    formula: falsifiable_hypotheses_tested / wall_clock_hours
+  - name: replication_success
+    formula: successful_replications / replication_attempts
+    target: 0.95
+  - name: false_discovery_proxy
+    formula: rejected_after_initial_pass / initial_passes
+  - name: best_fitness_trajectory
+    type: time_series
+
+safety_constraints:
+  - id: sandbox_only
+    rule: All code execution in isolated container with no network by default
+  - id: data_governance
+    rule: dataset_uri must pass access control check before load
+  - id: no_human_subjects
+    rule: Block experimental designs requiring IRB without explicit approval
+  - id: p_hacking_guard
+    rule: Analyst must pre-register test sequence; post-hoc tests flagged not selected
+
+cost_limits:
+  max_usd: 15.00
+  max_tokens: 400000
+  max_wall_clock_seconds: 7200
+  max_compute_minutes: 120

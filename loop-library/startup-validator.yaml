@@ -1,0 +1,156 @@
+# LSS 1.0 — Startup Validator Loop
+# Taxonomy Level 2 (Reflective): hypothesis → experiment → falsify or advance
+
+loop_name: startup-validator
+version: "1.0"
+
+objective: >
+  Validate or falsify startup hypotheses through structured experiments, producing
+  a PMF evidence ledger with kill/continue/pivot recommendation backed by
+  pre-registered success criteria.
+
+inputs:
+  - name: startup_thesis
+    type: object
+    required: true
+    properties: [problem, solution, customer_segment, wedge]
+  - name: riskiest_assumption
+    type: string
+    required: true
+  - name: experiment_catalog
+    type: array
+    items: object
+    description: Pre-defined experiment types (landing_page, concierge, smoke_test)
+  - name: success_criteria
+    type: object
+    properties:
+      min_signups: 50
+      conversion_rate: 0.05
+      willingness_to_pay_signals: 3
+  - name: runway_weeks
+    type: integer
+    default: 12
+
+memory:
+  episodic:
+    backend: event_log
+    retention: persistent
+    stores: [experiment_runs, user_interviews, metric_snapshots]
+  semantic:
+    backend: falsification_registry
+    retention: persistent
+    stores: [validated_learnings, killed_hypotheses, pivot_history]
+  procedural:
+    backend: playbook
+    retention: persistent
+    stores: [experiment_templates, interview_scripts, metric_definitions]
+
+workers:
+  - id: experiment_designer
+    role: planner
+    model: claude-sonnet-4-6
+    temperature: 0.3
+    responsibilities:
+      - Translate riskiest_assumption into falsifiable experiment
+      - Pre-register metrics and sample size before launch
+  - id: operator
+    role: executor
+    model: gpt-4.1-mini
+    temperature: 0.2
+    tools: [analytics_api, form_builder, email_draft]
+    responsibilities:
+      - Launch experiment artifacts and collect quantitative signals
+  - id: interviewer
+    role: qual_researcher
+    model: gpt-4.1
+    temperature: 0.4
+    responsibilities:
+      - Synthesize qualitative interviews into assumption-level evidence
+  - id: judge
+    role: decision_maker
+    model: claude-sonnet-4-6
+    temperature: 0.1
+    responsibilities:
+      - Compare results to success_criteria without moving goalposts
+      - Emit kill, continue, or pivot with written rationale
+
+evaluators:
+  - id: preregistration_check
+    type: audit
+    rule: success_criteria frozen before data collection begins
+  - id: metric_oracle
+    type: data_pipeline
+    source: analytics_api
+    pass_condition: criteria_met OR criteria_failed_decisively
+  - id: sample_adequacy
+    type: statistical
+    method: power_analysis
+    min_power: 0.80
+  - id: pivot_coherence
+    type: rubric
+    dimensions: [thesis_alignment, new_assumption_clarity]
+    pass_threshold: 0.75
+    applies_when: decision == pivot
+
+feedback_channels:
+  - from: metric_oracle
+    to: judge
+    signal: experiment_outcome
+    action: render_verdict
+  - from: interviewer
+    to: experiment_designer
+    signal: qual_contradictions
+    action: design_follow_up_experiment
+  - from: judge
+    to: experiment_designer
+    signal: pivot_directive
+    action: reframe_riskiest_assumption
+  - from: preregistration_check
+    to: operator
+    signal: criteria_modified_mid_flight
+    action: invalidate_run_and_restart
+
+optimization_strategy:
+  type: sequential_falsification
+  parameters:
+    one_assumption_at_a_time: true
+    max_parallel_experiments: 1
+    prefer_cheapest_decisive_test: true
+
+termination_conditions:
+  - type: verdict_reached
+    decisions: [kill, continue_with_pmf_evidence]
+  - type: runway_exhausted
+    weeks_remaining: 0
+    action: forced_verdict_with_uncertainty_flags
+  - type: max_iterations
+    value: 10
+  - type: budget_exhausted
+    resource: cost_limits.max_usd
+
+metrics:
+  - name: time_to_verdict
+    unit: days
+  - name: experiment_cost_efficiency
+    formula: information_gain / experiment_spend
+  - name: false_continue_rate
+    formula: continues_later_killed / total_continues
+    target: 0.10
+  - name: assumption_coverage
+    formula: tested_assumptions / total_assumptions
+
+safety_constraints:
+  - id: no_deceptive_experiments
+    rule: Landing pages must not impersonate existing products or mislead on availability
+  - id: privacy_compliance
+    rule: User data collection requires stated purpose and retention limits
+  - id: financial_honesty
+    rule: No fabricated traction metrics in outputs
+  - id: regulated_claims
+    rule: Health/finance experiments require legal review flag
+
+cost_limits:
+  max_usd: 3.00
+  max_tokens: 80000
+  max_wall_clock_seconds: 1209600
+  max_ad_spend_usd: 500

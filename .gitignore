@@ -1,0 +1,38 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+dist/
+build/
+.venv/
+venv/
+env/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.egg
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Loop runtime artifacts
+.loop-state/
+*.loop.log
+benchmarks/results/*.json
+
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Generated diagrams (keep source in diagrams/)
+tools/output/
