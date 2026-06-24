@@ -12,6 +12,7 @@ Update this file when any component releases; mirror changes in sibling repo REA
 | Component | Version | Canonical location |
 |-----------|---------|------------------|
 | LSS (Loop Specification Standard) | **1.0** + **1.1** composition | [lss-1.0.md](https://github.com/KanakMalpani/Loop-Core-Engineering/blob/main/specs/lss-1.0.md) · [lss-1.1.md](https://github.com/KanakMalpani/Loop-Core-Engineering/blob/main/specs/lss-1.1.md) |
+| Schema versioning policy | **1.0** | [schema-versioning.md](https://github.com/KanakMalpani/Loop-Core-Engineering/blob/main/specs/schema-versioning.md) |
 | LES (Loop Engineering Score) | **1.0** | [Loop-Core-Engineering/specs/les-1.0.md](https://github.com/KanakMalpani/Loop-Core-Engineering/blob/main/specs/les-1.0.md) |
 | Loop ID registry | **1.0** | [Loop-Core-Engineering/specs/loop-ids.md](https://github.com/KanakMalpani/Loop-Core-Engineering/blob/main/specs/loop-ids.md) |
 

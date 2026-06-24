@@ -16,11 +16,11 @@ Actionable contribution entry points. File these as GitHub issues or pick one an
 
 ## Benchmarks
 
-4. **Reproduce LB-CR-1 baseline** — One command: [BEAT_LB-CR-1.md](BEAT_LB-CR-1.md). Target LES **86.7** ([baseline](../benchmarks/results/lb-cr-1-baseline.json)).
+4. **Reproduce LB-CR-1 baseline** — [BEAT_LB-CR-1.md](BEAT_LB-CR-1.md). Target LES **86.7**.
 
-5. **Publish ALS-T1 Research Synthesis baseline** — First external row on LoopBench for task ALS-T1.
+5. **Publish LB-RS-1 baseline** — [BEAT_LB-RS-1.md](BEAT_LB-RS-1.md). Target LES **81.9**.
 
-6. **Publish ALS-T3 Multi-Agent Debate baseline** — Hardest ALS task; document harness and perturbation runs.
+6. **Publish LB-MA-1 baseline** — [BEAT_LB-MA-1.md](BEAT_LB-MA-1.md). Target LES **86.5**.
 
 ---
 
@@ -28,15 +28,11 @@ Actionable contribution entry points. File these as GitHub issues or pick one an
 
 7. **Add external case study** — Real org or OSS project **not** already in `case-studies/` (Toyota, GitHub PR, AlphaGo exist). Use case-study issue template; include LES scores.
 
-8. **Map Cursor agent loop to LSS** — **Template landed:** [cursor-agent-loop.md](../case-studies/cursor-agent-loop.md). External PRs welcome to extend with LoopBench LES_obs.
+8. **Map Cursor agent loop to LSS** — **Done (template):** [cursor-agent-loop.md](../case-studies/cursor-agent-loop.md). External PRs welcome for LES_obs.
 
----
+9. **Close LE-OP-11 partial data** — **Done:** [tools/level_recommender.py](../tools/level_recommender.py) · [results](../benchmarks/results/le-op-11-recommender-v0.1.json).
 
-## Research
-
-9. **Close LE-OP-11 partial data** — Task→level recommender v0.1 using LoopNet v0.2 features; link benchmark or notebook.
-
-10. **LoopNet explore script enhancement** — Add histogram plots to `examples/loopnet-explore/explore.py` (matplotlib optional dep).
+10. **LoopNet explore histograms** — **Done:** `python examples/loopnet-explore/explore.py --plot-dir docs/loopnet/histograms`
 
 ---
 

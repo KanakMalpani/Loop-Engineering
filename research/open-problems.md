@@ -130,7 +130,7 @@ Problems are grouped by theme. Numbering is stable for citation (`LE-OP-01`, etc
 
 **Why it matters.** Automated loop synthesis and org-scale orchestration require compositional reasoning. Non-associativity breaks modular design.
 
-**Partial progress.** `loop-composition-algebra.md` proposes operators. Full proofs exist only for toy state spaces.
+**Partial progress.** `loop-composition-algebra.md` proposes operators. **Partial resolution (2026-06):** [le-op-10-associativity.md](le-op-10-associativity.md) — conditions, counterexamples, `--strict` validator in daily CI.
 
 **Resolution criteria.** Proof or counterexample catalog for composition operators under stated assumptions on S, E, τ; tool support in `loop_complexity_analyzer.py`. **Partial resolution:** P1 loop algebra (Proposition on typed composition); see [PAPER_SERIES.md](PAPER_SERIES.md).
 

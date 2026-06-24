@@ -31,8 +31,9 @@
 
 ## Next unlocks (2027)
 
-1. ≥1 **non-maintainer** LoopBench row ([good-first #4](https://github.com/KanakMalpani/Loop-Engineering/issues/4))
-2. LSS 1.1 **stable** in Loop-Core-Engineering
-3. First **external** case study ([good-first #7](https://github.com/KanakMalpani/Loop-Engineering/issues/7) / [#8](https://github.com/KanakMalpani/Loop-Engineering/issues/8))
+1. ≥1 **non-maintainer** LoopBench row ([good-first #4](https://github.com/KanakMalpani/Loop-Engineering/issues/4)) — BEAT guides live
+2. ~~LSS 1.1 **stable** in Loop-Core-Engineering~~ — **Green** ([lss-1.1.md](https://github.com/KanakMalpani/Loop-Core-Engineering/blob/main/specs/lss-1.1.md))
+3. First **external** case study ([good-first #7](https://github.com/KanakMalpani/Loop-Engineering/issues/7))
+4. LE-OP-10 partial + schema versioning policy (Phase 2 maintainer targets)
 
 2026 reproduction path validated — see [reproduction reports](../docs/reproduction-reports/README.md).

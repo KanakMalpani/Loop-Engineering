@@ -17,6 +17,10 @@
       "les_display": 81.9,
       "cost_usd_mean": 0.45,
       "robustness_seeds": 5
+    },
+    "les_structural": {
+      "source": "tools/les_calculator.py --spec loop-library/research-agent.yaml",
+      "composite": 76.7
     }
   },
   "full_submission": "benchmarks/results/lb-rs-1-run.json",

@@ -6,6 +6,7 @@
 |------|------------------|
 | LSS 1.0 JSON Schema | [Loop-Core-Engineering/specs/lss-1.0.schema.json](https://github.com/KanakMalpani/Loop-Core-Engineering/blob/main/specs/lss-1.0.schema.json) |
 | LSS 1.1 composition | [Loop-Core-Engineering/specs/lss-1.1.md](https://github.com/KanakMalpani/Loop-Core-Engineering/blob/main/specs/lss-1.1.md) |
+| Schema versioning | [Loop-Core-Engineering/specs/schema-versioning.md](https://github.com/KanakMalpani/Loop-Core-Engineering/blob/main/specs/schema-versioning.md) |
 | LES 1.0 | [Loop-Core-Engineering/specs/les-1.0.md](https://github.com/KanakMalpani/Loop-Core-Engineering/blob/main/specs/les-1.0.md) |
 | Loop ID registry | [Loop-Core-Engineering/specs/loop-ids.md](https://github.com/KanakMalpani/Loop-Core-Engineering/blob/main/specs/loop-ids.md) |
 | Failure taxonomy | [Loop-Core-Engineering/specs/failure-taxonomy.md](https://github.com/KanakMalpani/Loop-Core-Engineering/blob/main/specs/failure-taxonomy.md) |

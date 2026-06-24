@@ -73,6 +73,19 @@ python scripts/validate_loop_library.py
 
 Expected: `OK: all 10 loop-library specs valid`
 
+**Pick taxonomy level (LE-OP-11 v0.1) before authoring a new spec:**
+
+```bash
+pip install datasets
+python tools/level_recommender.py --pattern research-loop --iter-len 4 --workers 1
+```
+
+Optional: warn if declared level disagrees with recommender:
+
+```bash
+python scripts/validate_loop_library.py --warn-level
+```
+
 ---
 
 ## Step 4 — Run a loop example (10 min)
@@ -102,17 +115,24 @@ Inspect `my_les_report.json` — eight LES dimensions plus composite score.
 
 ## Step 6 — LoopBench baseline (optional, 15 min)
 
-If `loopbench` is installed:
+If `loopbench` is installed (`pip install "loopbench>=0.1.1"`):
 
 ```bash
-loopbench --help
-# Follow LoopBench README for ALS-T2 Code Repair task
-# https://github.com/KanakMalpani/LoopBench#score-in-2-minutes
+loopbench list
+loopbench run --task LB-CR-1 --spec loop-library/autonomous-debugger.yaml --seeds 0,1,2,3,4 -o results.json
+loopbench validate results.json
 ```
 
-Published maintainer baseline: [benchmarks/results/lb-cr-1-baseline.json](../benchmarks/results/lb-cr-1-baseline.json)
+Guides: [BEAT_LB-CR-1.md](BEAT_LB-CR-1.md) · [BEAT_LB-RS-1.md](BEAT_LB-RS-1.md) · [BEAT_LB-MA-1.md](BEAT_LB-MA-1.md)
 
-Compare your LES vector to the baseline after running the same task.
+**Composed loop (local smoke until LoopGym env ships):**
+
+```bash
+python examples/compose-loop/run.py loop-library/compositions/scenario-swarm-rehearsal.yaml
+# Future: loopgym.make("loopbench/composed-swarm-v1")
+```
+
+Published maintainer baselines: [benchmarks/results/](../benchmarks/results/)
 
 ---
 
@@ -161,7 +181,7 @@ Include:
 | jsonschema | 4.26.0 | Required for validator |
 | datasets | 5.0.0 | LoopNet explore (545 records) |
 | loopgym | 0.1.0 | Optional replay env |
-| loopbench | 0.1.0 | LB-CR-1 baseline |
+| loopbench | 0.1.1 | LB-CR-1 / LB-RS-1 / LB-MA-1 / LB-COMP-1 |
 
 Full registry: [ECOSYSTEM_VERSIONS.md](../ECOSYSTEM_VERSIONS.md)
 

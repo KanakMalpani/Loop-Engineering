@@ -73,4 +73,4 @@ See [standards/examples/multi-agent-loop.yaml](../standards/examples/multi-agent
 - `tools/loop_complexity_analyzer.py` — complexity grows with composition depth
 - Future: composition validator in LSS schema 1.1
 
-Status: **research draft** — not normative until RFC accepted.
+Status: **research draft** — partial closure in [le-op-10-associativity.md](le-op-10-associativity.md).

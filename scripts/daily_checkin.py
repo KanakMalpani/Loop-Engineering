@@ -109,7 +109,9 @@ def main() -> int:
             "composed_nested_smoke",
             [py, "examples/compose-loop/run.py", "loop-library/compositions/code-debug-repair.yaml"],
         ),
-        ("composition_validator", [py, "tools/composition_validator.py", "--library"]),
+        ("composition_validator", [py, "tools/composition_validator.py", "--library", "--strict"]),
+        ("baseline_les_audit", [py, "scripts/validate_baselines.py"]),
+        ("langgraph_smoke", [py, "implementations/langgraph/run.py"]),
         ("adoption_links", [py, "scripts/check_adoption_links.py"]),
     ]
 

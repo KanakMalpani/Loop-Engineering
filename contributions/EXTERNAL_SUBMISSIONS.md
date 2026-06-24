@@ -26,7 +26,9 @@ loopbench validate results.json
 2. Add your row to `leaderboard/entries.json` (see existing entries)
 3. Open PR — reference [good-first #4](https://github.com/KanakMalpani/Loop-Engineering/issues/4)
 
-Full guide: [BEAT_LB-CR-1.md](BEAT_LB-CR-1.md)
+Full guides: [BEAT_LB-CR-1.md](BEAT_LB-CR-1.md) · [BEAT_LB-RS-1.md](BEAT_LB-RS-1.md) · [BEAT_LB-MA-1.md](BEAT_LB-MA-1.md)
+
+**Other tasks:** LB-RS-1 → [#5](https://github.com/KanakMalpani/Loop-Engineering/issues/5) · LB-MA-1 → [#6](https://github.com/KanakMalpani/Loop-Engineering/issues/6)
 
 ---
 
@@ -67,8 +69,12 @@ Use [case-studies/TEMPLATE.md](../case-studies/TEMPLATE.md):
 
 Open PR referencing [good-first #7](https://github.com/KanakMalpani/Loop-Engineering/issues/7).
 
+**Example maintainer bridge (extend or copy):** [langgraph-composition-bridge.md](../case-studies/langgraph-composition-bridge.md)
+
 ---
 
-## Tracker
+## Campaign
+
+Re-run maintainer outreach: `python scripts/adoption_wave2.py`
 
 Daily status: [docs/adoption-tracker/latest.md](../docs/adoption-tracker/latest.md)

@@ -18,6 +18,10 @@
       "les_display": 77.4,
       "cost_usd_mean": 0.95,
       "robustness_seeds": 5
+    },
+    "les_structural": {
+      "source": "tools/les_calculator.py --spec loop-library/compositions/scenario-swarm-rehearsal.yaml",
+      "composite": 65.6
     }
   },
   "full_submission": "benchmarks/results/lb-comp-1-run.json",

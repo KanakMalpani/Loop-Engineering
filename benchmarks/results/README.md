@@ -29,7 +29,18 @@ loopbench run --task LB-MA-1 --spec loop-library/coding-agent.yaml --seeds 0,1,2
 loopbench run --task LB-COMP-1 --spec loop-library/compositions/scenario-swarm-rehearsal.yaml --seeds 0,1,2,3,4 -o results.json
 ```
 
-See [contributions/REPRODUCE.md](../../contributions/REPRODUCE.md). Beat maintainer LES: [BEAT_LB-CR-1.md](../../contributions/BEAT_LB-CR-1.md) · [#4](https://github.com/KanakMalpani/Loop-Engineering/issues/4).
+See [contributions/REPRODUCE.md](../../contributions/REPRODUCE.md). Beat maintainer LES: [BEAT_LB-CR-1.md](../../contributions/BEAT_LB-CR-1.md) · [BEAT_LB-RS-1.md](../../contributions/BEAT_LB-RS-1.md) · [BEAT_LB-MA-1.md](../../contributions/BEAT_LB-MA-1.md)
+
+---
+
+## LES fields
+
+| Field | Location | Meaning |
+|-------|----------|---------|
+| `les_observed` | `results.aggregate` | From LoopBench SimEnv runs (0–1) |
+| `les_structural` | `results.les_structural` | From `tools/les_calculator.py` on LSS spec (0–100 display scale) |
+
+CI audit: `python scripts/validate_baselines.py`
 
 ---
 

@@ -25,6 +25,10 @@ Optional: `langgraph` for live graphs; mock path works without it.
 
 ## Usage
 
+```bash
+python implementations/langgraph/run.py
+```
+
 ```python
 from reflection_graph import build_reflection_graph, run_reflection_graph
 

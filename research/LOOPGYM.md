@@ -39,16 +39,23 @@ loopbench run --task LB-CR-1 --spec loop-library/autonomous-debugger.yaml --seed
 
 ---
 
-## Composed loops (local smoke)
+## Composed loops (local smoke + v0.2 env spec)
 
-LoopGym v0.1 has no dedicated composed env yet. Use the generic composed runtime:
+LoopGym v0.1 ships SimEnv for atomic tasks. **Composed env (spec v0.2):**
+
+| Env ID | Maps to | Status |
+|--------|---------|--------|
+| `loopbench/composed-swarm-v1` | [scenario-swarm-rehearsal.yaml](../loop-library/compositions/scenario-swarm-rehearsal.yaml) | Spec; delegates to compose-loop runner |
 
 ```bash
+# Today (discipline repo)
 python examples/compose-loop/run.py loop-library/compositions/scenario-swarm-rehearsal.yaml
-python examples/compose-loop/run.py loop-library/compositions/code-debug-repair.yaml
+
+# Planned LoopGym API
+python -c "import loopgym as lg; env = lg.make('loopbench/composed-swarm-v1'); print(env.reset())"
 ```
 
-LB-COMP-1 on LoopBench uses `multi-agent-debate-v1` as a SimEnv proxy until a composed env ships.
+LB-COMP-1 on LoopBench currently uses `multi-agent-debate-v1` as SimEnv proxy until `composed-swarm-v1` implementation lands in LoopGym.
 
 ---
 

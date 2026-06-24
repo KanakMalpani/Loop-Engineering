@@ -39,6 +39,17 @@ Tracked daily: [docs/adoption-tracker/latest.md](../docs/adoption-tracker/latest
 3. ~~LoopNet explore histograms~~ → [docs/loopnet/histograms](../docs/loopnet/histograms/)
 4. ~~LE-OP-11 recommender v0.1~~ → [tools/level_recommender.py](../tools/level_recommender.py)
 
+## Phase 2 completed (maintainer)
+
+| Item | Artifact |
+|------|----------|
+| BEAT LB-RS-1 / LB-MA-1 | [BEAT_LB-RS-1.md](../contributions/BEAT_LB-RS-1.md) · [BEAT_LB-MA-1.md](../contributions/BEAT_LB-MA-1.md) |
+| LE-OP-10 partial | [le-op-10-associativity.md](../research/le-op-10-associativity.md) |
+| Schema versioning | [Loop-Core schema-versioning.md](https://github.com/KanakMalpani/Loop-Core-Engineering/blob/main/specs/schema-versioning.md) |
+| LoopGym compose env spec | [LOOPGYM.md](../research/LOOPGYM.md) `loopbench/composed-swarm-v1` |
+| LangGraph bridge case study | [langgraph-composition-bridge.md](../case-studies/langgraph-composition-bridge.md) |
+| LES baseline audit CI | [validate_baselines.py](../scripts/validate_baselines.py) |
+
 ## Community (tracked daily)
 
 [docs/adoption-tracker/latest.md](../docs/adoption-tracker/latest.md) · [EXTERNAL_SUBMISSIONS.md](../contributions/EXTERNAL_SUBMISSIONS.md)

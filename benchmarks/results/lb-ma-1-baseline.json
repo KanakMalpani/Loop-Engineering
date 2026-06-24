@@ -17,6 +17,10 @@
       "les_display": 86.5,
       "cost_usd_mean": 0.672,
       "robustness_seeds": 5
+    },
+    "les_structural": {
+      "source": "tools/les_calculator.py --spec loop-library/coding-agent.yaml",
+      "composite": 74.5
     }
   },
   "full_submission": "benchmarks/results/lb-ma-1-run.json",
