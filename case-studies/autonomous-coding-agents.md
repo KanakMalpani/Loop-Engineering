@@ -7,6 +7,20 @@
 
 ---
 
+## Tuple mapping
+
+| Component | Instantiation |
+|-----------|---------------|
+| **S** | Repo tree, open files, terminal/test output, task spec |
+| **A** | Agent edits code, runs tests, searches codebase |
+| **O** | Test suite, linter, human review (optional) |
+| **T** | Success on passing tests + task rubric; else budget halt |
+| **E** | Failure logs → next edit strategy |
+| **M** | Session transcript, git diff, tool call history |
+| **τ** | Token/step budget, sandbox permissions |
+
+---
+
 ## 1. System Overview
 
 Autonomous coding agents (Devin, Cursor Agent, GitHub Copilot Workspace, OpenHands, SWE-Agent, etc.) implement a test-driven development loop: receive a coding task, explore the codebase, write or modify code, run tests, analyze failures, and iterate until tests pass or budget is exhausted.

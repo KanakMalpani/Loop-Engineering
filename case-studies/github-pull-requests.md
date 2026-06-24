@@ -7,6 +7,20 @@
 
 ---
 
+## Tuple mapping
+
+| Component | Instantiation |
+|-----------|---------------|
+| **S** | PR diff, branch HEAD, CI logs, review thread state |
+| **A** | Contributor pushes; reviewers/Copilot comment; CI executes |
+| **O** | Check pass/fail, approvals, security scan results |
+| **T** | Merge when required checks + approvals satisfied |
+| **E** | Review comments and CI output routed to new commits |
+| **M** | Git objects, PR timeline, check-run artifacts |
+| **τ** | Branch protection, required reviewers, CI budget |
+
+---
+
 ## 1. System Overview
 
 The GitHub pull request (PR) workflow is a distributed code review loop used by millions of developers daily. A contributor submits code changes, automated checks run, human and AI reviewers provide feedback, the contributor revises, and the cycle repeats until approval and merge.

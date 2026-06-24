@@ -7,6 +7,20 @@
 
 ---
 
+## Tuple mapping
+
+| Component | Instantiation |
+|-----------|---------------|
+| **S** | Standard work docs, andon state, WIP inventory |
+| **A** | Operator inspects; team root-cause; engineer updates standard work |
+| **O** | Defect vs standard; line-stop authorization |
+| **T** | Resume when countermeasure verified on line |
+| **E** | Andon signal → team huddle → standardized fix |
+| **M** | Kaizen logs, updated work instructions |
+| **τ** | Takt time, line-stop cost, safety limits |
+
+---
+
 ## 1. System Overview
 
 The Toyota Production System (TPS) is a manufacturing loop that detects defects at the source, stops production (andon), identifies root cause, implements countermeasures, and standardizes improvements across the production network. Developed over decades at Toyota, TPS represents the most mature industrial feedback loop in operation.

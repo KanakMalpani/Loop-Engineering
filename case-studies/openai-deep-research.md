@@ -7,6 +7,20 @@
 
 ---
 
+## Tuple mapping
+
+| Component | Instantiation |
+|-----------|---------------|
+| **S** | Query plan, fetched pages, partial synthesis draft |
+| **A** | Search/browse tools, read/summarize, re-query |
+| **O** | Citation check, coherence rubric, coverage score |
+| **T** | Report when quality threshold met or time cap |
+| **E** | Evaluator gaps → new search sub-queries |
+| **M** | Browse history, source cache |
+| **τ** | Wall-clock minutes, browse/tool budget |
+
+---
+
 ## 1. System Overview
 
 OpenAI Deep Research is an agentic loop that accepts a research question, autonomously searches the web, reads documents, synthesizes findings, and produces a structured report with citations. It represents a production deployment of the research synthesis pattern at scale.

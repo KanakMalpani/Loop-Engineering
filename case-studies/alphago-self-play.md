@@ -7,6 +7,22 @@
 
 ---
 
+## Tuple mapping
+
+| Component | Instantiation |
+|-----------|---------------|
+| **S** | Board position θ, MCTS tree, replay buffer (see §2) |
+| **A** | Self-play rollout, gradient update, champion eval match |
+| **O** | Win/loss/draw; value head error |
+| **T** | Promote θ′ when eval win rate exceeds threshold |
+| **E** | Game outcome → training loss; eval → promote/discard |
+| **M** | Network weights θ, replay buffer |
+| **τ** | Training steps, eval plateau, compute budget |
+
+Full detail in §2 Loop Architecture.
+
+---
+
 ## 1. System Overview
 
 AlphaGo demonstrated that a **closed feedback loop without human game data** (in the AlphaZero extension) could exceed human champion performance in Go, chess, and shogi. The core insight for Loop Engineering: **the environment plus evaluator generate unlimited training signal** when the system plays against itself and selects improved policies.

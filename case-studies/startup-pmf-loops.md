@@ -7,6 +7,20 @@
 
 ---
 
+## Tuple mapping
+
+| Component | Instantiation |
+|-----------|---------------|
+| **S** | PMF hypothesis, cohort metrics, interview notes |
+| **A** | Ship MVP, run experiments, interview customers |
+| **O** | Retention, engagement, qualitative signal strength |
+| **T** | Persevere / pivot / kill on falsification |
+| **E** | Metrics + interviews → next hypothesis |
+| **M** | Experiment ledger, analytics warehouse |
+| **τ** | Runway, sample size, ethics of customer contact |
+
+---
+
 ## 1. System Overview
 
 Startup product-market fit (PMF) loops iterate between building product features, deploying to customers, measuring engagement and retention, gathering qualitative feedback, and pivoting or persevering. Unlike engineering loops with deterministic feedback, PMF loops operate in environments where the goal function itself is uncertain—the startup may not yet know what product it should build.

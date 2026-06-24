@@ -7,6 +7,20 @@
 
 ---
 
+## Tuple mapping
+
+| Component | Instantiation |
+|-----------|---------------|
+| **S** | Manuscript, reviewer assignments, revision draft |
+| **A** | Authors revise; reviewers critique; editor routes |
+| **O** | Accept/reject/revise; methodological checklist |
+| **T** | Accept or reject after bounded revision rounds |
+| **E** | Review reports → author revisions |
+| **M** | Submission system records, anonymized drafts |
+| **τ** | Review round limits, conflict-of-interest rules |
+
+---
+
 ## 1. System Overview
 
 Scientific peer review is the loop through which research is evaluated before publication. An author submits a manuscript, editors assign reviewers, reviewers critique methodology and conclusions, authors revise, and the cycle repeats until acceptance or rejection. This loop has governed scientific quality for over a century.

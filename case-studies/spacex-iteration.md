@@ -7,6 +7,20 @@
 
 ---
 
+## Tuple mapping
+
+| Component | Instantiation |
+|-----------|---------------|
+| **S** | Vehicle telemetry, structural models, prior prototype learnings |
+| **A** | Build prototype, fly/test, analyze wreckage/data |
+| **O** | Mission objectives met vs failure mode catalog |
+| **T** | Next prototype gate; program milestone |
+| **E** | Flight data → design delta for next build |
+| **M** | CAD revisions, test logs, FAA filings |
+| **τ** | Launch license, hardware cost, crew safety |
+
+---
+
 ## 1. System Overview
 
 SpaceX pioneered a hardware development loop that inverts traditional aerospace engineering: instead of exhaustive ground testing before first flight, SpaceX builds prototypes rapidly, flies them (often to destruction), analyzes failure data, and iterates. This "test early, test often, fail forward" loop produced Falcon 9 reusability and Starship development at a fraction of traditional timelines and costs.

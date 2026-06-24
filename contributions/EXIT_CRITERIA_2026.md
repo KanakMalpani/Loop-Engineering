@@ -15,8 +15,10 @@
 | CONTRIBUTING + GOVERNANCE live | Complete | **Green** | This directory |
 | Reproduction challenge | Discussion + dry-run | **Green** | [#10](https://github.com/KanakMalpani/Loop-Engineering/discussions/10) |
 | LoopNet v0.2 discovery | HF + 545 records | **Green** | `KanakMalpani/loopnet-v0.2` |
-| LSS 1.1 RFC visible | Community feedback | **Green** | [RFC](RFC-LSS-1.1-composition.md) · [#11](https://github.com/KanakMalpani/Loop-Engineering/discussions/11) |
-| Mathematics foundation seed | `mathematics/` directory | **Green** | [mathematics/README.md](../mathematics/README.md) |
+| LSS 1.1 RFC visible | Community feedback | **Green** | [RFC](RFC-LSS-1.1-composition.md) · [#11](https://github.com/KanakMalpani/Loop-Engineering/discussions/11) · [Core draft](https://github.com/KanakMalpani/Loop-Core-Engineering/blob/main/specs/lss-1.1-draft.md) |
+| Case studies tuple-mapped | All 8 | **Green** | [TEMPLATE.md](../case-studies/TEMPLATE.md) applied |
+| First math lemma | composition-cost-bound | **Green** | [mathematics/composition-cost-bound.md](../mathematics/composition-cost-bound.md) |
+| Reproduction challenge pinned/visible | Announcements | **Green** | [#10](https://github.com/KanakMalpani/Loop-Engineering/discussions/10) |
 
 ---
 

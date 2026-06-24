@@ -238,7 +238,7 @@ flowchart LR
 | 2026-06-17 | Post-papers ecosystem pass: LoopNet v0.2 alignment, loop-library LSS 1.0 validation gate, REPRODUCE.md, ALS-T2 baseline, reproduction challenge ([ADOPTION_SIGNAL.md](ADOPTION_SIGNAL.md)), RFC LSS 1.1 composition draft |
 | 2026-06-17 | Next 10 Steps: YAML enrichment, CI, LB-CR-1 baseline, EXIT_CRITERIA, AUDIT |
 | 2026-06-24 | Composed loops (4 nested/sequential), circuit-design removed, lb-cr-1-baseline rename |
-| 2026-06-24 | Parallel scenario-swarm-rehearsal; All about loops checklist; LB-RS-1/LB-MA-1 baselines; mathematics/ seed; LoopBench PR #1 merged |
+| 2026-06-24 | Tier 1 completion: RS/MA baselines, tuple-mapped case studies, math Lemma 1, LSS 1.1 Core draft, LoopBench PR #2 |
 
 *Maintainers append rows on quarterly review.*
 
