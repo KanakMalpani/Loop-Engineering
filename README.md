@@ -148,6 +148,7 @@ termination_conditions:
 | [Research Agent](loop-library/research-agent.yaml) | 2 | Literature synthesis |
 | [Coding Agent](loop-library/coding-agent.yaml) | 3 | Feature implementation |
 | [Autonomous Debugger](loop-library/autonomous-debugger.yaml) | 3 | Test-driven repair |
+| [Code → Debug (nested)](loop-library/compositions/code-debug-repair.yaml) | 4 | Coding loop with inner repair |
 | [Startup Validator](loop-library/startup-validator.yaml) | 2 | PMF experiments |
 
 → [Full library](loop-library/README.md)

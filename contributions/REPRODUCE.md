@@ -108,7 +108,7 @@ loopbench --help
 # https://github.com/KanakMalpani/LoopBench#score-in-2-minutes
 ```
 
-Published maintainer baseline: [benchmarks/results/als-t2-code-repair-baseline.json](../benchmarks/results/als-t2-code-repair-baseline.json)
+Published maintainer baseline: [benchmarks/results/lb-cr-1-baseline.json](../benchmarks/results/lb-cr-1-baseline.json)
 
 Compare your LES vector to the baseline after running the same task.
 

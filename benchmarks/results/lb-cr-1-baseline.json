@@ -13,7 +13,6 @@
   "runs": 15,
   "seeds": [0, 1, 2, 3, 4],
   "protocol": "loopbench run --task LB-CR-1 --spec loop-library/autonomous-debugger.yaml --seeds 0,1,2,3,4",
-  "note": "Supersedes ALS-T2 mock/reflection-loop baseline (v1.0.0). Full submission: benchmarks/results/lb-cr-1-run.json",
   "results": {
     "aggregate": {
       "success_at_k": 1.0,
@@ -34,8 +33,7 @@
     },
     "les_structural": {
       "source": "tools/les_calculator.py --spec loop-library/autonomous-debugger.yaml",
-      "composite": 74.5,
-      "note": "Structural estimate from LSS design; observed LES from LoopBench run above"
+      "composite": 74.5
     }
   },
   "reproduce": {

@@ -44,7 +44,7 @@ File a **Case study** issue for a real system mapped to L = (S, A, O, T, E, M, Ï
 | Structural LES | ~74.5 (post-enrichment) |
 | Harness | LoopBench SimEnv (no API keys) |
 
-Artifact: [benchmarks/results/als-t2-code-repair-baseline.json](../benchmarks/results/als-t2-code-repair-baseline.json)
+Artifact: [benchmarks/results/lb-cr-1-baseline.json](../benchmarks/results/lb-cr-1-baseline.json)
 
 ---
 

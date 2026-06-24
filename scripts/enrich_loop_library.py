@@ -182,25 +182,6 @@ SPECS: dict[str, dict] = {
         "max_iterations": 10,
         "cumulative_usd": 2.2,
     },
-    "circuit-design-agent": {
-        "objective": "Design circuit meeting specs verified by simulation and design rule checks.",
-        "level": 3,
-        "les": 73,
-        "workers": [
-            ("architect", "Select topology meeting electrical specs", []),
-            ("simulator", "Run SPICE simulation and extract metrics", ["architect"]),
-            ("layout_advisor", "Assess layout parasitics and DRC feasibility", ["simulator"]),
-            ("optimizer", "Tune parameters toward spec targets", ["layout_advisor"]),
-        ],
-        "evaluators": [
-            ("spice_oracle", "SPICE metric compliance"),
-            ("drc_check", "Design rule check gate"),
-            ("spec_margin", "Operating margin rubric"),
-        ],
-        "pass_threshold": 0.80,
-        "max_iterations": 15,
-        "cumulative_usd": 6.0,
-    },
 }
 
 

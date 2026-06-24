@@ -7,12 +7,18 @@ on:
       - 'loop-library/**'
       - 'standards/schema/**'
       - 'scripts/validate_loop_library.py'
+      - 'tools/composition_validator.py'
+      - 'implementations/generic/composed_runtime.py'
+      - 'examples/compose-loop/**'
       - '.github/workflows/validate-loop-library.yml'
   pull_request:
     paths:
       - 'loop-library/**'
       - 'standards/schema/**'
       - 'scripts/validate_loop_library.py'
+      - 'tools/composition_validator.py'
+      - 'implementations/generic/composed_runtime.py'
+      - 'examples/compose-loop/**'
       - '.github/workflows/validate-loop-library.yml'
 
 jobs:
@@ -28,8 +34,11 @@ jobs:
       - name: Install dependencies
         run: pip install pyyaml jsonschema
 
-      - name: Validate all loop-library specs
+      - name: Validate atomic and composed specs
         run: python scripts/validate_loop_library.py
 
-      - name: Smoke test reflection-loop example
+      - name: Smoke test reflection-loop
         run: python examples/reflection-loop/run.py
+
+      - name: Smoke test composed loop (nested)
+        run: python examples/compose-loop/run.py loop-library/compositions/code-debug-repair.yaml

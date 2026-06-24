@@ -16,7 +16,7 @@ gh api repos/KanakMalpani/loopnet/contents/README.md -X PUT \
   -f sha="$SHA"
 ```
 
-On Windows PowerShell, use `scripts/push_github_file.ps1` or the Python helper below.
+On Windows PowerShell, use the Python helper below.
 
 ## Helper script
 
@@ -24,7 +24,7 @@ On Windows PowerShell, use `scripts/push_github_file.ps1` or the Python helper b
 python scripts/push_github_file.py --repo loopnet --path README.md --file path/to/README.md --message "docs: ..."
 ```
 
-See `scripts/push_github_file.py` for arguments. Local mirrors of past pushes live in `docs/ecosystem-sync/` (not source of truth).
+See `scripts/push_github_file.py` for arguments.
 
 ## Checklist after sync
 

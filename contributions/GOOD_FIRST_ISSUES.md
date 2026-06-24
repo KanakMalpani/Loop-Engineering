@@ -16,7 +16,7 @@ Actionable contribution entry points. File these as GitHub issues or pick one an
 
 ## Benchmarks
 
-4. **Reproduce ALS-T2 baseline** — Follow [REPRODUCE.md](REPRODUCE.md); compare your LES JSON to [benchmarks/results/als-t2-code-repair-baseline.json](../benchmarks/results/als-t2-code-repair-baseline.json).
+4. **Reproduce LB-CR-1 baseline** — Follow [REPRODUCE.md](REPRODUCE.md); compare to [benchmarks/results/lb-cr-1-baseline.json](../benchmarks/results/lb-cr-1-baseline.json).
 
 5. **Publish ALS-T1 Research Synthesis baseline** — First external row on LoopBench for task ALS-T1.
 

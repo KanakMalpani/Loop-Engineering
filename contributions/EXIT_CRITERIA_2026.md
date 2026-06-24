@@ -8,10 +8,11 @@ Derived from [RESEARCH_ROADMAP.md](RESEARCH_ROADMAP.md) Q4 2026 exit criteria an
 
 | Criterion | Target | Status | Evidence |
 |-----------|--------|--------|----------|
-| LSS validator passes 100% of `loop-library/` | All 10 specs | **Green** | `scripts/validate_loop_library.py`; CI workflow |
-| YAML architecture matches companion `.md` | Worker/evaluator parity | **Green** | Enriched 2026-06-17; exceptions in [loop-library/README.md](../loop-library/README.md) |
+| LSS validator passes 100% of `loop-library/` | All specs | **Green** | 9 atomic + 4 composed; CI |
+| YAML architecture matches companion `.md` | Worker/evaluator parity | **Green** | Atomic loops; see [loop-library/README.md](../loop-library/README.md) |
+| Composed loops (nested/sequential) | ≥2 nested pipelines | **Green** | [compositions/](../loop-library/compositions/) |
 | External team reproduces without hand-holding | Fork → validate → run → LES | **Yellow** | [REPRODUCE.md](REPRODUCE.md) verified locally; awaiting external report |
-| Benchmark suite v0.1 + baseline LES JSON | ≥1 LoopBench-native baseline | **Yellow** | LB-CR-1 run + [baseline JSON](../benchmarks/results/als-t2-code-repair-baseline.json); LoopBench PR open |
+| Benchmark suite v0.1 + baseline LES JSON | ≥1 LoopBench-native baseline | **Yellow** | [lb-cr-1-baseline.json](../benchmarks/results/lb-cr-1-baseline.json); LoopBench PR open |
 | CONTRIBUTING + GOVERNANCE live | This directory complete | **Green** | [CONTRIBUTING.md](CONTRIBUTING.md), [GOVERNANCE.md](GOVERNANCE.md) |
 | Reproduction challenge public | Discussion + maintainer dry-run | **Green** | [#10](https://github.com/KanakMalpani/Loop-Engineering/discussions/10) + dry-run comment |
 | LoopNet v0.2 external discovery | HF card + 545 records | **Green** | `KanakMalpani/loopnet-v0.2`; explore script |

@@ -8,6 +8,7 @@ Minimal examples demonstrating loop patterns without API keys.
 | [research-loop](research-loop/) | Research | `python run.py` |
 | [verification-loop](verification-loop/) | Verification | `python run.py` |
 | [loopnet-explore](loopnet-explore/) | Dataset explore | `python explore.py` |
+| [compose-loop](compose-loop/) | Nested/sequential composition | `python run.py` |
 
 Requires: see each example README. Full path: [contributions/REPRODUCE.md](../contributions/REPRODUCE.md).
 

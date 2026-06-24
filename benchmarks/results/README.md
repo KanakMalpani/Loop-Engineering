@@ -1,39 +1,41 @@
 # Benchmark Results
 
-Published baseline runs for the Agent Loop Standard (ALS) suite. Full task definitions: [suite-overview.md](../suite-overview.md).
+Published baseline runs for LoopBench tasks.
 
-**Submit new results:** LoopBench repository or GitHub issue template `benchmark-submission.md`.
+**Submit new results:** [LoopBench](https://github.com/KanakMalpani/LoopBench) or the benchmark submission issue template.
 
 ---
 
 ## Published baselines
 
-| Task ID | Name | Harness | Date | Success rate | LES (structural) | Artifact |
-|---------|------|---------|------|--------------|------------------|----------|
-| ALS-T2 | Code Repair | reflection-loop + autonomous-debugger LSS | 2026-06-17 | 100% (5/5) | 70.4 | [als-t2-code-repair-baseline.json](./als-t2-code-repair-baseline.json) |
+| Task ID | Name | Harness | Date | Success@k | LES observed | Artifact |
+|---------|------|---------|------|-----------|--------------|----------|
+| LB-CR-1 | Code Repair | loopbench sim + autonomous-debugger | 2026-06-17 | 1.0 | 86.7 | [lb-cr-1-baseline.json](./lb-cr-1-baseline.json) |
+
+Full submission: [lb-cr-1-run.json](./lb-cr-1-run.json)
 
 ---
 
-## Reproduce ALS-T2 maintainer baseline
+## Reproduce
 
 ```bash
-python examples/reflection-loop/run.py
-python tools/les_calculator.py --spec loop-library/autonomous-debugger.yaml --json
+pip install loopbench
+loopbench run --task LB-CR-1 --spec loop-library/autonomous-debugger.yaml --seeds 0,1,2,3,4 -o results.json
 ```
 
-See [contributions/REPRODUCE.md](../../contributions/REPRODUCE.md) for the full one-hour path.
+See [contributions/REPRODUCE.md](../../contributions/REPRODUCE.md).
 
 ---
 
 ## Leaderboard
 
-Canonical public leaderboard: [LoopBench on GitHub](https://github.com/KanakMalpani/LoopBench)
+[LoopBench on GitHub](https://github.com/KanakMalpani/LoopBench) — maintainer PR #1 pending merge.
 
 ---
 
-## Pending baselines (good first issues)
+## Pending baselines
 
-- ALS-T1 Research Synthesis
-- ALS-T3 Multi-Agent Debate
+- LB-RS-1 Research Synthesis
+- LB-MA-1 Multi-Agent Debate
 
 See [contributions/GOOD_FIRST_ISSUES.md](../../contributions/GOOD_FIRST_ISSUES.md).
