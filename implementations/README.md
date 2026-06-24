@@ -2,6 +2,8 @@
 
 Reference implementations of [LSS](../standards/LSS-1.0.md) loops across frameworks.
 
+**Already using Cursor, LangGraph, or CrewAI?** See [Bridge: Agent Harnesses → LSS](../contributions/BRIDGE_AGENT_HARNESSES.md) — map your loop and post on [Discussion #10](https://github.com/KanakMalpani/Loop-Engineering/discussions/10).
+
 ---
 
 ## Directory Layout

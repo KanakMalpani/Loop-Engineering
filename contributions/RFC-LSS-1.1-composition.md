@@ -61,9 +61,10 @@ composition:
 
 ## Next steps
 
-1. Discussion on GitHub (label `rfc`, `lss-1.1`)
-2. Prototype in Loop Core Engineering `specs/lss-1.1-draft.md`
-3. Benchmark composed loop on ALS-T3 before merge
+1. Discussion on GitHub — [Discussion #11](https://github.com/KanakMalpani/Loop-Engineering/discussions/11) (label `rfc`, `lss-1.1`)
+2. **Framework maintainers:** LangGraph / CrewAI / Cursor users — does `composition.children` + `adapters` match your graph topology? Comment on #11 or open a PR mapping your harness via [BRIDGE_AGENT_HARNESSES.md](BRIDGE_AGENT_HARNESSES.md).
+3. Prototype in Loop Core Engineering `specs/lss-1.1-draft.md`
+4. Benchmark composed loop on LB-COMP-1 before merge
 
 ---
 

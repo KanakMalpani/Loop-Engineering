@@ -16,3 +16,5 @@ python Loop-Core-Engineering/tools/validate_lss.py your-loop.yaml
 ```
 
 Do not edit `lss-1.0.schema.json` in this folder without syncing from upstream.
+
+**LSS 1.1 composition extension (draft):** [lss-1.1-composition.schema.json](./lss-1.1-composition.schema.json) — optional `composition` block for sequential, parallel, nested loops. Validated by [composition_validator.py](../../tools/composition_validator.py) (warnings until stable).

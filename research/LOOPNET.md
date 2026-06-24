@@ -57,6 +57,8 @@ python examples/loopnet-explore/explore.py
 
 This loads Tier 1 from Hugging Face and prints corpus summary statistics.
 
+**After explore:** post on the [reproduction challenge](https://github.com/KanakMalpani/Loop-Engineering/discussions/10) ([REPRODUCE.md](../contributions/REPRODUCE.md)).
+
 ---
 
 ## Using LoopNet with LoopGym
@@ -66,7 +68,9 @@ pip install loopgym
 loopgym replay --dataset KanakMalpani/loopnet-v0.2 --split train --limit 5
 ```
 
-See [LoopGym](https://github.com/KanakMalpani/LoopGym) for replay and simulation modes.
+See [LOOPGYM.md](LOOPGYM.md) and [LoopGym](https://github.com/KanakMalpani/LoopGym) for replay and simulation modes.
+
+**Contribute trajectories:** LoopGym replay → [loopnet COMMUNITY-SUBMISSION](https://github.com/KanakMalpani/loopnet/blob/main/guides/COMMUNITY-SUBMISSION.md).
 
 ---
 

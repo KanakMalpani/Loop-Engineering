@@ -1,0 +1,25 @@
+{
+  "benchmark_id": "LB-COMP-1",
+  "task_id": "LB-COMP-1",
+  "task_name": "Composed Swarm Rehearsal",
+  "suite": "LoopBench 0.1.0",
+  "version": "1.0.0",
+  "submitted": "2026-06-24",
+  "harness": "loopbench-sim-v0.1.0",
+  "backend": "sim",
+  "lss_spec": "loop-library/compositions/scenario-swarm-rehearsal.yaml",
+  "spec_hash": "sha256:e2d6117d0eeffff43ca8d3839790706dcd7c2175623b65e50840d9242f1e3cc4",
+  "protocol": "loopbench run --task LB-COMP-1 --spec loop-library/compositions/scenario-swarm-rehearsal.yaml --seeds 0,1,2,3,4",
+  "proxy_note": "v0.1 uses loopbench/multi-agent-debate-v1 SimEnv until composed env ships",
+  "results": {
+    "aggregate": {
+      "success_at_k": 1.0,
+      "les_observed": 0.7736,
+      "les_display": 77.4,
+      "cost_usd_mean": 0.95,
+      "robustness_seeds": 5
+    }
+  },
+  "full_submission": "benchmarks/results/lb-comp-1-run.json",
+  "canonical_leaderboard": "https://github.com/KanakMalpani/LoopBench"
+}

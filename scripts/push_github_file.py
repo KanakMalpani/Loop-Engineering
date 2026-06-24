@@ -33,13 +33,14 @@ def main() -> int:
     if isinstance(meta, dict) and meta.get("sha"):
         body["sha"] = meta["sha"]
 
-    payload = json.dumps(body)
+    payload_path = Path("_gh_push_payload.json")
+    payload_path.write_text(json.dumps(body), encoding="utf-8")
     result = subprocess.run(
-        ["gh", "api", "-X", "PUT", f"repos/KanakMalpani/{args.repo}/contents/{args.path}"],
-        input=payload,
+        ["gh", "api", "-X", "PUT", f"repos/KanakMalpani/{args.repo}/contents/{args.path}", "--input", str(payload_path)],
         text=True,
         capture_output=True,
     )
+    payload_path.unlink(missing_ok=True)
     if result.returncode != 0:
         print(result.stderr or result.stdout, file=sys.stderr)
         return 1

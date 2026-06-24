@@ -1,32 +1,38 @@
-# Next Steps — Prioritized (June 2026)
+# Next Steps — Existing-Audience Strategy (June 2026)
 
-**Status:** Tier 1 maintainer work complete except external reproduction.
+**Refactor:** Do not build a new consumer base. Bridge people who already use our stack.
 
----
+**Single adoption path:** [REPRODUCE.md](../contributions/REPRODUCE.md) → [Discussion #10](https://github.com/KanakMalpani/Loop-Engineering/discussions/10)
 
-## Tier 1 — Unblock 2026 exit
-
-| # | Action | Status |
-|---|--------|--------|
-| 1 | Merge LoopBench PR #1 (LB-CR-1) | **Done** |
-| 2 | LB-RS-1 + LB-MA-1 baseline JSON | **Done** |
-| 3 | Reproduction challenge visibility | **Done** — [#10](https://github.com/KanakMalpani/Loop-Engineering/discussions/10) in **Announcements** |
-| 4 | LoopBench PR for RS/MA leaderboard rows | **Done** — [PR #2](https://github.com/KanakMalpani/LoopBench/pull/2) merged |
-| 5 | First **external** reproduction report | **Waiting on community** → [ADOPTION_SIGNAL.md](../contributions/ADOPTION_SIGNAL.md) |
-
-## Tier 2 — Discipline credibility
-
-| # | Action | Status |
-|---|--------|--------|
-| 6 | First math lemma | **Done** — [composition-cost-bound.md](../mathematics/composition-cost-bound.md) |
-| 7 | LSS 1.1 draft in Loop-Core-Engineering | **Done** — `specs/lss-1.1-draft.md` |
-| 8 | Case study tuple tables | **Done** — all 8 studies |
-| 9 | Composed-loop LoopBench task | Deferred — needs new task ID in LoopBench |
-
-## Tier 3 — Ecosystem (2027)
-
-LoopNet changelog · Intent→LSS compiler · Certification L1 · LoopCon CFP
+Full plan: [TOP_10_EXISTING_AUDIENCES.md](./TOP_10_EXISTING_AUDIENCES.md)
 
 ---
 
-**Community ask:** Post a reproduction report on [Discussion #10](https://github.com/KanakMalpani/Loop-Engineering/discussions/10) using [REPRODUCE.md](../contributions/REPRODUCE.md).
+## Top 10 (channel-first)
+
+| # | Channel | Action | Status |
+|---|---------|--------|--------|
+| 1 | **HF LoopNet** | Dataset card + explore.py CTA → REPRODUCE | **Done** (discipline + HF push pending) |
+| 2 | **pip loopbench/loopgym** | Sibling README → good-first #4 | **Done** (mirrors in ecosystem-sync) |
+| 3 | **Cursor / LangGraph / CrewAI** | Harness bridge doc + case study #8 | **Done** (doc); external #8 pending |
+| 4 | **MiroFish-adjacent** | scenario-swarm bridge + LB-COMP-1 | **Done** (discipline baseline) |
+| 5 | **5-repo stack** | Same adoption URL in every README | **Done** (mirrors + check script) |
+| 6 | **LSS 1.1** | Schema for harness mappers | **Done** (schema + validator warnings) |
+| 7 | **LoopBench pip users** | LB-COMP-1 composed task | **Done** (baseline); LoopBench push pending |
+| 8 | **LoopGym replay** | Replay → LoopNet export guide | **Done** ([LOOPGYM.md](../research/LOOPGYM.md)) |
+| 9 | **RFC #11** | Feedback from framework users | **Done** (RFC updated); comments pending |
+| 10 | **Operate bridges** | Triage #4–8 issues; daily link check | **Done** (daily checkin + check script) |
+
+---
+
+## Done (maintainer infra)
+
+LoopBench baselines (CR/RS/MA/COMP), composed loops, daily check-in, LSS 1.1 schema fragment, tuple case studies, adoption link CI check.
+
+---
+
+## Still the 2026 exit gap
+
+**First external reproduction** — from a **bridged** audience (HF, pip, Cursor, etc.).
+
+See [contributions/BRIDGE_AGENT_HARNESSES.md](../contributions/BRIDGE_AGENT_HARNESSES.md).

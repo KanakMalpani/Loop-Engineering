@@ -47,6 +47,11 @@ def main() -> int:
             print(f"\nIteration count: min={min(lengths)}, max={max(lengths)}, avg={avg:.1f}")
 
     print("\nDone. See research/LOOPNET.md for full guide.")
+    print(
+        "\nValidated your harness on this corpus? Post a reproduction report (~60 min):\n"
+        "  https://github.com/KanakMalpani/Loop-Engineering/discussions/10\n"
+        "  Guide: contributions/REPRODUCE.md"
+    )
     return 0
 
 

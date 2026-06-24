@@ -4,6 +4,8 @@ This checklist satisfies the 2026 roadmap exit criterion: an external team can f
 
 **Target time:** ≤60 minutes on a clean machine with Python 3.10+.
 
+**When done:** post your report on the [reproduction challenge](https://github.com/KanakMalpani/Loop-Engineering/discussions/10).
+
 ---
 
 ## Prerequisites

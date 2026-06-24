@@ -32,6 +32,7 @@ We publish research as **living documents**. They are revised as benchmarks, cas
 | [../mathematics/README.md](../mathematics/README.md) | Formal notation, tuple reference, proof roadmap | Theorists |
 | [PAPER_SERIES.md](./PAPER_SERIES.md) | S1 + P1–P4 research program map | All researchers |
 | [LOOPNET.md](./LOOPNET.md) | LoopNet v0.2 dataset guide and P4 stats | Benchmark authors, empiricists |
+| [LOOPGYM.md](./LOOPGYM.md) | LoopGym env IDs, replay, LoopNet export path | Runtime integrators |
 
 ---
 

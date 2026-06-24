@@ -29,4 +29,8 @@ See `scripts/push_github_file.py` for arguments.
 ## Checklist after sync
 
 1. Verify [ECOSYSTEM_VERSIONS.md](../ECOSYSTEM_VERSIONS.md) matches live READMEs
-2. Append row to [docs/AUDIT-2026-06.md](../docs/AUDIT-2026-06.md) if versions changed
+2. **Adoption URL** present in every sibling README: `https://github.com/KanakMalpani/Loop-Engineering/discussions/10`
+3. Run `python scripts/check_adoption_links.py` (also in daily check-in)
+4. Append row to [docs/AUDIT-2026-06.md](../docs/AUDIT-2026-06.md) if versions changed
+
+Local mirrors for sibling READMEs live in [docs/ecosystem-sync/](../docs/ecosystem-sync/) — edit there, then push with `push_github_file.py`.

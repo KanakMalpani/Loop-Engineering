@@ -29,21 +29,22 @@ def resolve_ref(spec_path: Path, ref: str) -> Path:
     return (spec_path.parent / raw).resolve()
 
 
-def validate_composition(spec_path: Path, spec: dict) -> list[str]:
+def validate_composition(spec_path: Path, spec: dict) -> tuple[list[str], list[str]]:
     comp = spec.get("composition")
     if not comp:
-        return []
+        return [], []
 
     errors: list[str] = []
+    warnings: list[str] = []
     ctype = comp.get("type")
     if ctype not in COMP_TYPES:
         errors.append(f"composition.type must be one of {sorted(COMP_TYPES)}")
-        return errors
+        return errors, warnings
 
     children = comp.get("children")
     if not isinstance(children, list) or len(children) < 2:
         errors.append("composition.children must list at least 2 child refs")
-        return errors
+        return errors, warnings
 
     ids: set[str] = set()
     roles: dict[str, str] = {}
@@ -80,12 +81,14 @@ def validate_composition(spec_path: Path, spec: dict) -> list[str]:
 
     adapters = comp.get("adapters") or []
     if ctype == "sequential" and len(adapters) < len(children) - 1:
-        errors.append(
+        warnings.append(
             f"sequential composition should declare >= {len(children) - 1} adapters "
-            f"(got {len(adapters)})"
+            f"(got {len(adapters)}) — LSS 1.1 migration (RFC warn policy)"
         )
     if ctype == "nested" and not adapters:
-        errors.append("nested composition requires at least one adapter (outer -> inner)")
+        warnings.append(
+            "nested composition should declare at least one adapter (outer -> inner) — LSS 1.1 migration"
+        )
 
     if ctype == "parallel":
         merge = comp.get("merge")
@@ -106,7 +109,7 @@ def validate_composition(spec_path: Path, spec: dict) -> list[str]:
         if not adapter.get("from") or not adapter.get("to"):
             errors.append(f"composition.adapters[{j}] requires from and to")
 
-    return errors
+    return errors, warnings
 
 
 def main() -> int:
@@ -116,6 +119,11 @@ def main() -> int:
         "--library",
         action="store_true",
         help="Validate all loop-library/compositions/*.yaml",
+    )
+    parser.add_argument(
+        "--strict",
+        action="store_true",
+        help="Treat LSS 1.1 migration warnings as errors",
     )
     args = parser.parse_args()
 
@@ -129,24 +137,36 @@ def main() -> int:
         parser.error("Provide a spec path or --library")
 
     failed = 0
+    warned = 0
     for path in paths:
         try:
             spec = load_yaml(path)
-            errors = validate_composition(path, spec)
+            errors, warnings = validate_composition(path, spec)
         except (yaml.YAMLError, ValueError) as exc:
-            errors = [str(exc)]
+            errors, warnings = [str(exc)], []
+        if args.strict:
+            errors = errors + warnings
+            warnings = []
+        if warnings:
+            warned += 1
+            print(f"WARN: {path}", file=sys.stderr)
+            for msg in warnings:
+                print(f"  - {msg}", file=sys.stderr)
         if errors:
             failed += 1
             print(f"INVALID: {path}", file=sys.stderr)
             for err in errors:
                 print(f"  - {err}", file=sys.stderr)
-        elif spec.get("composition"):
+        elif spec.get("composition") and not warnings:
             print(f"OK: {path.name} ({spec['composition'].get('type')})")
+        elif spec.get("composition"):
+            print(f"OK (warn): {path.name} ({spec['composition'].get('type')})")
 
     if failed:
         print(f"\nFAILED: {failed}/{len(paths)}", file=sys.stderr)
         return 1
-    print(f"OK: {len(paths)} composition spec(s)")
+    suffix = f" ({warned} with warnings)" if warned else ""
+    print(f"OK: {len(paths)} composition spec(s){suffix}")
     return 0
 
 

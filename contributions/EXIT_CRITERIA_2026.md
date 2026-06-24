@@ -31,8 +31,9 @@
 
 ## Next unlocks (2027)
 
-1. First **external** reproduction report
-2. LoopBench PR #1 merged + RS/MA rows on leaderboard
-3. LSS 1.1 draft in Loop-Core-Engineering
+1. First **external** reproduction report ([Discussion #10](https://github.com/KanakMalpani/Loop-Engineering/discussions/10)) — via bridged audiences (HF, pip, harness)
+2. ≥1 **non-maintainer** LoopBench row ([good-first #4](https://github.com/KanakMalpani/Loop-Engineering/issues/4))
+3. LSS 1.1 **stable** in Loop-Core-Engineering (draft live; schema fragment in discipline repo)
+4. LB-COMP-1 composed task on public leaderboard
 
-See [All about loops/NEXT_STEPS.md](../All%20about%20loops/NEXT_STEPS.md).
+See [All about loops/NEXT_STEPS.md](../All%20about%20loops/NEXT_STEPS.md) · [TOP_10_EXISTING_AUDIENCES.md](../All%20about%20loops/TOP_10_EXISTING_AUDIENCES.md).

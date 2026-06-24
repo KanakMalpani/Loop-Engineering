@@ -22,5 +22,6 @@ python examples/loopnet-explore/explore.py
 - Column names
 - Top patterns, taxonomy levels, termination reasons (when present)
 - Iteration count min/max/mean
+- CTA to [reproduction challenge](https://github.com/KanakMalpani/Loop-Engineering/discussions/10)
 
 See [research/LOOPNET.md](../../research/LOOPNET.md) for schema details and P4 empirical findings.
