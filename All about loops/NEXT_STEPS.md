@@ -8,11 +8,14 @@
 
 | Item | Artifact |
 |------|----------|
-| Cursor case study #8 | [cursor-agent-loop.md](../case-studies/cursor-agent-loop.md) |
-| LSS 1.1 Core sync | [Loop-Core lss-1.1-draft](https://github.com/KanakMalpani/Loop-Core-Engineering/blob/main/specs/lss-1.1-draft.md) + schema |
-| Beat LB-CR-1 guide | [BEAT_LB-CR-1.md](../contributions/BEAT_LB-CR-1.md) |
-| Lemma 2 (parallel/nested) | [composition-cost-parallel-nested.md](../mathematics/composition-cost-parallel-nested.md) |
-| RFC #11 synthesis | [RFC-LSS-1.1-composition.md](../contributions/RFC-LSS-1.1-composition.md) |
+| Adoption tracker (daily CI) | [docs/adoption-tracker/](../docs/adoption-tracker/) |
+| PyPI loopbench 0.1.1 | [pypi.org/project/loopbench](https://pypi.org/project/loopbench/) |
+| LSS 1.1 stable | [Loop-Core lss-1.1.md](https://github.com/KanakMalpani/Loop-Core-Engineering/blob/main/specs/lss-1.1.md) |
+| LE-OP-11 recommender v0.1 | [tools/level_recommender.py](../tools/level_recommender.py) |
+| LoopNet histograms | [docs/loopnet/histograms](../docs/loopnet/histograms/) |
+| BEAT_LB-CR-1 amplification | [BEAT_LB-CR-1.md](../contributions/BEAT_LB-CR-1.md) · LoopBench README · HF card |
+| RFC #11 outreach | [LangGraph #8186](https://github.com/langchain-ai/langgraph/issues/8186) · [CrewAI #6316](https://github.com/crewAIInc/crewAI/issues/6316) |
+| External submission pack | [EXTERNAL_SUBMISSIONS.md](../contributions/EXTERNAL_SUBMISSIONS.md) |
 
 ---
 
