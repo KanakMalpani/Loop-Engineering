@@ -114,7 +114,100 @@ BibTeX may include `note = {LE-OP-01}` for specific problems discussed.
 
 ---
 
-## Citing Loop Specifications (LSS Files)
+## Citing LoopNet Dataset
+
+```bibtex
+@misc{loopnet-v02-2026,
+  title        = {LoopNet v0.2: Empirical Corpus of Agent Loop Trajectories (Tier 1)},
+  author       = {Malpani, Kanak Anil},
+  year         = {2026},
+  howpublished = {\url{https://huggingface.co/datasets/KanakMalpani/loopnet-v0.2}},
+  note         = {545 public trajectories; companion paper P4}
+}
+```
+
+In prose: "We calibrate on LoopNet v0.2 Tier 1 (Malpani, 2026)."
+
+---
+
+## Citing LoopBench
+
+```bibtex
+@misc{loopbench-2026,
+  title        = {LoopBench: Standard Benchmark Suite for Loop Engineering},
+  author       = {{Loop Engineering Community}},
+  year         = {2026},
+  howpublished = {\url{https://github.com/KanakMalpani/LoopBench}},
+  note         = {ALS-1.0 Agent Loop Standard; pip install loopbench}
+}
+```
+
+When reporting benchmark results, cite the **task ID** (e.g., ALS-T2) and LES version.
+
+---
+
+## Paper Series (forthcoming)
+
+Replace `note` with arXiv ID after upload.
+
+```bibtex
+@misc{le-survey-2026,
+  title        = {Loop Engineering: Formal Foundations and Open Problems},
+  author       = {Malpani, Kanak Anil},
+  year         = {2026},
+  note         = {Survey S1; forthcoming arXiv}
+}
+
+@misc{le-algebra-2026,
+  title        = {Proof-Carrying Loop Algebra for Autonomous Agent Loops},
+  author       = {Malpani, Kanak Anil},
+  year         = {2026},
+  note         = {Paper P1; forthcoming arXiv}
+}
+
+@misc{le-complexity-2026,
+  title        = {Loop Complexity and Convergence for Agent Loops},
+  author       = {Malpani, Kanak Anil},
+  year         = {2026},
+  note         = {Paper P2; forthcoming arXiv}
+}
+
+@misc{le-convergence-2026,
+  title        = {Convergence and Dynamical Stability of Agentic Feedback Loops},
+  author       = {Malpani, Kanak Anil},
+  year         = {2026},
+  note         = {Paper P3; forthcoming arXiv}
+}
+
+@misc{le-loopnet-2026,
+  title        = {LoopNet: Empirical Characterization of Agent Loop Trajectories},
+  author       = {Malpani, Kanak Anil},
+  year         = {2026},
+  note         = {Paper P4; forthcoming arXiv}
+}
+```
+
+Index: [research/PAPER_SERIES.md](../research/PAPER_SERIES.md)
+
+---
+
+## How to Cite Your Loop (LSS YAML)
+
+When publishing results tied to a loop-library spec:
+
+```bibtex
+@misc{le-spec-{loop-name}-2026,
+  title        = {Loop Specification: {loop-name}},
+  author       = {{Loop Engineering Community}},
+  year         = {2026},
+  howpublished = {\url{https://github.com/KanakMalpani/Loop-Engineering/blob/main/loop-library/{loop-name}.yaml}},
+  note         = {LSS 1.0}
+}
+```
+
+Replace `{loop-name}` with the `loop_name` field from YAML. Report `version` in body text.
+
+---
 
 When publishing benchmark results tied to a spec:
 

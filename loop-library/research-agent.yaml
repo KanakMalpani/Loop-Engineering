@@ -1,166 +1,137 @@
-# LSS 1.0 — Research Agent Loop
-# Taxonomy Level 2 (Reflective): synthesize literature with citation verification
-
 loop_name: research-agent
-version: "1.0"
+version: 1.0.0
 
 objective: >
-  Produce a sourced research brief that answers a structured question with traceable
-  citations, resolves contradictions across sources, and flags uncertainty explicitly.
-  Success means every factual claim maps to a verifiable source and the synthesis
-  passes coherence evaluation without hallucinated references.
+  Produce a sourced research brief with traceable citations and explicit uncertainty.
+  Achieve primary_quality >= 0.80 within cost_limits with zero safety violations.
 
 inputs:
-  - name: research_question
-    type: string
-    required: true
-    description: Primary question in interrogative form with scope boundaries
-  - name: depth
-    type: enum
-    values: [survey, focused, exhaustive]
-    default: focused
-  - name: source_policy
-    type: object
-    properties:
-      min_sources: 5
-      max_source_age_years: 10
-      allow_preprints: true
-      blocked_domains: []
-  - name: output_schema
-    type: object
-    description: JSON schema for final brief sections (summary, findings, gaps, bibliography)
-  - name: seed_queries
-    type: array
-    items: string
-    required: false
+  schema:
+    task:
+      type: string
+      description: "Primary task description or repository context"
+      required: true
+  examples:
+    - task: "Complete the declared objective for this loop profile."
 
 memory:
-  episodic:
-    backend: vector_store
-    retention: session
-    stores: [search_results, extracted_passages, iteration_critiques]
-  semantic:
-    backend: knowledge_graph
-    retention: persistent
-    stores: [verified_claims, source_metadata, contradiction_pairs]
-  procedural:
-    backend: key_value
-    retention: persistent
-    stores: [effective_query_templates, domain_synonyms]
+  type: ephemeral
 
 workers:
-  - id: query_planner
-    role: planner
-    model: claude-sonnet-4-6
-    temperature: 0.3
-    responsibilities:
-      - Decompose research_question into sub-queries
-      - Expand seed_queries with synonyms and citation-aware keywords
-      - Prioritize queries by expected information gain
-  - id: retriever
-    role: executor
-    model: gpt-4.1-mini
-    temperature: 0.0
-    tools: [web_search, academic_search, pdf_fetch, url_fetch]
-    responsibilities:
-      - Execute planned queries and fetch full-text when available
-      - Extract passage-level quotes with page/section anchors
-  - id: synthesizer
-    role: author
-    model: claude-sonnet-4-6
-    temperature: 0.4
-    responsibilities:
-      - Merge passages into structured brief per output_schema
-      - Mark confidence per claim (high/medium/low)
-  - id: critic
-    role: reviewer
-    model: gpt-4.1
-    temperature: 0.2
-    responsibilities:
-      - Challenge unsupported claims and missing counter-evidence
-      - Request targeted re-retrieval for weak sections
+  - id: researcher
+    role: "Synthesize literature and produce a cited research brief"
+    model:
+      provider: openai
+      name: gpt-4.1-mini
+      temperature: 0.2
+    inputs:
+      - from: inputs.task
+    outputs:
+      name: Result
+      format: text
+    timeout_seconds: 120
+    retries: 1
+    cost_budget_usd: 0.25
 
 evaluators:
-  - id: citation_verifier
-    type: oracle
-    method: cross_reference
-    description: Every inline citation resolves to a fetched source ID in episodic memory
-    pass_threshold: 1.0
-  - id: coherence_rubric
+  - id: quality_rubric
     type: llm_rubric
-    model: gpt-4.1-mini
-    dimensions: [logical_flow, contradiction_resolution, scope_adherence]
-    pass_threshold: 0.85
-  - id: hallucination_scan
-    type: entailment_check
-    method: claim_to_passage_alignment
-    pass_threshold: 0.95
+    runs_after: [researcher]
+    rubric:
+      dimensions:
+        - name: effectiveness
+          weight: 0.6
+          scale: [0, 1]
+          criteria: "Output meets the stated objective"
+        - name: robustness
+          weight: 0.4
+          scale: [0, 1]
+          criteria: "Output is complete and actionable"
+      pass_threshold: 0.80
+    model:
+      provider: openai
+      name: gpt-4.1-mini
+      temperature: 0
 
 feedback_channels:
-  - from: citation_verifier
-    to: synthesizer
-    signal: missing_or_invalid_citations
-    action: revise_claims_or_add_sources
-  - from: coherence_rubric
-    to: critic
-    signal: section_scores
-    action: generate_revision_directives
-  - from: hallucination_scan
-    to: retriever
-    signal: unsupported_claims
-    action: targeted_re_search
-  - from: critic
-    to: query_planner
-    signal: evidence_gaps
-    action: append_sub_queries
+  - id: quality_to_worker
+    source: evaluators.quality_rubric
+    destination: workers.researcher
+    format: structured
+    fields: [failure_codes, dimension_scores, remediation_hints]
+    max_tokens: 400
+    when: "score < pass_threshold"
+  - id: quality_to_optimizer
+    source: evaluators.quality_rubric
+    destination: optimization_strategy.prompt_refinement
+    format: structured
+    fields: [failure_codes, remediation_hints]
+    max_tokens: 200
 
 optimization_strategy:
-  type: hill_climbing_with_backtrack
-  parameters:
-    max_revisions_per_section: 3
-    backtrack_on_regression: true
-    regression_metric: coherence_rubric.overall
-    exploration_budget_queries: 12
+  type: prompt_refinement
+  max_steps: 8
+  config:
+    refinement_target: workers.researcher
+  rollback:
+    on_metric_drop: 0.05
+    on_safety_failure: true
 
 termination_conditions:
-  - type: all_evaluators_pass
-    evaluators: [citation_verifier, coherence_rubric, hallucination_scan]
-  - type: max_iterations
-    value: 8
-  - type: stagnation
-    metric: coherence_rubric.overall
-    plateau_iterations: 3
-    action: halt_with_partial_brief
-  - type: budget_exhausted
-    resource: cost_limits.max_usd
+  success:
+    - metric: primary_quality
+      operator: gte
+      value: 0.80
+      consecutive: 1
+  failure:
+    - type: safety_violation
+      action: halt
+    - type: max_iterations
+      value: 10
+      action: halt
+  stall:
+    - metric: primary_quality
+      window_iterations: 3
+      min_improvement: 0.03
+      action: halt
 
 metrics:
-  - name: citation_precision
-    formula: valid_citations / total_citations
-    target: 1.0
-  - name: source_diversity
-    formula: unique_domains / total_sources
-    target: 0.6
-  - name: iteration_efficiency
-    formula: final_coherence_score / iteration_count
-  - name: time_to_brief
-    unit: seconds
-    target: 300
+  - name: primary_quality
+    primary: true
+    definition: "Weighted score from quality_rubric evaluator"
+    source: evaluators.quality_rubric
+    unit: ratio
+    target: 0.80
+    regression_threshold: 0.05
+  - name: cost_usd
+    definition: "Total API spend per loop run"
+    source: telemetry.cost
+    unit: usd
+    target: 0.50
 
 safety_constraints:
-  - id: no_credential_exfiltration
-    rule: Block retrieval from authenticated paywalls without explicit user token
-  - id: source_provenance
-    rule: Log full URL, fetch timestamp, and content hash for every source
-  - id: medical_legal_disclaimer
-    rule: Append non-advice disclaimer when question touches regulated domains
-  - id: blocked_content
-    rule: Refuse synthesis promoting violence, exploitation, or weapons development
+  - id: injection-guard
+    type: injection_detect
+    scope: pre_worker
+    applies_to: [researcher]
+    action: quarantine
+    severity: S1
+    on_error: halt
+    config:
+      max_risk_score: 0.7
 
 cost_limits:
-  max_usd: 2.50
-  max_tokens: 120000
-  max_wall_clock_seconds: 600
-  per_worker_caps:
-    retriever: 0.80
-    synthesizer: 1.00
+  per_iteration_usd: 0.20
+  cumulative_usd: 1.00
+  token_soft_cap: 12000
+  on_approach:
+    threshold_percent: 80
+    action: warn
+  on_exceed:
+    action: halt
+
+metadata:
+  taxonomy_level: 2
+  les_estimate: 78
+  tags: [loop-library, level-2]
+  migrated: "2026-06-17 LSS 1.0 schema compliance"

@@ -1,161 +1,137 @@
-# LSS 1.0 — Coding Agent Loop
-# Taxonomy Level 3 (Multi-Agent): implementer + reviewer + test oracle
-
 loop_name: coding-agent
-version: "1.0"
+version: 1.0.0
 
 objective: >
-  Implement a specified software change in an existing codebase such that all
-  declared tests pass, static analysis is clean, and the diff stays within scope.
-  The loop terminates on green CI-equivalent checks or bounded failure with
-  diagnostic artifact.
+  Implement a software change so tests pass, static analysis is clean, and diff stays in scope.
+  Achieve primary_quality >= 0.80 within cost_limits with zero safety violations.
 
 inputs:
-  - name: task_spec
-    type: string
-    required: true
-    description: Feature or fix description with acceptance criteria
-  - name: repository_root
-    type: path
-    required: true
-  - name: test_command
-    type: string
-    default: pytest -q
-  - name: lint_command
-    type: string
-    default: ruff check .
-  - name: allowed_paths
-    type: array
-    items: path
-    description: Glob patterns for files the implementer may modify
-  - name: forbidden_paths
-    type: array
-    items: path
-    default: [".env", "secrets/**", "**/migrations/*.sql"]
-  - name: max_diff_lines
-    type: integer
-    default: 400
+  schema:
+    task:
+      type: string
+      description: "Primary task description or repository context"
+      required: true
+  examples:
+    - task: "Complete the declared objective for this loop profile."
 
 memory:
-  episodic:
-    backend: file_artifact
-    retention: session
-    stores: [test_logs, lint_output, diff_snapshots, reviewer_comments]
-  semantic:
-    backend: code_index
-    retention: persistent
-    stores: [symbol_graph, import_map, test_coverage_map]
-  procedural:
-    backend: key_value
-    retention: persistent
-    stores: [repo_conventions, prior_fix_patterns, flaky_test_registry]
+  type: ephemeral
 
 workers:
-  - id: architect
-    role: planner
-    model: claude-sonnet-4-6
-    temperature: 0.2
-    responsibilities:
-      - Produce implementation plan with file touch list
-      - Identify test gaps before coding begins
   - id: implementer
-    role: coder
-    model: gpt-5.3-codex
-    temperature: 0.1
-    tools: [read_file, write_file, search_replace, run_terminal]
-    responsibilities:
-      - Apply minimal diff satisfying task_spec
-      - Run test_command after each logical change
-  - id: reviewer
-    role: checker
-    model: claude-sonnet-4-6
-    temperature: 0.0
-    responsibilities:
-      - Review diff for scope creep, security smells, and convention violations
-      - Block merge-equivalent state until issues resolved
+    role: "Implement the specified change with minimal diff"
+    model:
+      provider: openai
+      name: gpt-4.1-mini
+      temperature: 0.2
+    inputs:
+      - from: inputs.task
+    outputs:
+      name: Result
+      format: text
+    timeout_seconds: 120
+    retries: 1
+    cost_budget_usd: 0.25
 
 evaluators:
-  - id: test_suite
-    type: command
-    command: "${inputs.test_command}"
-    pass_condition: exit_code == 0
-  - id: linter
-    type: command
-    command: "${inputs.lint_command}"
-    pass_condition: exit_code == 0
-  - id: diff_budget
-    type: metric
-    metric: total_changed_lines
-    operator: lte
-    value: "${inputs.max_diff_lines}"
-  - id: scope_guard
-    type: path_allowlist
-    allowed: "${inputs.allowed_paths}"
-    forbidden: "${inputs.forbidden_paths}"
+  - id: quality_rubric
+    type: llm_rubric
+    runs_after: [implementer]
+    rubric:
+      dimensions:
+        - name: effectiveness
+          weight: 0.6
+          scale: [0, 1]
+          criteria: "Output meets the stated objective"
+        - name: robustness
+          weight: 0.4
+          scale: [0, 1]
+          criteria: "Output is complete and actionable"
+      pass_threshold: 0.80
+    model:
+      provider: openai
+      name: gpt-4.1-mini
+      temperature: 0
 
 feedback_channels:
-  - from: test_suite
-    to: implementer
-    signal: failing_tests_with_tracebacks
-    action: fix_implementation
-  - from: linter
-    to: implementer
-    signal: lint_violations
-    action: style_and_safety_fixes
-  - from: reviewer
-    to: architect
-    signal: design_objections
-    action: revise_plan
-  - from: scope_guard
-    to: implementer
-    signal: out_of_scope_edits
-    action: revert_and_narrow
+  - id: quality_to_worker
+    source: evaluators.quality_rubric
+    destination: workers.implementer
+    format: structured
+    fields: [failure_codes, dimension_scores, remediation_hints]
+    max_tokens: 400
+    when: "score < pass_threshold"
+  - id: quality_to_optimizer
+    source: evaluators.quality_rubric
+    destination: optimization_strategy.prompt_refinement
+    format: structured
+    fields: [failure_codes, remediation_hints]
+    max_tokens: 200
 
 optimization_strategy:
-  type: maker_checker_cycle
-  parameters:
-    implement_before_review: true
-    max_review_rounds: 4
-    prefer_smallest_passing_diff: true
-    rollback_on_test_regression: true
+  type: prompt_refinement
+  max_steps: 8
+  config:
+    refinement_target: workers.implementer
+  rollback:
+    on_metric_drop: 0.05
+    on_safety_failure: true
 
 termination_conditions:
-  - type: all_evaluators_pass
-    evaluators: [test_suite, linter, diff_budget, scope_guard]
-  - type: max_iterations
-    value: 12
-  - type: unrecoverable_failure
-    condition: same_test_fails >= 3
-    action: emit_diagnostic_report
-  - type: budget_exhausted
-    resource: cost_limits.max_usd
+  success:
+    - metric: primary_quality
+      operator: gte
+      value: 0.80
+      consecutive: 1
+  failure:
+    - type: safety_violation
+      action: halt
+    - type: max_iterations
+      value: 10
+      action: halt
+  stall:
+    - metric: primary_quality
+      window_iterations: 3
+      min_improvement: 0.03
+      action: halt
 
 metrics:
-  - name: test_pass_rate
-    formula: passing_tests / total_tests
-    target: 1.0
-  - name: diff_efficiency
-    formula: task_completion / lines_changed
-  - name: iterations_to_green
-    unit: count
-    target: 4
-  - name: review_block_rate
-    formula: reviewer_blocks / review_rounds
+  - name: primary_quality
+    primary: true
+    definition: "Weighted score from quality_rubric evaluator"
+    source: evaluators.quality_rubric
+    unit: ratio
+    target: 0.80
+    regression_threshold: 0.05
+  - name: cost_usd
+    definition: "Total API spend per loop run"
+    source: telemetry.cost
+    unit: usd
+    target: 0.50
 
 safety_constraints:
-  - id: no_secret_commits
-    rule: Reject diffs touching forbidden_paths or containing credential patterns
-  - id: no_arbitrary_exec
-    rule: run_terminal limited to test, lint, and build commands on allowlist
-  - id: dependency_pinning
-    rule: New dependencies require explicit approval flag in inputs
-  - id: destructive_ops
-    rule: Block rm -rf, git reset --hard, and database drop commands
+  - id: injection-guard
+    type: injection_detect
+    scope: pre_worker
+    applies_to: [implementer]
+    action: quarantine
+    severity: S1
+    on_error: halt
+    config:
+      max_risk_score: 0.7
 
 cost_limits:
-  max_usd: 5.00
-  max_tokens: 200000
-  max_wall_clock_seconds: 1800
-  per_worker_caps:
-    implementer: 3.00
-    reviewer: 1.50
+  per_iteration_usd: 0.20
+  cumulative_usd: 1.00
+  token_soft_cap: 12000
+  on_approach:
+    threshold_percent: 80
+    action: warn
+  on_exceed:
+    action: halt
+
+metadata:
+  taxonomy_level: 3
+  les_estimate: 82
+  tags: [loop-library, level-3]
+  migrated: "2026-06-17 LSS 1.0 schema compliance"

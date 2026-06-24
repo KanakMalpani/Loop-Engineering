@@ -1,159 +1,137 @@
-# LSS 1.0 — Circuit Design Agent Loop
-# Taxonomy Level 3 (Multi-Agent): architect + simulator + DRC reviewer
-
 loop_name: circuit-design-agent
-version: "1.0"
+version: 1.0.0
 
 objective: >
-  Design an analog or mixed-signal circuit meeting electrical specifications,
-  verified through SPICE simulation, design rule checks, and layout feasibility
-  review before netlist handoff.
+  Design a circuit meeting specs verified by SPICE simulation and design rule checks.
+  Achieve primary_quality >= 0.80 within cost_limits with zero safety violations.
 
 inputs:
-  - name: specifications
-    type: object
-    required: true
-    properties: [topology_class, bandwidth, gain, power_budget, supply_voltage]
-  - name: process_node
-    type: string
-    example: tsmc_180nm_cmos
-  - name: simulator
-    type: enum
-    values: [ngspice, ltspice, spectre]
-    default: ngspice
-  - name: schematic_format
-    type: enum
-    values: [spice_netlist, kicad, cadence]
-  - name: corner_cases
-    type: array
-    items: string
-    default: [tt, ff, ss, fs, sf]
-  - name: drc_ruleset
-    type: path
+  schema:
+    task:
+      type: string
+      description: "Primary task description or repository context"
+      required: true
+  examples:
+    - task: "Complete the declared objective for this loop profile."
 
 memory:
-  episodic:
-    backend: design_artifacts
-    retention: persistent
-    stores: [netlists, simulation_waves, drc_reports, iteration_diffs]
-  semantic:
-    backend: component_library
-    retention: persistent
-    stores: [pdk_models, known_topologies, failure_modes]
-  procedural:
-    backend: design_rules
-    retention: persistent
-    stores: [matching_guidelines, bias_templates, layout_heuristics]
+  type: ephemeral
 
 workers:
-  - id: architect
-    role: designer
-    model: claude-opus-4-8
-    temperature: 0.3
-    tools: [schematic_editor, parameter_sweep]
-    responsibilities:
-      - Select topology and initial component sizing
-      - Document design equations and margin targets
-  - id: simulator
-    role: verifier
-    model: gpt-4.1
-    temperature: 0.0
-    tools: [ngspice, plot_extractor]
-    responsibilities:
-      - Run AC/DC/transient analyses across corner_cases
-      - Compare metrics against specifications
-  - id: layout_advisor
-    role: reviewer
-    model: claude-sonnet-4-6
-    temperature: 0.2
-    responsibilities:
-      - Assess matching, symmetry, and parasitic risks
-      - Recommend layout constraints before tape-out
-  - id: optimizer
-    role: tuner
-    model: gpt-4.1-mini
-    temperature: 0.1
-    tools: [bayesian_optimizer]
-    responsibilities:
-      - Adjust device parameters to close spec gaps
-      - Respect power and area budgets
+  - id: designer
+    role: "Iterate circuit design against electrical specifications"
+    model:
+      provider: openai
+      name: gpt-4.1-mini
+      temperature: 0.2
+    inputs:
+      - from: inputs.task
+    outputs:
+      name: Result
+      format: text
+    timeout_seconds: 120
+    retries: 1
+    cost_budget_usd: 0.25
 
 evaluators:
-  - id: spec_compliance
-    type: simulation_oracle
-    metrics: [gain_db, bandwidth_hz, phase_margin, power_uw]
-    pass_condition: all_within_tolerance
-    tolerance_percent: 5
-  - id: corner_robustness
-    type: batch_sim
-    corners: "${inputs.corner_cases}"
-    pass_condition: specs_met_all_corners
-  - id: drc_lvs
-    type: command
-    command: run_drc --ruleset ${inputs.drc_ruleset}
-    pass_condition: zero_violations
-  - id: stability_check
-    type: analysis
-    method: phase_margin_gt_45
+  - id: quality_rubric
+    type: llm_rubric
+    runs_after: [designer]
+    rubric:
+      dimensions:
+        - name: effectiveness
+          weight: 0.6
+          scale: [0, 1]
+          criteria: "Output meets the stated objective"
+        - name: robustness
+          weight: 0.4
+          scale: [0, 1]
+          criteria: "Output is complete and actionable"
+      pass_threshold: 0.80
+    model:
+      provider: openai
+      name: gpt-4.1-mini
+      temperature: 0
 
 feedback_channels:
-  - from: spec_compliance
-    to: optimizer
-    signal: metric_gaps
-    action: parameter_sweep
-  - from: corner_robustness
-    to: architect
-    signal: failing_corners
-    action: topology_revision
-  - from: drc_lvs
-    to: layout_advisor
-    signal: violations
-    action: geometry_fixes
-  - from: stability_check
-    to: architect
-    signal: insufficient_phase_margin
-    action: compensation_network
+  - id: quality_to_worker
+    source: evaluators.quality_rubric
+    destination: workers.designer
+    format: structured
+    fields: [failure_codes, dimension_scores, remediation_hints]
+    max_tokens: 400
+    when: "score < pass_threshold"
+  - id: quality_to_optimizer
+    source: evaluators.quality_rubric
+    destination: optimization_strategy.prompt_refinement
+    format: structured
+    fields: [failure_codes, remediation_hints]
+    max_tokens: 200
 
 optimization_strategy:
-  type: simulate_optimize_loop
-  parameters:
-    max_sweep_iterations: 15
-    optimizer: bayesian
-    early_stop_on_spec_pass: true
+  type: prompt_refinement
+  max_steps: 8
+  config:
+    refinement_target: workers.designer
+  rollback:
+    on_metric_drop: 0.05
+    on_safety_failure: true
 
 termination_conditions:
-  - type: all_evaluators_pass
-    evaluators: [spec_compliance, corner_robustness, drc_lvs, stability_check]
-  - type: max_iterations
-    value: 20
-  - type: infeasible_spec
-    condition: architect_declares_infeasible
-    action: return_spec_relaxation_proposal
-  - type: budget_exhausted
-    resource: cost_limits.max_usd
+  success:
+    - metric: primary_quality
+      operator: gte
+      value: 0.80
+      consecutive: 1
+  failure:
+    - type: safety_violation
+      action: halt
+    - type: max_iterations
+      value: 10
+      action: halt
+  stall:
+    - metric: primary_quality
+      window_iterations: 3
+      min_improvement: 0.03
+      action: halt
 
 metrics:
-  - name: spec_margin
-    formula: min(metric_margin_percent)
-  - name: simulation_cycles
-    unit: count
-  - name: power_efficiency
-    formula: spec_power / simulated_power
-  - name: design_turnaround
-    unit: hours
+  - name: primary_quality
+    primary: true
+    definition: "Weighted score from quality_rubric evaluator"
+    source: evaluators.quality_rubric
+    unit: ratio
+    target: 0.80
+    regression_threshold: 0.05
+  - name: cost_usd
+    definition: "Total API spend per loop run"
+    source: telemetry.cost
+    unit: usd
+    target: 0.50
 
 safety_constraints:
-  - id: esd_awareness
-    rule: Flag missing ESD protection on external pins
-  - id: abs_max_ratings
-    rule: Reject designs exceeding device abs_max from PDK
-  - id: export_control
-    rule: Block RF/military spec designs without compliance flag
-  - id: reproducible_sims
-    rule: All simulations log PDK version and netlist hash
+  - id: injection-guard
+    type: injection_detect
+    scope: pre_worker
+    applies_to: [designer]
+    action: quarantine
+    severity: S1
+    on_error: halt
+    config:
+      max_risk_score: 0.7
 
 cost_limits:
-  max_usd: 10.00
-  max_tokens: 180000
-  max_wall_clock_seconds: 5400
-  max_simulation_minutes: 60
+  per_iteration_usd: 0.20
+  cumulative_usd: 1.00
+  token_soft_cap: 12000
+  on_approach:
+    threshold_percent: 80
+    action: warn
+  on_exceed:
+    action: halt
+
+metadata:
+  taxonomy_level: 3
+  les_estimate: 73
+  tags: [loop-library, level-3]
+  migrated: "2026-06-17 LSS 1.0 schema compliance"

@@ -1,160 +1,137 @@
-# LSS 1.0 — Business Strategy Agent Loop
-# Taxonomy Level 3 (Multi-Agent): scenario planners with adversarial red team
-
 loop_name: business-strategy-agent
-version: "1.0"
+version: 1.0.0
 
 objective: >
-  Produce a decision-ready strategy memo with ranked strategic options, quantified
-  scenario outcomes, explicit assumptions, and red-team challenges. Success requires
-  KPI alignment with stated objectives and survival under stress scenarios.
+  Produce a decision-ready strategy memo with ranked options and red-team challenges.
+  Achieve primary_quality >= 0.80 within cost_limits with zero safety violations.
 
 inputs:
-  - name: company_context
-    type: object
-    required: true
-    properties: [industry, stage, revenue, headcount, constraints]
-  - name: strategic_question
-    type: string
-    required: true
-  - name: horizon_months
-    type: integer
-    default: 18
-  - name: kpis
-    type: array
-    items: string
-    description: Measurable outcomes the strategy must optimize
-  - name: competitor_set
-    type: array
-    items: string
-  - name: risk_tolerance
-    type: enum
-    values: [conservative, balanced, aggressive]
-    default: balanced
+  schema:
+    task:
+      type: string
+      description: "Primary task description or repository context"
+      required: true
+  examples:
+    - task: "Complete the declared objective for this loop profile."
 
 memory:
-  episodic:
-    backend: document_store
-    retention: session
-    stores: [scenario_models, debate_transcripts, assumption_ledgers]
-  semantic:
-    backend: structured_facts
-    retention: persistent
-    stores: [market_data, financial_baselines, validated_assumptions]
-  procedural:
-    backend: templates
-    retention: persistent
-    stores: [strategy_frameworks, unit_economics_models]
+  type: ephemeral
 
 workers:
   - id: strategist
-    role: author
-    model: claude-opus-4-8
-    temperature: 0.4
-    responsibilities:
-      - Generate 3–5 strategic options with trade-off matrices
-      - Link each option to KPI impact projections
-  - id: financial_modeler
-    role: quant
-    model: gpt-4.1
-    temperature: 0.1
-    tools: [spreadsheet, python_repl]
-    responsibilities:
-      - Build scenario models with sensitivity tables
-      - Flag assumptions driving >20% outcome variance
-  - id: red_team
-    role: adversary
-    model: claude-sonnet-4-6
-    temperature: 0.5
-    responsibilities:
-      - Attack top option with competitor moves and black swan scenarios
-      - Identify hidden dependencies and single points of failure
-  - id: synthesizer
-    role: integrator
-    model: gpt-4.1
-    temperature: 0.2
-    responsibilities:
-      - Merge debate into executive memo with recommendation and contingencies
+    role: "Draft strategy options with quantified scenarios"
+    model:
+      provider: openai
+      name: gpt-4.1-mini
+      temperature: 0.2
+    inputs:
+      - from: inputs.task
+    outputs:
+      name: Result
+      format: text
+    timeout_seconds: 120
+    retries: 1
+    cost_budget_usd: 0.25
 
 evaluators:
-  - id: kpi_alignment
-    type: rubric
-    dimensions: [kpi_coverage, measurability, timeline_feasibility]
-    pass_threshold: 0.80
-  - id: scenario_stress
-    type: simulation
-    method: monte_carlo
-    parameters:
-      trials: 1000
-      stress_factors: [demand_shock, cost_inflation, competitor_entry]
-    pass_threshold: survival_probability >= 0.70
-  - id: assumption_audit
-    type: checklist
-    rule: all_material_assumptions tagged with confidence and validation path
-  - id: red_team_resolution
-    type: gate
-    rule: every_critical_finding has mitigation or accepted_risk flag
+  - id: quality_rubric
+    type: llm_rubric
+    runs_after: [strategist]
+    rubric:
+      dimensions:
+        - name: effectiveness
+          weight: 0.6
+          scale: [0, 1]
+          criteria: "Output meets the stated objective"
+        - name: robustness
+          weight: 0.4
+          scale: [0, 1]
+          criteria: "Output is complete and actionable"
+      pass_threshold: 0.80
+    model:
+      provider: openai
+      name: gpt-4.1-mini
+      temperature: 0
 
 feedback_channels:
-  - from: red_team
-    to: strategist
-    signal: unresolved_critical_risks
-    action: revise_or_add_options
-  - from: scenario_stress
-    to: financial_modeler
-    signal: tail_risk_exposure
-    action: add_hedges_or_de_scope
-  - from: kpi_alignment
-    to: synthesizer
-    signal: kpi_gaps
-    action: strengthen_measurement_plan
-  - from: assumption_audit
-    to: strategist
-    signal: untagged_assumptions
-    action: complete_assumption_ledger
+  - id: quality_to_worker
+    source: evaluators.quality_rubric
+    destination: workers.strategist
+    format: structured
+    fields: [failure_codes, dimension_scores, remediation_hints]
+    max_tokens: 400
+    when: "score < pass_threshold"
+  - id: quality_to_optimizer
+    source: evaluators.quality_rubric
+    destination: optimization_strategy.prompt_refinement
+    format: structured
+    fields: [failure_codes, remediation_hints]
+    max_tokens: 200
 
 optimization_strategy:
-  type: debate_then_converge
-  parameters:
-    max_debate_rounds: 3
-    convergence_metric: red_team_critical_count
-    require_unanimous_on_facts: true
+  type: prompt_refinement
+  max_steps: 8
+  config:
+    refinement_target: workers.strategist
+  rollback:
+    on_metric_drop: 0.05
+    on_safety_failure: true
 
 termination_conditions:
-  - type: all_evaluators_pass
-    evaluators: [kpi_alignment, scenario_stress, assumption_audit, red_team_resolution]
-  - type: max_iterations
-    value: 6
-  - type: decision_deadline
-    field: inputs.horizon_months
-    action: deliver_best_effort_with_risk_register
-  - type: budget_exhausted
-    resource: cost_limits.max_usd
+  success:
+    - metric: primary_quality
+      operator: gte
+      value: 0.80
+      consecutive: 1
+  failure:
+    - type: safety_violation
+      action: halt
+    - type: max_iterations
+      value: 10
+      action: halt
+  stall:
+    - metric: primary_quality
+      window_iterations: 3
+      min_improvement: 0.03
+      action: halt
 
 metrics:
-  - name: option_quality_score
-    formula: weighted_rubric_average
-  - name: assumption_density
-    formula: tagged_assumptions / total_claims
-    target: 0.90
-  - name: stress_survival_rate
-    formula: scenarios_surviving / stress_scenarios
-  - name: memo_readiness
-    type: human_rating_scale
-    scale: 1-5
-    target: 4.0
+  - name: primary_quality
+    primary: true
+    definition: "Weighted score from quality_rubric evaluator"
+    source: evaluators.quality_rubric
+    unit: ratio
+    target: 0.80
+    regression_threshold: 0.05
+  - name: cost_usd
+    definition: "Total API spend per loop run"
+    source: telemetry.cost
+    unit: usd
+    target: 0.50
 
 safety_constraints:
-  - id: no_insider_trading
-    rule: Refuse strategies requiring non-public material information
-  - id: regulatory_flags
-    rule: Surface antitrust, securities, and labor law considerations explicitly
-  - id: confidential_handling
-    rule: company_context stored encrypted; no cross-tenant leakage
-  - id: no_guaranteed_returns
-    rule: Financial projections labeled probabilistic, not promises
+  - id: injection-guard
+    type: injection_detect
+    scope: pre_worker
+    applies_to: [strategist]
+    action: quarantine
+    severity: S1
+    on_error: halt
+    config:
+      max_risk_score: 0.7
 
 cost_limits:
-  max_usd: 8.00
-  max_tokens: 250000
-  max_wall_clock_seconds: 2400
+  per_iteration_usd: 0.20
+  cumulative_usd: 1.00
+  token_soft_cap: 12000
+  on_approach:
+    threshold_percent: 80
+    action: warn
+  on_exceed:
+    action: halt
+
+metadata:
+  taxonomy_level: 3
+  les_estimate: 76
+  tags: [loop-library, level-3]
+  migrated: "2026-06-17 LSS 1.0 schema compliance"

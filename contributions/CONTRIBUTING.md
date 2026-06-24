@@ -17,11 +17,18 @@ Thank you for helping establish this discipline. Contributions shape a field—n
 
 ## Pull Request Requirements
 
-1. **Loops must have LSS specs** — validate with `python tools/loop_validator.py --strict`
+1. **Loops must have LSS specs** — validate with `python scripts/validate_loop_library.py` or `python tools/loop_validator.py --strict <file>`
 2. **Patterns must include** — problem, architecture, pseudocode, failure modes
 3. **Case studies must include** — LES evaluation with numeric scores
 4. **Code must run** — include instructions; mock LLM acceptable for demos
 5. **No placeholders** — substantive content only
+
+## Reproduction and benchmarks
+
+- **One-hour path:** [REPRODUCE.md](REPRODUCE.md)
+- **Submit benchmark results:** LoopBench repo or issue template `.github/ISSUE_TEMPLATE/benchmark-submission.md`
+- **Published baselines:** [benchmarks/results/README.md](../benchmarks/results/README.md)
+- **Good first issues:** [GOOD_FIRST_ISSUES.md](GOOD_FIRST_ISSUES.md)
 
 ## Process
 

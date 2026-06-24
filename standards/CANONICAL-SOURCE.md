@@ -12,14 +12,18 @@
 
 This discipline repo remains the **narrative mirror**: manifesto, fundamentals, patterns, case studies, loop library.
 
-## Published ecosystem (v0.1)
+## Published ecosystem
 
-| Repo | URL |
-|------|-----|
-| Loop Core Engineering | https://github.com/KanakMalpani/Loop-Core-Engineering |
-| LoopNet | https://github.com/KanakMalpani/loopnet |
-| LoopGym | https://github.com/KanakMalpani/LoopGym |
-| LoopBench | https://github.com/KanakMalpani/LoopBench |
+Version registry: [ECOSYSTEM_VERSIONS.md](../ECOSYSTEM_VERSIONS.md) (discipline repo).
+
+| Repo | URL | Current version |
+|------|-----|-----------------|
+| Loop Core Engineering | https://github.com/KanakMalpani/Loop-Core-Engineering | LSS 1.0, LES 1.0 |
+| LoopNet | https://github.com/KanakMalpani/loopnet | **v0.2** (545 Tier-1 trajectories) |
+| LoopGym | https://github.com/KanakMalpani/LoopGym | PyPI `loopgym` 0.1.x |
+| LoopBench | https://github.com/KanakMalpani/LoopBench | PyPI `loopbench` 0.1.x |
+
+LoopNet dataset (Tier 1): https://huggingface.co/datasets/KanakMalpani/loopnet-v0.2
 
 Full install map: [ECOSYSTEM.md](https://github.com/KanakMalpani/Loop-Core-Engineering/blob/main/ECOSYSTEM.md)
 

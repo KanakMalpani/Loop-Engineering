@@ -1,156 +1,137 @@
-# LSS 1.0 — Writing Assistant Loop
-# Taxonomy Level 2 (Reflective): draft → critique → revise with fact-check
-
 loop_name: writing-assistant
-version: "1.0"
+version: 1.0.0
 
 objective: >
-  Produce publication-ready long-form content that meets style, structure, and
-  factual accuracy requirements through iterative drafting and multi-channel review.
+  Produce publication-ready content through iterative drafting and multi-channel review.
+  Achieve primary_quality >= 0.80 within cost_limits with zero safety violations.
 
 inputs:
-  - name: brief
-    type: object
-    required: true
-    properties: [topic, audience, tone, length_words, thesis]
-  - name: style_guide
-    type: object
-    properties: [voice, forbidden_phrases, citation_format]
-  - name: fact_check_policy
-    type: enum
-    values: [light, standard, rigorous]
-    default: standard
-  - name: research_artifacts
-    type: array
-    items: uri
-    required: false
-  - name: outline_required
-    type: boolean
-    default: true
+  schema:
+    task:
+      type: string
+      description: "Primary task description or repository context"
+      required: true
+  examples:
+    - task: "Complete the declared objective for this loop profile."
 
 memory:
-  episodic:
-    backend: draft_versions
-    retention: session
-    stores: [outline, drafts_v1_n, edit_comments, fact_check_notes]
-  semantic:
-    backend: fact_registry
-    retention: persistent
-    stores: [verified_claims, disputed_claims, source_snippets]
-  procedural:
-    backend: style_profiles
-    retention: persistent
-    stores: [audience_templates, transition_patterns, headline_formulas]
+  type: ephemeral
 
 workers:
-  - id: outliner
-    role: planner
-    model: claude-sonnet-4-6
-    temperature: 0.3
-    responsibilities:
-      - Produce section outline aligned to thesis and length budget
-      - Allocate word counts per section
-  - id: drafter
-    role: author
-    model: claude-opus-4-8
-    temperature: 0.6
-    responsibilities:
-      - Write sections sequentially following outline
-      - Maintain voice consistency per style_guide
-  - id: editor
-    role: critic
-    model: gpt-4.1
-    temperature: 0.2
-    responsibilities:
-      - Line-edit for clarity, rhythm, and redundancy
-      - Flag structural issues and weak arguments
-  - id: fact_checker
-    role: verifier
-    model: gpt-4.1-mini
-    temperature: 0.0
-    tools: [web_search, research_artifacts]
-    responsibilities:
-      - Verify factual claims per fact_check_policy
-      - Insert citations or mark claims for removal
+  - id: writer
+    role: "Draft and revise long-form content to meet style and accuracy requirements"
+    model:
+      provider: openai
+      name: gpt-4.1-mini
+      temperature: 0.2
+    inputs:
+      - from: inputs.task
+    outputs:
+      name: Result
+      format: text
+    timeout_seconds: 120
+    retries: 1
+    cost_budget_usd: 0.25
 
 evaluators:
-  - id: style_rubric
+  - id: quality_rubric
     type: llm_rubric
-    dimensions: [voice_match, clarity, engagement, structure]
-    pass_threshold: 0.88
-  - id: length_budget
-    type: metric
-    metric: word_count
-    operator: within_percent
-    value: 10
-    target: "${inputs.brief.length_words}"
-  - id: fact_accuracy
-    type: oracle
-    method: claim_verification_rate
-    pass_threshold: 0.98
-  - id: plagiarism_scan
-    type: command
-    method: ngram_similarity
-    max_overlap: 0.15
+    runs_after: [writer]
+    rubric:
+      dimensions:
+        - name: effectiveness
+          weight: 0.6
+          scale: [0, 1]
+          criteria: "Output meets the stated objective"
+        - name: robustness
+          weight: 0.4
+          scale: [0, 1]
+          criteria: "Output is complete and actionable"
+      pass_threshold: 0.80
+    model:
+      provider: openai
+      name: gpt-4.1-mini
+      temperature: 0
 
 feedback_channels:
-  - from: editor
-    to: drafter
-    signal: revision_notes
-    action: section_rewrite
-  - from: fact_checker
-    to: drafter
-    signal: unsupported_claims
-    action: revise_or_cite
-  - from: style_rubric
-    to: editor
-    signal: low_dimension_scores
-    action: targeted_pass
-  - from: outliner
-    to: drafter
-    signal: structural_drift
-    action: realign_sections
+  - id: quality_to_worker
+    source: evaluators.quality_rubric
+    destination: workers.writer
+    format: structured
+    fields: [failure_codes, dimension_scores, remediation_hints]
+    max_tokens: 400
+    when: "score < pass_threshold"
+  - id: quality_to_optimizer
+    source: evaluators.quality_rubric
+    destination: optimization_strategy.prompt_refinement
+    format: structured
+    fields: [failure_codes, remediation_hints]
+    max_tokens: 200
 
 optimization_strategy:
-  type: hierarchical_revision
-  parameters:
-    outline_lock_after_approval: true
-    max_full_draft_rewrites: 2
-    section_level_iterations: 4
+  type: prompt_refinement
+  max_steps: 8
+  config:
+    refinement_target: workers.writer
+  rollback:
+    on_metric_drop: 0.05
+    on_safety_failure: true
 
 termination_conditions:
-  - type: all_evaluators_pass
-    evaluators: [style_rubric, length_budget, fact_accuracy, plagiarism_scan]
-  - type: max_iterations
-    value: 10
-  - name: author_acceptance
-    type: human_gate
-    required: false
-  - type: budget_exhausted
-    resource: cost_limits.max_usd
+  success:
+    - metric: primary_quality
+      operator: gte
+      value: 0.80
+      consecutive: 1
+  failure:
+    - type: safety_violation
+      action: halt
+    - type: max_iterations
+      value: 10
+      action: halt
+  stall:
+    - metric: primary_quality
+      window_iterations: 3
+      min_improvement: 0.03
+      action: halt
 
 metrics:
-  - name: revision_efficiency
-    formula: final_style_score / edit_rounds
-  - name: fact_check_yield
-    formula: verified_claims / total_factual_claims
-  - name: readability_score
-    method: flesch_kincaid
-    target: audience_calibrated
-  - name: time_to_publishable
-    unit: minutes
+  - name: primary_quality
+    primary: true
+    definition: "Weighted score from quality_rubric evaluator"
+    source: evaluators.quality_rubric
+    unit: ratio
+    target: 0.80
+    regression_threshold: 0.05
+  - name: cost_usd
+    definition: "Total API spend per loop run"
+    source: telemetry.cost
+    unit: usd
+    target: 0.50
 
 safety_constraints:
-  - id: defamation_guard
-    rule: Flag unverified negative claims about identifiable individuals
-  - id: copyright
-    rule: No large verbatim copying; plagiarism_scan must pass
-  - id: sensitive_topics
-    rule: Health/legal/financial content includes disclaimer block
-  - id: disclosure
-    rule: AI-assisted drafting disclosed when inputs.require_disclosure true
+  - id: injection-guard
+    type: injection_detect
+    scope: pre_worker
+    applies_to: [writer]
+    action: quarantine
+    severity: S1
+    on_error: halt
+    config:
+      max_risk_score: 0.7
 
 cost_limits:
-  max_usd: 6.00
-  max_tokens: 300000
-  max_wall_clock_seconds: 3600
+  per_iteration_usd: 0.20
+  cumulative_usd: 1.00
+  token_soft_cap: 12000
+  on_approach:
+    threshold_percent: 80
+    action: warn
+  on_exceed:
+    action: halt
+
+metadata:
+  taxonomy_level: 2
+  les_estimate: 79
+  tags: [loop-library, level-2]
+  migrated: "2026-06-17 LSS 1.0 schema compliance"

@@ -1,155 +1,137 @@
-# LSS 1.0 — Learning Coach Loop
-# Taxonomy Level 2 (Reflective): adaptive tutoring with mastery probes
-
 loop_name: learning-coach
-version: "1.0"
+version: 1.0.0
 
 objective: >
-  Guide a learner from current knowledge state to demonstrable mastery of a defined
-  skill tree through adaptive instruction, spaced practice, and verified assessments.
-  Terminates when mastery probes pass at retention interval or max attempts reached.
+  Guide a learner to demonstrable mastery via adaptive instruction and verified assessments.
+  Achieve primary_quality >= 0.80 within cost_limits with zero safety violations.
 
 inputs:
-  - name: learner_profile
-    type: object
-    properties: [prior_knowledge, learning_style, time_budget_minutes]
-  - name: skill_tree
-    type: object
-    required: true
-    description: Hierarchical competencies with prerequisites and probe definitions
-  - name: mastery_threshold
-    type: float
-    default: 0.85
-  - name: retention_interval_hours
-    type: integer
-    default: 24
-  - name: session_max_minutes
-    type: integer
-    default: 45
+  schema:
+    task:
+      type: string
+      description: "Primary task description or repository context"
+      required: true
+  examples:
+    - task: "Complete the declared objective for this loop profile."
 
 memory:
-  episodic:
-    backend: learner_session_log
-    retention: persistent
-    stores: [attempts, hints_given, error_patterns, session_transcripts]
-  semantic:
-    backend: knowledge_state_model
-    retention: persistent
-    stores: [mastered_nodes, fragile_nodes, misconception_map]
-  procedural:
-    backend: curriculum_graph
-    retention: persistent
-    stores: [exercise_bank, explanation_variants, scaffolding_levels]
+  type: ephemeral
 
 workers:
-  - id: diagnostician
-    role: assessor
-    model: gpt-4.1
-    temperature: 0.2
-    responsibilities:
-      - Estimate knowledge state from probes and error analysis
-      - Select next skill node respecting prerequisites
-  - id: instructor
-    role: teacher
-    model: claude-sonnet-4-6
-    temperature: 0.5
-    responsibilities:
-      - Deliver explanations matched to learner_profile and misconception_map
-      - Apply fading scaffolding based on recent success rate
-  - id: exercise_generator
-    role: author
-    model: gpt-4.1-mini
-    temperature: 0.6
-    responsibilities:
-      - Create novel practice items at appropriate difficulty
-      - Avoid repeating identical prompts within session
-  - id: reflector
-    role: metacognition
-    model: gpt-4.1-mini
-    temperature: 0.3
-    responsibilities:
-      - Prompt learner self-explanation and strategy reflection
-      - Summarize session progress and next steps
+  - id: coach
+    role: "Adapt instruction and assess mastery progress"
+    model:
+      provider: openai
+      name: gpt-4.1-mini
+      temperature: 0.2
+    inputs:
+      - from: inputs.task
+    outputs:
+      name: Result
+      format: text
+    timeout_seconds: 120
+    retries: 1
+    cost_budget_usd: 0.25
 
 evaluators:
-  - id: mastery_probe
-    type: adaptive_test
-    method: irt_calibration
-    pass_threshold: "${inputs.mastery_threshold}"
-  - id: retention_probe
-    type: delayed_test
-    delay_hours: "${inputs.retention_interval_hours}"
-    pass_threshold: 0.80
-  - id: hint_dependency
-    type: metric
-    metric: hints_per_correct_answer
-    operator: lte
-    value: 0.3
-  - id: engagement_guard
-    type: heuristic
-    rule: session_duration <= session_max_minutes
+  - id: quality_rubric
+    type: llm_rubric
+    runs_after: [coach]
+    rubric:
+      dimensions:
+        - name: effectiveness
+          weight: 0.6
+          scale: [0, 1]
+          criteria: "Output meets the stated objective"
+        - name: robustness
+          weight: 0.4
+          scale: [0, 1]
+          criteria: "Output is complete and actionable"
+      pass_threshold: 0.80
+    model:
+      provider: openai
+      name: gpt-4.1-mini
+      temperature: 0
 
 feedback_channels:
-  - from: mastery_probe
-    to: diagnostician
-    signal: skill_gaps
-    action: update_knowledge_state
-  - from: mastery_probe
-    to: instructor
-    signal: persistent_errors
-    action: switch_explanation_variant
-  - from: retention_probe
-    to: exercise_generator
-    signal: decay_detected
-    action: schedule_spaced_review
-  - from: reflector
-    to: learner_profile
-    signal: strategy_insights
-    action: adjust_scaffolding_policy
+  - id: quality_to_worker
+    source: evaluators.quality_rubric
+    destination: workers.coach
+    format: structured
+    fields: [failure_codes, dimension_scores, remediation_hints]
+    max_tokens: 400
+    when: "score < pass_threshold"
+  - id: quality_to_optimizer
+    source: evaluators.quality_rubric
+    destination: optimization_strategy.prompt_refinement
+    format: structured
+    fields: [failure_codes, remediation_hints]
+    max_tokens: 200
 
 optimization_strategy:
-  type: mastery_based_progression
-  parameters:
-    advance_on_probe_pass: true
-    remediate_on_fail: true
-    max_remediation_cycles: 5
-    spacing_multiplier: 1.5
+  type: prompt_refinement
+  max_steps: 8
+  config:
+    refinement_target: workers.coach
+  rollback:
+    on_metric_drop: 0.05
+    on_safety_failure: true
 
 termination_conditions:
-  - type: all_skill_nodes_mastered
-    threshold: "${inputs.mastery_threshold}"
-  - type: retention_verified
-    evaluators: [retention_probe]
-  - type: learner_opt_out
-    signal: explicit_stop
-  - type: max_sessions
-    value: 30
-  - type: budget_exhausted
-    resource: cost_limits.max_usd
+  success:
+    - metric: primary_quality
+      operator: gte
+      value: 0.80
+      consecutive: 1
+  failure:
+    - type: safety_violation
+      action: halt
+    - type: max_iterations
+      value: 10
+      action: halt
+  stall:
+    - metric: primary_quality
+      window_iterations: 3
+      min_improvement: 0.03
+      action: halt
 
 metrics:
-  - name: learning_velocity
-    formula: nodes_mastered / total_minutes
-  - name: retention_rate
-    formula: delayed_passes / delayed_probes
-    target: 0.85
-  - name: hint_efficiency
-    formula: 1 - (hints_per_correct / baseline_hints)
-  - name: misconception_resolution
-    formula: resolved_misconceptions / detected_misconceptions
+  - name: primary_quality
+    primary: true
+    definition: "Weighted score from quality_rubric evaluator"
+    source: evaluators.quality_rubric
+    unit: ratio
+    target: 0.80
+    regression_threshold: 0.05
+  - name: cost_usd
+    definition: "Total API spend per loop run"
+    source: telemetry.cost
+    unit: usd
+    target: 0.50
 
 safety_constraints:
-  - id: age_appropriate
-    rule: Content filtered by learner age band when provided
-  - id: no_answer_dumping
-    rule: Final exam probes require learner-generated work; no direct solutions
-  - id: wellbeing
-    rule: Suggest breaks when frustration signals detected across 3 failures
-  - id: academic_integrity
-    rule: Flag when learner requests completion of graded assignments
+  - id: injection-guard
+    type: injection_detect
+    scope: pre_worker
+    applies_to: [coach]
+    action: quarantine
+    severity: S1
+    on_error: halt
+    config:
+      max_risk_score: 0.7
 
 cost_limits:
-  max_usd: 1.50
-  max_tokens: 60000
-  max_wall_clock_seconds: 2700
-  per_session_cap_usd: 0.25
+  per_iteration_usd: 0.20
+  cumulative_usd: 1.00
+  token_soft_cap: 12000
+  on_approach:
+    threshold_percent: 80
+    action: warn
+  on_exceed:
+    action: halt
+
+metadata:
+  taxonomy_level: 2
+  les_estimate: 80
+  tags: [loop-library, level-2]
+  migrated: "2026-06-17 LSS 1.0 schema compliance"

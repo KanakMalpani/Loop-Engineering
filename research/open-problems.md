@@ -132,7 +132,7 @@ Problems are grouped by theme. Numbering is stable for citation (`LE-OP-01`, etc
 
 **Partial progress.** `loop-composition-algebra.md` proposes operators. Full proofs exist only for toy state spaces.
 
-**Resolution criteria.** Proof or counterexample catalog for composition operators under stated assumptions on S, E, τ; tool support in `loop_complexity_analyzer.py`.
+**Resolution criteria.** Proof or counterexample catalog for composition operators under stated assumptions on S, E, τ; tool support in `loop_complexity_analyzer.py`. **Partial resolution:** P1 loop algebra (Proposition on typed composition); see [PAPER_SERIES.md](PAPER_SERIES.md).
 
 ---
 

@@ -29,6 +29,8 @@ See [suite-overview.md](./suite-overview.md) for full suite definition.
 4. Run per methodology (5+ runs, all perturbations, scale levels)
 5. Report using the template in methodology.md
 
+Published baselines: [results/README.md](./results/README.md)
+
 ## Directory Structure
 
 ```

@@ -29,6 +29,8 @@ We publish research as **living documents**. They are revised as benchmarks, cas
 | [agi-implications.md](./agi-implications.md) | How loop engineering reframes AGI as an engineering problem | Strategists, policy, general audience |
 | [organizational-intelligence-systems.md](./organizational-intelligence-systems.md) | Loops at team, company, and ecosystem scale | Org leaders, ops, platform teams |
 | [loop-composition-algebra.md](./loop-composition-algebra.md) | Formal operators for combining loops (sequential, parallel, nested) | Theorists, compiler/tool builders |
+| [PAPER_SERIES.md](./PAPER_SERIES.md) | S1 + P1–P4 research program map | All researchers |
+| [LOOPNET.md](./LOOPNET.md) | LoopNet v0.2 dataset guide and P4 stats | Benchmark authors, empiricists |
 
 ---
 

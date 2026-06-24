@@ -52,13 +52,13 @@ Machine-readable specs live in [**Loop Core Engineering**](https://github.com/Ka
 
 ## The published stack
 
-Everything below is **live on GitHub and PyPI** (v0.1):
+Everything below is **live on GitHub and PyPI**. Version registry: [ECOSYSTEM_VERSIONS.md](ECOSYSTEM_VERSIONS.md).
 
 ```mermaid
 flowchart TB
   DOCS["<b>Loop Engineering</b><br/><i>you are here</i><br/>manifesto · patterns · case studies"]
   CORE["Loop Core Engineering<br/>LSS · LES · validators"]
-  NET["LoopNet<br/>500 trajectories"]
+  NET["LoopNet v0.2<br/>545 trajectories"]
   GYM["LoopGym<br/>pip install loopgym"]
   BENCH["LoopBench<br/>pip install loopbench"]
 
@@ -73,7 +73,7 @@ flowchart TB
 | Repository | One line | Link |
 |------------|----------|------|
 | **Loop Core Engineering** | Specs & governance — the constitution | [GitHub →](https://github.com/KanakMalpani/Loop-Core-Engineering) |
-| **LoopNet** | Dataset — ground truth for loops | [GitHub →](https://github.com/KanakMalpani/loopnet) · [Hugging Face →](https://huggingface.co/datasets/KanakMalpani/loopnet-seed-v0.1) |
+| **LoopNet** | Dataset — ground truth for loops | [GitHub →](https://github.com/KanakMalpani/loopnet) · [Hugging Face →](https://huggingface.co/datasets/KanakMalpani/loopnet-v0.2) |
 | **LoopGym** | Runtime — run loops in sim, live, or replay | [GitHub →](https://github.com/KanakMalpani/LoopGym) · `pip install loopgym` |
 | **LoopBench** | Benchmarks — public scoreboard | [GitHub →](https://github.com/KanakMalpani/LoopBench) · `pip install loopbench` |
 
@@ -118,8 +118,8 @@ termination_conditions:
 | You are… | Path | Time |
 |----------|------|------|
 | **Curious** | [Manifesto](manifesto/MANIFESTO.md) → [Fundamentals](fundamentals/README.md) | ~2 hours |
-| **Building** | [Patterns](patterns/README.md) → `pip install loopgym loopbench` → [first benchmark run](https://github.com/KanakMalpani/LoopBench#score-in-2-minutes) | ~1 hour |
-| **Researching** | [Case studies](case-studies/README.md) → [LoopNet dataset](https://huggingface.co/datasets/KanakMalpani/loopnet-seed-v0.1) | ~1 day |
+| **Building** | [Patterns](patterns/README.md) → [REPRODUCE.md](contributions/REPRODUCE.md) → `pip install loopgym loopbench` | ~1 hour |
+| **Researching** | [Paper series](research/PAPER_SERIES.md) → [LoopNet v0.2](research/LOOPNET.md) → [Case studies](case-studies/README.md) | ~1 day |
 | **Leading a team** | [D-D-M-I-S framework](framework/README.md) → [LES scoring](scoring/LES-1.0.md) | ~2 hours |
 
 ---

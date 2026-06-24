@@ -235,6 +235,7 @@ flowchart LR
 | Date | Change |
 |------|--------|
 | 2026-06 | Initial roadmap published |
+| 2026-06-17 | Post-papers ecosystem pass: LoopNet v0.2 alignment, loop-library LSS 1.0 validation gate, REPRODUCE.md, ALS-T2 baseline, reproduction challenge ([ADOPTION_SIGNAL.md](ADOPTION_SIGNAL.md)), RFC LSS 1.1 composition draft |
 
 *Maintainers append rows on quarterly review.*
 

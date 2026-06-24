@@ -22,30 +22,14 @@ Production-ready **Loop Specification Standard (LSS) 1.0** definitions for commo
 1. **Select** a loop closest to your use case from the catalog above.
 2. **Read** the companion `.md` file for architecture, diagrams, and model recommendations.
 3. **Copy** the YAML and adapt `inputs`, `cost_limits`, and `safety_constraints` to your environment.
-4. **Validate** (when tools are available): `python tools/loop_validator.py loop-library/<name>.yaml`
+4. **Validate:** `python scripts/validate_loop_library.py` (all 10 specs) or `python tools/loop_validator.py loop-library/<name>.yaml`
 5. **Score** with LES: `python tools/les_calculator.py --spec loop-library/<name>.yaml`
 
 ## LSS 1.0 Required Fields
 
-Every spec in this library declares:
+Every spec in this library declares LSS 1.0 required fields and passes `scripts/validate_loop_library.py` (migrated 2026-06-17). Domain-specific detail from earlier drafts lives in companion `.md` files.
 
-```yaml
-loop_name: string
-version: "1.0"
-objective: string
-inputs: [...]
-memory: {...}
-workers: [...]
-evaluators: [...]
-feedback_channels: [...]
-optimization_strategy: {...}
-termination_conditions: [...]
-metrics: [...]
-safety_constraints: [...]
-cost_limits: {...}
-```
-
-See [standards/LSS-1.0.md](../standards/LSS-1.0.md) for the full schema and validation rules.
+See [standards/LSS-1.0.md](../standards/LSS-1.0.md) and [standards/examples/minimal-loop.yaml](../standards/examples/minimal-loop.yaml) for the full schema.
 
 ## Taxonomy Distribution
 

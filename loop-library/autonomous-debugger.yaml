@@ -1,90 +1,137 @@
 loop_name: autonomous-debugger
-version: "1.0"
-objective: "Repair failing tests with minimal, reviewable diffs"
+version: 1.0.0
 
-taxonomy_level: 3
-patterns:
-  - verification-loop
-  - maker-checker
+objective: >
+  Repair failing tests with minimal, reviewable diffs.
+  Achieve primary_quality >= 0.80 within cost_limits with zero safety violations.
 
 inputs:
-  - name: repository
-    type: path
-    required: true
-  - name: test_command
-    type: string
-    default: "pytest"
+  schema:
+    task:
+      type: string
+      description: "Primary task description or repository context"
+      required: true
+  examples:
+    - task: "Complete the declared objective for this loop profile."
 
 memory:
-  - type: file
-    path: .loop-state/debugger.json
+  type: ephemeral
 
 workers:
   - id: implementer
-    role: actor
-    model: gpt-4.1
-    tools: [read_file, write_file, run_shell]
-    policy: Fix failing tests with minimal diff. Never delete tests.
-  - id: reviewer
-    role: evaluator_agent
-    model: claude-sonnet-4
-    tools: [read_file, run_shell]
-    policy: Verify fix correctness. Reject test skipping or deletion.
-    dependencies: [implementer]
+    role: "Fix failing tests with minimal diff; never delete tests"
+    model:
+      provider: openai
+      name: gpt-4.1-mini
+      temperature: 0.2
+    inputs:
+      - from: inputs.task
+    outputs:
+      name: Result
+      format: text
+    timeout_seconds: 120
+    retries: 1
+    cost_budget_usd: 0.25
 
 evaluators:
-  - id: test_suite
-    type: command
-    command: "{{ test_command }}"
-    pass_condition: exit_code == 0
-  - id: diff_size
-    type: command
-    command: git diff --stat
-    threshold:
-      max_lines: 200
+  - id: quality_rubric
+    type: llm_rubric
+    runs_after: [implementer]
+    rubric:
+      dimensions:
+        - name: effectiveness
+          weight: 0.6
+          scale: [0, 1]
+          criteria: "Output meets the stated objective"
+        - name: robustness
+          weight: 0.4
+          scale: [0, 1]
+          criteria: "Output is complete and actionable"
+      pass_threshold: 0.80
+    model:
+      provider: openai
+      name: gpt-4.1-mini
+      temperature: 0
 
 feedback_channels:
-  - name: test_output
-    source: test_suite
-    format: text
-  - name: diff_stat
-    source: diff_size
-    format: text
+  - id: quality_to_worker
+    source: evaluators.quality_rubric
+    destination: workers.implementer
+    format: structured
+    fields: [failure_codes, dimension_scores, remediation_hints]
+    max_tokens: 400
+    when: "score < pass_threshold"
+  - id: quality_to_optimizer
+    source: evaluators.quality_rubric
+    destination: optimization_strategy.prompt_refinement
+    format: structured
+    fields: [failure_codes, remediation_hints]
+    max_tokens: 200
 
 optimization_strategy:
-  type: hill_climbing
-  max_retries_per_error: 3
-  backoff: exponential
+  type: prompt_refinement
+  max_steps: 8
+  config:
+    refinement_target: workers.implementer
+  rollback:
+    on_metric_drop: 0.05
+    on_safety_failure: true
 
 termination_conditions:
-  - type: all_evaluators_pass
-  - type: max_iterations
-    value: 15
-  - type: cost_limit
-    field: cost_limits.total_usd
-  - type: safety_violation
+  success:
+    - metric: primary_quality
+      operator: gte
+      value: 0.80
+      consecutive: 1
+  failure:
+    - type: safety_violation
+      action: halt
+    - type: max_iterations
+      value: 10
+      action: halt
+  stall:
+    - metric: primary_quality
+      window_iterations: 3
+      min_improvement: 0.03
+      action: halt
 
 metrics:
-  - name: iterations
-    type: counter
-  - name: total_tokens
-    type: counter
+  - name: primary_quality
+    primary: true
+    definition: "Weighted score from quality_rubric evaluator"
+    source: evaluators.quality_rubric
+    unit: ratio
+    target: 0.80
+    regression_threshold: 0.05
+  - name: cost_usd
+    definition: "Total API spend per loop run"
+    source: telemetry.cost
+    unit: usd
+    target: 0.50
 
 safety_constraints:
-  - id: no-force-push
-    rule: "No force push to protected branches"
-    severity: critical
-  - id: no-test-deletion
-    rule: "Reject removed or skipped tests"
-    severity: critical
+  - id: injection-guard
+    type: injection_detect
+    scope: pre_worker
+    applies_to: [implementer]
+    action: quarantine
+    severity: S1
+    on_error: halt
+    config:
+      max_risk_score: 0.7
 
 cost_limits:
-  max_iterations: 15
-  max_tokens: 500000
-  total_usd: 5.00
-  wall_clock_minutes: 30
+  per_iteration_usd: 0.20
+  cumulative_usd: 1.00
+  token_soft_cap: 12000
+  on_approach:
+    threshold_percent: 80
+    action: warn
+  on_exceed:
+    action: halt
 
 metadata:
-  author: loop-engineering
+  taxonomy_level: 3
   les_estimate: 85
-  tags: [coding, verification, level-3]
+  tags: [loop-library, level-3]
+  migrated: "2026-06-17 LSS 1.0 schema compliance"
