@@ -40,12 +40,19 @@ python tools/composition_validator.py --library --strict # fail on parallel merg
 
 Daily CI: [daily_checkin.yml](../.github/workflows/daily-checkin.yml) runs `--strict` on composed specs.
 
+Composition cost tool:
+
+```bash
+python tools/loop_complexity_analyzer.py loop-library/compositions/scenario-swarm-rehearsal.yaml
+```
+
 ---
 
 ## Resolution criteria (full)
 
 - [x] Document conditions + counterexamples (this file)
 - [x] Machine-readable warnings in composition validator
+- [x] Composition-aware cost estimates in [loop_complexity_analyzer.py](../tools/loop_complexity_analyzer.py)
 - [ ] Formal proof catalog for typed state spaces (stretch, LE-OP-10 open)
 
 Update [open-problems.md](open-problems.md) LE-OP-10 partial progress to link here.

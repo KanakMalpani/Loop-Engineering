@@ -112,6 +112,15 @@ def main() -> int:
         ("composition_validator", [py, "tools/composition_validator.py", "--library", "--strict"]),
         ("baseline_les_audit", [py, "scripts/validate_baselines.py"]),
         ("langgraph_smoke", [py, "implementations/langgraph/run.py"]),
+        ("crewai_smoke", [py, "implementations/crewai/run.py"]),
+        (
+            "composed_complexity",
+            [
+                py,
+                "tools/loop_complexity_analyzer.py",
+                "loop-library/compositions/scenario-swarm-rehearsal.yaml",
+            ],
+        ),
         ("adoption_links", [py, "scripts/check_adoption_links.py"]),
     ]
 

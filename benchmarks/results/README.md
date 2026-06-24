@@ -29,7 +29,7 @@ loopbench run --task LB-MA-1 --spec loop-library/coding-agent.yaml --seeds 0,1,2
 loopbench run --task LB-COMP-1 --spec loop-library/compositions/scenario-swarm-rehearsal.yaml --seeds 0,1,2,3,4 -o results.json
 ```
 
-See [contributions/REPRODUCE.md](../../contributions/REPRODUCE.md). Beat maintainer LES: [BEAT_LB-CR-1.md](../../contributions/BEAT_LB-CR-1.md) · [BEAT_LB-RS-1.md](../../contributions/BEAT_LB-RS-1.md) · [BEAT_LB-MA-1.md](../../contributions/BEAT_LB-MA-1.md)
+See [contributions/REPRODUCE.md](../../contributions/REPRODUCE.md). Beat maintainer LES: [BEAT_LB-CR-1.md](../../contributions/BEAT_LB-CR-1.md) · [BEAT_LB-RS-1.md](../../contributions/BEAT_LB-RS-1.md) · [BEAT_LB-MA-1.md](../../contributions/BEAT_LB-MA-1.md) · [BEAT_LB-COMP-1.md](../../contributions/BEAT_LB-COMP-1.md)
 
 ---
 
@@ -53,6 +53,6 @@ CI audit: `python scripts/validate_baselines.py`
 ## Next
 
 - External submissions on leaderboard ([good-first #4](https://github.com/KanakMalpani/Loop-Engineering/issues/4))
-- Dedicated LoopGym env for LB-COMP-1 (v0.2)
+- Dedicated LoopGym env for LB-COMP-1 — **shipped** (`loopbench/composed-swarm-v1`)
 
 See [All about loops/NEXT_STEPS.md](../../All%20about%20loops/NEXT_STEPS.md).

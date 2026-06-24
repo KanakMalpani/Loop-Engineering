@@ -83,8 +83,8 @@
 - [x] Example specs (minimal, research, multi-agent)
 - [x] Safety standard — [standards/safety-standard.md](../standards/safety-standard.md)
 - [x] Canonical source pointer — [standards/CANONICAL-SOURCE.md](../standards/CANONICAL-SOURCE.md) → Loop-Core-Engineering
-- [~] LSS 1.1 composition blocks — [contributions/RFC-LSS-1.1-composition.md](../contributions/RFC-LSS-1.1-composition.md) + 5 composed specs
-- [ ] LSS 1.1 merged into canonical Loop-Core-Engineering spec
+- [x] LSS 1.1 stable in Loop-Core — [lss-1.1.md](https://github.com/KanakMalpani/Loop-Core-Engineering/blob/main/specs/lss-1.1.md)
+- [x] LSS 1.1 composition blocks — [RFC](../contributions/RFC-LSS-1.1-composition.md) + 5 composed specs + validator strict CI
 
 ### Scoring — LES
 
@@ -96,9 +96,10 @@
 ### Benchmarks
 
 - [x] Suite overview — [benchmarks/](../benchmarks/)
-- [x] Maintainer LB-CR-1 baseline — [benchmarks/results/lb-cr-1-baseline.json](../benchmarks/results/lb-cr-1-baseline.json)
-- [~] ≥5 ALS/LoopBench tasks with baselines (1 done; good-first issues for RS-1, MA-1)
-- [ ] Multi-harness comparison pilot (LE-OP-21)
+- [x] Maintainer LB baselines (CR, RS, MA, COMP) — [benchmarks/results/](../benchmarks/results/)
+- [x] BEAT guides (all four tasks) — [contributions/BEAT_LB-*.md](../contributions/)
+- [x] LoopGym composed env LB-COMP-1 — `loopbench/composed-swarm-v1`
+- [x] Multi-harness comparison pilot (LE-OP-21) — [le-op-21-harness-compare-v0.1.json](../benchmarks/results/le-op-21-harness-compare-v0.1.json)
 
 ### Case studies
 
@@ -320,23 +321,21 @@ These eight items move the project from “impressive repo” toward “recogniz
 
 - [—] Core package exists (sibling repo)
 - [ ] Document all env IDs in discipline repo
-- [ ] Composed-loop env (`compose/*`) spec
+- [x] Composed-loop env — `loopbench/composed-swarm-v1` ([LOOPGYM.md](../research/LOOPGYM.md))
 - [ ] CI runs LoopGym replay on every LoopNet schema bump
 
 ## 3. Build LoopNet `[—]`
 
 - [—] v0.2 Tier 1 live
-- [ ] Schema changelog policy
-- [ ] Contributor trajectory submission guide
-- [ ] Histogram / calibration notebooks (good-first issue #9)
+- [x] Schema changelog policy — [LOOPNET-SCHEMA-CHANGELOG.md](../research/LOOPNET-SCHEMA-CHANGELOG.md)
+- [x] Contributor trajectory submission guide — [LOOPNET.md](../research/LOOPNET.md) + [COMMUNITY-SUBMISSION](https://github.com/KanakMalpani/loopnet/blob/main/guides/COMMUNITY-SUBMISSION.md)
+- [x] Histogram / calibration notebooks — [docs/loopnet/histograms](../docs/loopnet/histograms/) (issue #9 closed)
 
 ## 4. Build LoopBench `[—]`
 
 - [—] CLI + tasks exist
-- [~] Maintainer baseline LB-CR-1
-- [ ] Merge leaderboard PR
-- [ ] LB-RS-1 and LB-MA-1 baselines
-- [ ] Composed-loop benchmark task (e.g. scenario-swarm-rehearsal)
+- [x] Maintainer baselines (CR, RS, MA, COMP)
+- [x] Composed-loop benchmark task — LB-COMP-1 + [BEAT_LB-COMP-1.md](../contributions/BEAT_LB-COMP-1.md)
 
 ## 5. Publish foundational whitepaper
 

@@ -41,7 +41,92 @@ def _max_iterations(spec: dict[str, Any]) -> int:
     return int(cost.get("max_iterations") or opt.get("max_steps") or 10)
 
 
-def analyze_complexity(spec: dict[str, Any]) -> dict[str, Any]:
+def _resolve_child_ref(spec_path: Path, ref: str) -> Path:
+    ref_path = Path(ref)
+    if ref_path.is_absolute():
+        return ref_path
+    return (spec_path.parent / ref_path).resolve()
+
+
+def _analyze_composed(spec: dict[str, Any], spec_path: Path | None) -> dict[str, Any] | None:
+    composition = spec.get("composition")
+    if not composition or not spec_path:
+        return None
+
+    children = composition.get("children") or []
+    if not children:
+        return None
+
+    child_analyses: list[dict[str, Any]] = []
+    for child in children:
+        ref = child.get("ref")
+        if not ref:
+            continue
+        child_path = _resolve_child_ref(spec_path, ref)
+        if not child_path.exists():
+            continue
+        child_spec = load_spec(child_path)
+        nested = _analyze_composed(child_spec, child_path)
+        if nested:
+            child_analyses.append(nested)
+        else:
+            child_analyses.append(analyze_complexity(child_spec))
+
+    if not child_analyses:
+        return None
+
+    parent = analyze_complexity(spec)
+    comp_type = composition.get("type", "sequential")
+
+    child_expected_tokens = sum(c["expected_total_tokens"] for c in child_analyses)
+    child_worst_tokens = sum(c["worst_case_tokens"] for c in child_analyses)
+    child_expected_seconds = sum(c["expected_wall_clock_seconds"] for c in child_analyses)
+    child_worst_seconds = sum(c["worst_case_wall_clock_seconds"] for c in child_analyses)
+
+    merge_overhead = 800 + len(spec.get("evaluators") or []) * TOKENS_PER_EVALUATOR
+    if comp_type == "parallel":
+        # Lemma 2: parallel wall-clock ~ max branch; tokens additive
+        child_expected_seconds = max(c["expected_wall_clock_seconds"] for c in child_analyses)
+        child_worst_seconds = max(c["worst_case_wall_clock_seconds"] for c in child_analyses)
+
+    orch_tokens = parent["tokens_per_iteration"] * parent["expected_iterations"]
+    expected_total_tokens = child_expected_tokens + orch_tokens + merge_overhead
+    worst_case_tokens = child_worst_tokens + parent["worst_case_tokens"] + merge_overhead
+
+    expected_seconds = child_expected_seconds + parent["expected_wall_clock_seconds"]
+    worst_case_seconds = child_worst_seconds + parent["worst_case_wall_clock_seconds"]
+
+    structural = min(
+        100,
+        parent["structural_score"] + sum(c["structural_score"] for c in child_analyses) // max(len(child_analyses), 1),
+    )
+    tier = parent["complexity_tier"]
+    if structural >= 80:
+        tier = "critical"
+    elif structural >= 55:
+        tier = "high"
+
+    return {
+        **parent,
+        "composed": True,
+        "composition_type": comp_type,
+        "child_count": len(child_analyses),
+        "child_loops": [c.get("loop_name") for c in child_analyses],
+        "child_expected_tokens": child_expected_tokens,
+        "child_worst_tokens": child_worst_tokens,
+        "merge_overhead_tokens": merge_overhead,
+        "expected_total_tokens": expected_total_tokens,
+        "worst_case_tokens": worst_case_tokens,
+        "expected_wall_clock_seconds": round(expected_seconds, 1),
+        "worst_case_wall_clock_seconds": round(worst_case_seconds, 1),
+        "structural_score": structural,
+        "complexity_tier": tier,
+        "complexity_class": f"O({comp_type} compose: {len(child_analyses)} children)",
+        "children": child_analyses,
+    }
+
+
+def analyze_complexity(spec: dict[str, Any], spec_path: Path | None = None) -> dict[str, Any]:
     workers = spec.get("workers") or []
     evaluators = spec.get("evaluators") or []
     feedback = spec.get("feedback_channels") or []
@@ -153,6 +238,16 @@ def format_report(analysis: dict[str, Any]) -> str:
             f"  Worst case:          {analysis['worst_case_wall_clock_seconds']}s",
         ]
     )
+    if analysis.get("composed"):
+        lines.extend(
+            [
+                "",
+                f"Composition ({analysis['composition_type']}):",
+                f"  Children:            {analysis['child_count']} ({', '.join(analysis.get('child_loops') or [])})",
+                f"  Child expected tokens: {analysis['child_expected_tokens']:,}",
+                f"  Merge overhead:      {analysis['merge_overhead_tokens']:,}",
+            ]
+        )
     return "\n".join(lines)
 
 
@@ -170,7 +265,8 @@ def main() -> int:
 
     try:
         spec = load_spec(args.spec)
-        analysis = analyze_complexity(spec)
+        composed = _analyze_composed(spec, args.spec.resolve())
+        analysis = composed if composed else analyze_complexity(spec, args.spec.resolve())
     except (yaml.YAMLError, ValueError) as exc:
         print(f"Error: {exc}", file=sys.stderr)
         return 2

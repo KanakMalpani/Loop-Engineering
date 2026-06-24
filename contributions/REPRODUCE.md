@@ -123,13 +123,14 @@ loopbench run --task LB-CR-1 --spec loop-library/autonomous-debugger.yaml --seed
 loopbench validate results.json
 ```
 
-Guides: [BEAT_LB-CR-1.md](BEAT_LB-CR-1.md) · [BEAT_LB-RS-1.md](BEAT_LB-RS-1.md) · [BEAT_LB-MA-1.md](BEAT_LB-MA-1.md)
+Guides: [BEAT_LB-CR-1.md](BEAT_LB-CR-1.md) · [BEAT_LB-RS-1.md](BEAT_LB-RS-1.md) · [BEAT_LB-MA-1.md](BEAT_LB-MA-1.md) · [BEAT_LB-COMP-1.md](BEAT_LB-COMP-1.md)
 
-**Composed loop (local smoke until LoopGym env ships):**
+**Composed loop (LoopGym env):**
 
 ```bash
 python examples/compose-loop/run.py loop-library/compositions/scenario-swarm-rehearsal.yaml
-# Future: loopgym.make("loopbench/composed-swarm-v1")
+pip install loopgym
+python -c "import loopgym as lg; print(lg.make('loopbench/composed-swarm-v1').run_episode(task_id='comp-001', seed=0))"
 ```
 
 Published maintainer baselines: [benchmarks/results/](../benchmarks/results/)

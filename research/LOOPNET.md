@@ -72,6 +72,16 @@ See [LOOPGYM.md](LOOPGYM.md) and [LoopGym](https://github.com/KanakMalpani/LoopG
 
 **Contribute trajectories:** LoopGym replay → [loopnet COMMUNITY-SUBMISSION](https://github.com/KanakMalpani/loopnet/blob/main/guides/COMMUNITY-SUBMISSION.md).
 
+**Schema changelog:** [LOOPNET-SCHEMA-CHANGELOG.md](LOOPNET-SCHEMA-CHANGELOG.md) (v0.1 → v0.2 delta + contributor checklist).
+
+### Submission checklist (discipline side)
+
+1. Validate record against loopnet JSON Schema
+2. Map `taxonomy_level` to your LSS YAML
+3. Run `python examples/loopnet-explore/explore.py` to sanity-check field distributions
+4. Open PR on loopnet repo per COMMUNITY-SUBMISSION guide
+5. Post reproduction note on [Discussion #10](https://github.com/KanakMalpani/Loop-Engineering/discussions/10)
+
 ---
 
 ## Tier 2 (future)

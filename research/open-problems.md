@@ -54,9 +54,9 @@ Problems are grouped by theme. Numbering is stable for citation (`LE-OP-01`, etc
 
 **Why it matters.** False termination (passing when quality is low) and false continuation (rejecting good states) both trace to evaluator composition errors. This is central to maker-checker and multi-agent merge patterns.
 
-**Partial progress.** Ensemble methods in ML. GitHub PR checks as independent gates (logical AND). No algebraic composition rules for correlated evaluators.
+**Partial progress.** Ensemble methods in ML. GitHub PR checks as independent gates (logical AND). Guidance for parallel merge evaluators: [le-op-04-evaluator-composition.md](le-op-04-evaluator-composition.md).
 
-**Resolution criteria.** Composition operators in `loop-composition-algebra.md` extended with evaluator correlation model. Demonstrated reduction in false-pass rate on `benchmarks/evaluator-composition/` vs. naive AND/OR.
+**Resolution criteria.** Composition operators in `loop-composition-algebra.md` extended with evaluator correlation model. Demonstrated reduction in false-pass rate on `benchmarks/evaluator-composition/` vs. naive AND/OR. **Partial:** partition rules + composed spec reference (June 2026).
 
 ---
 

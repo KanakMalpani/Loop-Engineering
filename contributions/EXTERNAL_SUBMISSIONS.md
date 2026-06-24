@@ -26,9 +26,9 @@ loopbench validate results.json
 2. Add your row to `leaderboard/entries.json` (see existing entries)
 3. Open PR — reference [good-first #4](https://github.com/KanakMalpani/Loop-Engineering/issues/4)
 
-Full guides: [BEAT_LB-CR-1.md](BEAT_LB-CR-1.md) · [BEAT_LB-RS-1.md](BEAT_LB-RS-1.md) · [BEAT_LB-MA-1.md](BEAT_LB-MA-1.md)
+Full guides: [BEAT_LB-CR-1.md](BEAT_LB-CR-1.md) · [BEAT_LB-RS-1.md](BEAT_LB-RS-1.md) · [BEAT_LB-MA-1.md](BEAT_LB-MA-1.md) · [BEAT_LB-COMP-1.md](BEAT_LB-COMP-1.md)
 
-**Other tasks:** LB-RS-1 → [#5](https://github.com/KanakMalpani/Loop-Engineering/issues/5) · LB-MA-1 → [#6](https://github.com/KanakMalpani/Loop-Engineering/issues/6)
+**Other tasks:** LB-RS-1 → [#5](https://github.com/KanakMalpani/Loop-Engineering/issues/5) · LB-MA-1 → [#6](https://github.com/KanakMalpani/Loop-Engineering/issues/6) · LB-COMP-1 → composed spec + [LoopGym composed-swarm-v1](https://github.com/KanakMalpani/LoopGym)
 
 ---
 
@@ -75,6 +75,6 @@ Open PR referencing [good-first #7](https://github.com/KanakMalpani/Loop-Enginee
 
 ## Campaign
 
-Re-run maintainer outreach: `python scripts/adoption_wave2.py`
+Re-run maintainer outreach: `python scripts/adoption_wave2.py` · `python scripts/adoption_wave3.py`
 
-Daily status: [docs/adoption-tracker/latest.md](../docs/adoption-tracker/latest.md)
+Community handoff: [COMMUNITY_HANDOFF_PHASE3.md](COMMUNITY_HANDOFF_PHASE3.md) · [ADOPTION.md](ADOPTION.md)

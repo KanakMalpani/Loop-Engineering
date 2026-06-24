@@ -1,0 +1,62 @@
+{
+  "pilot_id": "LE-OP-21-harness-compare-v0.1",
+  "generated_at": "2026-06-24T14:41:08.255530+00:00",
+  "method": "tools/les_calculator.py --spec (structural LES-1.0)",
+  "note": "LangGraph and CrewAI mapped to research-agent.yaml; see case studies for composition extensions.",
+  "harnesses": [
+    {
+      "harness_id": "cursor",
+      "harness_name": "Cursor Agent",
+      "lss_spec": "loop-library/coding-agent.yaml",
+      "case_study": "case-studies/cursor-agent-loop.md",
+      "bridge_doc": "contributions/BRIDGE_AGENT_HARNESSES.md#cursor-agent",
+      "les_structural": 74.5,
+      "categories": {
+        "effectiveness": 1.0,
+        "speed": 0.55,
+        "cost": 0.61,
+        "robustness": 0.9,
+        "scalability": 0.75,
+        "safety": 0.67,
+        "adaptability": 0.6,
+        "autonomy": 0.71
+      }
+    },
+    {
+      "harness_id": "langgraph",
+      "harness_name": "LangGraph",
+      "lss_spec": "loop-library/research-agent.yaml",
+      "case_study": "case-studies/langgraph-composition-bridge.md",
+      "bridge_doc": "implementations/langgraph/",
+      "les_structural": 76.7,
+      "categories": {
+        "effectiveness": 1.0,
+        "speed": 0.7,
+        "cost": 0.5700000000000001,
+        "robustness": 0.9,
+        "scalability": 0.75,
+        "safety": 0.67,
+        "adaptability": 0.6,
+        "autonomy": 0.77
+      }
+    },
+    {
+      "harness_id": "crewai",
+      "harness_name": "CrewAI",
+      "lss_spec": "loop-library/research-agent.yaml",
+      "case_study": "case-studies/crewai-composition-bridge.md",
+      "bridge_doc": "implementations/crewai/",
+      "les_structural": 76.7,
+      "categories": {
+        "effectiveness": 1.0,
+        "speed": 0.7,
+        "cost": 0.5700000000000001,
+        "robustness": 0.9,
+        "scalability": 0.75,
+        "safety": 0.67,
+        "adaptability": 0.6,
+        "autonomy": 0.77
+      }
+    }
+  ]
+}

@@ -50,6 +50,20 @@ Tracked daily: [docs/adoption-tracker/latest.md](../docs/adoption-tracker/latest
 | LangGraph bridge case study | [langgraph-composition-bridge.md](../case-studies/langgraph-composition-bridge.md) |
 | LES baseline audit CI | [validate_baselines.py](../scripts/validate_baselines.py) |
 
+## Phase 3 completed (maintainer)
+
+| Item | Artifact |
+|------|----------|
+| BEAT LB-COMP-1 | [BEAT_LB-COMP-1.md](../contributions/BEAT_LB-COMP-1.md) |
+| LoopGym composed env | [LoopGym](https://github.com/KanakMalpani/LoopGym) `loopbench/composed-swarm-v1` |
+| CrewAI bridge | [crewai-composition-bridge.md](../case-studies/crewai-composition-bridge.md) |
+| LE-OP-04 partial | [le-op-04-evaluator-composition.md](../research/le-op-04-evaluator-composition.md) |
+| Composition complexity tool | [loop_complexity_analyzer.py](../tools/loop_complexity_analyzer.py) |
+| LE-OP-21 pilot | [le-op-21-harness-compare-v0.1.json](../benchmarks/results/le-op-21-harness-compare-v0.1.json) |
+| LoopNet changelog | [LOOPNET-SCHEMA-CHANGELOG.md](../research/LOOPNET-SCHEMA-CHANGELOG.md) |
+| Adoption wave 3 | [adoption_wave3.py](../scripts/adoption_wave3.py) · [ADOPTION.md](../contributions/ADOPTION.md) |
+| Community handoff | [COMMUNITY_HANDOFF_PHASE3.md](../contributions/COMMUNITY_HANDOFF_PHASE3.md) |
+
 ## Community (tracked daily)
 
 [docs/adoption-tracker/latest.md](../docs/adoption-tracker/latest.md) · [EXTERNAL_SUBMISSIONS.md](../contributions/EXTERNAL_SUBMISSIONS.md)

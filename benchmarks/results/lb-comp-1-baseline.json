@@ -10,7 +10,7 @@
   "lss_spec": "loop-library/compositions/scenario-swarm-rehearsal.yaml",
   "spec_hash": "sha256:e2d6117d0eeffff43ca8d3839790706dcd7c2175623b65e50840d9242f1e3cc4",
   "protocol": "loopbench run --task LB-COMP-1 --spec loop-library/compositions/scenario-swarm-rehearsal.yaml --seeds 0,1,2,3,4",
-  "proxy_note": "v0.1 uses loopbench/multi-agent-debate-v1 SimEnv until composed env ships",
+  "proxy_note": "LoopGym loopbench/composed-swarm-v1 (parallel branch SimEnv + orchestrator merge)",
   "results": {
     "aggregate": {
       "success_at_k": 1.0,
