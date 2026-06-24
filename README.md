@@ -149,6 +149,7 @@ termination_conditions:
 | [Coding Agent](loop-library/coding-agent.yaml) | 3 | Feature implementation |
 | [Autonomous Debugger](loop-library/autonomous-debugger.yaml) | 3 | Test-driven repair |
 | [Code → Debug (nested)](loop-library/compositions/code-debug-repair.yaml) | 4 | Coding loop with inner repair |
+| [Scenario Swarm (parallel)](loop-library/compositions/scenario-swarm-rehearsal.yaml) | 4 | Decision rehearsal — 3 lenses, merged forecast |
 | [Startup Validator](loop-library/startup-validator.yaml) | 2 | PMF experiments |
 
 → [Full library](loop-library/README.md)

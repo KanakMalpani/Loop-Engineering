@@ -1,12 +1,11 @@
-"""Execute LSS specs with composition blocks (sequential and nested)."""
+"""Execute LSS specs with composition blocks (sequential, nested, and parallel)."""
 
 from __future__ import annotations
 
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
-
-import yaml
 
 from loop_runtime import LoopResult, LoopRuntime, load_lss_spec
 
@@ -140,6 +139,46 @@ class ComposedLoopRuntime:
             termination_reason="inner loops exhausted",
         )
 
+    def run_parallel(self, user_input: str) -> ComposedResult:
+        children = self.composition.get("children") or []
+        merge = self.composition.get("merge") or {}
+        min_pass = int(merge.get("min_branches_pass", max(2, len(children) // 2)))
+
+        def run_branch(child: dict[str, Any]) -> StageResult:
+            lens = child.get("lens", "")
+            task = f"{lens}\n\nScenario:\n{user_input}" if lens else user_input
+            return self._run_child(
+                child["ref"], task, child["id"], child.get("role", "branch")
+            )
+
+        stages: list[StageResult] = []
+        with ThreadPoolExecutor(max_workers=min(len(children), 4)) as pool:
+            futures = {pool.submit(run_branch, c): c["id"] for c in children}
+            for future in as_completed(futures):
+                stages.append(future.result())
+
+        stages.sort(key=lambda s: s.child_id)
+        passed = sum(1 for s in stages if s.result.success)
+        merged = "\n\n---\n\n".join(
+            f"## Branch: {s.child_id} ({s.loop_name})\n"
+            f"Quality: {s.result.quality_score:.2f} | Success: {s.result.success}\n"
+            f"{s.result.output[:400]}"
+            for s in stages
+        )
+        success = passed >= min_pass
+        reason = (
+            f"parallel merge: {passed}/{len(stages)} branches passed (need {min_pass})"
+            if success
+            else f"parallel merge failed: {passed}/{len(stages)} branches passed"
+        )
+        return ComposedResult(
+            success=success,
+            output=merged,
+            stages=stages,
+            composition_type="parallel",
+            termination_reason=reason,
+        )
+
     def run(self, user_input: str = "") -> ComposedResult:
         if not user_input:
             examples = (self.spec.get("inputs") or {}).get("examples") or []
@@ -153,4 +192,6 @@ class ComposedLoopRuntime:
             return self.run_sequential(user_input)
         if ctype == "nested":
             return self.run_nested(user_input)
+        if ctype == "parallel":
+            return self.run_parallel(user_input)
         raise ValueError(f"Unsupported composition type: {ctype}")

@@ -10,7 +10,7 @@ Derived from [RESEARCH_ROADMAP.md](RESEARCH_ROADMAP.md) Q4 2026 exit criteria an
 |-----------|--------|--------|----------|
 | LSS validator passes 100% of `loop-library/` | All specs | **Green** | 9 atomic + 4 composed; CI |
 | YAML architecture matches companion `.md` | Worker/evaluator parity | **Green** | Atomic loops; see [loop-library/README.md](../loop-library/README.md) |
-| Composed loops (nested/sequential) | ≥2 nested pipelines | **Green** | [compositions/](../loop-library/compositions/) |
+| Composed loops (nested/sequential/parallel) | ≥1 parallel pipeline | **Green** | [scenario-swarm-rehearsal](../loop-library/compositions/scenario-swarm-rehearsal.yaml) |
 | External team reproduces without hand-holding | Fork → validate → run → LES | **Yellow** | [REPRODUCE.md](REPRODUCE.md) verified locally; awaiting external report |
 | Benchmark suite v0.1 + baseline LES JSON | ≥1 LoopBench-native baseline | **Yellow** | [lb-cr-1-baseline.json](../benchmarks/results/lb-cr-1-baseline.json); LoopBench PR open |
 | CONTRIBUTING + GOVERNANCE live | This directory complete | **Green** | [CONTRIBUTING.md](CONTRIBUTING.md), [GOVERNANCE.md](GOVERNANCE.md) |

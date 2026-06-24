@@ -16,12 +16,13 @@ Production-ready **LSS 1.0** atomic loops plus **LSS 1.1 draft** composed loops 
 | [Interview Coach](./interview-coach.yaml) | 2 | Interview prep | 77 |
 | [Writing Assistant](./writing-assistant.yaml) | 2 | Long-form composition | 79 |
 
-## Composed loops (4)
+## Composed loops (5)
 
-Nested and sequential pipelines in [`compositions/`](compositions/README.md):
+Nested, sequential, and **parallel** pipelines in [`compositions/`](compositions/README.md):
 
 | Composition | Type | Power |
 |-------------|------|-------|
+| [scenario-swarm-rehearsal](./compositions/scenario-swarm-rehearsal.yaml) | **parallel** | MiroFish-style worldview rehearsal → merged forecast |
 | [code-debug-repair](./compositions/code-debug-repair.yaml) | **nested** | Code → auto-debug on failure |
 | [research-code-nest](./compositions/research-code-nest.yaml) | **nested** | Research → prototype code |
 | [research-to-writing](./compositions/research-to-writing.yaml) | sequential | Brief → polished doc |
@@ -35,7 +36,7 @@ python examples/compose-loop/run.py loop-library/compositions/code-debug-repair.
 ## Validate and score
 
 ```bash
-python scripts/validate_loop_library.py          # 9 atomic + 4 composed
+python scripts/validate_loop_library.py          # 9 atomic + 5 composed
 python tools/les_calculator.py --spec loop-library/coding-agent.yaml
 python tools/composition_validator.py --library
 ```

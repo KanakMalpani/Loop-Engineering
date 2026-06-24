@@ -112,6 +112,47 @@ SPECS = [
             ],
         },
     },
+    {
+        "name": "scenario-swarm-rehearsal",
+        "objective": (
+            "Rehearse a high-stakes decision by running parallel worldview branches "
+            "(falsifier, evidence, operator) then merge into a forecast brief with dissent preserved."
+        ),
+        "level": 4,
+        "les": 83,
+        "pass_threshold": 0.80,
+        "max_iterations": 14,
+        "cumulative_usd": 8.0,
+        "composition": {
+            "type": "parallel",
+            "merge": {
+                "strategy": "consensus_rubric",
+                "min_branches_pass": 2,
+                "preserve_dissent": True,
+            },
+            "children": [
+                {
+                    "id": "falsifier",
+                    "ref": "../startup-validator.yaml",
+                    "role": "branch",
+                    "lens": "Pre-mortem branch: assume the plan FAILS. Design falsification experiments and kill criteria.",
+                },
+                {
+                    "id": "evidence",
+                    "ref": "../research-agent.yaml",
+                    "role": "branch",
+                    "lens": "Evidence branch: gather sourced facts, counter-narratives, and uncertainty bounds.",
+                },
+                {
+                    "id": "operator",
+                    "ref": "../business-strategy-agent.yaml",
+                    "role": "branch",
+                    "lens": "Operator branch: produce a 90-day action memo regardless of optimism level.",
+                },
+            ],
+            "adapters": [],
+        },
+    },
 ]
 
 

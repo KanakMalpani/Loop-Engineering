@@ -42,3 +42,6 @@ jobs:
 
       - name: Smoke test composed loop (nested)
         run: python examples/compose-loop/run.py loop-library/compositions/code-debug-repair.yaml
+
+      - name: Smoke test parallel swarm rehearsal
+        run: python examples/compose-loop/run.py loop-library/compositions/scenario-swarm-rehearsal.yaml

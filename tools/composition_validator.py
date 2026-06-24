@@ -87,6 +87,18 @@ def validate_composition(spec_path: Path, spec: dict) -> list[str]:
     if ctype == "nested" and not adapters:
         errors.append("nested composition requires at least one adapter (outer -> inner)")
 
+    if ctype == "parallel":
+        merge = comp.get("merge")
+        if not isinstance(merge, dict):
+            errors.append("parallel composition requires composition.merge block")
+        else:
+            min_pass = merge.get("min_branches_pass")
+            if min_pass is not None and min_pass > len(children):
+                errors.append("merge.min_branches_pass cannot exceed child count")
+        branches = [c for c in children if c.get("role") == "branch"]
+        if len(branches) < 2:
+            errors.append("parallel composition should declare >=2 children with role: branch")
+
     for j, adapter in enumerate(adapters):
         if not isinstance(adapter, dict):
             errors.append(f"composition.adapters[{j}] must be a mapping")

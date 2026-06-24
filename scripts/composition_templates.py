@@ -20,23 +20,48 @@ def orchestrator_shell(
     """Return LSS 1.0 YAML with composition block and minimal orchestrator."""
     comp_type = composition["type"]
     child_ids = [c["id"] for c in composition["children"]]
-    first_eval = f"pipeline_{child_ids[0]}"
 
     adapter_yaml = ""
     for a in composition.get("adapters", []):
         adapter_yaml += f"""
     - from: {a['from']}
       to: {a['to']}"""
+    if not adapter_yaml:
+        adapter_yaml = " []"
+
+    merge_yaml = ""
+    if comp_type == "parallel":
+        merge = composition.get("merge") or {}
+        merge_yaml = f"""
+  merge:
+    strategy: {merge.get('strategy', 'consensus_rubric')}
+    min_branches_pass: {merge.get('min_branches_pass', 2)}
+    preserve_dissent: {str(merge.get('preserve_dissent', True)).lower()}
+    synthesizer: workers.orchestrator"""
+
+    merge_criteria = (
+        "Synthesize parallel branch outputs into a decision brief; preserve explicit dissent"
+        if comp_type == "parallel"
+        else "All child loop stages met their pass thresholds"
+    )
+    orch_role = (
+        "Fan out scenario to parallel branch loops, collect outputs, and merge into a forecast brief"
+        if comp_type == "parallel"
+        else "Route work across composed child loops and merge stage outputs"
+    )
 
     children_yaml = ""
     for c in composition["children"]:
         trigger = ""
         if c.get("trigger"):
             trigger = f"\n      trigger: \"{c['trigger']}\""
+        lens = ""
+        if c.get("lens"):
+            lens = f"\n      lens: \"{c['lens']}\""
         children_yaml += f"""
     - id: {c['id']}
       ref: {c['ref']}
-      role: {c.get('role', 'stage')}{trigger}"""
+      role: {c.get('role', 'stage')}{trigger}{lens}"""
 
     return f"""loop_name: {loop_name}
 version: 1.0.0
@@ -59,7 +84,7 @@ memory:
 
 workers:
   - id: orchestrator
-    role: "Route work across composed child loops and merge stage outputs"
+    role: "{orch_role}"
     model:
       provider: openai
       name: gpt-4.1-mini
@@ -82,7 +107,7 @@ evaluators:
         - name: pipeline_quality
           weight: 1.0
           scale: [0, 1]
-          criteria: "All child loop stages met their pass thresholds"
+          criteria: "{merge_criteria}"
       pass_threshold: {pass_threshold:.2f}
     model:
       provider: openai
@@ -150,7 +175,7 @@ cost_limits:
     action: halt
 
 composition:
-  type: {comp_type}
+  type: {comp_type}{merge_yaml}
   children:{children_yaml}
   adapters:{adapter_yaml}
 

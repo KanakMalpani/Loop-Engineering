@@ -1,43 +1,47 @@
 # Composed Loops
 
-**LSS 1.1 draft** — loops inside loops via explicit `composition` blocks. Each spec is a valid LSS 1.0 orchestrator shell plus a typed child graph.
+**LSS 1.1 draft** — loops inside loops via explicit `composition` blocks.
 
 ## Catalog
 
 | Composition | Type | Children | LES Est. | Use when |
 |-------------|------|----------|----------|----------|
+| [scenario-swarm-rehearsal](./scenario-swarm-rehearsal.yaml) | **parallel** | 3 branches | 83 | Launch/policy rehearsal ([MiroFish-inspired](./scenario-swarm-rehearsal.md)) |
+| [code-debug-repair](./code-debug-repair.yaml) | **nested** | coding ⊃ debugger | 86 | Ship feature; auto-repair on test fail |
+| [research-code-nest](./research-code-nest.yaml) | **nested** | research ⊃ coding | 84 | Research then prototype |
 | [research-to-writing](./research-to-writing.yaml) | sequential | research → writing | 81 | Brief → polished doc |
 | [startup-to-strategy](./startup-to-strategy.yaml) | sequential | validator → strategy | 77 | PMF evidence → decision memo |
-| [code-debug-repair](./code-debug-repair.yaml) | **nested** | coding ⊃ debugger | 86 | Ship feature; auto-repair on test fail |
-| [research-code-nest](./research-code-nest.yaml) | **nested** | research ⊃ coding | 84 | Research then prototype in one loop |
 
-## Nested vs sequential
+## Composition operators
 
 ```mermaid
-flowchart TB
-  subgraph seq [Sequential L1 → L2]
-    A[Child A] --> B[Child B]
-  end
-  subgraph nest [Nested L_outer L_inner]
-    O[Outer loop] -->|on failure| I[Inner repair loop]
+flowchart LR
+  subgraph par [Parallel — swarm rehearsal]
+    S[Seed] --> B1[Branch A]
+    S --> B2[Branch B]
+    S --> B3[Branch C]
+    B1 --> M[Merge]
+    B2 --> M
+    B3 --> M
   end
 ```
 
-- **Sequential:** each child runs once in order; adapters pass outputs forward.
-- **Nested:** outer runs first; inner child(s) invoke only when outer fails its gate (e.g. test suite).
+- **Parallel:** same seed, divergent `lens` per branch; `merge.min_branches_pass` gates success.
+- **Nested:** outer first; inner on failure trigger.
+- **Sequential:** adapters chain outputs forward.
 
 ## Validate and run
 
 ```bash
-python scripts/validate_loop_library.py      # atomic + composed specs
+python scripts/validate_loop_library.py
 python tools/composition_validator.py --library
-python examples/compose-loop/run.py loop-library/compositions/code-debug-repair.yaml
+python examples/compose-loop/run.py loop-library/compositions/scenario-swarm-rehearsal.yaml
 ```
 
 ## Design rules
 
-1. **Never merge evaluators** across children — each child keeps its own oracles.
-2. **Adapters are typed glue** — declare `from`/`to` paths explicitly.
-3. **Cost caps sum** — parent `cost_limits.cumulative_usd` ≥ sum of child budgets.
+1. Each child keeps its own evaluators — no merged oracles.
+2. Parallel branches must declare a `merge` block.
+3. Preserve dissent in parallel merge output when `preserve_dissent: true`.
 
-See [RFC-LSS-1.1-composition.md](../../contributions/RFC-LSS-1.1-composition.md) and [loop-composition-algebra.md](../../research/loop-composition-algebra.md).
+See [RFC-LSS-1.1-composition.md](../../contributions/RFC-LSS-1.1-composition.md).
