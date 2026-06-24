@@ -1,0 +1,49 @@
+{
+  "benchmark_id": "ALS-T2",
+  "task_name": "Code Repair",
+  "suite": "ALS-1.0",
+  "version": "1.0.0",
+  "submitted": "2026-06-17",
+  "harness": "loop-engineering-reflection-loop-v1",
+  "model": "mock (no API keys)",
+  "lss_spec": "loop-library/autonomous-debugger.yaml",
+  "runs": 5,
+  "protocol": "scoring/methodology.md primary runs (warm-up excluded)",
+  "results": {
+    "primary_runs": [
+      {"run_id": 1, "success": true, "iterations": 1, "quality": 0.84},
+      {"run_id": 2, "success": true, "iterations": 1, "quality": 0.84},
+      {"run_id": 3, "success": true, "iterations": 1, "quality": 0.84},
+      {"run_id": 4, "success": true, "iterations": 1, "quality": 0.84},
+      {"run_id": 5, "success": true, "iterations": 1, "quality": 0.84}
+    ],
+    "les_structural": {
+      "source": "tools/les_calculator.py --spec loop-library/autonomous-debugger.yaml",
+      "composite": 70.4,
+      "categories": {
+        "effectiveness": 0.78,
+        "speed": 0.70,
+        "cost": 0.75,
+        "robustness": 0.77,
+        "scalability": 0.65,
+        "safety": 0.67,
+        "adaptability": 0.60,
+        "autonomy": 0.59
+      }
+    },
+    "aggregate": {
+      "success_rate": 1.0,
+      "mean_iterations": 1.0,
+      "mean_quality": 0.84
+    }
+  },
+  "reproduce": {
+    "discipline_repo": "https://github.com/KanakMalpani/Loop-Engineering",
+    "commands": [
+      "python examples/reflection-loop/run.py",
+      "python tools/les_calculator.py --spec loop-library/autonomous-debugger.yaml --json"
+    ],
+    "loopbench_note": "Full ALS-T2 harness via pip install loopbench — submit matching runs to LoopBench leaderboard"
+  },
+  "canonical_leaderboard": "https://github.com/KanakMalpani/LoopBench"
+}

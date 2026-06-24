@@ -27,7 +27,8 @@ Thumbs.db
 # Loop runtime artifacts
 .loop-state/
 *.loop.log
-benchmarks/results/*.json
+benchmarks/results/runs/*.json
+!benchmarks/results/*-baseline.json
 
 # Secrets
 .env
