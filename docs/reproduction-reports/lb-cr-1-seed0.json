@@ -1,0 +1,93 @@
+{
+  "submission_id": "ac942309-0016-4889-8777-84fbcb054369",
+  "submitter": "local-dev",
+  "loopbench_version": "0.1.0",
+  "lss_version": "1.0.0",
+  "les_version": "1.0.0",
+  "spec_path": "loop-library/autonomous-debugger.yaml",
+  "spec_hash": "sha256:c1acd3d6408bc07813b3f3a150eb0514c8b7a873d2736dea75274eb0ead98eb9",
+  "submitted_at": "2026-06-24T11:54:56.074655+00:00",
+  "backend": "sim",
+  "results": [
+    {
+      "task_id": "LB-CR-1",
+      "env_id": "loopbench/code-repair-v1",
+      "runs": [
+        {
+          "task_instance_id": "cr-001",
+          "seed": 0,
+          "success": true,
+          "g_final": 0.86,
+          "g_0": 0.74,
+          "g_target": 0.8,
+          "iterations": 2,
+          "cost_usd": 0.46,
+          "elapsed_s": 0.0008,
+          "termination_reason": "goal_met",
+          "safety_violations": 0,
+          "goal_trace": [
+            0.74,
+            0.86
+          ]
+        },
+        {
+          "task_instance_id": "cr-002",
+          "seed": 0,
+          "success": true,
+          "g_final": 0.96,
+          "g_0": 0.71,
+          "g_target": 0.8,
+          "iterations": 3,
+          "cost_usd": 0.69,
+          "elapsed_s": 0.0005,
+          "termination_reason": "goal_met",
+          "safety_violations": 0,
+          "goal_trace": [
+            0.71,
+            0.84,
+            0.96
+          ]
+        },
+        {
+          "task_instance_id": "cr-003",
+          "seed": 0,
+          "success": true,
+          "g_final": 0.91,
+          "g_0": 0.79,
+          "g_target": 0.8,
+          "iterations": 2,
+          "cost_usd": 0.46,
+          "elapsed_s": 0.0004,
+          "termination_reason": "goal_met",
+          "safety_violations": 0,
+          "goal_trace": [
+            0.79,
+            0.91
+          ]
+        }
+      ],
+      "aggregate": {
+        "success_at_k": 1.0,
+        "les_observed": 0.8775,
+        "les_display": 87.8,
+        "categories": {
+          "effectiveness": 1.0,
+          "speed": 1.0,
+          "cost": 0.1255,
+          "safety": 1.0,
+          "robustness": 0.8958,
+          "scalability": 1.0,
+          "adaptability": 1.0,
+          "autonomy": 0.95
+        },
+        "cost_usd_mean": 0.5367,
+        "robustness_seeds": 1
+      }
+    }
+  ],
+  "composite": {
+    "les_observed": 0.8775,
+    "les_display": 87.8,
+    "rank_score": 0.8775
+  }
+}

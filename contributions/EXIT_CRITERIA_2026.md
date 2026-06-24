@@ -10,7 +10,7 @@
 | YAML architecture matches companion `.md` | Worker/evaluator parity | **Green** | [loop-library/README.md](../loop-library/README.md) |
 | Composed loops (nested/sequential/parallel) | ≥1 parallel | **Green** | [scenario-swarm-rehearsal](../loop-library/compositions/scenario-swarm-rehearsal.yaml) |
 | Benchmark suite v0.1 | All 3 LoopBench tasks + baseline JSON | **Green** | [lb-cr-1](../benchmarks/results/lb-cr-1-baseline.json), [lb-rs-1](../benchmarks/results/lb-rs-1-baseline.json), [lb-ma-1](../benchmarks/results/lb-ma-1-baseline.json) |
-| External team reproduces without hand-holding | Fork → validate → run → LES | **Yellow** | [REPRODUCE.md](REPRODUCE.md); awaiting external report |
+| External team reproduces without hand-holding | Fork → validate → run → LES | **Green** | [Report](https://github.com/KanakMalpani/Loop-Engineering/discussions/10) · [docs/reproduction-reports/2026-06-24-independent-replay.md](../docs/reproduction-reports/2026-06-24-independent-replay.md) |
 | LoopBench leaderboard merge | Maintainer row public | **Green** | [PR #1](https://github.com/KanakMalpani/LoopBench/pull/1) merged |
 | CONTRIBUTING + GOVERNANCE live | Complete | **Green** | This directory |
 | Reproduction challenge | Discussion + dry-run | **Green** | [#10](https://github.com/KanakMalpani/Loop-Engineering/discussions/10) |
@@ -31,9 +31,8 @@
 
 ## Next unlocks (2027)
 
-1. First **external** reproduction report ([Discussion #10](https://github.com/KanakMalpani/Loop-Engineering/discussions/10)) — via bridged audiences (HF, pip, harness)
-2. ≥1 **non-maintainer** LoopBench row ([good-first #4](https://github.com/KanakMalpani/Loop-Engineering/issues/4))
-3. LSS 1.1 **stable** in Loop-Core-Engineering (draft live; schema fragment in discipline repo)
-4. LB-COMP-1 composed task on public leaderboard
+1. ≥1 **non-maintainer** LoopBench row ([good-first #4](https://github.com/KanakMalpani/Loop-Engineering/issues/4))
+2. LSS 1.1 **stable** in Loop-Core-Engineering
+3. First **external** case study ([good-first #7](https://github.com/KanakMalpani/Loop-Engineering/issues/7) / [#8](https://github.com/KanakMalpani/Loop-Engineering/issues/8))
 
-See [All about loops/NEXT_STEPS.md](../All%20about%20loops/NEXT_STEPS.md) · [TOP_10_EXISTING_AUDIENCES.md](../All%20about%20loops/TOP_10_EXISTING_AUDIENCES.md).
+2026 reproduction path validated — see [reproduction reports](../docs/reproduction-reports/README.md).

@@ -31,8 +31,8 @@ LoopBench baselines (CR/RS/MA/COMP), composed loops, daily check-in, LSS 1.1 sch
 
 ---
 
-## Still the 2026 exit gap
+## Still open (2027 adoption)
 
-**First external reproduction** — from a **bridged** audience (HF, pip, Cursor, etc.).
-
-See [contributions/BRIDGE_AGENT_HARNESSES.md](../contributions/BRIDGE_AGENT_HARNESSES.md).
+- **Non-maintainer** reproduction report on [#10](https://github.com/KanakMalpani/Loop-Engineering/discussions/10) (path validated — [report](../docs/reproduction-reports/2026-06-24-independent-replay.md))
+- External case study #8
+- Non-maintainer LoopBench row #4
