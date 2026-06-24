@@ -1,6 +1,6 @@
 # Daily check-in — 2026-06-24 UTC
 
-**Status:** GREEN (5/5 checks passed)
+**Status:** GREEN (6/6 checks passed)
 **Loop library:** 9 atomic + 5 composed specs
 
 ## Checks
@@ -12,6 +12,13 @@
 | composed_nested_smoke | pass | `Composition: nested Success: True \| Reason: outer succeeded without inner   [outer] build (coding-agent): success=True ` |
 | composition_validator | pass | `OK: code-debug-repair.yaml (nested) OK: research-code-nest.yaml (nested) OK: research-to-writing.yaml (sequential) OK: s` |
 | adoption_links | pass | `OK: adoption links present in 10 files` |
+| adoption_tracker | pass | `Wrote /home/runner/work/Loop-Engineering/Loop-Engineering/docs/adoption-tracker/latest.json Wrote /home/runner/work/Loop` |
+
+## Adoption tracker
+
+**Summary:** 0 green · 9 yellow · 0 red
+
+Full report: [docs/adoption-tracker/latest.md](docs/adoption-tracker/latest.md)
 
 ## Reproduce locally
 
@@ -19,4 +26,4 @@
 python scripts/daily_checkin.py
 ```
 
-_Generated at 2026-06-24T13:23:34.900521+00:00_
+_Generated at 2026-06-24T13:25:20.659454+00:00_
