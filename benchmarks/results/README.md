@@ -1,6 +1,6 @@
 # Benchmark Results
 
-Published baseline runs for LoopBench tasks.
+Published maintainer baselines for LoopBench 0.1.0 (SimEnv, seeds 0–4).
 
 **Submit new results:** [LoopBench](https://github.com/KanakMalpani/LoopBench) or the benchmark submission issue template.
 
@@ -8,11 +8,13 @@ Published baseline runs for LoopBench tasks.
 
 ## Published baselines
 
-| Task ID | Name | Harness | Date | Success@k | LES observed | Artifact |
-|---------|------|---------|------|-----------|--------------|----------|
-| LB-CR-1 | Code Repair | loopbench sim + autonomous-debugger | 2026-06-17 | 1.0 | 86.7 | [lb-cr-1-baseline.json](./lb-cr-1-baseline.json) |
+| Task ID | Name | LSS spec | LES observed | Artifact |
+|---------|------|----------|--------------|----------|
+| LB-CR-1 | Code Repair | autonomous-debugger | 86.7 | [lb-cr-1-baseline.json](./lb-cr-1-baseline.json) |
+| LB-RS-1 | Research Synthesis | research-agent | 81.9 | [lb-rs-1-baseline.json](./lb-rs-1-baseline.json) |
+| LB-MA-1 | Multi-Agent Debate | coding-agent | 86.5 | [lb-ma-1-baseline.json](./lb-ma-1-baseline.json) |
 
-Full submission: [lb-cr-1-run.json](./lb-cr-1-run.json)
+Full submissions: `lb-*-run.json` in this directory.
 
 ---
 
@@ -21,6 +23,8 @@ Full submission: [lb-cr-1-run.json](./lb-cr-1-run.json)
 ```bash
 pip install loopbench
 loopbench run --task LB-CR-1 --spec loop-library/autonomous-debugger.yaml --seeds 0,1,2,3,4 -o results.json
+loopbench run --task LB-RS-1 --spec loop-library/research-agent.yaml --seeds 0,1,2,3,4 -o results.json
+loopbench run --task LB-MA-1 --spec loop-library/coding-agent.yaml --seeds 0,1,2,3,4 -o results.json
 ```
 
 See [contributions/REPRODUCE.md](../../contributions/REPRODUCE.md).
@@ -29,13 +33,13 @@ See [contributions/REPRODUCE.md](../../contributions/REPRODUCE.md).
 
 ## Leaderboard
 
-[LoopBench on GitHub](https://github.com/KanakMalpani/LoopBench) — maintainer PR #1 pending merge.
+[LoopBench on GitHub](https://github.com/KanakMalpani/LoopBench)
 
 ---
 
-## Pending baselines
+## Next
 
-- LB-RS-1 Research Synthesis
-- LB-MA-1 Multi-Agent Debate
+- Composed-loop benchmark (scenario-swarm-rehearsal)
+- External submissions on leaderboard
 
-See [contributions/GOOD_FIRST_ISSUES.md](../../contributions/GOOD_FIRST_ISSUES.md).
+See [All about loops/NEXT_STEPS.md](../../All%20about%20loops/NEXT_STEPS.md).

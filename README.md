@@ -152,7 +152,7 @@ termination_conditions:
 | [Scenario Swarm (parallel)](loop-library/compositions/scenario-swarm-rehearsal.yaml) | 4 | Decision rehearsal — 3 lenses, merged forecast |
 | [Startup Validator](loop-library/startup-validator.yaml) | 2 | PMF experiments |
 
-→ [Full library](loop-library/README.md)
+→ [Full library](loop-library/README.md) · [Master checklist](All%20about%20loops/MASTER_CHECKLIST.md) · [Next steps](All%20about%20loops/NEXT_STEPS.md)
 
 ---
 

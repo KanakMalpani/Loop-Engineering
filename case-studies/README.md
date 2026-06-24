@@ -2,6 +2,8 @@
 
 Deep analyses of real-world feedback systems mapped to Loop Engineering framework.
 
+New submissions: use [TEMPLATE.md](TEMPLATE.md) for the L = (S, A, O, T, E, M, τ) mapping.
+
 ---
 
 | Study | Domain | Loop Type | Composite LES |

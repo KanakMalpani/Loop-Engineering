@@ -1,0 +1,24 @@
+{
+  "benchmark_id": "LB-RS-1",
+  "task_id": "LB-RS-1",
+  "task_name": "Research Synthesis",
+  "suite": "LoopBench 0.1.0",
+  "version": "1.0.0",
+  "submitted": "2026-06-24",
+  "harness": "loopbench-sim-v0.1.0",
+  "backend": "sim",
+  "lss_spec": "loop-library/research-agent.yaml",
+  "spec_hash": "sha256:f3f39d34ee73e240ac59ae3b44cdf9c207e69a650ceb04960bdac8b1acab643b",
+  "protocol": "loopbench run --task LB-RS-1 --spec loop-library/research-agent.yaml --seeds 0,1,2,3,4",
+  "results": {
+    "aggregate": {
+      "success_at_k": 1.0,
+      "les_observed": 0.8191,
+      "les_display": 81.9,
+      "cost_usd_mean": 0.45,
+      "robustness_seeds": 5
+    }
+  },
+  "full_submission": "benchmarks/results/lb-rs-1-run.json",
+  "canonical_leaderboard": "https://github.com/KanakMalpani/LoopBench"
+}

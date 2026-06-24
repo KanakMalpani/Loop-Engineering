@@ -1,0 +1,293 @@
+{
+  "submission_id": "23817c7a-416c-4d97-917b-bd4f9dd32b58",
+  "submitter": "local-dev",
+  "loopbench_version": "0.1.0",
+  "lss_version": "1.0.0",
+  "les_version": "1.0.0",
+  "spec_path": "loop-library/research-agent.yaml",
+  "spec_hash": "sha256:f3f39d34ee73e240ac59ae3b44cdf9c207e69a650ceb04960bdac8b1acab643b",
+  "submitted_at": "2026-06-24T08:40:32.789927+00:00",
+  "backend": "sim",
+  "results": [
+    {
+      "task_id": "LB-RS-1",
+      "env_id": "loopbench/research-synthesis-v1",
+      "runs": [
+        {
+          "task_instance_id": "rs-001",
+          "seed": 0,
+          "success": true,
+          "g_final": 0.99,
+          "g_0": 0.99,
+          "g_target": 0.85,
+          "iterations": 1,
+          "cost_usd": 0.25,
+          "elapsed_s": 0.014,
+          "termination_reason": "goal_met",
+          "safety_violations": 0,
+          "goal_trace": [
+            0.99
+          ]
+        },
+        {
+          "task_instance_id": "rs-001",
+          "seed": 1,
+          "success": true,
+          "g_final": 0.88,
+          "g_0": 0.76,
+          "g_target": 0.85,
+          "iterations": 2,
+          "cost_usd": 0.5,
+          "elapsed_s": 0.0004,
+          "termination_reason": "goal_met",
+          "safety_violations": 0,
+          "goal_trace": [
+            0.76,
+            0.88
+          ]
+        },
+        {
+          "task_instance_id": "rs-001",
+          "seed": 2,
+          "success": true,
+          "g_final": 0.87,
+          "g_0": 0.75,
+          "g_target": 0.85,
+          "iterations": 2,
+          "cost_usd": 0.5,
+          "elapsed_s": 0.0003,
+          "termination_reason": "goal_met",
+          "safety_violations": 0,
+          "goal_trace": [
+            0.75,
+            0.87
+          ]
+        },
+        {
+          "task_instance_id": "rs-001",
+          "seed": 3,
+          "success": true,
+          "g_final": 0.83,
+          "g_0": 0.83,
+          "g_target": 0.85,
+          "iterations": 1,
+          "cost_usd": 0.25,
+          "elapsed_s": 0.0002,
+          "termination_reason": "goal_met",
+          "safety_violations": 0,
+          "goal_trace": [
+            0.83
+          ]
+        },
+        {
+          "task_instance_id": "rs-001",
+          "seed": 4,
+          "success": true,
+          "g_final": 0.86,
+          "g_0": 0.62,
+          "g_target": 0.85,
+          "iterations": 3,
+          "cost_usd": 0.75,
+          "elapsed_s": 0.0002,
+          "termination_reason": "goal_met",
+          "safety_violations": 0,
+          "goal_trace": [
+            0.62,
+            0.74,
+            0.86
+          ]
+        },
+        {
+          "task_instance_id": "rs-002",
+          "seed": 0,
+          "success": true,
+          "g_final": 0.82,
+          "g_0": 0.7,
+          "g_target": 0.85,
+          "iterations": 2,
+          "cost_usd": 0.5,
+          "elapsed_s": 0.0002,
+          "termination_reason": "goal_met",
+          "safety_violations": 0,
+          "goal_trace": [
+            0.7,
+            0.82
+          ]
+        },
+        {
+          "task_instance_id": "rs-002",
+          "seed": 1,
+          "success": true,
+          "g_final": 0.97,
+          "g_0": 0.97,
+          "g_target": 0.85,
+          "iterations": 1,
+          "cost_usd": 0.25,
+          "elapsed_s": 0.0002,
+          "termination_reason": "goal_met",
+          "safety_violations": 0,
+          "goal_trace": [
+            0.97
+          ]
+        },
+        {
+          "task_instance_id": "rs-002",
+          "seed": 2,
+          "success": true,
+          "g_final": 0.85,
+          "g_0": 0.73,
+          "g_target": 0.85,
+          "iterations": 2,
+          "cost_usd": 0.5,
+          "elapsed_s": 0.0002,
+          "termination_reason": "goal_met",
+          "safety_violations": 0,
+          "goal_trace": [
+            0.73,
+            0.85
+          ]
+        },
+        {
+          "task_instance_id": "rs-002",
+          "seed": 3,
+          "success": true,
+          "g_final": 0.94,
+          "g_0": 0.94,
+          "g_target": 0.85,
+          "iterations": 1,
+          "cost_usd": 0.25,
+          "elapsed_s": 0.0002,
+          "termination_reason": "goal_met",
+          "safety_violations": 0,
+          "goal_trace": [
+            0.94
+          ]
+        },
+        {
+          "task_instance_id": "rs-002",
+          "seed": 4,
+          "success": true,
+          "g_final": 0.99,
+          "g_0": 0.99,
+          "g_target": 0.85,
+          "iterations": 1,
+          "cost_usd": 0.25,
+          "elapsed_s": 0.0001,
+          "termination_reason": "goal_met",
+          "safety_violations": 0,
+          "goal_trace": [
+            0.99
+          ]
+        },
+        {
+          "task_instance_id": "rs-003",
+          "seed": 0,
+          "success": true,
+          "g_final": 0.8,
+          "g_0": 0.68,
+          "g_target": 0.85,
+          "iterations": 2,
+          "cost_usd": 0.5,
+          "elapsed_s": 0.0002,
+          "termination_reason": "goal_met",
+          "safety_violations": 0,
+          "goal_trace": [
+            0.68,
+            0.8
+          ]
+        },
+        {
+          "task_instance_id": "rs-003",
+          "seed": 1,
+          "success": true,
+          "g_final": 0.86,
+          "g_0": 0.86,
+          "g_target": 0.85,
+          "iterations": 1,
+          "cost_usd": 0.25,
+          "elapsed_s": 0.0002,
+          "termination_reason": "goal_met",
+          "safety_violations": 0,
+          "goal_trace": [
+            0.86
+          ]
+        },
+        {
+          "task_instance_id": "rs-003",
+          "seed": 2,
+          "success": true,
+          "g_final": 0.87,
+          "g_0": 0.75,
+          "g_target": 0.85,
+          "iterations": 2,
+          "cost_usd": 0.5,
+          "elapsed_s": 0.0002,
+          "termination_reason": "goal_met",
+          "safety_violations": 0,
+          "goal_trace": [
+            0.75,
+            0.87
+          ]
+        },
+        {
+          "task_instance_id": "rs-003",
+          "seed": 3,
+          "success": true,
+          "g_final": 0.87,
+          "g_0": 0.63,
+          "g_target": 0.85,
+          "iterations": 3,
+          "cost_usd": 0.75,
+          "elapsed_s": 0.0002,
+          "termination_reason": "goal_met",
+          "safety_violations": 0,
+          "goal_trace": [
+            0.63,
+            0.75,
+            0.87
+          ]
+        },
+        {
+          "task_instance_id": "rs-003",
+          "seed": 4,
+          "success": true,
+          "g_final": 0.89,
+          "g_0": 0.64,
+          "g_target": 0.85,
+          "iterations": 3,
+          "cost_usd": 0.75,
+          "elapsed_s": 0.0002,
+          "termination_reason": "goal_met",
+          "safety_violations": 0,
+          "goal_trace": [
+            0.64,
+            0.76,
+            0.89
+          ]
+        }
+      ],
+      "aggregate": {
+        "success_at_k": 1.0,
+        "les_observed": 0.8191,
+        "les_display": 81.9,
+        "categories": {
+          "effectiveness": 0.8,
+          "speed": 1.0,
+          "cost": 0.0671,
+          "safety": 1.0,
+          "robustness": 0.8081,
+          "scalability": 1.0,
+          "adaptability": 1.0,
+          "autonomy": 0.95
+        },
+        "cost_usd_mean": 0.45,
+        "robustness_seeds": 5
+      }
+    }
+  ],
+  "composite": {
+    "les_observed": 0.8191,
+    "les_display": 81.9,
+    "rank_score": 0.8191
+  }
+}

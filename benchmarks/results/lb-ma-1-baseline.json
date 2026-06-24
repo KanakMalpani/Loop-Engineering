@@ -1,0 +1,24 @@
+{
+  "benchmark_id": "LB-MA-1",
+  "task_id": "LB-MA-1",
+  "task_name": "Multi-Agent Debate",
+  "suite": "LoopBench 0.1.0",
+  "version": "1.0.0",
+  "submitted": "2026-06-24",
+  "harness": "loopbench-sim-v0.1.0",
+  "backend": "sim",
+  "lss_spec": "loop-library/coding-agent.yaml",
+  "spec_hash": "sha256:a7958a51b77289a7be904471a540808951378f6eee6e74683aef3a28d68d079e",
+  "protocol": "loopbench run --task LB-MA-1 --spec loop-library/coding-agent.yaml --seeds 0,1,2,3,4",
+  "results": {
+    "aggregate": {
+      "success_at_k": 1.0,
+      "les_observed": 0.8645,
+      "les_display": 86.5,
+      "cost_usd_mean": 0.672,
+      "robustness_seeds": 5
+    }
+  },
+  "full_submission": "benchmarks/results/lb-ma-1-run.json",
+  "canonical_leaderboard": "https://github.com/KanakMalpani/LoopBench"
+}
