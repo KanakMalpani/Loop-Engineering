@@ -11,7 +11,7 @@
 | 1 | Merge LoopBench PR #1 (LB-CR-1) | **Done** |
 | 2 | LB-RS-1 + LB-MA-1 baseline JSON | **Done** |
 | 3 | Reproduction challenge visibility | **Done** — [#10](https://github.com/KanakMalpani/Loop-Engineering/discussions/10) in **Announcements** |
-| 4 | LoopBench PR for RS/MA leaderboard rows | **Open** — PR after merge |
+| 4 | LoopBench PR for RS/MA leaderboard rows | **Done** — [PR #2](https://github.com/KanakMalpani/LoopBench/pull/2) merged |
 | 5 | First **external** reproduction report | **Waiting on community** → [ADOPTION_SIGNAL.md](../contributions/ADOPTION_SIGNAL.md) |
 
 ## Tier 2 — Discipline credibility
