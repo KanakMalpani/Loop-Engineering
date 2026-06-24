@@ -26,7 +26,7 @@ Local composed smoke (no LoopBench):
 
 ```bash
 python examples/compose-loop/run.py loop-library/compositions/scenario-swarm-rehearsal.yaml
-pip install loopgym
+pip install "git+https://github.com/KanakMalpani/LoopGym.git"  # until loopgym>0.1.0 on PyPI
 python -c "import loopgym as lg; print(lg.make('loopbench/composed-swarm-v1').reset(task_id='comp-001'))"
 ```
 
