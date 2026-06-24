@@ -113,14 +113,103 @@ def format_table(comparison: dict[str, Any], path_a: str, path_b: str) -> str:
     return "\n".join(lines)
 
 
+def _extract_aggregate(data: dict[str, Any]) -> dict[str, Any]:
+    results = data.get("results")
+    if isinstance(results, list) and results:
+        first = results[0]
+        if isinstance(first, dict):
+            return first.get("aggregate") or {}
+    if isinstance(results, dict):
+        return results.get("aggregate") or {}
+    return data.get("aggregate") or {}
+
+
+def pareto_report(baselines: list[tuple[str, dict[str, Any]]], dim_x: str, dim_y: str) -> dict[str, Any]:
+    points = []
+    for label, data in baselines:
+        agg = _extract_aggregate(data)
+        cats = agg.get("categories") or {}
+        les_struct = data.get("results", {}).get("les_structural") if isinstance(data.get("results"), dict) else {}
+        composite = agg.get("les_observed")
+        if composite is None and isinstance(les_struct, dict):
+            composite = les_struct.get("composite")
+        points.append(
+            {
+                "label": label,
+                "x": cats.get(dim_x, 0.0),
+                "y": cats.get(dim_y, 0.0),
+                "les_observed": composite,
+                "les_display": agg.get("les_display"),
+            }
+        )
+    # Non-dominated (maximize both)
+    frontier = []
+    for i, p in enumerate(points):
+        dominated = False
+        for j, q in enumerate(points):
+            if i != j and q["x"] >= p["x"] and q["y"] >= p["y"] and (q["x"] > p["x"] or q["y"] > p["y"]):
+                dominated = True
+                break
+        if not dominated:
+            frontier.append(p["label"])
+    return {
+        "dimensions": {"x": dim_x, "y": dim_y},
+        "points": points,
+        "pareto_frontier": frontier,
+    }
+
+
+def load_baseline_json(path: Path) -> dict[str, Any]:
+    with path.open(encoding="utf-8") as fh:
+        return json.load(fh)
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(
         description="Compare two LSS loop specifications side by side",
     )
-    parser.add_argument("spec_a", type=Path, help="First LSS YAML file")
-    parser.add_argument("spec_b", type=Path, help="Second LSS YAML file")
+    parser.add_argument("spec_a", type=Path, nargs="?", help="First LSS YAML file")
+    parser.add_argument("spec_b", type=Path, nargs="?", help="Second LSS YAML file")
     parser.add_argument("--json", action="store_true", help="Output JSON")
+    parser.add_argument(
+        "--pareto",
+        action="store_true",
+        help="Pareto report from baseline JSON files (provide 2+ --baseline paths)",
+    )
+    parser.add_argument(
+        "--baseline",
+        type=Path,
+        action="append",
+        help="Baseline JSON for --pareto mode",
+    )
+    parser.add_argument("--dim-x", default="speed", help="LES category for X axis (pareto)")
+    parser.add_argument("--dim-y", default="effectiveness", help="LES category for Y axis (pareto)")
+    parser.add_argument(
+        "--pareto-output",
+        type=Path,
+        default=Path("benchmarks/results/les-pareto-baselines-v0.1.json"),
+    )
     args = parser.parse_args()
+
+    if args.pareto:
+        if not args.baseline or len(args.baseline) < 2:
+            parser.error("--pareto requires at least two --baseline paths")
+        baselines = [(p.stem, load_baseline_json(p)) for p in args.baseline]
+        report = pareto_report(baselines, args.dim_x, args.dim_y)
+        report["generated_from"] = [str(p) for p in args.baseline]
+        args.pareto_output.parent.mkdir(parents=True, exist_ok=True)
+        args.pareto_output.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
+        if args.json:
+            print(json.dumps(report, indent=2))
+        else:
+            print(f"Pareto ({args.dim_x} vs {args.dim_y}): wrote {args.pareto_output}")
+            for p in report["points"]:
+                mark = "*" if p["label"] in report["pareto_frontier"] else " "
+                print(f"  {mark} {p['label']:20s} x={p['x']:.2f} y={p['y']:.2f} LES={p.get('les_display')}")
+        return 0
+
+    if not args.spec_a or not args.spec_b:
+        parser.error("Provide spec_a and spec_b, or use --pareto")
 
     for p in (args.spec_a, args.spec_b):
         if not p.exists():

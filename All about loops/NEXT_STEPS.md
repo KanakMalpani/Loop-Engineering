@@ -66,4 +66,17 @@ Tracked daily: [docs/adoption-tracker/latest.md](../docs/adoption-tracker/latest
 
 ## Community (tracked daily)
 
-[docs/adoption-tracker/latest.md](../docs/adoption-tracker/latest.md) · [EXTERNAL_SUBMISSIONS.md](../contributions/EXTERNAL_SUBMISSIONS.md)
+[docs/adoption-tracker/latest.md](../docs/adoption-tracker/latest.md) · [EXTERNAL_SUBMISSIONS.md](../contributions/EXTERNAL_SUBMISSIONS.md) · [COMMUNITY_HANDOFF_PHASE4.md](../contributions/COMMUNITY_HANDOFF_PHASE4.md)
+
+## Phase 4 completed (maintainer)
+
+| Item | Artifact |
+|------|----------|
+| LoopBench COMP wire | `loopbench/composed-swarm-v1` on LB-COMP-1 |
+| loopgym PyPI 0.1.1 | [LoopGym](https://github.com/KanakMalpani/LoopGym) release |
+| Adoption wave 4 | [adoption_wave4.py](../scripts/adoption_wave4.py) |
+| LE-OP-04 benchmark | [benchmarks/evaluator-composition/](../benchmarks/evaluator-composition/) |
+| Composition diagrams | [loop_diagram_generator.py](../tools/loop_diagram_generator.py) |
+| LE-OP-21 v0.2 | [le-op-21-harness-compare-v0.2.json](../benchmarks/results/le-op-21-harness-compare-v0.2.json) |
+| Pareto LES tool | [loop_comparison.py --pareto](../tools/loop_comparison.py) |
+| Level warn CI | `validate_loop_library --warn-level` in daily checkin |

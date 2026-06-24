@@ -1,0 +1,7 @@
+{
+  "benchmark_id": "evaluator-composition-v0.1",
+  "version": "0.1.0",
+  "scenarios": ["naive_and", "double_count_avg", "partition_merge"],
+  "reference_spec": "loop-library/compositions/scenario-swarm-rehearsal.yaml",
+  "pass_threshold": 0.80
+}

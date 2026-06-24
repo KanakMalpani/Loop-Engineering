@@ -1,0 +1,37 @@
+{
+  "dimensions": {
+    "x": "speed",
+    "y": "effectiveness"
+  },
+  "points": [
+    {
+      "label": "lb-cr-1-run",
+      "x": 1.0,
+      "y": 1.0,
+      "les_observed": 0.8671,
+      "les_display": 86.7
+    },
+    {
+      "label": "lb-rs-1-run",
+      "x": 1.0,
+      "y": 0.8,
+      "les_observed": 0.8191,
+      "les_display": 81.9
+    },
+    {
+      "label": "lb-comp-1-run",
+      "x": 1.0,
+      "y": 0.7333,
+      "les_observed": 0.8028,
+      "les_display": 80.3
+    }
+  ],
+  "pareto_frontier": [
+    "lb-cr-1-run"
+  ],
+  "generated_from": [
+    "benchmarks\\results\\lb-cr-1-run.json",
+    "benchmarks\\results\\lb-rs-1-run.json",
+    "benchmarks\\results\\lb-comp-1-run.json"
+  ]
+}

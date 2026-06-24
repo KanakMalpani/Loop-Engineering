@@ -56,7 +56,7 @@ Problems are grouped by theme. Numbering is stable for citation (`LE-OP-01`, etc
 
 **Partial progress.** Ensemble methods in ML. GitHub PR checks as independent gates (logical AND). Guidance for parallel merge evaluators: [le-op-04-evaluator-composition.md](le-op-04-evaluator-composition.md).
 
-**Resolution criteria.** Composition operators in `loop-composition-algebra.md` extended with evaluator correlation model. Demonstrated reduction in false-pass rate on `benchmarks/evaluator-composition/` vs. naive AND/OR. **Partial:** partition rules + composed spec reference (June 2026).
+**Resolution criteria.** Composition operators in `loop-composition-algebra.md` extended with evaluator correlation model. Demonstrated reduction in false-pass rate on `benchmarks/evaluator-composition/` vs. naive AND/OR. **Partial:** partition rules + benchmark v0.1 ([run_evaluator_composition_demo.py](../scripts/run_evaluator_composition_demo.py)) (June 2026).
 
 ---
 

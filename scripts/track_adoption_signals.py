@@ -43,6 +43,8 @@ DISCUSSIONS = {
 }
 
 PYPI_MIN_LOOPBENCH = (0, 1, 1)
+PYPI_MIN_LOOPGYM = (0, 1, 1)
+PYPI_LOOPGYM_URL = "https://pypi.org/pypi/loopgym/json"
 LEADERBOARD_URL = (
     "https://raw.githubusercontent.com/KanakMalpani/LoopBench/main/leaderboard/entries.json"
 )
@@ -133,6 +135,29 @@ def check_loopbench_leaderboard() -> Signal:
         "yellow",
         f"No external rows yet ({len(entries)} entries: {submitters})",
         "https://github.com/KanakMalpani/Loop-Engineering/issues/4",
+    )
+
+
+def check_pypi_loopgym() -> Signal:
+    try:
+        data = fetch_json(PYPI_LOOPGYM_URL)
+        version = data.get("info", {}).get("version", "0.0.0")
+    except (urllib.error.URLError, json.JSONDecodeError, TimeoutError) as exc:
+        return Signal(
+            "pypi_loopgym",
+            "loopgym on PyPI (>= 0.1.1)",
+            "yellow",
+            f"PyPI unreachable: {exc}",
+            "https://pypi.org/project/loopgym/",
+        )
+
+    ok = parse_version(version) >= PYPI_MIN_LOOPGYM
+    return Signal(
+        "pypi_loopgym",
+        "loopgym on PyPI (>= 0.1.1)",
+        "green" if ok else "yellow",
+        f"PyPI version: {version}",
+        "https://pypi.org/project/loopgym/",
     )
 
 
@@ -275,6 +300,7 @@ def collect_signals() -> list[Signal]:
         check_discussion(10, DISCUSSIONS[10]),
         check_discussion(11, DISCUSSIONS[11]),
         check_pypi_loopbench(),
+        check_pypi_loopgym(),
         check_lss_11_stable(),
     ]
     for num, label in GOOD_FIRST_ISSUES.items():

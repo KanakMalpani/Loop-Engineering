@@ -2,7 +2,7 @@
 
 One-command path for [LoopBench](https://github.com/KanakMalpani/LoopBench) task **LB-COMP-1** (LSS 1.1 parallel composition).
 
-**Target:** LES_obs ≥ **77.4** ([lb-comp-1-baseline.json](../benchmarks/results/lb-comp-1-baseline.json)).
+**Target:** LES_obs ≥ **80.3** ([lb-comp-1-baseline.json](../benchmarks/results/lb-comp-1-baseline.json)).
 
 ---
 
@@ -11,7 +11,7 @@ One-command path for [LoopBench](https://github.com/KanakMalpani/LoopBench) task
 ```bash
 git clone https://github.com/KanakMalpani/Loop-Engineering.git
 cd Loop-Engineering
-pip install "loopbench>=0.1.1" loopgym pyyaml jsonschema
+pip install "loopbench>=0.1.1" "loopgym>=0.1.1" pyyaml jsonschema
 
 loopbench run \
   --task LB-COMP-1 \
@@ -26,7 +26,7 @@ Local composed smoke (no LoopBench):
 
 ```bash
 python examples/compose-loop/run.py loop-library/compositions/scenario-swarm-rehearsal.yaml
-pip install "git+https://github.com/KanakMalpani/LoopGym.git"  # until loopgym>0.1.0 on PyPI
+pip install "loopgym>=0.1.1"
 python -c "import loopgym as lg; print(lg.make('loopbench/composed-swarm-v1').reset(task_id='comp-001'))"
 ```
 

@@ -104,6 +104,7 @@ def main() -> int:
     py = sys.executable
     checks: list[tuple[str, list[str]]] = [
         ("validate_loop_library", [py, "scripts/validate_loop_library.py"]),
+        ("validate_level_warnings", [py, "scripts/validate_loop_library.py", "--warn-level"]),
         ("reflection_loop_smoke", [py, "examples/reflection-loop/run.py"]),
         (
             "composed_nested_smoke",
@@ -122,6 +123,7 @@ def main() -> int:
             ],
         ),
         ("adoption_links", [py, "scripts/check_adoption_links.py"]),
+        ("evaluator_composition", [py, "scripts/run_evaluator_composition_demo.py"]),
     ]
 
     results: list[tuple[str, bool, str]] = []

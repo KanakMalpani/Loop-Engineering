@@ -1,13 +1,9 @@
-# LE-OP-21 — Multi-Harness Structural LES Pilot (v0.1)
+# LE-OP-21 — Multi-Harness LES Comparison Pilot
 
-**Status:** Pilot artifact (June 2026)  
-**Artifact:** [le-op-21-harness-compare-v0.1.json](../benchmarks/results/le-op-21-harness-compare-v0.1.json)
-
----
-
-## Goal
-
-Compare **structural LES** for the same research-loop LSS spec as mapped through three agent harness narratives (Cursor, LangGraph, CrewAI).
+**Status:** v0.2 artifact (June 2026)  
+**Artifacts:**
+- Structural: [le-op-21-harness-compare-v0.1.json](../benchmarks/results/le-op-21-harness-compare-v0.1.json)
+- Structural + observed proxy: [le-op-21-harness-compare-v0.2.json](../benchmarks/results/le-op-21-harness-compare-v0.2.json)
 
 ---
 
@@ -15,27 +11,27 @@ Compare **structural LES** for the same research-loop LSS spec as mapped through
 
 ```bash
 python tools/harness_compare.py
-python tools/harness_compare.py --output benchmarks/results/le-op-21-harness-compare-v0.1.json
+python tools/harness_compare.py --v01   # structural only
 ```
 
 ---
 
 ## Harness mappings
 
-| Harness | LSS proxy spec | Case study |
-|---------|----------------|------------|
-| Cursor Agent | [coding-agent.yaml](../loop-library/coding-agent.yaml) | [cursor-agent-loop.md](../case-studies/cursor-agent-loop.md) |
-| LangGraph | [research-agent.yaml](../loop-library/research-agent.yaml) | [langgraph-composition-bridge.md](../case-studies/langgraph-composition-bridge.md) |
-| CrewAI | [research-agent.yaml](../loop-library/research-agent.yaml) | [crewai-composition-bridge.md](../case-studies/crewai-composition-bridge.md) |
+| Harness | LSS proxy spec | Observed proxy |
+|---------|----------------|----------------|
+| Cursor Agent | [coding-agent.yaml](../loop-library/coding-agent.yaml) | `loopbench/code-repair-v1` SimEnv episode |
+| LangGraph | [research-agent.yaml](../loop-library/research-agent.yaml) | [langgraph/run.py](../implementations/langgraph/run.py) smoke |
+| CrewAI | [research-agent.yaml](../loop-library/research-agent.yaml) | [crewai/run.py](../implementations/crewai/run.py) smoke |
 
-Composition extensions (LB-COMP-1) are documented in bridge case studies; this pilot uses atomic specs for apples-to-apples structural comparison.
+See case studies: [langgraph-composition-bridge.md](../case-studies/langgraph-composition-bridge.md) · [crewai-composition-bridge.md](../case-studies/crewai-composition-bridge.md)
 
 ---
 
 ## Next steps (LE-OP-21 full)
 
-- Observed LES via LiveEnv per harness
-- Composition-aware harness specs (parallel branches)
-- Cross-harness benchmark on LB-COMP-1
+- LiveEnv observed LES per harness
+- LB-COMP-1 cross-harness comparison
+- Cross-org comparability report (2028 roadmap)
 
-See [RESEARCH_ROADMAP.md](../contributions/RESEARCH_ROADMAP.md) · [open-problems.md](open-problems.md).
+See [RESEARCH_ROADMAP.md](../contributions/RESEARCH_ROADMAP.md).

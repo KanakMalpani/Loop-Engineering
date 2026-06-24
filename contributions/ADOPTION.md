@@ -24,6 +24,7 @@ Full pack: [EXTERNAL_SUBMISSIONS.md](EXTERNAL_SUBMISSIONS.md)
 ```bash
 python scripts/adoption_wave2.py   # checklist + framework pings
 python scripts/adoption_wave3.py # Phase 3 BEAT quad + stale-issue ping
+python scripts/adoption_wave4.py # Phase 4 HF + LoopBench + framework comments
 ```
 
 ---

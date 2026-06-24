@@ -1,0 +1,27 @@
+---
+title: scenario-swarm-rehearsal (L2)
+---
+flowchart TB
+    START([Start: Rehearse a high-stakes decision by running paralle])
+    START --> ParallelBranches
+    subgraph ParallelBranches[Parallel branches]
+        B_falsifier[falsifier\nstartup-validator]
+        B_evidence[evidence\nresearch-agent]
+        B_operator[operator\nbusiness-strategy-agent]
+    end
+    ORCH[Merge: consensus_rubric\nworkers.orchestrator]
+    B_falsifier --> ORCH
+    B_evidence --> ORCH
+    B_operator --> ORCH
+    ORCH -.->|dissent preserved| ParallelBranches
+    E_composite_gate{composite_gate\n>=0.8}
+    ORCH --> E_composite_gate
+    subgraph Feedback
+        FB0[evaluators.composite_gate -> workers.orchestrator: structured]
+    end
+    E_composite_gate --> FB0
+    OPT[Optimize: prompt_refinement]
+    FB0 --> OPT
+    TERM([Terminate: composite_quality gte 0.8 | safety_violation | max_iterations=14])
+    OPT --> TERM
+    OPT -.->|not done| W_orchestrator

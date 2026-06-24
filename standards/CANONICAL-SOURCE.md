@@ -22,7 +22,7 @@ Version registry: [ECOSYSTEM_VERSIONS.md](../ECOSYSTEM_VERSIONS.md) (discipline 
 |------|-----|-----------------|
 | Loop Core Engineering | https://github.com/KanakMalpani/Loop-Core-Engineering | LSS 1.0 + **1.1**, LES 1.0 |
 | LoopNet | https://github.com/KanakMalpani/loopnet | **v0.2** (545 Tier-1 trajectories) |
-| LoopGym | https://github.com/KanakMalpani/LoopGym | PyPI `loopgym` 0.1.x |
+| LoopGym | https://github.com/KanakMalpani/LoopGym | PyPI `loopgym` **0.1.1** |
 | LoopBench | https://github.com/KanakMalpani/LoopBench | PyPI `loopbench` **0.1.1** |
 
 LoopNet dataset (Tier 1): https://huggingface.co/datasets/KanakMalpani/loopnet-v0.2

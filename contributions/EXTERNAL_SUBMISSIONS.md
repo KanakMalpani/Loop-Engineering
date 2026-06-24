@@ -77,4 +77,4 @@ Open PR referencing [good-first #7](https://github.com/KanakMalpani/Loop-Enginee
 
 Re-run maintainer outreach: `python scripts/adoption_wave2.py` · `python scripts/adoption_wave3.py`
 
-Community handoff: [COMMUNITY_HANDOFF_PHASE3.md](COMMUNITY_HANDOFF_PHASE3.md) · [ADOPTION.md](ADOPTION.md)
+Community handoff: [COMMUNITY_HANDOFF_PHASE4.md](COMMUNITY_HANDOFF_PHASE4.md) · [ADOPTION.md](ADOPTION.md)

@@ -129,7 +129,7 @@ Guides: [BEAT_LB-CR-1.md](BEAT_LB-CR-1.md) · [BEAT_LB-RS-1.md](BEAT_LB-RS-1.md)
 
 ```bash
 python examples/compose-loop/run.py loop-library/compositions/scenario-swarm-rehearsal.yaml
-pip install "git+https://github.com/KanakMalpani/LoopGym.git"
+pip install "loopgym>=0.1.1"
 python -c "import loopgym as lg; print(lg.make('loopbench/composed-swarm-v1').run_episode(task_id='comp-001', seed=0))"
 ```
 

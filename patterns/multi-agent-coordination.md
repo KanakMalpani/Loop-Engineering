@@ -94,3 +94,11 @@ function multi_agent_coord(goal, specialists, orchestrator):
 ## Taxonomy Level
 
 **Level 3** — Multi-Agent Loops. Compose specialists running `research-loop`, `critique-loop`, `verification-loop`; wrap with `safety-constrained-loop`.
+
+## LSS 1.1 composition diagram
+
+```bash
+python tools/loop_diagram_generator.py loop-library/compositions/scenario-swarm-rehearsal.yaml -o docs/diagrams/scenario-swarm-rehearsal.mmd
+```
+
+Reference: [scenario-swarm-rehearsal.yaml](../loop-library/compositions/scenario-swarm-rehearsal.yaml) · [docs/diagrams/scenario-swarm-rehearsal.mmd](../docs/diagrams/scenario-swarm-rehearsal.mmd)
