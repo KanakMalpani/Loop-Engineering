@@ -18,6 +18,8 @@
 
 ## Still open (community)
 
+Tracked daily: [docs/adoption-tracker/latest.md](../docs/adoption-tracker/latest.md)
+
 | Item | Entry |
 |------|-------|
 | Non-maintainer LoopBench row | [BEAT_LB-CR-1.md](../contributions/BEAT_LB-CR-1.md) · [#4](https://github.com/KanakMalpani/Loop-Engineering/issues/4) |

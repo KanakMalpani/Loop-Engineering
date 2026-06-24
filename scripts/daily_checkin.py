@@ -28,7 +28,11 @@ def count_specs() -> tuple[int, int]:
     return atomic, composed
 
 
-def build_report(results: list[tuple[str, bool, str]], when: datetime) -> str:
+def build_report(
+    results: list[tuple[str, bool, str]],
+    when: datetime,
+    adoption_summary: str | None = None,
+) -> str:
     atomic, composed = count_specs()
     passed = sum(1 for _, ok, _ in results if ok)
     total = len(results)
@@ -50,6 +54,18 @@ def build_report(results: list[tuple[str, bool, str]], when: datetime) -> str:
         mark = "pass" if ok else "**FAIL**"
         snippet = detail.replace("|", "\\|").replace("\n", " ")[:120]
         lines.append(f"| {name} | {mark} | `{snippet}` |")
+
+    if adoption_summary:
+        lines.extend(
+            [
+                "",
+                "## Adoption tracker",
+                "",
+                adoption_summary,
+                "",
+                "Full report: [docs/adoption-tracker/latest.md](docs/adoption-tracker/latest.md)",
+            ]
+        )
 
     lines.extend(
         [
@@ -78,6 +94,11 @@ def main() -> int:
         type=Path,
         help="Also write dated copy (e.g. docs/checkins/archive)",
     )
+    parser.add_argument(
+        "--skip-adoption",
+        action="store_true",
+        help="Skip adoption signal tracking (offline mode)",
+    )
     args = parser.parse_args()
 
     py = sys.executable
@@ -101,8 +122,33 @@ def main() -> int:
         if not ok:
             print(detail[:500])
 
+    adoption_summary: str | None = None
+    if not args.skip_adoption:
+        tracker_md = ROOT / "docs" / "adoption-tracker" / "latest.md"
+        tracker_json = ROOT / "docs" / "adoption-tracker" / "latest.json"
+        ok, detail = run_step(
+            "adoption_tracker",
+            [
+                py,
+                "scripts/track_adoption_signals.py",
+                "--output",
+                str(tracker_md),
+                "--json",
+                str(tracker_json),
+            ],
+        )
+        results.append(("adoption_tracker", ok, detail))
+        status = "OK" if ok else "FAIL"
+        print(f"[{status}] adoption_tracker")
+        if tracker_md.exists():
+            # Extract summary line from generated report
+            for line in tracker_md.read_text(encoding="utf-8").splitlines():
+                if line.startswith("**Summary:**"):
+                    adoption_summary = line
+                    break
+
     when = datetime.now(timezone.utc)
-    report = build_report(results, when)
+    report = build_report(results, when, adoption_summary)
 
     if args.output:
         args.output.parent.mkdir(parents=True, exist_ok=True)

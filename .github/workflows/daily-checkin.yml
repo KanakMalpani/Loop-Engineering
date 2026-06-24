@@ -30,12 +30,14 @@ jobs:
             --output docs/checkins/latest.md \
             --archive docs/checkins/archive
         continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
 
       - name: Commit check-in log
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add docs/checkins/
+          git add docs/checkins/ docs/adoption-tracker/
           if git diff --staged --quiet; then
             echo "No check-in changes to commit"
           else
