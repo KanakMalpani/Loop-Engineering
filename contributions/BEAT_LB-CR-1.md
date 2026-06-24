@@ -11,7 +11,7 @@ For `pip install loopbench` users landing from [LoopBench](https://github.com/Ka
 ```bash
 git clone https://github.com/KanakMalpani/Loop-Engineering.git
 cd Loop-Engineering
-pip install loopbench loopgym pyyaml jsonschema
+pip install "loopbench>=0.1.1" loopgym pyyaml jsonschema
 
 loopbench run \
   --task LB-CR-1 \

@@ -22,14 +22,20 @@ Tracked daily: [docs/adoption-tracker/latest.md](../docs/adoption-tracker/latest
 
 | Item | Entry |
 |------|-------|
-| Non-maintainer LoopBench row | [BEAT_LB-CR-1.md](../contributions/BEAT_LB-CR-1.md) · [#4](https://github.com/KanakMalpani/Loop-Engineering/issues/4) |
-| External case study extension | Extend [cursor-agent-loop.md](../case-studies/cursor-agent-loop.md) with your LES_obs |
-| RFC #11 framework comments | LangGraph / CrewAI maintainers on [#11](https://github.com/KanakMalpani/Loop-Engineering/discussions/11) |
+| Non-maintainer LoopBench row | [EXTERNAL_SUBMISSIONS.md](../contributions/EXTERNAL_SUBMISSIONS.md) · [BEAT_LB-CR-1.md](../contributions/BEAT_LB-CR-1.md) · [#4](https://github.com/KanakMalpani/Loop-Engineering/issues/4) |
+| External reproduction | [EXTERNAL_SUBMISSIONS.md](../contributions/EXTERNAL_SUBMISSIONS.md) · [#10](https://github.com/KanakMalpani/Loop-Engineering/discussions/10) |
+| External case study | [EXTERNAL_SUBMISSIONS.md](../contributions/EXTERNAL_SUBMISSIONS.md) · [#7](https://github.com/KanakMalpani/Loop-Engineering/issues/7) |
+| RFC #11 framework comments | LangGraph [#8186](https://github.com/langchain-ai/langgraph/issues/8186) · CrewAI [#6316](https://github.com/crewAIInc/crewAI/issues/6316) · [#11](https://github.com/KanakMalpani/Loop-Engineering/discussions/11) |
 
 ---
 
 ## Next maintainer targets
 
-1. LSS 1.1 **stable** promotion (post #11 feedback)
-2. LoopBench **PyPI** release with LB-COMP-1 in `loopbench list`
-3. LoopNet explore histograms ([#9](https://github.com/KanakMalpani/Loop-Engineering/issues/9))
+1. ~~LSS 1.1 **stable** promotion~~ → [Loop-Core lss-1.1.md](https://github.com/KanakMalpani/Loop-Core-Engineering/blob/main/specs/lss-1.1.md)
+2. ~~LoopBench **PyPI** 0.1.1~~ → live on PyPI
+3. ~~LoopNet explore histograms~~ → [docs/loopnet/histograms](../docs/loopnet/histograms/)
+4. ~~LE-OP-11 recommender v0.1~~ → [tools/level_recommender.py](../tools/level_recommender.py)
+
+## Community (tracked daily)
+
+[docs/adoption-tracker/latest.md](../docs/adoption-tracker/latest.md) · [EXTERNAL_SUBMISSIONS.md](../contributions/EXTERNAL_SUBMISSIONS.md)

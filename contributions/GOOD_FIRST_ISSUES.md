@@ -43,3 +43,5 @@ Actionable contribution entry points. File these as GitHub issues or pick one an
 ## How to claim
 
 Comment on the matching GitHub issue or open a PR referencing the item number above.
+
+**External adoption pack:** [EXTERNAL_SUBMISSIONS.md](EXTERNAL_SUBMISSIONS.md)

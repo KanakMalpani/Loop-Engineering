@@ -3,7 +3,7 @@
 Single source of truth for public version strings across the five-repo stack.  
 Update this file when any component releases; mirror changes in sibling repo READMEs.
 
-**Last updated:** 2026-06-17
+**Last updated:** 2026-06-24
 
 ---
 
@@ -11,7 +11,7 @@ Update this file when any component releases; mirror changes in sibling repo REA
 
 | Component | Version | Canonical location |
 |-----------|---------|------------------|
-| LSS (Loop Specification Standard) | **1.0** | [Loop-Core-Engineering/specs/lss-1.0.md](https://github.com/KanakMalpani/Loop-Core-Engineering/blob/main/specs/lss-1.0.md) |
+| LSS (Loop Specification Standard) | **1.0** + **1.1** composition | [lss-1.0.md](https://github.com/KanakMalpani/Loop-Core-Engineering/blob/main/specs/lss-1.0.md) · [lss-1.1.md](https://github.com/KanakMalpani/Loop-Core-Engineering/blob/main/specs/lss-1.1.md) |
 | LES (Loop Engineering Score) | **1.0** | [Loop-Core-Engineering/specs/les-1.0.md](https://github.com/KanakMalpani/Loop-Core-Engineering/blob/main/specs/les-1.0.md) |
 | Loop ID registry | **1.0** | [Loop-Core-Engineering/specs/loop-ids.md](https://github.com/KanakMalpani/Loop-Core-Engineering/blob/main/specs/loop-ids.md) |
 
@@ -32,7 +32,7 @@ Update this file when any component releases; mirror changes in sibling repo REA
 | Package | Version | Install | Repository |
 |---------|---------|---------|------------|
 | loopgym | **0.1.x** | `pip install loopgym` | [LoopGym](https://github.com/KanakMalpani/LoopGym) |
-| loopbench | **0.1.1** | `pip install loopbench` | [LoopBench](https://github.com/KanakMalpani/LoopBench) |
+| loopbench | **0.1.1** | `pip install "loopbench>=0.1.1"` | [LoopBench](https://github.com/KanakMalpani/LoopBench) |
 
 Pin exact versions in reproduction docs; run `pip show loopgym loopbench` after install.
 

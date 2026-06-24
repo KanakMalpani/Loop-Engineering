@@ -142,7 +142,7 @@ Problems are grouped by theme. Numbering is stable for citation (`LE-OP-01`, etc
 
 **Why it matters.** Directly affects LES Cost and Scalability. Mis-leveling is the most common architectural mistake in agent deployments.
 
-**Partial progress.** Case studies note level choices post hoc. Taxonomy README advises "escalate deliberately" without decision procedure.
+**Partial progress.** Case studies note level choices post hoc. Taxonomy README advises "escalate deliberately" without decision procedure. **v0.1 recommender:** [tools/level_recommender.py](../tools/level_recommender.py) + [le-op-11-recommender-v0.1.json](../benchmarks/results/le-op-11-recommender-v0.1.json) (LoopNet v0.2 features).
 
 **Resolution criteria.** Task feature schema + level recommender validated on benchmark suite with ≤15% level misassignment rate vs. oracle (exhaustive level search).
 

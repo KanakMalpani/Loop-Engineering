@@ -77,7 +77,8 @@ composition:
 | **Adapter gaps** | Warn in LSS 1.1 draft; `--strict` in discipline validator |
 | **Harness mapping** | Cursor/LangGraph/CrewAI map to children + adapters — see [cursor case study](../case-studies/cursor-agent-loop.md) |
 | **Cost limits** | Parent `cost_limits` = sum bounds per Lemma 1/2 |
-| **Open** | Await LangGraph/CrewAI maintainer comments on #11 |
+| **Open** | Outreach filed: [LangGraph #8186](https://github.com/langchain-ai/langgraph/issues/8186), [CrewAI #6316](https://github.com/crewAIInc/crewAI/issues/6316) — await maintainer replies |
+| **Stable** | [Loop-Core specs/lss-1.1.md](https://github.com/KanakMalpani/Loop-Core-Engineering/blob/main/specs/lss-1.1.md) promoted 2026-06-24 |
 
 Schema: [lss-1.1-composition.schema.json](../standards/schema/lss-1.1-composition.schema.json)  
 Core draft: [Loop-Core specs/lss-1.1-draft.md](https://github.com/KanakMalpani/Loop-Core-Engineering/blob/main/specs/lss-1.1-draft.md)

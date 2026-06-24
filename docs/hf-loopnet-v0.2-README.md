@@ -62,6 +62,8 @@ obs = env.reset(record_id="<record_id from dataset>")
 
 Explored this corpus? Post your **60-minute reproduction report** on the [reproduction challenge](https://github.com/KanakMalpani/Loop-Engineering/discussions/10) after [REPRODUCE.md](https://github.com/KanakMalpani/Loop-Engineering/blob/main/contributions/REPRODUCE.md).
 
+**Beat maintainer LES on LoopBench:** [BEAT_LB-CR-1.md](https://github.com/KanakMalpani/Loop-Engineering/blob/main/contributions/BEAT_LB-CR-1.md) — `pip install loopbench>=0.1.1`, run LB-CR-1, submit PR to [LoopBench leaderboard](https://github.com/KanakMalpani/LoopBench/blob/main/leaderboard/entries.json).
+
 **LoopGym replay users:** export trajectories via [loopnet COMMUNITY-SUBMISSION](https://github.com/KanakMalpani/loopnet/blob/main/guides/COMMUNITY-SUBMISSION.md).
 
 ## Citation

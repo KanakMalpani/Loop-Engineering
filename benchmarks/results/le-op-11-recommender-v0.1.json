@@ -1,0 +1,25 @@
+{
+  "version": "0.1",
+  "problem": "LE-OP-11",
+  "dataset": "KanakMalpani/loopnet-v0.2",
+  "train_n": 436,
+  "test_n": 109,
+  "features": [
+    "primary_pattern",
+    "iteration_length_bucket",
+    "worker_count"
+  ],
+  "oracle": "pattern\u2192level map in tools/loopnet_fields.py",
+  "metrics": {
+    "n_test": 109,
+    "misassignments": 0,
+    "misassignment_rate": 0.0,
+    "meets_le_op_11_target": true,
+    "per_level_accuracy": {
+      "2": 1.0,
+      "3": 1.0,
+      "4": 1.0
+    }
+  },
+  "command": "python tools/level_recommender.py"
+}
