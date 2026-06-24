@@ -9,6 +9,7 @@ Not prompt tricks. Not single agents. **Closed loops** — observe, act, evaluat
 <br>
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Validate loop-library](https://github.com/KanakMalpani/Loop-Engineering/actions/workflows/validate-loop-library.yml/badge.svg)](https://github.com/KanakMalpani/Loop-Engineering/actions/workflows/validate-loop-library.yml)
 [![LSS 1.0](https://img.shields.io/badge/Spec-LSS--1.0-green.svg)](https://github.com/KanakMalpani/Loop-Core-Engineering)
 [![LES 1.0](https://img.shields.io/badge/Score-LES--1.0-purple.svg)](https://github.com/KanakMalpani/Loop-Core-Engineering/blob/main/specs/les-1.0.md)
 
@@ -167,7 +168,7 @@ termination_conditions:
 
 New patterns, case studies, implementations, and benchmark results welcome.
 
-→ [CONTRIBUTING.md](contributions/CONTRIBUTING.md) · [GOVERNANCE.md](contributions/GOVERNANCE.md)
+→ [CONTRIBUTING.md](contributions/CONTRIBUTING.md) · [GOVERNANCE.md](contributions/GOVERNANCE.md) · [**Reproduction challenge**](https://github.com/KanakMalpani/Loop-Engineering/discussions/10) · [REPRODUCE.md](contributions/REPRODUCE.md)
 
 ---
 

@@ -27,7 +27,9 @@ Production-ready **Loop Specification Standard (LSS) 1.0** definitions for commo
 
 ## LSS 1.0 Required Fields
 
-Every spec in this library declares LSS 1.0 required fields and passes `scripts/validate_loop_library.py` (migrated 2026-06-17). Domain-specific detail from earlier drafts lives in companion `.md` files.
+Every spec in this library declares LSS 1.0 required fields and passes `scripts/validate_loop_library.py`. YAML worker/evaluator counts align with companion `.md` architecture docs (enriched 2026-06-17 via `scripts/enrich_loop_library.py`).
+
+**Exception:** `research-agent` — Citation Verifier is an evaluator in YAML, not a separate worker (matches hybrid-oracle design in `.md`).
 
 See [standards/LSS-1.0.md](../standards/LSS-1.0.md) and [standards/examples/minimal-loop.yaml](../standards/examples/minimal-loop.yaml) for the full schema.
 

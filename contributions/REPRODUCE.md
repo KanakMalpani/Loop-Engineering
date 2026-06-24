@@ -152,13 +152,14 @@ Include:
 
 ## Version pins (tested 2026-06-17)
 
-| Package | Notes |
-|---------|-------|
-| pyyaml | Required |
-| jsonschema | Required for validator |
-| loopgym | 0.1.x |
-| loopbench | 0.1.x |
-| datasets | Required for LoopNet explore only |
+| Package | Version | Notes |
+|---------|---------|-------|
+| Python | 3.14.3 | Maintainer smoke test |
+| pyyaml | 6.0.3 | Required |
+| jsonschema | 4.26.0 | Required for validator |
+| datasets | 5.0.0 | LoopNet explore (545 records) |
+| loopgym | 0.1.0 | Optional replay env |
+| loopbench | 0.1.0 | LB-CR-1 baseline |
 
 Full registry: [ECOSYSTEM_VERSIONS.md](../ECOSYSTEM_VERSIONS.md)
 

@@ -35,14 +35,14 @@ File a **Case study** issue for a real system mapped to L = (S, A, O, T, E, M, Ï
 
 ---
 
-## Maintainer baseline (ALS-T2)
+## Maintainer baseline (LB-CR-1 / ALS-T2)
 
 | Metric | Value |
 |--------|-------|
-| Task | ALS-T2 Code Repair |
+| Task | LB-CR-1 Code Repair (LoopBench) |
 | Spec | `loop-library/autonomous-debugger.yaml` |
-| Structural LES | 70.4 |
-| Success rate | 5/5 mock runs |
+| Structural LES | ~74.5 (post-enrichment) |
+| Harness | LoopBench SimEnv (no API keys) |
 
 Artifact: [benchmarks/results/als-t2-code-repair-baseline.json](../benchmarks/results/als-t2-code-repair-baseline.json)
 
@@ -58,7 +58,6 @@ That unlocks the 2027 roadmap (LSS 1.1 composition RFC, contributor funnel expan
 
 ## Links
 
+- [REPRODUCE.md](REPRODUCE.md)
 - [ECOSYSTEM_VERSIONS.md](../ECOSYSTEM_VERSIONS.md)
-- [LOOPNET.md](../research/LOOPNET.md)
-- [PAPER_SERIES.md](../research/PAPER_SERIES.md)
-- [GOOD_FIRST_ISSUES.md](GOOD_FIRST_ISSUES.md)
+- [EXIT_CRITERIA_2026.md](EXIT_CRITERIA_2026.md)

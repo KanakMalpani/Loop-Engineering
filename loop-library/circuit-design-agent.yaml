@@ -2,14 +2,14 @@ loop_name: circuit-design-agent
 version: 1.0.0
 
 objective: >
-  Design a circuit meeting specs verified by SPICE simulation and design rule checks.
+  Design circuit meeting specs verified by simulation and design rule checks.
   Achieve primary_quality >= 0.80 within cost_limits with zero safety violations.
 
 inputs:
   schema:
     task:
       type: string
-      description: "Primary task description or repository context"
+      description: "Primary task description or domain context"
       required: true
   examples:
     - task: "Complete the declared objective for this loop profile."
@@ -18,8 +18,8 @@ memory:
   type: ephemeral
 
 workers:
-  - id: designer
-    role: "Iterate circuit design against electrical specifications"
+  - id: architect
+    role: "Select topology meeting electrical specs"
     model:
       provider: openai
       name: gpt-4.1-mini
@@ -27,42 +27,111 @@ workers:
     inputs:
       - from: inputs.task
     outputs:
-      name: Result
+      name: ArchitectOutput
       format: text
     timeout_seconds: 120
     retries: 1
-    cost_budget_usd: 0.25
+    cost_budget_usd: 0.30
+  - id: simulator
+    role: "Run SPICE simulation and extract metrics"
+    model:
+      provider: openai
+      name: gpt-4.1-mini
+      temperature: 0.2
+    depends_on: [architect]
+    inputs:
+      - from: inputs.task
+    outputs:
+      name: SimulatorOutput
+      format: text
+    timeout_seconds: 120
+    retries: 1
+    cost_budget_usd: 0.30
+  - id: layout_advisor
+    role: "Assess layout parasitics and DRC feasibility"
+    model:
+      provider: openai
+      name: gpt-4.1-mini
+      temperature: 0.2
+    depends_on: [simulator]
+    inputs:
+      - from: inputs.task
+    outputs:
+      name: LayoutAdvisorOutput
+      format: text
+    timeout_seconds: 120
+    retries: 1
+    cost_budget_usd: 0.30
+  - id: optimizer
+    role: "Tune parameters toward spec targets"
+    model:
+      provider: openai
+      name: gpt-4.1-mini
+      temperature: 0.2
+    depends_on: [layout_advisor]
+    inputs:
+      - from: inputs.task
+    outputs:
+      name: OptimizerOutput
+      format: text
+    timeout_seconds: 120
+    retries: 1
+    cost_budget_usd: 0.30
 
 evaluators:
-  - id: quality_rubric
+  - id: spice_oracle
     type: llm_rubric
-    runs_after: [designer]
+    runs_after: [architect, simulator]
     rubric:
       dimensions:
-        - name: effectiveness
-          weight: 0.6
+        - name: quality
+          weight: 1.0
           scale: [0, 1]
-          criteria: "Output meets the stated objective"
-        - name: robustness
-          weight: 0.4
+          criteria: "SPICE metric compliance"
+      pass_threshold: 0.75
+    model:
+      provider: openai
+      name: gpt-4.1-mini
+      temperature: 0
+  - id: drc_check
+    type: llm_rubric
+    runs_after: [architect, simulator]
+    rubric:
+      dimensions:
+        - name: quality
+          weight: 1.0
           scale: [0, 1]
-          criteria: "Output is complete and actionable"
-      pass_threshold: 0.80
+          criteria: "Design rule check gate"
+      pass_threshold: 0.75
+    model:
+      provider: openai
+      name: gpt-4.1-mini
+      temperature: 0
+  - id: spec_margin
+    type: llm_rubric
+    runs_after: [architect, simulator]
+    rubric:
+      dimensions:
+        - name: quality
+          weight: 1.0
+          scale: [0, 1]
+          criteria: "Operating margin rubric"
+      pass_threshold: 0.75
     model:
       provider: openai
       name: gpt-4.1-mini
       temperature: 0
 
 feedback_channels:
-  - id: quality_to_worker
-    source: evaluators.quality_rubric
-    destination: workers.designer
+  - id: quality_to_optimizer
+    source: evaluators.spice_oracle
+    destination: workers.optimizer
     format: structured
     fields: [failure_codes, dimension_scores, remediation_hints]
-    max_tokens: 400
+    max_tokens: 500
     when: "score < pass_threshold"
   - id: quality_to_optimizer
-    source: evaluators.quality_rubric
+    source: evaluators.spice_oracle
     destination: optimization_strategy.prompt_refinement
     format: structured
     fields: [failure_codes, remediation_hints]
@@ -70,9 +139,9 @@ feedback_channels:
 
 optimization_strategy:
   type: prompt_refinement
-  max_steps: 8
+  max_steps: 15
   config:
-    refinement_target: workers.designer
+    refinement_target: workers.optimizer
   rollback:
     on_metric_drop: 0.05
     on_safety_failure: true
@@ -87,7 +156,7 @@ termination_conditions:
     - type: safety_violation
       action: halt
     - type: max_iterations
-      value: 10
+      value: 15
       action: halt
   stall:
     - metric: primary_quality
@@ -98,8 +167,8 @@ termination_conditions:
 metrics:
   - name: primary_quality
     primary: true
-    definition: "Weighted score from quality_rubric evaluator"
-    source: evaluators.quality_rubric
+    definition: "Weighted score from primary evaluator rubric"
+    source: evaluators.spice_oracle
     unit: ratio
     target: 0.80
     regression_threshold: 0.05
@@ -107,13 +176,13 @@ metrics:
     definition: "Total API spend per loop run"
     source: telemetry.cost
     unit: usd
-    target: 0.50
+    target: 3.00
 
 safety_constraints:
   - id: injection-guard
     type: injection_detect
     scope: pre_worker
-    applies_to: [designer]
+    applies_to: [architect, simulator, layout_advisor, optimizer]
     action: quarantine
     severity: S1
     on_error: halt
@@ -121,8 +190,8 @@ safety_constraints:
       max_risk_score: 0.7
 
 cost_limits:
-  per_iteration_usd: 0.20
-  cumulative_usd: 1.00
+  per_iteration_usd: 0.40
+  cumulative_usd: 6.00
   token_soft_cap: 12000
   on_approach:
     threshold_percent: 80
@@ -133,5 +202,6 @@ cost_limits:
 metadata:
   taxonomy_level: 3
   les_estimate: 73
-  tags: [loop-library, level-3]
-  migrated: "2026-06-17 LSS 1.0 schema compliance"
+  worker_count: 4
+  evaluator_count: 3
+  enriched: "2026-06-17 architecture-aligned LSS 1.0"

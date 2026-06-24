@@ -2,14 +2,14 @@ loop_name: interview-coach
 version: 1.0.0
 
 objective: >
-  Prepare a candidate via mock sessions and rubric-based iterative feedback.
-  Achieve primary_quality >= 0.80 within cost_limits with zero safety violations.
+  Prepare candidate via mock sessions and rubric-based iterative feedback.
+  Achieve primary_quality >= 0.78 within cost_limits with zero safety violations.
 
 inputs:
   schema:
     task:
       type: string
-      description: "Primary task description or repository context"
+      description: "Primary task description or domain context"
       required: true
   examples:
     - task: "Complete the declared objective for this loop profile."
@@ -18,8 +18,8 @@ memory:
   type: ephemeral
 
 workers:
-  - id: coach
-    role: "Conduct mock interviews and deliver structured feedback"
+  - id: interviewer
+    role: "Conduct realistic mock interviews"
     model:
       provider: openai
       name: gpt-4.1-mini
@@ -27,42 +27,111 @@ workers:
     inputs:
       - from: inputs.task
     outputs:
-      name: Result
+      name: InterviewerOutput
       format: text
     timeout_seconds: 120
     retries: 1
-    cost_budget_usd: 0.25
+    cost_budget_usd: 0.30
+  - id: proctor
+    role: "Score responses against rubric"
+    model:
+      provider: openai
+      name: gpt-4.1-mini
+      temperature: 0.2
+    depends_on: [interviewer]
+    inputs:
+      - from: inputs.task
+    outputs:
+      name: ProctorOutput
+      format: text
+    timeout_seconds: 120
+    retries: 1
+    cost_budget_usd: 0.30
+  - id: coach
+    role: "Deliver actionable feedback"
+    model:
+      provider: openai
+      name: gpt-4.1-mini
+      temperature: 0.2
+    depends_on: [proctor]
+    inputs:
+      - from: inputs.task
+    outputs:
+      name: CoachOutput
+      format: text
+    timeout_seconds: 120
+    retries: 1
+    cost_budget_usd: 0.30
+  - id: drill_master
+    role: "Run rapid micro-drills on weak areas"
+    model:
+      provider: openai
+      name: gpt-4.1-mini
+      temperature: 0.2
+    depends_on: [coach]
+    inputs:
+      - from: inputs.task
+    outputs:
+      name: DrillMasterOutput
+      format: text
+    timeout_seconds: 120
+    retries: 1
+    cost_budget_usd: 0.30
 
 evaluators:
-  - id: quality_rubric
+  - id: rubric_score
     type: llm_rubric
-    runs_after: [coach]
+    runs_after: [interviewer, proctor]
     rubric:
       dimensions:
-        - name: effectiveness
-          weight: 0.6
+        - name: quality
+          weight: 1.0
           scale: [0, 1]
-          criteria: "Output meets the stated objective"
-        - name: robustness
-          weight: 0.4
+          criteria: "Technical rubric scoring"
+      pass_threshold: 0.75
+    model:
+      provider: openai
+      name: gpt-4.1-mini
+      temperature: 0
+  - id: behavioral_calibration
+    type: llm_rubric
+    runs_after: [interviewer, proctor]
+    rubric:
+      dimensions:
+        - name: quality
+          weight: 1.0
           scale: [0, 1]
-          criteria: "Output is complete and actionable"
-      pass_threshold: 0.80
+          criteria: "Behavioral dimension check"
+      pass_threshold: 0.75
+    model:
+      provider: openai
+      name: gpt-4.1-mini
+      temperature: 0
+  - id: improvement_delta
+    type: llm_rubric
+    runs_after: [interviewer, proctor]
+    rubric:
+      dimensions:
+        - name: quality
+          weight: 1.0
+          scale: [0, 1]
+          criteria: "Iteration-over-iteration improvement"
+      pass_threshold: 0.75
     model:
       provider: openai
       name: gpt-4.1-mini
       temperature: 0
 
 feedback_channels:
-  - id: quality_to_worker
-    source: evaluators.quality_rubric
-    destination: workers.coach
+  - id: quality_to_drill_master
+    source: evaluators.rubric_score
+    destination: workers.drill_master
     format: structured
     fields: [failure_codes, dimension_scores, remediation_hints]
-    max_tokens: 400
+    max_tokens: 500
     when: "score < pass_threshold"
   - id: quality_to_optimizer
-    source: evaluators.quality_rubric
+    source: evaluators.rubric_score
     destination: optimization_strategy.prompt_refinement
     format: structured
     fields: [failure_codes, remediation_hints]
@@ -70,9 +139,9 @@ feedback_channels:
 
 optimization_strategy:
   type: prompt_refinement
-  max_steps: 8
+  max_steps: 10
   config:
-    refinement_target: workers.coach
+    refinement_target: workers.drill_master
   rollback:
     on_metric_drop: 0.05
     on_safety_failure: true
@@ -81,7 +150,7 @@ termination_conditions:
   success:
     - metric: primary_quality
       operator: gte
-      value: 0.80
+      value: 0.78
       consecutive: 1
   failure:
     - type: safety_violation
@@ -98,22 +167,22 @@ termination_conditions:
 metrics:
   - name: primary_quality
     primary: true
-    definition: "Weighted score from quality_rubric evaluator"
-    source: evaluators.quality_rubric
+    definition: "Weighted score from primary evaluator rubric"
+    source: evaluators.rubric_score
     unit: ratio
-    target: 0.80
+    target: 0.78
     regression_threshold: 0.05
   - name: cost_usd
     definition: "Total API spend per loop run"
     source: telemetry.cost
     unit: usd
-    target: 0.50
+    target: 0.90
 
 safety_constraints:
   - id: injection-guard
     type: injection_detect
     scope: pre_worker
-    applies_to: [coach]
+    applies_to: [interviewer, proctor, coach, drill_master]
     action: quarantine
     severity: S1
     on_error: halt
@@ -121,8 +190,8 @@ safety_constraints:
       max_risk_score: 0.7
 
 cost_limits:
-  per_iteration_usd: 0.20
-  cumulative_usd: 1.00
+  per_iteration_usd: 0.18
+  cumulative_usd: 1.80
   token_soft_cap: 12000
   on_approach:
     threshold_percent: 80
@@ -133,5 +202,6 @@ cost_limits:
 metadata:
   taxonomy_level: 2
   les_estimate: 77
-  tags: [loop-library, level-2]
-  migrated: "2026-06-17 LSS 1.0 schema compliance"
+  worker_count: 4
+  evaluator_count: 3
+  enriched: "2026-06-17 architecture-aligned LSS 1.0"

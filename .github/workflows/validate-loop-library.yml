@@ -1,0 +1,35 @@
+name: Validate loop-library
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'loop-library/**'
+      - 'standards/schema/**'
+      - 'scripts/validate_loop_library.py'
+      - '.github/workflows/validate-loop-library.yml'
+  pull_request:
+    paths:
+      - 'loop-library/**'
+      - 'standards/schema/**'
+      - 'scripts/validate_loop_library.py'
+      - '.github/workflows/validate-loop-library.yml'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install pyyaml jsonschema
+
+      - name: Validate all loop-library specs
+        run: python scripts/validate_loop_library.py
+
+      - name: Smoke test reflection-loop example
+        run: python examples/reflection-loop/run.py

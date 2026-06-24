@@ -2,14 +2,14 @@ loop_name: startup-validator
 version: 1.0.0
 
 objective: >
-  Validate startup hypotheses via experiments and produce a PMF evidence ledger.
-  Achieve primary_quality >= 0.80 within cost_limits with zero safety violations.
+  Validate startup hypotheses via experiments and produce PMF evidence ledger.
+  Achieve primary_quality >= 0.78 within cost_limits with zero safety violations.
 
 inputs:
   schema:
     task:
       type: string
-      description: "Primary task description or repository context"
+      description: "Primary task description or domain context"
       required: true
   examples:
     - task: "Complete the declared objective for this loop profile."
@@ -18,8 +18,8 @@ memory:
   type: ephemeral
 
 workers:
-  - id: experimenter
-    role: "Run structured PMF experiments and log outcomes"
+  - id: experiment_designer
+    role: "Design falsifiable PMF experiments"
     model:
       provider: openai
       name: gpt-4.1-mini
@@ -27,42 +27,111 @@ workers:
     inputs:
       - from: inputs.task
     outputs:
-      name: Result
+      name: ExperimentDesignerOutput
       format: text
     timeout_seconds: 120
     retries: 1
-    cost_budget_usd: 0.25
+    cost_budget_usd: 0.30
+  - id: operator
+    role: "Execute experiment automation"
+    model:
+      provider: openai
+      name: gpt-4.1-mini
+      temperature: 0.2
+    depends_on: [experiment_designer]
+    inputs:
+      - from: inputs.task
+    outputs:
+      name: OperatorOutput
+      format: text
+    timeout_seconds: 120
+    retries: 1
+    cost_budget_usd: 0.30
+  - id: interviewer
+    role: "Synthesize qualitative signals"
+    model:
+      provider: openai
+      name: gpt-4.1-mini
+      temperature: 0.2
+    depends_on: [operator]
+    inputs:
+      - from: inputs.task
+    outputs:
+      name: InterviewerOutput
+      format: text
+    timeout_seconds: 120
+    retries: 1
+    cost_budget_usd: 0.30
+  - id: judge
+    role: "Neutral kill-continue-pivot verdict"
+    model:
+      provider: openai
+      name: gpt-4.1-mini
+      temperature: 0.2
+    depends_on: [interviewer]
+    inputs:
+      - from: inputs.task
+    outputs:
+      name: JudgeOutput
+      format: text
+    timeout_seconds: 120
+    retries: 1
+    cost_budget_usd: 0.30
 
 evaluators:
-  - id: quality_rubric
+  - id: falsification_log
     type: llm_rubric
-    runs_after: [experimenter]
+    runs_after: [experiment_designer, operator]
     rubric:
       dimensions:
-        - name: effectiveness
-          weight: 0.6
+        - name: quality
+          weight: 1.0
           scale: [0, 1]
-          criteria: "Output meets the stated objective"
-        - name: robustness
-          weight: 0.4
+          criteria: "Hypothesis falsification record"
+      pass_threshold: 0.75
+    model:
+      provider: openai
+      name: gpt-4.1-mini
+      temperature: 0
+  - id: signal_strength
+    type: llm_rubric
+    runs_after: [experiment_designer, operator]
+    rubric:
+      dimensions:
+        - name: quality
+          weight: 1.0
           scale: [0, 1]
-          criteria: "Output is complete and actionable"
-      pass_threshold: 0.80
+          criteria: "Evidence strength rubric"
+      pass_threshold: 0.75
+    model:
+      provider: openai
+      name: gpt-4.1-mini
+      temperature: 0
+  - id: experiment_integrity
+    type: llm_rubric
+    runs_after: [experiment_designer, operator]
+    rubric:
+      dimensions:
+        - name: quality
+          weight: 1.0
+          scale: [0, 1]
+          criteria: "Protocol adherence check"
+      pass_threshold: 0.75
     model:
       provider: openai
       name: gpt-4.1-mini
       temperature: 0
 
 feedback_channels:
-  - id: quality_to_worker
-    source: evaluators.quality_rubric
-    destination: workers.experimenter
+  - id: quality_to_judge
+    source: evaluators.falsification_log
+    destination: workers.judge
     format: structured
     fields: [failure_codes, dimension_scores, remediation_hints]
-    max_tokens: 400
+    max_tokens: 500
     when: "score < pass_threshold"
   - id: quality_to_optimizer
-    source: evaluators.quality_rubric
+    source: evaluators.falsification_log
     destination: optimization_strategy.prompt_refinement
     format: structured
     fields: [failure_codes, remediation_hints]
@@ -72,7 +141,7 @@ optimization_strategy:
   type: prompt_refinement
   max_steps: 8
   config:
-    refinement_target: workers.experimenter
+    refinement_target: workers.judge
   rollback:
     on_metric_drop: 0.05
     on_safety_failure: true
@@ -81,13 +150,13 @@ termination_conditions:
   success:
     - metric: primary_quality
       operator: gte
-      value: 0.80
+      value: 0.78
       consecutive: 1
   failure:
     - type: safety_violation
       action: halt
     - type: max_iterations
-      value: 10
+      value: 8
       action: halt
   stall:
     - metric: primary_quality
@@ -98,22 +167,22 @@ termination_conditions:
 metrics:
   - name: primary_quality
     primary: true
-    definition: "Weighted score from quality_rubric evaluator"
-    source: evaluators.quality_rubric
+    definition: "Weighted score from primary evaluator rubric"
+    source: evaluators.falsification_log
     unit: ratio
-    target: 0.80
+    target: 0.78
     regression_threshold: 0.05
   - name: cost_usd
     definition: "Total API spend per loop run"
     source: telemetry.cost
     unit: usd
-    target: 0.50
+    target: 1.00
 
 safety_constraints:
   - id: injection-guard
     type: injection_detect
     scope: pre_worker
-    applies_to: [experimenter]
+    applies_to: [experiment_designer, operator, interviewer, judge]
     action: quarantine
     severity: S1
     on_error: halt
@@ -121,8 +190,8 @@ safety_constraints:
       max_risk_score: 0.7
 
 cost_limits:
-  per_iteration_usd: 0.20
-  cumulative_usd: 1.00
+  per_iteration_usd: 0.25
+  cumulative_usd: 2.00
   token_soft_cap: 12000
   on_approach:
     threshold_percent: 80
@@ -133,5 +202,6 @@ cost_limits:
 metadata:
   taxonomy_level: 2
   les_estimate: 74
-  tags: [loop-library, level-2]
-  migrated: "2026-06-17 LSS 1.0 schema compliance"
+  worker_count: 4
+  evaluator_count: 3
+  enriched: "2026-06-17 architecture-aligned LSS 1.0"

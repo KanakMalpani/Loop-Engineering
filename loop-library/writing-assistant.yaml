@@ -3,13 +3,13 @@ version: 1.0.0
 
 objective: >
   Produce publication-ready content through iterative drafting and multi-channel review.
-  Achieve primary_quality >= 0.80 within cost_limits with zero safety violations.
+  Achieve primary_quality >= 0.82 within cost_limits with zero safety violations.
 
 inputs:
   schema:
     task:
       type: string
-      description: "Primary task description or repository context"
+      description: "Primary task description or domain context"
       required: true
   examples:
     - task: "Complete the declared objective for this loop profile."
@@ -18,8 +18,8 @@ memory:
   type: ephemeral
 
 workers:
-  - id: writer
-    role: "Draft and revise long-form content to meet style and accuracy requirements"
+  - id: outliner
+    role: "Produce document structure and section plan"
     model:
       provider: openai
       name: gpt-4.1-mini
@@ -27,42 +27,111 @@ workers:
     inputs:
       - from: inputs.task
     outputs:
-      name: Result
+      name: OutlinerOutput
       format: text
     timeout_seconds: 120
     retries: 1
-    cost_budget_usd: 0.25
+    cost_budget_usd: 0.30
+  - id: drafter
+    role: "Draft long-form content"
+    model:
+      provider: openai
+      name: gpt-4.1-mini
+      temperature: 0.2
+    depends_on: [outliner]
+    inputs:
+      - from: inputs.task
+    outputs:
+      name: DrafterOutput
+      format: text
+    timeout_seconds: 120
+    retries: 1
+    cost_budget_usd: 0.30
+  - id: editor
+    role: "Line editing and style refinement"
+    model:
+      provider: openai
+      name: gpt-4.1-mini
+      temperature: 0.2
+    depends_on: [drafter]
+    inputs:
+      - from: inputs.task
+    outputs:
+      name: EditorOutput
+      format: text
+    timeout_seconds: 120
+    retries: 1
+    cost_budget_usd: 0.30
+  - id: fact_checker
+    role: "Verify factual claims"
+    model:
+      provider: openai
+      name: gpt-4.1-mini
+      temperature: 0.2
+    depends_on: [editor]
+    inputs:
+      - from: inputs.task
+    outputs:
+      name: FactCheckerOutput
+      format: text
+    timeout_seconds: 120
+    retries: 1
+    cost_budget_usd: 0.30
 
 evaluators:
-  - id: quality_rubric
+  - id: style_rubric
     type: llm_rubric
-    runs_after: [writer]
+    runs_after: [outliner, drafter]
     rubric:
       dimensions:
-        - name: effectiveness
-          weight: 0.6
+        - name: quality
+          weight: 1.0
           scale: [0, 1]
-          criteria: "Output meets the stated objective"
-        - name: robustness
-          weight: 0.4
+          criteria: "Style and structure rubric"
+      pass_threshold: 0.75
+    model:
+      provider: openai
+      name: gpt-4.1-mini
+      temperature: 0
+  - id: fact_check
+    type: llm_rubric
+    runs_after: [outliner, drafter]
+    rubric:
+      dimensions:
+        - name: quality
+          weight: 1.0
           scale: [0, 1]
-          criteria: "Output is complete and actionable"
-      pass_threshold: 0.80
+          criteria: "Fact verification oracle"
+      pass_threshold: 0.75
+    model:
+      provider: openai
+      name: gpt-4.1-mini
+      temperature: 0
+  - id: readability
+    type: llm_rubric
+    runs_after: [outliner, drafter]
+    rubric:
+      dimensions:
+        - name: quality
+          weight: 1.0
+          scale: [0, 1]
+          criteria: "Readability and clarity score"
+      pass_threshold: 0.75
     model:
       provider: openai
       name: gpt-4.1-mini
       temperature: 0
 
 feedback_channels:
-  - id: quality_to_worker
-    source: evaluators.quality_rubric
-    destination: workers.writer
+  - id: quality_to_fact_checker
+    source: evaluators.style_rubric
+    destination: workers.fact_checker
     format: structured
     fields: [failure_codes, dimension_scores, remediation_hints]
-    max_tokens: 400
+    max_tokens: 500
     when: "score < pass_threshold"
   - id: quality_to_optimizer
-    source: evaluators.quality_rubric
+    source: evaluators.style_rubric
     destination: optimization_strategy.prompt_refinement
     format: structured
     fields: [failure_codes, remediation_hints]
@@ -70,9 +139,9 @@ feedback_channels:
 
 optimization_strategy:
   type: prompt_refinement
-  max_steps: 8
+  max_steps: 10
   config:
-    refinement_target: workers.writer
+    refinement_target: workers.fact_checker
   rollback:
     on_metric_drop: 0.05
     on_safety_failure: true
@@ -81,7 +150,7 @@ termination_conditions:
   success:
     - metric: primary_quality
       operator: gte
-      value: 0.80
+      value: 0.82
       consecutive: 1
   failure:
     - type: safety_violation
@@ -98,22 +167,22 @@ termination_conditions:
 metrics:
   - name: primary_quality
     primary: true
-    definition: "Weighted score from quality_rubric evaluator"
-    source: evaluators.quality_rubric
+    definition: "Weighted score from primary evaluator rubric"
+    source: evaluators.style_rubric
     unit: ratio
-    target: 0.80
+    target: 0.82
     regression_threshold: 0.05
   - name: cost_usd
     definition: "Total API spend per loop run"
     source: telemetry.cost
     unit: usd
-    target: 0.50
+    target: 1.10
 
 safety_constraints:
   - id: injection-guard
     type: injection_detect
     scope: pre_worker
-    applies_to: [writer]
+    applies_to: [outliner, drafter, editor, fact_checker]
     action: quarantine
     severity: S1
     on_error: halt
@@ -121,8 +190,8 @@ safety_constraints:
       max_risk_score: 0.7
 
 cost_limits:
-  per_iteration_usd: 0.20
-  cumulative_usd: 1.00
+  per_iteration_usd: 0.22
+  cumulative_usd: 2.20
   token_soft_cap: 12000
   on_approach:
     threshold_percent: 80
@@ -133,5 +202,6 @@ cost_limits:
 metadata:
   taxonomy_level: 2
   les_estimate: 79
-  tags: [loop-library, level-2]
-  migrated: "2026-06-17 LSS 1.0 schema compliance"
+  worker_count: 4
+  evaluator_count: 3
+  enriched: "2026-06-17 architecture-aligned LSS 1.0"
