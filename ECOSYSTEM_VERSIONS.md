@@ -32,7 +32,7 @@ Update this file when any component releases; mirror changes in sibling repo REA
 | Package | Version | Install | Repository |
 |---------|---------|---------|------------|
 | loopgym | **0.1.x** | `pip install loopgym` | [LoopGym](https://github.com/KanakMalpani/LoopGym) |
-| loopbench | **0.1.x** | `pip install loopbench` | [LoopBench](https://github.com/KanakMalpani/LoopBench) |
+| loopbench | **0.1.1** | `pip install loopbench` | [LoopBench](https://github.com/KanakMalpani/LoopBench) |
 
 Pin exact versions in reproduction docs; run `pip show loopgym loopbench` after install.
 
