@@ -1,0 +1,87 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://loop-engineering.org/schema/lss-1.1-composition.schema.json",
+  "title": "LSS 1.1 Composition Extension",
+  "description": "Optional composition block for sequential, parallel, and nested loops. Extends LSS 1.0; all other fields remain per lss-1.0.schema.json.",
+  "type": "object",
+  "properties": {
+    "composition": { "$ref": "#/$defs/Composition" }
+  },
+  "$defs": {
+    "Composition": {
+      "type": "object",
+      "required": ["type", "children"],
+      "additionalProperties": true,
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["sequential", "parallel", "nested"]
+        },
+        "children": {
+          "type": "array",
+          "minItems": 2,
+          "items": { "$ref": "#/$defs/CompositionChild" }
+        },
+        "adapters": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/CompositionAdapter" }
+        },
+        "merge": { "$ref": "#/$defs/ParallelMerge" }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "type": { "const": "parallel" } } },
+          "then": { "required": ["merge"] }
+        }
+      ]
+    },
+    "CompositionChild": {
+      "type": "object",
+      "required": ["id", "ref"],
+      "additionalProperties": true,
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_-]*$",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "ref": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Path to child LSS YAML, relative to repo root or composition file."
+        },
+        "role": {
+          "type": "string",
+          "enum": ["stage", "branch", "outer", "inner"],
+          "default": "stage"
+        }
+      }
+    },
+    "CompositionAdapter": {
+      "type": "object",
+      "required": ["from", "to"],
+      "additionalProperties": true,
+      "properties": {
+        "from": { "type": "string", "minLength": 1 },
+        "to": { "type": "string", "minLength": 1 },
+        "transform": { "type": "string" }
+      }
+    },
+    "ParallelMerge": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "strategy": {
+          "type": "string",
+          "enum": ["synthesize", "vote", "first_pass", "all_pass"]
+        },
+        "min_branches_pass": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "preserve_dissent": { "type": "boolean" }
+      }
+    }
+  }
+}

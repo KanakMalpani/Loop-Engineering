@@ -16,6 +16,7 @@ New submissions: use [TEMPLATE.md](TEMPLATE.md) for the L = (S, A, O, T, E, M, Ï
 | [Scientific Peer Review](scientific-peer-review.md) | Science | Debate + HITL | 68 |
 | [Startup PMF Loops](startup-pmf-loops.md) | Business | Exploration + measure | 74 |
 | [Autonomous Coding Agents](autonomous-coding-agents.md) | Software | Reflective + verify | 76 |
+| [Cursor Agent Loop](cursor-agent-loop.md) | IDE agent harness | Tool-driven reflective | 75 |
 
 Each study includes: architecture diagram, feedback analysis, optimization strategy, memory model, success factors, failure modes, and LES breakdown.
 

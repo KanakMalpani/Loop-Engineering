@@ -1,38 +1,33 @@
-# Next Steps — Existing-Audience Strategy (June 2026)
+# Next Steps — 2027 execution (June 2026)
 
-**Refactor:** Do not build a new consumer base. Bridge people who already use our stack.
-
-**Single adoption path:** [REPRODUCE.md](../contributions/REPRODUCE.md) → [Discussion #10](https://github.com/KanakMalpani/Loop-Engineering/discussions/10)
-
-Full plan: [TOP_10_EXISTING_AUDIENCES.md](./TOP_10_EXISTING_AUDIENCES.md)
+**Adoption path:** [REPRODUCE.md](../contributions/REPRODUCE.md) → [Discussion #10](https://github.com/KanakMalpani/Loop-Engineering/discussions/10)
 
 ---
 
-## Top 10 (channel-first)
+## Completed (this sprint)
 
-| # | Channel | Action | Status |
-|---|---------|--------|--------|
-| 1 | **HF LoopNet** | Dataset card + explore.py CTA → REPRODUCE | **Done** (discipline + HF push pending) |
-| 2 | **pip loopbench/loopgym** | Sibling README → good-first #4 | **Done** (mirrors in ecosystem-sync) |
-| 3 | **Cursor / LangGraph / CrewAI** | Harness bridge doc + case study #8 | **Done** (doc); external #8 pending |
-| 4 | **MiroFish-adjacent** | scenario-swarm bridge + LB-COMP-1 | **Done** (discipline baseline) |
-| 5 | **5-repo stack** | Same adoption URL in every README | **Done** (mirrors + check script) |
-| 6 | **LSS 1.1** | Schema for harness mappers | **Done** (schema + validator warnings) |
-| 7 | **LoopBench pip users** | LB-COMP-1 composed task | **Done** (baseline); LoopBench push pending |
-| 8 | **LoopGym replay** | Replay → LoopNet export guide | **Done** ([LOOPGYM.md](../research/LOOPGYM.md)) |
-| 9 | **RFC #11** | Feedback from framework users | **Done** (RFC updated); comments pending |
-| 10 | **Operate bridges** | Triage #4–8 issues; daily link check | **Done** (daily checkin + check script) |
+| Item | Artifact |
+|------|----------|
+| Cursor case study #8 | [cursor-agent-loop.md](../case-studies/cursor-agent-loop.md) |
+| LSS 1.1 Core sync | [Loop-Core lss-1.1-draft](https://github.com/KanakMalpani/Loop-Core-Engineering/blob/main/specs/lss-1.1-draft.md) + schema |
+| Beat LB-CR-1 guide | [BEAT_LB-CR-1.md](../contributions/BEAT_LB-CR-1.md) |
+| Lemma 2 (parallel/nested) | [composition-cost-parallel-nested.md](../mathematics/composition-cost-parallel-nested.md) |
+| RFC #11 synthesis | [RFC-LSS-1.1-composition.md](../contributions/RFC-LSS-1.1-composition.md) |
 
 ---
 
-## Done (maintainer infra)
+## Still open (community)
 
-LoopBench baselines (CR/RS/MA/COMP), composed loops, daily check-in, LSS 1.1 schema fragment, tuple case studies, adoption link CI check.
+| Item | Entry |
+|------|-------|
+| Non-maintainer LoopBench row | [BEAT_LB-CR-1.md](../contributions/BEAT_LB-CR-1.md) · [#4](https://github.com/KanakMalpani/Loop-Engineering/issues/4) |
+| External case study extension | Extend [cursor-agent-loop.md](../case-studies/cursor-agent-loop.md) with your LES_obs |
+| RFC #11 framework comments | LangGraph / CrewAI maintainers on [#11](https://github.com/KanakMalpani/Loop-Engineering/discussions/11) |
 
 ---
 
-## Still open (2027 adoption)
+## Next maintainer targets
 
-- **Non-maintainer** reproduction report on [#10](https://github.com/KanakMalpani/Loop-Engineering/discussions/10) (path validated — [report](../docs/reproduction-reports/2026-06-24-independent-replay.md))
-- External case study #8
-- Non-maintainer LoopBench row #4
+1. LSS 1.1 **stable** promotion (post #11 feedback)
+2. LoopBench **PyPI** release with LB-COMP-1 in `loopbench list`
+3. LoopNet explore histograms ([#9](https://github.com/KanakMalpani/Loop-Engineering/issues/9))

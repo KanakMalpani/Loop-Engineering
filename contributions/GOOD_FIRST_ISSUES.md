@@ -16,7 +16,7 @@ Actionable contribution entry points. File these as GitHub issues or pick one an
 
 ## Benchmarks
 
-4. **Reproduce LB-CR-1 baseline** — Follow [REPRODUCE.md](REPRODUCE.md); compare to [benchmarks/results/lb-cr-1-baseline.json](../benchmarks/results/lb-cr-1-baseline.json).
+4. **Reproduce LB-CR-1 baseline** — One command: [BEAT_LB-CR-1.md](BEAT_LB-CR-1.md). Target LES **86.7** ([baseline](../benchmarks/results/lb-cr-1-baseline.json)).
 
 5. **Publish ALS-T1 Research Synthesis baseline** — First external row on LoopBench for task ALS-T1.
 
@@ -28,7 +28,7 @@ Actionable contribution entry points. File these as GitHub issues or pick one an
 
 7. **Add external case study** — Real org or OSS project **not** already in `case-studies/` (Toyota, GitHub PR, AlphaGo exist). Use case-study issue template; include LES scores.
 
-8. **Map Cursor agent loop to LSS** — Engineering case study with tuple mapping and LES estimate.
+8. **Map Cursor agent loop to LSS** — **Template landed:** [cursor-agent-loop.md](../case-studies/cursor-agent-loop.md). External PRs welcome to extend with LoopBench LES_obs.
 
 ---
 

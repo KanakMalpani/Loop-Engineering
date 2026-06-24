@@ -64,7 +64,23 @@ composition:
 1. Discussion on GitHub — [Discussion #11](https://github.com/KanakMalpani/Loop-Engineering/discussions/11) (label `rfc`, `lss-1.1`)
 2. **Framework maintainers:** LangGraph / CrewAI / Cursor users — does `composition.children` + `adapters` match your graph topology? Comment on #11 or open a PR mapping your harness via [BRIDGE_AGENT_HARNESSES.md](BRIDGE_AGENT_HARNESSES.md).
 3. Prototype in Loop Core Engineering `specs/lss-1.1-draft.md`
-4. Benchmark composed loop on LB-COMP-1 before merge
+4. Benchmark composed loop on LB-COMP-1 — **done** (maintainer LES 77.4, [LoopBench PR #3](https://github.com/KanakMalpani/LoopBench/pull/3))
+
+---
+
+## RFC synthesis (2026-06-24)
+
+| Topic | Decision |
+|-------|----------|
+| **Backward compatibility** | `composition` optional; LSS 1.0 specs unchanged |
+| **Parallel merge** | `merge` block required; `preserve_dissent` recommended for rehearsal patterns |
+| **Adapter gaps** | Warn in LSS 1.1 draft; `--strict` in discipline validator |
+| **Harness mapping** | Cursor/LangGraph/CrewAI map to children + adapters — see [cursor case study](../case-studies/cursor-agent-loop.md) |
+| **Cost limits** | Parent `cost_limits` = sum bounds per Lemma 1/2 |
+| **Open** | Await LangGraph/CrewAI maintainer comments on #11 |
+
+Schema: [lss-1.1-composition.schema.json](../standards/schema/lss-1.1-composition.schema.json)  
+Core draft: [Loop-Core specs/lss-1.1-draft.md](https://github.com/KanakMalpani/Loop-Core-Engineering/blob/main/specs/lss-1.1-draft.md)
 
 ---
 

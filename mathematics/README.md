@@ -46,6 +46,7 @@ Case studies should map explicitly to this tuple (see [case-studies/TEMPLATE.md]
 |-------|------------|-----------------|
 | **Composition algebra** | [loop-composition-algebra.md](../research/loop-composition-algebra.md) | Associativity conditions (LE-OP-10) |
 | **Sequential cost bound** | [composition-cost-bound.md](./composition-cost-bound.md) | Lemma 1 (draft) |
+| **Parallel / nested cost** | [composition-cost-parallel-nested.md](./composition-cost-parallel-nested.md) | Lemma 2 (draft) |
 | **Stability** | fundamentals/07 + P3 | Lyapunov non-increasing criterion |
 | **Complexity** | loop_complexity_analyzer | \(O(\cdot)\) bounds vs worker/evaluator count |
 | **Convergence** | open-problems LE-OP-03 | Expected iterations to \(\tau\) success |

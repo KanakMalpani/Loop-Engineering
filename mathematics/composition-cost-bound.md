@@ -45,6 +45,4 @@ Example: [research-to-writing.yaml](../loop-library/compositions/research-to-wri
 
 ## Open extension (LE-OP-10)
 
-Nested and parallel compositions need separate lemmas (inner retry may multiply cost; parallel runs sum branch spend concurrently).
-
-See [loop-composition-algebra.md](../research/loop-composition-algebra.md).
+See [Lemma 2 — parallel and nested](./composition-cost-parallel-nested.md) and [loop-composition-algebra.md](../research/loop-composition-algebra.md).
