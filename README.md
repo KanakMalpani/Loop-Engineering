@@ -162,6 +162,7 @@ termination_conditions:
 |------|---------|
 | [`les_calculator.py`](tools/les_calculator.py) | Structural LES estimate (local mirror) |
 | [`loop_validator.py`](tools/loop_validator.py) | LSS validation (prefer [canonical validator](https://github.com/KanakMalpani/Loop-Core-Engineering/tree/main/tools)) |
+| [`daily_checkin.py`](scripts/daily_checkin.py) | Daily health check ([log](docs/checkins/latest.md)) |
 | [`loop_diagram_generator.py`](tools/loop_diagram_generator.py) | Mermaid from LSS |
 
 ---
