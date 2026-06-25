@@ -1,6 +1,6 @@
 # Adoption tracker — 2026-06-25 UTC
 
-**Summary:** 5 green · 6 yellow · 0 red
+**Summary:** 6 green · 5 yellow · 0 red
 
 Automated by `scripts/track_adoption_signals.py` (daily with [daily-checkin.yml](../.github/workflows/daily-checkin.yml)).
 
@@ -10,8 +10,8 @@ Automated by `scripts/track_adoption_signals.py` (daily with [daily-checkin.yml]
 | Reproduction challenge — external report [discussion_10](https://github.com/KanakMalpani/Loop-Engineering/discussions/10) | **YELLOW** | No external comments yet (6 maintainer/bot comment(s)) |
 | RFC LSS 1.1 — framework feedback [discussion_11](https://github.com/KanakMalpani/Loop-Engineering/discussions/11) | **YELLOW** | No external comments yet (3 maintainer/bot comment(s)) |
 | loopbench on PyPI (>= 0.1.1) [pypi_loopbench](https://pypi.org/project/loopbench/) | **GREEN** | PyPI version: 0.1.1 |
-| loopgym on PyPI (>= 0.1.1) [pypi_loopgym](https://pypi.org/project/loopgym/) | **GREEN** | PyPI version: 0.1.1 |
-| loopforge on PyPI (>= 0.1.0) [pypi_loopforge](https://pypi.org/project/loopforge/) | **YELLOW** | PyPI version: 0.1.0 |
+| loopgym on PyPI (>= 0.1.1) [pypi_loopgym](https://pypi.org/project/loopgym/) | **GREEN** | PyPI version: 0.1.2 |
+| le-loopforge on PyPI (>= 0.2.0) [pypi_loopforge](https://pypi.org/project/le-loopforge/) | **GREEN** | PyPI version: 0.2.0 |
 | LSS 1.1 stable in Loop-Core [lss_11_stable](https://github.com/KanakMalpani/Loop-Core-Engineering/blob/main/specs/lss-1.1.md) | **GREEN** | specs/lss-1.1.md present |
 | Non-maintainer LoopBench row (LB-CR-1) [issue_4](https://github.com/KanakMalpani/Loop-Engineering/issues/4) | **YELLOW** | open: [Good first] Publish ALS-T1 Research Synthesis baseline |
 | External case study (new org) [issue_7](https://github.com/KanakMalpani/Loop-Engineering/issues/7) | **YELLOW** | open: [Good first] Map Cursor agent loop to LSS case study |
@@ -25,8 +25,4 @@ python scripts/track_adoption_signals.py
 python scripts/daily_checkin.py --output docs/checkins/latest.md
 ```
 
-<<<<<<< HEAD
-_Generated at 2026-06-24T16:24:29.337186+00:00_
-=======
-_Generated at 2026-06-25T06:20:58.905960+00:00_
->>>>>>> b763d61 (Phase 5-6: LoopForge, Golden Path, loopctl, traces, intent compiler)
+_Generated at 2026-06-25T06:59:09.275345+00:00_

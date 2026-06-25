@@ -1,9 +1,5 @@
 {
-<<<<<<< HEAD
-  "generated_at": "2026-06-24T16:24:29.337186+00:00",
-=======
-  "generated_at": "2026-06-25T06:20:58.905960+00:00",
->>>>>>> b763d61 (Phase 5-6: LoopForge, Golden Path, loopctl, traces, intent compiler)
+  "generated_at": "2026-06-25T06:59:09.275345+00:00",
   "signals": [
     {
       "id": "external_loopbench",
@@ -37,15 +33,15 @@
       "id": "pypi_loopgym",
       "name": "loopgym on PyPI (>= 0.1.1)",
       "status": "green",
-      "detail": "PyPI version: 0.1.1",
+      "detail": "PyPI version: 0.1.2",
       "link": "https://pypi.org/project/loopgym/"
     },
     {
       "id": "pypi_loopforge",
-      "name": "loopforge on PyPI (>= 0.1.0)",
-      "status": "yellow",
-      "detail": "PyPI version: 0.1.0",
-      "link": "https://pypi.org/project/loopforge/"
+      "name": "le-loopforge on PyPI (>= 0.2.0)",
+      "status": "green",
+      "detail": "PyPI version: 0.2.0",
+      "link": "https://pypi.org/project/le-loopforge/"
     },
     {
       "id": "lss_11_stable",
