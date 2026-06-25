@@ -2,8 +2,8 @@
 
 **North star:** Loop-Engineering = learn + try · LoopBench = rank + recognize · Ops = pinned GitHub dashboard (change-only).
 
-**Last updated:** 2026-06-17  
-**Current phase:** Phase 13 — Community Platform v1  
+**Last updated:** 2026-06-25  
+**Current phase:** Phase 13 — Community Platform v1 (shipped)  
 **Living tracker:** update this file when milestones ship; CI may append to [Automation log](#automation-log) only.
 
 Related: [LOOP_PLAYGROUND.md](../../contributions/LOOP_PLAYGROUND.md) · [ADOPTION_AUTOMATION.md](./ADOPTION_AUTOMATION.md) · [EXTERNAL_SUBMISSIONS.md](../../contributions/EXTERNAL_SUBMISSIONS.md)
@@ -30,14 +30,14 @@ Related: [LOOP_PLAYGROUND.md](../../contributions/LOOP_PLAYGROUND.md) · [ADOPTI
 - [x] `docs/ecosystem-sync/LoopBench/.github/workflows/leaderboard-render.yml`
 - [x] `docs/ecosystem-sync/LoopBench/.github/workflows/leaderboard-pr-hint.yml`
 - [x] `docs/ecosystem-sync/LoopBench/leaderboard/ROW_SCHEMA.md`
-- [ ] **Push mirrors to LoopBench** (`push_github_file.py` or manual PR)
-- [ ] LoopBench README `<!-- LEADERBOARD:START -->` markers live on remote
+- [x] **Push mirrors to LoopBench** (2026-06-25 — scripts, docs, workflows, LIVE.md)
+- [x] LoopBench README `<!-- LEADERBOARD:START -->` markers live on remote
 
 ### Manual setup (maintainer)
 
-- [ ] Create pinned issue: `Loop Engineering ops dashboard (auto-updated — do not comment)`
-- [ ] Set repo variable `OPS_DASHBOARD_ISSUE_NUMBER` on Loop-Engineering
-- [ ] Pin the issue on GitHub
+- [x] Create pinned issue: `Loop Engineering ops dashboard (auto-updated — do not comment)` → [#13](https://github.com/KanakMalpani/Loop-Engineering/issues/13)
+- [x] Set repo variable `OPS_DASHBOARD_ISSUE_NUMBER` = `13` on Loop-Engineering
+- [x] Pin the issue on GitHub
 
 ---
 
@@ -51,6 +51,8 @@ Related: [LOOP_PLAYGROUND.md](../../contributions/LOOP_PLAYGROUND.md) · [ADOPTI
 | 2026-06-17 | Leaderboard render (LE preview) | [render_leaderboard_preview.py](../../scripts/render_leaderboard_preview.py) |
 | 2026-06-17 | Ecosystem digest | [ecosystem_digest.py](../../scripts/ecosystem_digest.py) |
 | 2026-06-17 | LoopBench sync pack | [docs/ecosystem-sync/LoopBench/](../ecosystem-sync/LoopBench/) |
+| 2026-06-25 | LoopBench remote deploy | [LoopBench LIVE.md](https://github.com/KanakMalpani/LoopBench/blob/main/leaderboard/LIVE.md) · workflows live |
+| 2026-06-25 | Pinned ops dashboard | [Issue #13](https://github.com/KanakMalpani/Loop-Engineering/issues/13) · `OPS_DASHBOARD_ISSUE_NUMBER=13` |
 
 ---
 
@@ -58,8 +60,7 @@ Related: [LOOP_PLAYGROUND.md](../../contributions/LOOP_PLAYGROUND.md) · [ADOPTI
 
 | Item | Owner | Notes |
 |------|-------|-------|
-| LoopBench remote deploy | Maintainer | Push sync files; enable workflows on LoopBench |
-| Pinned ops dashboard | Maintainer | Requires `OPS_DASHBOARD_ISSUE_NUMBER` |
+| First external LoopBench row | Community | [#4](https://github.com/KanakMalpani/Loop-Engineering/issues/4) |
 
 ---
 
@@ -77,8 +78,8 @@ Related: [LOOP_PLAYGROUND.md](../../contributions/LOOP_PLAYGROUND.md) · [ADOPTI
 | Metric | Target | Current |
 |--------|--------|---------|
 | Single doc: zero → `loopbench validate` | `LOOP_PLAYGROUND.md` | Shipped |
-| Live rankings on LoopBench | `leaderboard/LIVE.md` + README block | Pending remote push |
-| Maintainer manual leaderboard checks | 0 unless dashboard shows delta | Pending pin issue |
+| Live rankings on LoopBench | `leaderboard/LIVE.md` + README block | Live |
+| Maintainer manual leaderboard checks | 0 unless dashboard shows delta | [#13](https://github.com/KanakMalpani/Loop-Engineering/issues/13) pinned |
 | External LoopBench row | ≥ 1 non-maintainer | Yellow (maintainer-only rows) |
 
 ---
@@ -101,6 +102,7 @@ The [ecosystem-digest.yml](../../.github/workflows/ecosystem-digest.yml) workflo
 _Append-only. CI adds lines when leaderboard or adoption signals change (max 1 per signal type per week)._
 
 <!-- AUTOMATION-LOG:START -->
+- 2026-06-25 UTC: Platform shipped — LoopBench LIVE.md live, ops dashboard [#13](https://github.com/KanakMalpani/Loop-Engineering/issues/13) populated.
 <!-- AUTOMATION-LOG:END -->
 
 ---
