@@ -111,6 +111,7 @@ _Append-only. CI adds lines when leaderboard or adoption signals change (max 1 p
 - 2026-06-25 14:39 UTC: digest changed; external=none
 - 2026-06-25 UTC: Adoption wave 11 — invited [Agentless #86](https://github.com/OpenAutoCoder/Agentless/issues/86), [Aider #5328](https://github.com/Aider-AI/aider/issues/5328), [OpenHands #14984](https://github.com/OpenHands/OpenHands/issues/14984) for first external LoopBench row.
 - 2026-06-25 UTC: Wave 12 follow-up + partner pack + PyPI stack published (`le-loop-stack`, `le-loopctl` 0.2.0).
+- 2026-06-25 20:05 UTC: digest changed; external=none
 <!-- AUTOMATION-LOG:END -->
 
 ---
