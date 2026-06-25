@@ -22,6 +22,8 @@ python scripts/generate_trace_demo.py
 python scripts/loopnet_export_trace.py docs/submission-dry-run/trace.json -o row.json
 ```
 
+Contributor guide: [docs/loopnet/CONTRIBUTING-v0.3.md](../docs/loopnet/CONTRIBUTING-v0.3.md).
+
 See [LOOP-TRACE-1.0.md](../standards/LOOP-TRACE-1.0.md).
 
 ---

@@ -20,7 +20,6 @@ def run(cmd: list[str]) -> None:
 def main() -> int:
     OUT.mkdir(parents=True, exist_ok=True)
     spec = OUT / "dry-run-external.yaml"
-    trace = OUT / "trace.json"
     les = OUT / "observed-les.json"
     loopnet = OUT / "loopnet-row.json"
 
@@ -37,10 +36,13 @@ def main() -> int:
         ]
     )
     run([sys.executable, "-m", "loopctl", "validate", str(spec)])
-    run([sys.executable, "scripts/generate_trace_demo.py"])
+    run([sys.executable, "scripts/generate_loopgym_trace_demo.py"])
+    loopgym_trace = OUT / "trace-loopgym.json"
+    trace = loopgym_trace if loopgym_trace.exists() else OUT / "trace.json"
+    if not trace.exists():
+        run([sys.executable, "scripts/generate_trace_demo.py"])
+        trace = OUT / "trace.json"
     run([sys.executable, "-m", "loopctl", "trace", "validate", str(trace)])
-    run([sys.executable, "tools/observed_les.py", str(trace), "--spec", str(spec), "--json"])
-    # Capture observed LES
     result = subprocess.run(
         [sys.executable, "tools/observed_les.py", str(trace), "--spec", str(spec), "--json"],
         cwd=ROOT,

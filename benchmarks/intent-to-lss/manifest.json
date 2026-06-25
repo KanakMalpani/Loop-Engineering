@@ -1,7 +1,7 @@
 {
-  "version": "0.1",
+  "version": "0.4",
   "problem": "LE-OP-15",
-  "description": "Benchmark intents for loopforge intent compiler v0.3",
+  "description": "Benchmark intents for loopforge intent compiler v0.4",
   "intents": [
     {
       "id": "int-001",
@@ -62,6 +62,126 @@
       "text": "Research competitor pricing and draft strategy recommendations",
       "expected_pattern": "research",
       "reference_fork": "research-agent"
+    },
+    {
+      "id": "int-011",
+      "text": "Run the test suite after refactor and fix any regressions",
+      "expected_pattern": "verification",
+      "reference_fork": "autonomous-debugger"
+    },
+    {
+      "id": "int-012",
+      "text": "Literature review on multi-agent coordination with cited sources",
+      "expected_pattern": "research",
+      "reference_fork": "research-agent"
+    },
+    {
+      "id": "int-013",
+      "text": "Single-pass summary of meeting notes for stakeholders",
+      "expected_pattern": "simple",
+      "reference_fork": null
+    },
+    {
+      "id": "int-014",
+      "text": "Peer review this pull request and suggest revisions",
+      "expected_pattern": "reflection",
+      "reference_fork": null
+    },
+    {
+      "id": "int-015",
+      "text": "Patch the lint errors reported in the CI pipeline",
+      "expected_pattern": "verification",
+      "reference_fork": "coding-agent"
+    },
+    {
+      "id": "int-016",
+      "text": "Synthesize survey responses into a brief with evidence",
+      "expected_pattern": "research",
+      "reference_fork": "research-agent"
+    },
+    {
+      "id": "int-017",
+      "text": "Critique the draft proposal and iterate on weak sections",
+      "expected_pattern": "reflection",
+      "reference_fork": null
+    },
+    {
+      "id": "int-018",
+      "text": "Implement feature flag and verify behavior in staging tests",
+      "expected_pattern": "verification",
+      "reference_fork": "coding-agent"
+    },
+    {
+      "id": "int-019",
+      "text": "Simple one-shot answer to a customer support question",
+      "expected_pattern": "simple",
+      "reference_fork": null
+    },
+    {
+      "id": "int-020",
+      "text": "Find primary sources on feedback control loops and cite them",
+      "expected_pattern": "research",
+      "reference_fork": "research-agent"
+    },
+    {
+      "id": "int-021",
+      "text": "Fix the failing integration test in the nightly build",
+      "expected_pattern": "verification",
+      "reference_fork": "autonomous-debugger"
+    },
+    {
+      "id": "int-022",
+      "text": "Review and revise documentation until clarity rubric passes",
+      "expected_pattern": "reflection",
+      "reference_fork": null
+    },
+    {
+      "id": "int-023",
+      "text": "Summarize the changelog for release notes",
+      "expected_pattern": "simple",
+      "reference_fork": null
+    },
+    {
+      "id": "int-024",
+      "text": "Investigate hypothesis about latency with sourced benchmarks",
+      "expected_pattern": "research",
+      "reference_fork": "research-agent"
+    },
+    {
+      "id": "int-025",
+      "text": "Debug flaky test and confirm fix with repeated CI runs",
+      "expected_pattern": "verification",
+      "reference_fork": "autonomous-debugger"
+    },
+    {
+      "id": "int-026",
+      "text": "Draft response then reflect on tone before sending",
+      "expected_pattern": "reflection",
+      "reference_fork": null
+    },
+    {
+      "id": "int-027",
+      "text": "Implement caching layer and verify load test results",
+      "expected_pattern": "verification",
+      "reference_fork": "coding-agent"
+    },
+    {
+      "id": "int-028",
+      "text": "Brief synthesis of three papers on agent harness design",
+      "expected_pattern": "research",
+      "reference_fork": "research-agent"
+    },
+    {
+      "id": "int-029",
+      "text": "Extract key themes from interview transcripts in one pass",
+      "expected_pattern": "simple",
+      "reference_fork": null
+    },
+    {
+      "id": "int-030",
+      "text": "Validate security patch against regression test suite",
+      "expected_pattern": "verification",
+      "reference_fork": "autonomous-debugger"
     }
   ]
 }

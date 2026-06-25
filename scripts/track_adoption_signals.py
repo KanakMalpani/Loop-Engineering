@@ -45,8 +45,10 @@ DISCUSSIONS = {
 PYPI_MIN_LOOPBENCH = (0, 1, 1)
 PYPI_MIN_LOOPGYM = (0, 1, 1)
 PYPI_MIN_LOOPFORGE = (0, 2, 0)
+PYPI_MIN_LOOPCTL = (0, 1, 0)
 PYPI_LOOPGYM_URL = "https://pypi.org/pypi/loopgym/json"
 PYPI_LOOPFORGE_URL = "https://pypi.org/pypi/le-loopforge/json"
+PYPI_LOOPCTL_URL = "https://pypi.org/pypi/le-loopctl/json"
 LEADERBOARD_URL = (
     "https://raw.githubusercontent.com/KanakMalpani/LoopBench/main/leaderboard/entries.json"
 )
@@ -160,6 +162,29 @@ def check_pypi_loopforge() -> Signal:
         "green" if ok else "yellow",
         f"PyPI version: {version}",
         "https://pypi.org/project/le-loopforge/",
+    )
+
+
+def check_pypi_loopctl() -> Signal:
+    try:
+        data = fetch_json(PYPI_LOOPCTL_URL)
+        version = data.get("info", {}).get("version", "0.0.0")
+    except (urllib.error.URLError, json.JSONDecodeError, TimeoutError) as exc:
+        return Signal(
+            "pypi_loopctl",
+            "le-loopctl on PyPI (>= 0.1.0)",
+            "yellow",
+            f"PyPI unreachable: {exc}",
+            "https://pypi.org/project/le-loopctl/",
+        )
+
+    ok = parse_version(version) >= PYPI_MIN_LOOPCTL
+    return Signal(
+        "pypi_loopctl",
+        "le-loopctl on PyPI (>= 0.1.0)",
+        "green" if ok else "yellow",
+        f"PyPI version: {version}",
+        "https://pypi.org/project/le-loopctl/",
     )
 
 
@@ -327,6 +352,7 @@ def collect_signals() -> list[Signal]:
         check_pypi_loopbench(),
         check_pypi_loopgym(),
         check_pypi_loopforge(),
+        check_pypi_loopctl(),
         check_lss_11_stable(),
     ]
     for num, label in GOOD_FIRST_ISSUES.items():

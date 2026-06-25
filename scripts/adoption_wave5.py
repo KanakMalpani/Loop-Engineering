@@ -12,7 +12,7 @@ ISSUE_4_COMMENT = f"""## Adoption wave 5 — LoopForge-first submissions
 External LoopBench rows are now **one command away** from a valid spec:
 
 ```bash
-pip install loopforge loopbench
+pip install "le-loopforge>=0.2.0" loopbench
 loopforge fork --from autonomous-debugger --name my-submission -o my-loop.yaml --suggest-level
 loopbench run --task LB-CR-1 --spec my-loop.yaml --seeds 0,1,2,3,4 -o results.json
 ```
@@ -27,7 +27,7 @@ DISCUSSION_10_COMMENT = f"""## Updated reproduction path (LoopForge)
 Step 0 is now LoopForge — scaffold before hand-editing YAML:
 
 ```bash
-pip install loopforge
+pip install le-loopforge
 loopforge new --pattern reflection --name my-repro --objective "..." -o my-loop.yaml
 python -m loopctl validate my-loop.yaml
 ```

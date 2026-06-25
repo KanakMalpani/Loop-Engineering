@@ -58,13 +58,15 @@ Everything below is **live on GitHub and PyPI**. Version registry: [ECOSYSTEM_VE
 ```mermaid
 flowchart TB
   DOCS["<b>Loop Engineering</b><br/><i>you are here</i><br/>manifesto · patterns · case studies"]
-  FORGE["LoopForge<br/>pip install loopforge"]
+  FORGE["LoopForge<br/>pip install le-loopforge"]
+  CTL["loopctl<br/>pip install le-loopctl"]
   CORE["Loop Core Engineering<br/>LSS · LES · validators"]
   NET["LoopNet v0.2<br/>545 trajectories"]
   GYM["LoopGym<br/>pip install loopgym"]
   BENCH["LoopBench<br/>pip install loopbench"]
 
   DOCS --> FORGE
+  FORGE --> CTL
   FORGE --> CORE
   CORE --> NET
   CORE --> GYM
@@ -76,7 +78,7 @@ flowchart TB
 
 | Repository | One line | Link |
 |------------|----------|------|
-| **LoopForge** | Creation — scaffold valid LSS specs from patterns | [loopforge/](../loopforge/) · `pip install loopforge` · [loopctl](../loopctl/) · [Golden Path](contributions/GOLDEN_PATH.md) |
+| **LoopForge** | Creation — scaffold valid LSS specs from patterns | [loopforge/](loopforge/) · `pip install le-loopforge` · [loopctl](loopctl/) · [Golden Path](contributions/GOLDEN_PATH.md) |
 | **Loop Core Engineering** | Specs & governance — the constitution | [GitHub →](https://github.com/KanakMalpani/Loop-Core-Engineering) |
 | **LoopNet** | Dataset — ground truth for loops | [GitHub →](https://github.com/KanakMalpani/loopnet) · [Hugging Face →](https://huggingface.co/datasets/KanakMalpani/loopnet-v0.2) |
 | **LoopGym** | Runtime — run loops in sim, live, or replay | [GitHub →](https://github.com/KanakMalpani/LoopGym) · `pip install loopgym` |
@@ -123,7 +125,7 @@ termination_conditions:
 | You are… | Path | Time |
 |----------|------|------|
 | **Curious** | [Manifesto](manifesto/MANIFESTO.md) → [Fundamentals](fundamentals/README.md) | ~2 hours |
-| **Building** | [Golden Path](contributions/GOLDEN_PATH.md) → [Practitioner track](education/practitioner/README.md) → `pip install loopforge` | ~1 hour |
+| **Building** | [Golden Path](contributions/GOLDEN_PATH.md) → [Practitioner track](education/practitioner/README.md) → `pip install le-loopforge le-loopctl` | ~1 hour |
 | **Researching** | [Paper series](research/PAPER_SERIES.md) → [LoopNet v0.2](research/LOOPNET.md) → [Case studies](case-studies/README.md) | ~1 day |
 | **Leading a team** | [D-D-M-I-S framework](framework/README.md) → [LES scoring](scoring/LES-1.0.md) | ~2 hours |
 

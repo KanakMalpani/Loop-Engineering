@@ -108,3 +108,19 @@ Tracked daily: [docs/adoption-tracker/latest.md](../docs/adoption-tracker/latest
 | LoopNet v0.3 prep | [loopnet_export_trace.py](../scripts/loopnet_export_trace.py) |
 | Practitioner exam | [exam-v0.1.md](../education/practitioner/exam-v0.1.md) |
 | Q3 status report | [STATUS-2026-Q3.md](../contributions/STATUS-2026-Q3.md) |
+
+## Phase 7 in progress (maintainer)
+
+| Item | Artifact |
+|------|----------|
+| PyPI name sync | `le-loopforge` / `le-loopctl` across Golden Path, README, BEAT |
+| Golden Path traces | Step 4b Loop Trace + LoopGym 0.1.2 |
+| le-loopctl adoption signal | [track_adoption_signals.py](../scripts/track_adoption_signals.py) |
+| LoopNet v0.3 contributor path | [docs/loopnet/CONTRIBUTING-v0.3.md](../docs/loopnet/CONTRIBUTING-v0.3.md) |
+| Intent benchmark v0.4 | 30 intents · [manifest.json](../benchmarks/intent-to-lss/manifest.json) |
+| Trace-native dry-run | [run_submission_dryrun.py](../scripts/run_submission_dryrun.py) |
+| Adoption wave 7 | [adoption_wave7.py](../scripts/adoption_wave7.py) |
+
+## Community (tracked daily)
+
+[docs/adoption-tracker/latest.md](../docs/adoption-tracker/latest.md) · [EXTERNAL_SUBMISSIONS.md](../contributions/EXTERNAL_SUBMISSIONS.md) · [adoption_wave7.py](../scripts/adoption_wave7.py)

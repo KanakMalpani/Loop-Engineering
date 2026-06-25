@@ -1,7 +1,7 @@
 # Loop Engineering — Status Report Q3 2026
 
 **Period:** June 2026 · **Maintainer:** Loop Engineering project  
-**Daily CI:** 15/15 checks green · **Adoption:** 6 green · 5 yellow · 0 red
+**Daily CI:** 17/17 checks green · **Adoption:** 7 green · 5 yellow · 0 red
 
 ---
 
@@ -27,10 +27,10 @@ Loop Engineering now offers a **complete practitioner path**: learn patterns →
 
 | Package | Version | Role |
 |---------|---------|------|
-| loopforge | 0.2.0 (repo) / 0.1.0+ (PyPI) | Scaffold LSS from patterns, fork, compose, intent |
-| loopctl | 0.1.0 | Validate, score, trace, observed LES |
-| loopgym | 0.1.1 | Runtime |
-| loopbench | 0.1.1 | Benchmarks |
+| le-loopforge | **0.2.0** | Scaffold LSS (CLI: `loopforge`) |
+| le-loopctl | **0.1.0** | Validate, score, trace, observed LES |
+| loopgym | **0.1.2** | Runtime + Loop Trace emission |
+| loopbench | **0.1.1** | Benchmarks |
 
 Registry: [ECOSYSTEM_VERSIONS.md](../ECOSYSTEM_VERSIONS.md)
 
@@ -40,7 +40,7 @@ Registry: [ECOSYSTEM_VERSIONS.md](../ECOSYSTEM_VERSIONS.md)
 
 | Signal | Status |
 |--------|--------|
-| PyPI loopgym / loopbench / loopforge | Green |
+| PyPI le-loopforge / le-loopctl / loopgym | Green |
 | LSS 1.1 stable in Loop-Core | Green |
 | External LoopBench row | Yellow — BEAT + trace pack live |
 | External reproduction #10 | Yellow |
@@ -65,8 +65,8 @@ Tracker: [docs/adoption-tracker/latest.md](../docs/adoption-tracker/latest.md)
 
 ## Q4 2026 targets
 
-1. Publish loopforge **0.2.0** and loopctl **0.1.0** to PyPI
-2. LoopGym sibling PR — native trace emission
+1. ~~Publish le-loopforge **0.2.0** and le-loopctl **0.1.0** to PyPI~~ — **Green**
+2. ~~LoopGym trace emission **0.1.2**~~ — **Green**
 3. First **non-maintainer** LoopBench row with trace + observed LES
 4. LoopNet v0.3 contributor pipeline (trace export script landed)
 5. Practitioner exam v0.1 community pilots

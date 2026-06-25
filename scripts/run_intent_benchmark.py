@@ -14,7 +14,7 @@ from loopforge.intent import classify_intent, compile_intent  # noqa: E402
 from loopforge.validate import validate_spec  # noqa: E402
 
 MANIFEST = ROOT / "benchmarks" / "intent-to-lss" / "manifest.json"
-OUTPUT = ROOT / "benchmarks" / "intent-to-lss" / "results-v0.1.json"
+OUTPUT = ROOT / "benchmarks" / "intent-to-lss" / "results-v0.4.json"
 
 
 def main() -> int:
@@ -52,13 +52,13 @@ def main() -> int:
 
     n = len(intents)
     report = {
-        "version": "0.1",
+        "version": "0.4",
         "problem": "LE-OP-15",
         "n_intents": n,
         "pattern_accuracy": round(pattern_ok / n, 4),
         "validation_pass_rate": round(valid_ok / n, 4),
-        "meets_v03_pattern_target": pattern_ok / n >= 0.7,
-        "meets_v03_valid_target": valid_ok / n >= 0.8,
+        "meets_v04_pattern_target": pattern_ok / n >= 0.80,
+        "meets_v04_valid_target": valid_ok / n >= 0.95,
         "results": results,
     }
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
@@ -66,7 +66,7 @@ def main() -> int:
     print(f"Pattern accuracy: {report['pattern_accuracy']:.1%}")
     print(f"Validation pass:  {report['validation_pass_rate']:.1%}")
     print(f"Wrote {OUTPUT}")
-    return 0 if report["meets_v03_valid_target"] else 1
+    return 0 if report["meets_v04_pattern_target"] and report["meets_v04_valid_target"] else 1
 
 
 if __name__ == "__main__":

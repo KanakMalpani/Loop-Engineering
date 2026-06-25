@@ -17,16 +17,18 @@ flowchart LR
   B --> C[Validate LSS]
   C --> D[Score LES]
   D --> E[Run example]
-  E --> F[LoopBench optional]
+  E --> T[Loop Trace]
+  T --> F[LoopBench optional]
 ```
 
 | Step | Time | Outcome |
 |------|------|---------|
-| 0 — Setup | 5 min | Repo cloned, deps installed |
+| 0 — Setup | 5 min | Repo cloned, PyPI stack installed |
 | 1 — Scaffold | 10 min | Valid LSS YAML in `loop-library/` |
 | 2 — Validate | 5 min | Schema pass + optional level hint |
 | 3 — Score | 5 min | LES JSON report |
 | 4 — Run | 10 min | Reflection example or exported stub |
+| 4b — Trace | 5 min | Loop Trace 1.0 JSON (optional) |
 | 5 — Benchmark | 15 min | LoopBench run (optional) |
 | 6 — Report | 5 min | Post reproduction |
 
@@ -44,14 +46,22 @@ python -m venv .venv
 # Windows: .venv\Scripts\activate
 # Unix:    source .venv/bin/activate
 
+pip install "le-loopforge>=0.2.0" "le-loopctl>=0.1.0" "loopgym>=0.1.2" loopbench
+```
+
+Or from source while developing:
+
+```bash
 pip install -r loopforge/requirements.txt
-pip install loopgym loopbench   # optional for Steps 5–6
+pip install -e loopforge -e loopctl
+pip install loopgym loopbench
 ```
 
 Verify LoopForge:
 
 ```bash
-python -m loopforge list-patterns
+loopforge list-patterns
+# or: python -m loopforge list-patterns
 ```
 
 ---
@@ -95,7 +105,7 @@ Edit the generated YAML: refine worker roles, rubric criteria, and input schema 
 ## Step 2 — Validate (5 min)
 
 ```bash
-python -m loopctl validate loop-library/my-first-loop.yaml
+loopctl validate loop-library/my-first-loop.yaml
 ```
 
 Or validate the entire library:
@@ -111,7 +121,7 @@ Expected: `Valid LSS spec` with no schema errors.
 ## Step 3 — Score with LES (5 min)
 
 ```bash
-python -m loopctl score --spec loop-library/my-first-loop.yaml --json > my_les.json
+loopctl score --spec loop-library/my-first-loop.yaml --json > my_les.json
 ```
 
 Inspect eight LES dimensions plus composite score in `my_les.json`.
@@ -119,7 +129,7 @@ Inspect eight LES dimensions plus composite score in `my_les.json`.
 Optional diagram:
 
 ```bash
-python -m loopctl diagram loop-library/my-first-loop.yaml
+loopctl diagram loop-library/my-first-loop.yaml
 ```
 
 ---
@@ -147,6 +157,37 @@ python implementations/my-first-loop/run.py
 
 ---
 
+## Step 4b — Loop Trace (optional, 5 min)
+
+After a run, emit a [Loop Trace 1.0](../standards/LOOP-TRACE-1.0.md) for observed LES and LoopNet export.
+
+**LoopGym (no API keys):**
+
+```python
+import loopgym as lg
+
+env = lg.make("loopbench/code-repair-v1")
+result = env.run_episode(task_id="cr-001", seed=42, trace_path="my-trace.json")
+print(result["loop_trace"]["trace_version"])  # 1.0
+```
+
+**Validate and score from trace:**
+
+```bash
+loopctl trace validate my-trace.json
+loopctl observed my-trace.json --spec loop-library/my-first-loop.yaml --json
+```
+
+Or use the repo smoke script:
+
+```bash
+python scripts/generate_loopgym_trace_demo.py
+```
+
+LoopNet export: [docs/loopnet/CONTRIBUTING-v0.3.md](../docs/loopnet/CONTRIBUTING-v0.3.md)
+
+---
+
 ## Step 5 — LoopBench (optional, 15 min)
 
 ```bash
@@ -163,11 +204,12 @@ Guides: [BEAT_LB-CR-1.md](./BEAT_LB-CR-1.md) · [BEAT_TEMPLATE.md](./BEAT_TEMPLA
 
 Comment on [Discussion #10](https://github.com/KanakMalpani/Loop-Engineering/discussions/10) with:
 
-- [ ] Python version and `pip show loopforge loopgym loopbench`
-- [ ] LoopForge command used (`new` or `fork`)
+- [ ] Python version and `pip show le-loopforge le-loopctl loopgym loopbench`
+- [ ] LoopForge command used (`new`, `fork`, or `intent`)
 - [ ] `loopctl validate` output
 - [ ] LES JSON snippet
 - [ ] Reflection-loop or exported stub run output
+- [ ] (Optional) Loop Trace + `loopctl observed` output
 - [ ] (Optional) LoopBench `results.json`
 
 ---

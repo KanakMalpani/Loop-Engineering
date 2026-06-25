@@ -13,7 +13,7 @@ ISSUE_4 = f"""## Adoption wave 6 — trace + observed LES submissions
 Loop Trace 1.0 + observed LES are live. Full submission path:
 
 ```bash
-pip install loopforge loopctl loopbench
+pip install "le-loopforge>=0.2.0" "le-loopctl>=0.1.0" loopbench
 loopforge intent "Fix failing tests from CI" -o my-loop.yaml --suggest-level
 python scripts/generate_trace_demo.py   # or LoopGym trace when available
 loopctl trace validate docs/submission-dry-run/trace.json

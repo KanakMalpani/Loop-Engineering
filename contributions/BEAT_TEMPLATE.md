@@ -7,7 +7,7 @@ Copy-paste pack for non-maintainer LoopBench rows. **Step 1 is always LoopForge.
 ## 1. Create or fork your spec
 
 ```bash
-pip install loopforge loopbench loopgym pyyaml jsonschema
+pip install "le-loopforge>=0.2.0" "le-loopctl>=0.1.0" loopbench loopgym pyyaml jsonschema
 
 # New loop
 loopforge new --pattern verification --name my-beat-loop --objective "YOUR TASK" -o my-beat-loop.yaml --suggest-level
@@ -37,15 +37,16 @@ Task guides: [BEAT_LB-CR-1.md](BEAT_LB-CR-1.md) · [BEAT_LB-RS-1.md](BEAT_LB-RS-
 
 ---
 
-## 3. Optional trace + observed LES
+## 3. Trace + observed LES (recommended)
 
 ```bash
-python scripts/generate_trace_demo.py
-loopctl trace validate docs/submission-dry-run/trace.json
-loopctl observed docs/submission-dry-run/trace.json --spec my-beat-loop.yaml --json > observed-les.json
+python scripts/generate_loopgym_trace_demo.py
+loopctl trace validate docs/submission-dry-run/trace-loopgym.json
+loopctl observed docs/submission-dry-run/trace-loopgym.json --spec my-beat-loop.yaml --json > observed-les.json
+python scripts/loopnet_export_trace.py docs/submission-dry-run/trace-loopgym.json -o loopnet-row.json
 ```
 
-Or after LoopGym run: use env-produced `trace.json`.
+Full path: [docs/loopnet/CONTRIBUTING-v0.3.md](../docs/loopnet/CONTRIBUTING-v0.3.md) · maintainer reference [submission-dry-run](../docs/submission-dry-run/)
 
 ---
 

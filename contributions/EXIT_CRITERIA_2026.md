@@ -35,7 +35,7 @@
 2. ~~LSS 1.1 **stable** in Loop-Core-Engineering~~ — **Green** ([lss-1.1.md](https://github.com/KanakMalpani/Loop-Core-Engineering/blob/main/specs/lss-1.1.md))
 3. First **external** case study ([good-first #7](https://github.com/KanakMalpani/Loop-Engineering/issues/7))
 4. ~~LE-OP-10 partial + schema versioning policy~~ — **Green**
-5. **LoopForge PyPI** — publish workflow ready; `pip install loopforge` after first release
+5. **LoopForge PyPI** — **Green** · `pip install le-loopforge` (CLI: `loopforge`) · `le-loopctl` for loopctl
 6. **External submission via LoopForge** — [BEAT_TEMPLATE.md](BEAT_TEMPLATE.md) · [GOLDEN_PATH.md](GOLDEN_PATH.md)
 
 2026 reproduction path validated — see [reproduction reports](../docs/reproduction-reports/README.md).

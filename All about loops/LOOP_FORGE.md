@@ -76,7 +76,7 @@ Each pattern ships with: ephemeral memory, prompt-refinement optimization, safet
 
 ## Roadmap (v0.2+)
 
-- [x] PyPI package layout (`pip install loopforge`) with bundled schema
+- [x] PyPI package layout (`pip install le-loopforge`) with bundled schema
 - [x] `from_library("research-agent")` / `loopforge fork`
 - [x] Composition scaffolds (`loopforge compose`)
 - [x] LE-OP-11 level hint on save (`--suggest-level`)

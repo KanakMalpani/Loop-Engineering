@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-25T06:59:09.275345+00:00",
+  "generated_at": "2026-06-25T07:16:05.110063+00:00",
   "signals": [
     {
       "id": "external_loopbench",
@@ -42,6 +42,13 @@
       "status": "green",
       "detail": "PyPI version: 0.2.0",
       "link": "https://pypi.org/project/le-loopforge/"
+    },
+    {
+      "id": "pypi_loopctl",
+      "name": "le-loopctl on PyPI (>= 0.1.0)",
+      "status": "green",
+      "detail": "PyPI version: 0.1.0",
+      "link": "https://pypi.org/project/le-loopctl/"
     },
     {
       "id": "lss_11_stable",

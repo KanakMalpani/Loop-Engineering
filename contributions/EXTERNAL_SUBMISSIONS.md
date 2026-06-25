@@ -11,7 +11,7 @@ Ready-to-use paths for the three highest-value **community-owned** adoption sign
 **Step 1 — scaffold with LoopForge:**
 
 ```bash
-pip install "loopforge>=0.1.0" "loopbench>=0.1.1" loopgym pyyaml jsonschema
+pip install "le-loopforge>=0.2.0" "le-loopctl>=0.1.0" "loopbench>=0.1.1" "loopgym>=0.1.2" pyyaml jsonschema
 git clone https://github.com/KanakMalpani/Loop-Engineering.git
 cd Loop-Engineering
 
