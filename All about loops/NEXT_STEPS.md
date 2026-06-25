@@ -109,7 +109,7 @@ Tracked daily: [docs/adoption-tracker/latest.md](../docs/adoption-tracker/latest
 | Practitioner exam | [exam-v0.1.md](../education/practitioner/exam-v0.1.md) |
 | Q3 status report | [STATUS-2026-Q3.md](../contributions/STATUS-2026-Q3.md) |
 
-## Phase 7 in progress (maintainer)
+## Phase 7 completed (maintainer)
 
 | Item | Artifact |
 |------|----------|
@@ -120,6 +120,17 @@ Tracked daily: [docs/adoption-tracker/latest.md](../docs/adoption-tracker/latest
 | Intent benchmark v0.4 | 30 intents · [manifest.json](../benchmarks/intent-to-lss/manifest.json) |
 | Trace-native dry-run | [run_submission_dryrun.py](../scripts/run_submission_dryrun.py) |
 | Adoption wave 7 | [adoption_wave7.py](../scripts/adoption_wave7.py) |
+
+## Phase 8 in progress (maintainer + community)
+
+| Item | Artifact |
+|------|----------|
+| Stale doc sweep | [PYPI_NAMING.md](../contributions/PYPI_NAMING.md) · [check_pypi_naming.py](../scripts/check_pypi_naming.py) |
+| GitHub outreach | Wave 7 posted on #4, #7, Discussion #10 |
+| Exam pilot issue | [#12](https://github.com/KanakMalpani/Loop-Engineering/issues/12) · [exam-v0.1.md](../education/practitioner/exam-v0.1.md) |
+| External LoopBench row | [BEAT_TEMPLATE.md](../contributions/BEAT_TEMPLATE.md) · [submission-dry-run](../docs/submission-dry-run/) |
+| LoopNet v0.3 PR | Sibling [loopnet](https://github.com/KanakMalpani/loopnet) repo |
+| RFC #11 feedback | LangGraph / CrewAI bridge threads |
 
 ## Community (tracked daily)
 

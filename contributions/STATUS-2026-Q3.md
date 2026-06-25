@@ -20,6 +20,8 @@ Loop Engineering now offers a **complete practitioner path**: learn patterns →
 | 4 | Benchmark maturity | LB-COMP-1, PyPI loopgym/loopbench, LE-OP-04/21 |
 | 5 | Gold standard creation | LoopForge, Golden Path, loopctl, Practitioner curriculum |
 | 6 | Close the loop | Trace emitter, observed LES, intent compiler, loopctl PyPI layout |
+| 7 | Trace Golden Path | PyPI naming, intent v0.4, LoopNet v0.3 docs, submission dry-run |
+| 8 | Outreach + cleanup | PYPI_NAMING guard, wave 7 GitHub posts, community unlocks |
 
 ---
 
@@ -32,7 +34,7 @@ Loop Engineering now offers a **complete practitioner path**: learn patterns →
 | loopgym | **0.1.2** | Runtime + Loop Trace emission |
 | loopbench | **0.1.1** | Benchmarks |
 
-Registry: [ECOSYSTEM_VERSIONS.md](../ECOSYSTEM_VERSIONS.md)
+Registry: [ECOSYSTEM_VERSIONS.md](../ECOSYSTEM_VERSIONS.md) · Naming: [PYPI_NAMING.md](../contributions/PYPI_NAMING.md)
 
 ---
 
@@ -58,7 +60,7 @@ Tracker: [docs/adoption-tracker/latest.md](../docs/adoption-tracker/latest.md)
 | LE-OP-04 | Benchmark v0.1 live |
 | LE-OP-10 | Warnings in composition_validator |
 | LE-OP-11 | Recommender v0.1 + LoopForge `--suggest-level` |
-| LE-OP-15 | Intent compiler v0.3 + 10-intent benchmark |
+| LE-OP-15 | Intent compiler v0.4 + 30-intent benchmark |
 | LE-OP-21 | Harness compare v0.2 |
 
 ---
@@ -67,9 +69,9 @@ Tracker: [docs/adoption-tracker/latest.md](../docs/adoption-tracker/latest.md)
 
 1. ~~Publish le-loopforge **0.2.0** and le-loopctl **0.1.0** to PyPI~~ — **Green**
 2. ~~LoopGym trace emission **0.1.2**~~ — **Green**
-3. First **non-maintainer** LoopBench row with trace + observed LES
-4. LoopNet v0.3 contributor pipeline (trace export script landed)
-5. Practitioner exam v0.1 community pilots
+3. First **non-maintainer** LoopBench row with trace + observed LES — outreach posted (wave 7)
+4. LoopNet v0.3 contributor pipeline — [CONTRIBUTING-v0.3.md](../docs/loopnet/CONTRIBUTING-v0.3.md) live
+5. Practitioner exam v0.1 community pilots — volunteer issue open
 
 ---
 
@@ -78,7 +80,7 @@ Tracker: [docs/adoption-tracker/latest.md](../docs/adoption-tracker/latest.md)
 ```bash
 git clone https://github.com/KanakMalpani/Loop-Engineering.git
 cd Loop-Engineering
-pip install -r loopforge/requirements.txt
+pip install "le-loopforge>=0.2.0" "le-loopctl>=0.1.0" "loopgym>=0.1.2"
 # Follow contributions/GOLDEN_PATH.md
 python scripts/daily_checkin.py
 ```

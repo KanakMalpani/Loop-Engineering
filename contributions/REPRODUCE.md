@@ -23,11 +23,11 @@ This checklist satisfies the 2026 roadmap exit criterion: an external team can f
 Before hand-editing YAML, generate a schema-valid skeleton:
 
 ```bash
-pip install -r loopforge/requirements.txt
+pip install "le-loopforge>=0.2.0" "le-loopctl>=0.1.0" "loopgym>=0.1.2" loopbench
 
-python -m loopforge list-patterns
+loopforge list-patterns
 
-python -m loopforge new \
+loopforge new \
   --pattern reflection \
   --name my-repro-loop \
   --objective "Demonstrate Loop Engineering reproduction path" \
@@ -37,7 +37,7 @@ python -m loopforge new \
 Or fork an existing template:
 
 ```bash
-python -m loopforge fork --from research-agent --name my-research --output loop-library/my-research.yaml
+loopforge fork --from research-agent --name my-research --output loop-library/my-research.yaml
 ```
 
 See [LOOP_FORGE.md](../All%20about%20loops/LOOP_FORGE.md) and [GOLDEN_PATH.md](GOLDEN_PATH.md).
@@ -62,15 +62,14 @@ python -m venv .venv
 # Unix:    source .venv/bin/activate
 
 pip install pyyaml jsonschema
-pip install -r loopforge/requirements.txt
-pip install loopgym loopbench loopforge   # optional but recommended for Steps 5–6
+pip install "le-loopforge>=0.2.0" "le-loopctl>=0.1.0" "loopgym>=0.1.2" loopbench
 ```
 
 Record installed versions:
 
 ```bash
-pip show loopgym loopbench pyyaml | findstr /i "Name Version"
-# Unix: pip show loopgym loopbench pyyaml | grep -E 'Name|Version'
+pip show le-loopforge le-loopctl loopgym loopbench pyyaml | findstr /i "Name Version"
+# Unix: pip show le-loopforge le-loopctl loopgym loopbench pyyaml | grep -E 'Name|Version'
 ```
 
 ---
@@ -158,8 +157,16 @@ Guides: [BEAT_LB-CR-1.md](BEAT_LB-CR-1.md) · [BEAT_LB-RS-1.md](BEAT_LB-RS-1.md)
 
 ```bash
 python examples/compose-loop/run.py loop-library/compositions/scenario-swarm-rehearsal.yaml
-pip install "loopgym>=0.1.1"
+pip install "loopgym>=0.1.2"
 python -c "import loopgym as lg; print(lg.make('loopbench/composed-swarm-v1').run_episode(task_id='comp-001', seed=0))"
+```
+
+**Loop Trace (optional):**
+
+```bash
+python scripts/generate_loopgym_trace_demo.py
+loopctl trace validate docs/submission-dry-run/trace.json
+loopctl observed docs/submission-dry-run/trace.json --spec loop-library/autonomous-debugger.yaml --json
 ```
 
 Published maintainer baselines: [benchmarks/results/](../benchmarks/results/)
@@ -210,7 +217,9 @@ Include:
 | pyyaml | 6.0.3 | Required |
 | jsonschema | 4.26.0 | Required for validator |
 | datasets | 5.0.0 | LoopNet explore (545 records) |
-| loopgym | 0.1.0 | Optional replay env |
+| loopgym | 0.1.2 | Optional replay env + Loop Trace |
+| le-loopforge | 0.2.0 | Scaffold LSS (CLI: `loopforge`) |
+| le-loopctl | 0.1.0 | Validate, score, trace (CLI: `loopctl`) |
 | loopbench | 0.1.1 | LB-CR-1 / LB-RS-1 / LB-MA-1 / LB-COMP-1 |
 
 Full registry: [ECOSYSTEM_VERSIONS.md](../ECOSYSTEM_VERSIONS.md)

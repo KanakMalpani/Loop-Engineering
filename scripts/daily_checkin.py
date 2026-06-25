@@ -123,6 +123,7 @@ def main() -> int:
             ],
         ),
         ("adoption_links", [py, "scripts/check_adoption_links.py"]),
+        ("pypi_naming_guard", [py, "scripts/check_pypi_naming.py"]),
         ("evaluator_composition", [py, "scripts/run_evaluator_composition_demo.py"]),
         ("loopforge_scaffold", [py, "-m", "loopforge", "demo"]),
         ("loopctl_validate", [py, "-m", "loopctl", "validate", "loop-library/research-agent.yaml"]),

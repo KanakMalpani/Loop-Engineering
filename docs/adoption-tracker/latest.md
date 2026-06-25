@@ -7,7 +7,7 @@ Automated by `scripts/track_adoption_signals.py` (daily with [daily-checkin.yml]
 | Signal | Status | Detail |
 |--------|--------|--------|
 | Non-maintainer LoopBench row [external_loopbench](https://github.com/KanakMalpani/Loop-Engineering/issues/4) | **YELLOW** | No external rows yet (6 entries: Loop Engineering maintainer, Loop Engineering maintainer (MA-1), Te |
-| Reproduction challenge — external report [discussion_10](https://github.com/KanakMalpani/Loop-Engineering/discussions/10) | **YELLOW** | No external comments yet (6 maintainer/bot comment(s)) |
+| Reproduction challenge — external report [discussion_10](https://github.com/KanakMalpani/Loop-Engineering/discussions/10) | **YELLOW** | No external comments yet (7 maintainer/bot comment(s)) |
 | RFC LSS 1.1 — framework feedback [discussion_11](https://github.com/KanakMalpani/Loop-Engineering/discussions/11) | **YELLOW** | No external comments yet (3 maintainer/bot comment(s)) |
 | loopbench on PyPI (>= 0.1.1) [pypi_loopbench](https://pypi.org/project/loopbench/) | **GREEN** | PyPI version: 0.1.1 |
 | loopgym on PyPI (>= 0.1.1) [pypi_loopgym](https://pypi.org/project/loopgym/) | **GREEN** | PyPI version: 0.1.2 |
@@ -26,4 +26,4 @@ python scripts/track_adoption_signals.py
 python scripts/daily_checkin.py --output docs/checkins/latest.md
 ```
 
-_Generated at 2026-06-25T07:16:05.110063+00:00_
+_Generated at 2026-06-25T07:58:36.767556+00:00_

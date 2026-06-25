@@ -84,7 +84,7 @@ flowchart TB
 | **LoopGym** | Runtime — run loops in sim, live, or replay | [GitHub →](https://github.com/KanakMalpani/LoopGym) · `pip install loopgym` |
 | **LoopBench** | Benchmarks — public scoreboard | [GitHub →](https://github.com/KanakMalpani/LoopBench) · `pip install loopbench` |
 
-Full install map: [**ECOSYSTEM.md**](https://github.com/KanakMalpani/Loop-Core-Engineering/blob/main/ECOSYSTEM.md) · Canonical source policy: [**CANONICAL-SOURCE.md**](standards/CANONICAL-SOURCE.md)
+Full install map: [**ECOSYSTEM.md**](https://github.com/KanakMalpani/Loop-Core-Engineering/blob/main/ECOSYSTEM.md) · Canonical source policy: [**CANONICAL-SOURCE.md**](standards/CANONICAL-SOURCE.md) · PyPI names: [**PYPI_NAMING.md**](contributions/PYPI_NAMING.md)
 
 ---
 

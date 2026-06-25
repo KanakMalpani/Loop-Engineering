@@ -1,6 +1,6 @@
 # loopctl
 
-Unified Loop Engineering toolchain CLI. Requires `loopforge>=0.2.0`.
+Unified Loop Engineering toolchain CLI. Requires **`le-loopforge>=0.2.0`** on PyPI.
 
 ```bash
 pip install le-loopctl

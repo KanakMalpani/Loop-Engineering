@@ -11,7 +11,7 @@ One-command path for [LoopBench](https://github.com/KanakMalpani/LoopBench) task
 ```bash
 git clone https://github.com/KanakMalpani/Loop-Engineering.git
 cd Loop-Engineering
-pip install "loopbench>=0.1.1" "loopgym>=0.1.1" pyyaml jsonschema
+pip install "le-loopforge>=0.2.0" "le-loopctl>=0.1.0" "loopbench>=0.1.1" "loopgym>=0.1.2" pyyaml jsonschema
 
 loopbench run \
   --task LB-COMP-1 \
@@ -26,7 +26,7 @@ Local composed smoke (no LoopBench):
 
 ```bash
 python examples/compose-loop/run.py loop-library/compositions/scenario-swarm-rehearsal.yaml
-pip install "loopgym>=0.1.1"
+pip install "loopgym>=0.1.2"
 python -c "import loopgym as lg; print(lg.make('loopbench/composed-swarm-v1').reset(task_id='comp-001'))"
 ```
 

@@ -13,7 +13,7 @@ Phase 4 closes the LB-COMP-1 fidelity gap. Community signals still require **non
 |------|--------|
 | LoopBench LB-COMP-1 | Uses `loopbench/composed-swarm-v1` (not MA-1 proxy) |
 | Maintainer COMP LES | **80.3** ([lb-comp-1-baseline.json](../benchmarks/results/lb-comp-1-baseline.json)) |
-| loopgym PyPI | Target **0.1.1** with composed env |
+| loopgym PyPI | **0.1.2** with composed env + Loop Trace |
 | BEAT guides | All four tasks; COMP target updated |
 
 ---
@@ -23,7 +23,7 @@ Phase 4 closes the LB-COMP-1 fidelity gap. Community signals still require **non
 ### LoopBench row (#4)
 
 ```bash
-pip install "loopbench>=0.1.1" "loopgym>=0.1.1"
+pip install "le-loopforge>=0.2.0" "le-loopctl>=0.1.0" "loopbench>=0.1.1" "loopgym>=0.1.2"
 # Pick any BEAT guide → loopbench run → validate → LoopBench PR
 ```
 

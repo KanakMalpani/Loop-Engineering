@@ -35,18 +35,18 @@ Start with [GOLDEN_PATH.md](../contributions/GOLDEN_PATH.md) for the fastest rou
 **Hands-on:**
 
 ```bash
-pip install -r loopforge/requirements.txt
-python -m loopforge new --pattern reflection --name practitioner-capstone --objective "YOUR OBJECTIVE" -o loop-library/practitioner-capstone.yaml --suggest-level
+pip install "le-loopforge>=0.2.0" "le-loopctl>=0.1.0"
+loopforge new --pattern reflection --name practitioner-capstone --objective "YOUR OBJECTIVE" -o loop-library/practitioner-capstone.yaml --suggest-level
 ```
 
 Or fork a template:
 
 ```bash
-python -m loopforge fork --from research-agent --name practitioner-capstone -o loop-library/practitioner-capstone.yaml --suggest-level
+loopforge fork --from research-agent --name practitioner-capstone -o loop-library/practitioner-capstone.yaml --suggest-level
 ```
 
 **Checklist:**
-- [ ] Spec validates (`python -m loopctl validate loop-library/practitioner-capstone.yaml`)
+- [ ] Spec validates (`loopctl validate loop-library/practitioner-capstone.yaml`)
 - [ ] Level hint recorded in `x_loopforge.level_hint` or `metadata.taxonomy_level`
 
 ---
@@ -54,10 +54,10 @@ python -m loopforge fork --from research-agent --name practitioner-capstone -o l
 ## Module 4 — Validate, score, diagram (~20 min)
 
 ```bash
-python -m loopctl validate loop-library/practitioner-capstone.yaml
-python -m loopctl score --spec loop-library/practitioner-capstone.yaml --json > capstone-les.json
-python -m loopctl diagram loop-library/practitioner-capstone.yaml
-python -m loopctl level --spec loop-library/practitioner-capstone.yaml
+loopctl validate loop-library/practitioner-capstone.yaml
+loopctl score --spec loop-library/practitioner-capstone.yaml --json > capstone-les.json
+loopctl diagram loop-library/practitioner-capstone.yaml
+loopctl level --spec loop-library/practitioner-capstone.yaml
 ```
 
 **Checklist:**
@@ -70,15 +70,22 @@ python -m loopctl level --spec loop-library/practitioner-capstone.yaml
 
 ```bash
 python examples/reflection-loop/run.py
-pip install loopgym loopbench
+pip install "loopgym>=0.1.2" loopbench
 loopbench run --task LB-CR-1 --spec loop-library/practitioner-capstone.yaml --seeds 0,1,2,3,4 -o capstone-results.json
 loopbench validate capstone-results.json
+```
+
+Optional Loop Trace:
+
+```bash
+python -c "import loopgym as lg; lg.make('loopbench/code-repair-v1').run_episode(task_id='cr-001', seed=42, trace_path='capstone-trace.json')"
+loopctl trace validate capstone-trace.json
 ```
 
 Optional export:
 
 ```bash
-python -m loopforge export --target generic --spec loop-library/practitioner-capstone.yaml --out implementations/practitioner-capstone/
+loopforge export --target generic --spec loop-library/practitioner-capstone.yaml --out implementations/practitioner-capstone/
 python implementations/practitioner-capstone/run.py
 ```
 
@@ -103,4 +110,5 @@ Deliverables:
 ## Next
 
 - [BEAT_TEMPLATE.md](../contributions/BEAT_TEMPLATE.md) — publish a benchmark row
-- [education/](../) — future certification track (Stage 13)
+- [exam-v0.1.md](exam-v0.1.md) — practitioner exam ([pilot volunteers #12](https://github.com/KanakMalpani/Loop-Engineering/issues/12))
+- [PYPI_NAMING.md](../contributions/PYPI_NAMING.md) — correct install names

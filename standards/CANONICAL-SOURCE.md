@@ -11,7 +11,10 @@
 | Loop ID registry | [Loop-Core-Engineering/specs/loop-ids.md](https://github.com/KanakMalpani/Loop-Core-Engineering/blob/main/specs/loop-ids.md) |
 | Failure taxonomy | [Loop-Core-Engineering/specs/failure-taxonomy.md](https://github.com/KanakMalpani/Loop-Core-Engineering/blob/main/specs/failure-taxonomy.md) |
 | Loop Trace 1.0 | [standards/LOOP-TRACE-1.0.md](../standards/LOOP-TRACE-1.0.md) (discipline repo) |
-| LoopForge (creation) | [loopforge/](../loopforge/) · PyPI `loopforge` **0.1.0** |
+| LoopForge (creation) | [loopforge/](../loopforge/) · PyPI **`le-loopforge`** **0.2.0** (CLI: `loopforge`) |
+| loopctl (toolchain) | [loopctl/](../loopctl/) · PyPI **`le-loopctl`** **0.1.0** (CLI: `loopctl`) |
+
+PyPI naming: [PYPI_NAMING.md](../contributions/PYPI_NAMING.md)
 
 This discipline repo remains the **narrative mirror**: manifesto, fundamentals, patterns, case studies, loop library.
 
@@ -23,9 +26,10 @@ Version registry: [ECOSYSTEM_VERSIONS.md](../ECOSYSTEM_VERSIONS.md) (discipline 
 |------|-----|-----------------|
 | Loop Core Engineering | https://github.com/KanakMalpani/Loop-Core-Engineering | LSS 1.0 + **1.1**, LES 1.0 |
 | LoopNet | https://github.com/KanakMalpani/loopnet | **v0.2** (545 Tier-1 trajectories) |
-| LoopGym | https://github.com/KanakMalpani/LoopGym | PyPI `loopgym` **0.1.1** |
+| LoopGym | https://github.com/KanakMalpani/LoopGym | PyPI `loopgym` **0.1.2** |
 | LoopBench | https://github.com/KanakMalpani/LoopBench | PyPI `loopbench` **0.1.1** |
-| LoopForge | https://github.com/KanakMalpani/Loop-Engineering/tree/main/loopforge | PyPI `loopforge` **0.1.0** |
+| LoopForge | https://github.com/KanakMalpani/Loop-Engineering/tree/main/loopforge | PyPI **`le-loopforge`** **0.2.0** |
+| loopctl | https://github.com/KanakMalpani/Loop-Engineering/tree/main/loopctl | PyPI **`le-loopctl`** **0.1.0** |
 
 LoopNet dataset (Tier 1): https://huggingface.co/datasets/KanakMalpani/loopnet-v0.2
 

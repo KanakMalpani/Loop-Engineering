@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# Superseded by adoption_wave7.py — kept for history.
 """Phase 2 adoption campaign: Discussion #10 checklist, outreach pings, issue labels."""
 
 from __future__ import annotations

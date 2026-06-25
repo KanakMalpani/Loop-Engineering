@@ -38,7 +38,9 @@ Update this file when any component releases; mirror changes in sibling repo REA
 | loopgym | **0.1.2** | `pip install "loopgym>=0.1.2"` | [LoopGym](https://github.com/KanakMalpani/LoopGym) |
 | loopbench | **0.1.1** | `pip install "loopbench>=0.1.1"` | [LoopBench](https://github.com/KanakMalpani/LoopBench) |
 
-Pin exact versions in reproduction docs; run `pip show loopgym loopbench` after install.
+Pin exact versions in reproduction docs; run `pip show le-loopforge le-loopctl loopgym loopbench` after install.
+
+**PyPI naming:** [PYPI_NAMING.md](contributions/PYPI_NAMING.md) — use `le-loopforge` / `le-loopctl`, not bare `loopforge` / `loopctl`.
 
 ---
 

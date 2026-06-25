@@ -19,7 +19,7 @@ No hand-waved demos — bring an [LSS](https://github.com/KanakMalpani/Loop-Core
 <br>
 
 ```bash
-pip install loopbench loopgym
+pip install "le-loopforge>=0.2.0" "le-loopctl>=0.1.0" loopbench loopgym
 loopbench list
 ```
 
@@ -105,7 +105,7 @@ Post your **60-minute reproduction report** on the [reproduction challenge](http
 Also: [BEAT_LB-RS-1.md](https://github.com/KanakMalpani/Loop-Engineering/blob/main/contributions/BEAT_LB-RS-1.md) (81.9) · [BEAT_LB-MA-1.md](https://github.com/KanakMalpani/Loop-Engineering/blob/main/contributions/BEAT_LB-MA-1.md) (86.5) · [BEAT_LB-COMP-1.md](https://github.com/KanakMalpani/Loop-Engineering/blob/main/contributions/BEAT_LB-COMP-1.md) (80.3)
 
 ```bash
-pip install "loopbench>=0.1.1" loopgym
+pip install "le-loopforge>=0.2.0" "le-loopctl>=0.1.0" "loopbench>=0.1.1" "loopgym>=0.1.2"
 # see BEAT_LB-CR-1.md for full clone + run + submit
 ```
 
@@ -114,7 +114,7 @@ pip install "loopbench>=0.1.1" loopgym
 ## Score in 2 minutes
 
 ```bash
-pip install loopbench loopgym
+pip install "le-loopforge>=0.2.0" "le-loopctl>=0.1.0" loopbench loopgym
 
 loopbench list
 

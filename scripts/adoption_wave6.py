@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# Superseded by adoption_wave7.py — kept for history.
 """Adoption wave 6 — trace + observed LES submission outreach."""
 
 from __future__ import annotations
