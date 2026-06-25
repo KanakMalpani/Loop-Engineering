@@ -1,0 +1,33 @@
+loop_name: openhands-dev-loop
+version: "1.0"
+objective: "Autonomous dev agent — plan, edit, run tests, iterate until CI green (OpenHands-style)"
+metadata:
+  schema_version: "1.1"
+  taxonomy_level: 3
+  harness: openhands
+  partner_template: true
+  notes: "S=repo+issue state, A=shell+edit tools, O=build/test logs, E=CI pass"
+
+workers:
+  - id: planner
+    role: Decompose issue into repair steps
+  - id: executor
+    role: Run commands and apply file changes
+    depends_on: [planner]
+  - id: reviewer
+    role: Validate tests and lint before next iteration
+    depends_on: [executor]
+
+evaluators:
+  - id: test_suite
+    type: test_suite
+    runs_after: [reviewer]
+
+termination_conditions:
+  - type: all_tests_pass
+  - type: max_iterations
+    value: 15
+
+cost_limits:
+  per_iteration_usd: 0.3
+  cumulative_usd: 4.0

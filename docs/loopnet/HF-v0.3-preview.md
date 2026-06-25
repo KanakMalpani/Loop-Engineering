@@ -16,6 +16,8 @@ python scripts/loopnet_export_trace.py --trace docs/submission-dry-run/trace.jso
 3. Upload dataset card to Hugging Face as **`loopnet-v0.3-preview`** (private preview until community DUA review).
 4. Link card from [loopnet README](https://github.com/KanakMalpani/loopnet) and [ECOSYSTEM_VERSIONS.md](../../ECOSYSTEM_VERSIONS.md).
 
+**CI:** Push workflow from [docs/ecosystem-sync/loopnet/.github/workflows/hf-dataset-upload.yml](../ecosystem-sync/loopnet/.github/workflows/hf-dataset-upload.yml) to loopnet repo; set `HF_TOKEN` secret; tag `loopnet-v0.3-preview` or run workflow_dispatch.
+
 ## Contributor path
 
 [CONTRIBUTING-v0.3.md](./CONTRIBUTING-v0.3.md)

@@ -32,6 +32,8 @@ Related: [LOOP_PLAYGROUND.md](../../contributions/LOOP_PLAYGROUND.md) · [ADOPTI
 - [x] `docs/ecosystem-sync/LoopBench/.github/workflows/pages.yml`
 - [x] `docs/ecosystem-sync/LoopBench/.github/workflows/sync-platform-pack.yml` (hourly pull from LE)
 - [x] `docs/ecosystem-sync/LoopBench/.github/workflows/leaderboard-validate.yml`
+- [x] `.github/workflows/external-submission-hint.yml` (LE case study / repro PRs)
+- [x] Partner submission pack — [PARTNER_LOOPBENCH_SUBMIT.md](../../contributions/PARTNER_LOOPBENCH_SUBMIT.md)
 - [x] **Push mirrors to LoopBench** — automated via `sync-platform-pack` (LE mirror is source of truth)
 - [x] LoopBench README `<!-- LEADERBOARD:START -->` markers live on remote
 
@@ -53,6 +55,7 @@ Related: [LOOP_PLAYGROUND.md](../../contributions/LOOP_PLAYGROUND.md) · [ADOPTI
 | 2026-06-17 | Leaderboard render (LE preview) | [render_leaderboard_preview.py](../../scripts/render_leaderboard_preview.py) |
 | 2026-06-17 | Ecosystem digest | [ecosystem_digest.py](../../scripts/ecosystem_digest.py) |
 | 2026-06-17 | LoopBench sync pack | [docs/ecosystem-sync/LoopBench/](../ecosystem-sync/LoopBench/) |
+| 2026-06-25 | PyPI stack + partner pack + wave 12 | `le-loop-stack` + `le-loopctl` 0.2.0 on PyPI · [PARTNER_LOOPBENCH_SUBMIT.md](../../contributions/PARTNER_LOOPBENCH_SUBMIT.md) |
 | 2026-06-25 | Full LoopBench automation | Hourly sync pack pull · validate on PR · render → Pages chain |
 | 2026-06-25 | Pinned ops dashboard | [Issue #13](https://github.com/KanakMalpani/Loop-Engineering/issues/13) · `OPS_DASHBOARD_ISSUE_NUMBER=13` |
 
@@ -62,7 +65,7 @@ Related: [LOOP_PLAYGROUND.md](../../contributions/LOOP_PLAYGROUND.md) · [ADOPTI
 
 | Item | Owner | Notes |
 |------|-------|-------|
-| First external LoopBench row | Community | [#4](https://github.com/KanakMalpani/Loop-Engineering/issues/4) · outreach wave 11 sent 2026-06-25 |
+| First external LoopBench row | Community | [#4](https://github.com/KanakMalpani/Loop-Engineering/issues/4) · wave 11+12 sent · [partner pack](../../contributions/PARTNER_LOOPBENCH_SUBMIT.md) |
 
 ---
 
@@ -107,6 +110,7 @@ _Append-only. CI adds lines when leaderboard or adoption signals change (max 1 p
 - 2026-06-25 UTC: Platform shipped — LoopBench LIVE.md live, ops dashboard [#13](https://github.com/KanakMalpani/Loop-Engineering/issues/13) populated.
 - 2026-06-25 14:39 UTC: digest changed; external=none
 - 2026-06-25 UTC: Adoption wave 11 — invited [Agentless #86](https://github.com/OpenAutoCoder/Agentless/issues/86), [Aider #5328](https://github.com/Aider-AI/aider/issues/5328), [OpenHands #14984](https://github.com/OpenHands/OpenHands/issues/14984) for first external LoopBench row.
+- 2026-06-25 UTC: Wave 12 follow-up + partner pack + PyPI stack published (`le-loop-stack`, `le-loopctl` 0.2.0).
 <!-- AUTOMATION-LOG:END -->
 
 ---

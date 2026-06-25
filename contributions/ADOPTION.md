@@ -26,7 +26,14 @@ python scripts/adoption_wave2.py   # checklist + framework pings
 python scripts/adoption_wave3.py # Phase 3 BEAT quad + stale-issue ping
 python scripts/adoption_wave4.py # Phase 4 HF + LoopBench + framework comments
 python scripts/adoption_wave11.py # Invite loop repo owners (Agentless, Aider, OpenHands)
+python scripts/adoption_wave12.py # Follow-up with partner submission pack
 ```
+
+| Cadence | Script | Action |
+|---------|--------|--------|
+| One-shot | wave 11 | Initial outreach to repair-loop repo owners |
+| +7 days | wave 12 | Partner guide follow-up |
+| Monthly | wave 13+ | Rotate targets (Reflexion, DSPy, SmolAgents) if silent |
 
 ---
 

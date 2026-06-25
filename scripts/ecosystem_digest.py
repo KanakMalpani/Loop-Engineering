@@ -26,6 +26,12 @@ STATUS_FILE = ROOT / "docs" / "maintainer" / "COMMUNITY_PLATFORM_STATUS.md"
 AUTOMATION_START = "<!-- AUTOMATION-LOG:START -->"
 AUTOMATION_END = "<!-- AUTOMATION-LOG:END -->"
 
+OUTREACH_ISSUES = (
+    ("OpenAutoCoder/Agentless", 86),
+    ("Aider-AI/aider", 5328),
+    ("OpenHands/OpenHands", 14984),
+)
+
 
 def fetch_json(url: str, token: str | None = None) -> Any:
     headers = {"User-Agent": "loop-engineering-digest", "Accept": "application/vnd.github+json"}
@@ -49,7 +55,7 @@ def run_tracker_json() -> dict[str, Any]:
     return data
 
 
-def digest_hash(leaderboard: dict, tracker: dict) -> str:
+def digest_hash(leaderboard: dict, tracker: dict, outreach: list[dict[str, str]] | None = None) -> str:
     payload = {
         "leaderboard_updated": leaderboard.get("updated"),
         "entry_count": len(leaderboard.get("entries") or []),
@@ -61,6 +67,11 @@ def digest_hash(leaderboard: dict, tracker: dict) -> str:
             for s in tracker.get("signals", [])
             if s.get("id") in ("external_loopbench", "community_platform_v1")
         },
+        "outreach_replies": [
+            f"{o['repo']}#{o['issue']}:{o['author']}"
+            for o in (outreach or [])
+            if o.get("author") and o["author"] != "_no external replies_"
+        ],
     }
     raw = json.dumps(payload, sort_keys=True)
     return hashlib.sha256(raw.encode()).hexdigest()
@@ -69,24 +80,76 @@ def digest_hash(leaderboard: dict, tracker: dict) -> str:
 def fetch_open_prs(token: str | None) -> list[dict[str, str]]:
     if not token:
         return []
-    repos = ("KanakMalpani/Loop-Engineering", "KanakMalpani/LoopBench")
     prs: list[dict[str, str]] = []
-    for repo in repos:
-        url = f"https://api.github.com/repos/{repo}/pulls?state=open&per_page=20"
+    # LoopBench: PRs touching entries.json
+    lb_url = (
+        "https://api.github.com/search/issues?q="
+        "repo:KanakMalpani/LoopBench+is:pr+is:open+entries.json"
+    )
+    try:
+        data = fetch_json(lb_url, token)
+        for item in data.get("items", [])[:5]:
+            prs.append(
+                {
+                    "repo": "KanakMalpani/LoopBench",
+                    "title": item.get("title", ""),
+                    "url": item.get("html_url", ""),
+                }
+            )
+    except (urllib.error.URLError, json.JSONDecodeError, KeyError):
+        pass
+
+    le_url = (
+        "https://api.github.com/search/issues?q="
+        "repo:KanakMalpani/Loop-Engineering+is:pr+is:open+"
+        "(case-study+OR+reproduction+OR+loopbench+OR+BEAT)"
+    )
+    try:
+        data = fetch_json(le_url, token)
+        for item in data.get("items", [])[:5]:
+            prs.append(
+                {
+                    "repo": "KanakMalpani/Loop-Engineering",
+                    "title": item.get("title", ""),
+                    "url": item.get("html_url", ""),
+                }
+            )
+    except (urllib.error.URLError, json.JSONDecodeError, KeyError):
+        pass
+    return prs[:10]
+
+
+def fetch_outreach_activity(token: str | None) -> list[dict[str, str]]:
+    """Comments on wave-11 outreach issues (excluding repo owner bot noise)."""
+    if not token:
+        return []
+    activity: list[dict[str, str]] = []
+    for repo, num in OUTREACH_ISSUES:
+        url = f"https://api.github.com/repos/{repo}/issues/{num}/comments?per_page=30"
         try:
-            data = fetch_json(url, token)
+            comments = fetch_json(url, token)
         except (urllib.error.URLError, json.JSONDecodeError):
             continue
-        for pr in data:
-            title = pr.get("title", "")
-            html = pr.get("html_url", "")
-            if repo.endswith("LoopBench") and "leaderboard" in title.lower():
-                prs.append({"repo": repo, "title": title, "url": html})
-            elif repo.endswith("Loop-Engineering") and (
-                "case-stud" in title.lower() or "loopbench" in title.lower()
-            ):
-                prs.append({"repo": repo, "title": title, "url": html})
-    return prs[:10]
+        external = [
+            c
+            for c in comments
+            if c.get("user", {}).get("type") != "Bot"
+            and c.get("user", {}).get("login") not in ("KanakMalpani", "github-actions[bot]")
+        ]
+        if external:
+            latest = external[-1]
+            activity.append(
+                {
+                    "repo": repo,
+                    "issue": str(num),
+                    "author": latest.get("user", {}).get("login", "?"),
+                    "url": latest.get("html_url", ""),
+                    "preview": (latest.get("body") or "")[:80].replace("\n", " "),
+                }
+            )
+        else:
+            activity.append({"repo": repo, "issue": str(num), "author": "_no external replies_", "url": "", "preview": ""})
+    return activity
 
 
 def render_dashboard(
@@ -94,6 +157,7 @@ def render_dashboard(
     leaderboard: dict,
     tracker: dict,
     prs: list[dict[str, str]],
+    outreach: list[dict[str, str]],
     *,
     previous_hash: str | None,
     current_hash: str,
@@ -130,6 +194,15 @@ def render_dashboard(
             lines.append(f"- [{pr['repo']}] [{pr['title']}]({pr['url']})")
     else:
         lines.append("_None flagged._")
+    lines.extend(["", "## Outreach responses (wave 11)", ""])
+    for item in outreach:
+        if item.get("url"):
+            lines.append(
+                f"- [{item['repo']}#{item['issue']}] @{item['author']}: "
+                f"[comment]({item['url']}) — _{item.get('preview', '')}_"
+            )
+        else:
+            lines.append(f"- [{item['repo']}#{item['issue']}]: {item['author']}")
     lines.extend(
         [
             "",
@@ -200,7 +273,8 @@ def main() -> int:
 
     leaderboard = load_entries_from_url(LEADERBOARD_URL)
     tracker = run_tracker_json()
-    current_hash = digest_hash(leaderboard, tracker)
+    outreach = fetch_outreach_activity(token)
+    current_hash = digest_hash(leaderboard, tracker, outreach)
 
     previous_hash: str | None = None
     if args.cache_file and args.cache_file.exists():
@@ -209,7 +283,7 @@ def main() -> int:
     changed = previous_hash != current_hash
     prs = fetch_open_prs(token)
     body = render_dashboard(
-        when, leaderboard, tracker, prs, previous_hash=previous_hash, current_hash=current_hash
+        when, leaderboard, tracker, prs, outreach, previous_hash=previous_hash, current_hash=current_hash
     )
 
     if args.dry_run:

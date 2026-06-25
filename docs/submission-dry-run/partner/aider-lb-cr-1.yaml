@@ -1,0 +1,30 @@
+loop_name: aider-edit-test-loop
+version: "1.0"
+objective: "Pair-programming repair loop — edit from chat context until tests pass (Aider-style)"
+metadata:
+  schema_version: "1.1"
+  taxonomy_level: 3
+  harness: aider
+  partner_template: true
+  notes: "S=git+chat, A=LLM edits, O=test output, E=tests pass — see contributions/integrate/AIDER.md"
+
+workers:
+  - id: editor
+    role: Apply LLM-suggested diffs to tracked files
+  - id: test_runner
+    role: Execute test suite after each edit round
+    depends_on: [editor]
+
+evaluators:
+  - id: test_suite
+    type: test_suite
+    runs_after: [test_runner]
+
+termination_conditions:
+  - type: all_tests_pass
+  - type: max_iterations
+    value: 12
+
+cost_limits:
+  per_iteration_usd: 0.2
+  cumulative_usd: 2.0

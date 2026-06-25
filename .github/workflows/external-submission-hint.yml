@@ -1,0 +1,50 @@
+name: External submission hint
+
+on:
+  pull_request:
+    paths:
+      - case-studies/**
+      - docs/reproduction-reports/**
+      - contributions/BEAT_*.md
+
+permissions:
+  pull-requests: write
+
+jobs:
+  hint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/github-script@v7
+        with:
+          script: |
+            const body = `## External submission checklist
+
+            Thanks for contributing to Loop Engineering.
+
+            - [ ] Non-maintainer GitHub account (required for adoption credit)
+            - [ ] [EXTERNAL_SUBMISSIONS.md](https://github.com/KanakMalpani/Loop-Engineering/blob/main/contributions/EXTERNAL_SUBMISSIONS.md) section followed
+            - [ ] Case study: [TEMPLATE.md](https://github.com/KanakMalpani/Loop-Engineering/blob/main/case-studies/TEMPLATE.md) tuple + LES
+            - [ ] Reproduction: [REPRODUCE.md](https://github.com/KanakMalpani/Loop-Engineering/blob/main/contributions/REPRODUCE.md) or [TEMPLATE-trace-native.md](https://github.com/KanakMalpani/Loop-Engineering/blob/main/docs/reproduction-reports/TEMPLATE-trace-native.md)
+            - [ ] LoopBench row: [PARTNER_LOOPBENCH_SUBMIT.md](https://github.com/KanakMalpani/Loop-Engineering/blob/main/contributions/PARTNER_LOOPBENCH_SUBMIT.md) → reference [#4](https://github.com/KanakMalpani/Loop-Engineering/issues/4)
+
+            Maintainer review required. Questions welcome on [Discussion #10](https://github.com/KanakMalpani/Loop-Engineering/discussions/10).`;
+
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+            const botComment = comments.find(
+              (c) =>
+                c.user.type === "Bot" &&
+                c.body.includes("External submission checklist")
+            );
+            if (botComment) {
+              return;
+            }
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body,
+            });

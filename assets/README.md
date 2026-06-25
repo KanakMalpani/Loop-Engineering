@@ -8,24 +8,21 @@ Brand and visual assets for Loop Engineering.
 
 | File | Description |
 |------|-------------|
-| [logo-concept.md](logo-concept.md) | Logo design brief and usage guidelines |
+| [logo.svg](logo.svg) | Loop Engineering mark — light background (closed orbit + τ) |
+| [logo-dark.svg](logo-dark.svg) | Dark background variant |
+| [logo.png](logo.png) | LoopBench LB monogram (used in README header) |
+| [logo-concept.md](logo-concept.md) | Design brief and palette |
 
 ---
 
 ## Usage
 
-- Prefer SVG for diagrams and logo when available
-- Mermaid sources live in [DIAGRAMS/](../DIAGRAMS/)
-- Citation and attribution: [CONTRIBUTIONS/CITATION.md](../CONTRIBUTIONS/CITATION.md)
+- Prefer SVG for docs and social preview
+- LoopBench site logo: `docs/ecosystem-sync/LoopBench/docs/assets/logos/loopbench-lb.png`
+- Mermaid sources: [DIAGRAMS/](../DIAGRAMS/)
 
 ---
 
 ## Contributing Assets
 
-Submit PRs with:
-
-- MIT-licensed or original artwork
-- Source files (SVG, Figma export) when possible
-- Dark and light background variants for logo
-
-Do not commit binary blobs > 500 KB without maintainer approval.
+Submit PRs with MIT-licensed artwork, source files when possible, and light/dark variants.

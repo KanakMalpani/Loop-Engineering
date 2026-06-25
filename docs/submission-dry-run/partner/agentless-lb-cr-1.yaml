@@ -1,0 +1,33 @@
+loop_name: agentless-repair-loop
+version: "1.0"
+objective: "Locate fault, patch, and verify — Agentless-style repair loop mapped to LSS for LB-CR-1"
+metadata:
+  schema_version: "1.1"
+  taxonomy_level: 3
+  harness: agentless
+  partner_template: true
+  notes: "Map OpenAutoCoder/Agentless locate→patch→verify to this spec; tune workers to match your pipeline"
+
+workers:
+  - id: locator
+    role: Localize fault from failing tests and stack traces
+  - id: patcher
+    role: Generate minimal repair patch
+    depends_on: [locator]
+  - id: verifier
+    role: Run test suite and reject regressions
+    depends_on: [patcher]
+
+evaluators:
+  - id: test_suite
+    type: test_suite
+    runs_after: [verifier]
+
+termination_conditions:
+  - type: all_tests_pass
+  - type: max_iterations
+    value: 10
+
+cost_limits:
+  per_iteration_usd: 0.25
+  cumulative_usd: 2.5

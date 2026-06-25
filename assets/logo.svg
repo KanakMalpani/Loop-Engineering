@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="Loop Engineering">
+  <!-- Closed orbit: act ’ observe ’ evaluate ’ update -->
+  <circle cx="64" cy="64" r="52" fill="none" stroke="#2D6A4F" stroke-width="10" stroke-linecap="round"
+    stroke-dasharray="280 48" transform="rotate(-35 64 64)"/>
+  <!-- Nodes: Act, Observe, Evaluate -->
+  <circle cx="64" cy="18" r="7" fill="#457B9D"/>
+  <circle cx="108" cy="78" r="7" fill="#457B9D"/>
+  <circle cx="28" cy="78" r="7" fill="#457B9D"/>
+  <!-- Center Ä (termination) -->
+  <text x="64" y="70" text-anchor="middle" font-family="Inter,Segoe UI,sans-serif" font-size="22" font-weight="700" fill="#1D3557">Ä</text>
+</svg>

@@ -26,4 +26,6 @@ Also merge [LoopBench-README.md](../LoopBench-README.md) (includes `<!-- LEADERB
 
 **Do not edit** `leaderboard/entries.json`, `LIVE.md`, or generated JSON on LoopBench without a PR — render workflow owns those outputs.
 
+**Custom domain (optional):** Add `CNAME` in `docs/` and configure DNS → GitHub Pages settings on LoopBench repo.
+
 Tracker: [COMMUNITY_PLATFORM_STATUS.md](../../maintainer/COMMUNITY_PLATFORM_STATUS.md)

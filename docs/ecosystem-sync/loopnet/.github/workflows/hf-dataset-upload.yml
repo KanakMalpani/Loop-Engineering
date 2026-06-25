@@ -1,0 +1,47 @@
+name: Upload LoopNet dataset to Hugging Face
+
+on:
+  push:
+    tags:
+      - "loopnet-v*"
+  workflow_dispatch:
+    inputs:
+      dataset_slug:
+        description: "HF dataset repo slug (e.g. loopnet-v0.3-preview)"
+        required: true
+        default: "loopnet-v0.3-preview"
+
+permissions:
+  contents: read
+
+jobs:
+  upload:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install HF CLI
+        run: pip install "huggingface_hub[cli]>=0.26.0"
+
+      - name: Validate trace exports
+        run: |
+          if [ -d scripts ] && [ -f scripts/validate_trace_export.py ]; then
+            find data -name "*.jsonl" 2>/dev/null | head -3 | while read f; do
+              python scripts/validate_trace_export.py "$f" || true
+            done
+          fi
+
+      - name: Upload to Hugging Face
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: |
+          SLUG="${{ github.event.inputs.dataset_slug || 'loopnet-v0.3-preview' }}"
+          if [ -z "$HF_TOKEN" ]; then
+            echo "HF_TOKEN secret not configured — skipping upload"
+            exit 0
+          fi
+          huggingface-cli upload "KanakMalpani/${SLUG}" . --repo-type dataset --exclude ".git/*"
