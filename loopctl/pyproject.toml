@@ -3,7 +3,7 @@ requires = ["setuptools>=68", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "loopctl"
+name = "le-loopctl"
 version = "0.1.0"
 description = "Unified CLI for Loop Engineering — validate, score, trace, level"
 readme = "README.md"
@@ -11,7 +11,7 @@ license = { text = "MIT" }
 requires-python = ">=3.10"
 authors = [{ name = "Loop Engineering Community" }]
 dependencies = [
-    "loopforge>=0.2.0",
+    "le-loopforge>=0.2.0",
     "pyyaml>=6.0",
     "jsonschema>=4.0",
 ]

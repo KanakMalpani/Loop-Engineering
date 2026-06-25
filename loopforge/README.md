@@ -3,7 +3,7 @@
 Scaffold valid [LSS](https://github.com/KanakMalpani/Loop-Core-Engineering) loop specifications from common patterns.
 
 ```bash
-pip install loopforge
+pip install le-loopforge
 loopforge list-patterns
 loopforge new --pattern reflection --name my-loop --objective "Your goal" -o my-loop.yaml
 ```

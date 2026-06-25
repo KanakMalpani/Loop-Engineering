@@ -33,9 +33,9 @@ Update this file when any component releases; mirror changes in sibling repo REA
 
 | Package | Version | Install | Repository |
 |---------|---------|---------|------------|
-| loopforge | **0.2.0** | `pip install "loopforge>=0.2.0"` | [Loop-Engineering/loopforge](loopforge/) |
-| loopctl | **0.1.0** | `pip install "loopctl>=0.1.0"` | [Loop-Engineering/loopctl](loopctl/) |
-| loopgym | **0.1.1** | `pip install "loopgym>=0.1.1"` | [LoopGym](https://github.com/KanakMalpani/LoopGym) |
+| le-loopforge | **0.2.0** | `pip install "le-loopforge>=0.2.0"` (CLI: `loopforge`) | [Loop-Engineering/loopforge](loopforge/) |
+| le-loopctl | **0.1.0** | `pip install "le-loopctl>=0.1.0"` (CLI: `loopctl`) | [Loop-Engineering/loopctl](loopctl/) |
+| loopgym | **0.1.2** | `pip install "loopgym>=0.1.2"` | [LoopGym](https://github.com/KanakMalpani/LoopGym) |
 | loopbench | **0.1.1** | `pip install "loopbench>=0.1.1"` | [LoopBench](https://github.com/KanakMalpani/LoopBench) |
 
 Pin exact versions in reproduction docs; run `pip show loopgym loopbench` after install.

@@ -46,7 +46,7 @@ PYPI_MIN_LOOPBENCH = (0, 1, 1)
 PYPI_MIN_LOOPGYM = (0, 1, 1)
 PYPI_MIN_LOOPFORGE = (0, 2, 0)
 PYPI_LOOPGYM_URL = "https://pypi.org/pypi/loopgym/json"
-PYPI_LOOPFORGE_URL = "https://pypi.org/pypi/loopforge/json"
+PYPI_LOOPFORGE_URL = "https://pypi.org/pypi/le-loopforge/json"
 LEADERBOARD_URL = (
     "https://raw.githubusercontent.com/KanakMalpani/LoopBench/main/leaderboard/entries.json"
 )
@@ -147,19 +147,19 @@ def check_pypi_loopforge() -> Signal:
     except (urllib.error.URLError, json.JSONDecodeError, TimeoutError) as exc:
         return Signal(
             "pypi_loopforge",
-            "loopforge on PyPI (>= 0.2.0)",
+            "le-loopforge on PyPI (>= 0.2.0)",
             "yellow",
             f"PyPI unreachable: {exc}",
-            "https://pypi.org/project/loopforge/",
+            "https://pypi.org/project/le-loopforge/",
         )
 
     ok = parse_version(version) >= PYPI_MIN_LOOPFORGE
     return Signal(
         "pypi_loopforge",
-        "loopforge on PyPI (>= 0.1.0)",
+        "le-loopforge on PyPI (>= 0.2.0)",
         "green" if ok else "yellow",
         f"PyPI version: {version}",
-        "https://pypi.org/project/loopforge/",
+        "https://pypi.org/project/le-loopforge/",
     )
 
 
