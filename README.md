@@ -34,6 +34,8 @@ Not prompt tricks. Not single agents. **Closed loops** — observe, act, evaluat
 > Agent engineering optimizes autonomous actors.  
 > **Loop engineering optimizes systems that get better through feedback.**
 
+**North star:** Loop Engineering is the **default stack** to declare, run, score, and integrate feedback loops — from intent to LSS, export to LangGraph/CrewAI/Cursor, trace to observed LES, without rewriting what you already run. → [contributions/NORTH_STAR.md](contributions/NORTH_STAR.md)
+
 ---
 
 ## What Loop Engineering offers
@@ -125,7 +127,7 @@ termination_conditions:
 | You are… | Path | Time |
 |----------|------|------|
 | **Curious** | [Manifesto](manifesto/MANIFESTO.md) → [Fundamentals](fundamentals/README.md) | ~2 hours |
-| **Building** | [Golden Path](contributions/GOLDEN_PATH.md) → [Practitioner track](education/practitioner/README.md) → `pip install le-loopforge le-loopctl` | ~1 hour |
+| **Building** | [Golden Path v2](contributions/GOLDEN_PATH.md) → `loopctl pipeline` → [integrate packs](examples/integrate-langgraph/) | ~15 min |
 | **Researching** | [Paper series](research/PAPER_SERIES.md) → [LoopNet v0.2](research/LOOPNET.md) → [Case studies](case-studies/README.md) | ~1 day |
 | **Leading a team** | [D-D-M-I-S framework](framework/README.md) → [LES scoring](scoring/LES-1.0.md) | ~2 hours |
 

@@ -9,7 +9,7 @@ BRIDGE = "https://github.com/KanakMalpani/Loop-Engineering/blob/main/contributio
 INTENT = "https://github.com/KanakMalpani/Loop-Engineering/blob/main/All%20about%20loops/LOOP_FORGE.md"
 PYPI = "https://github.com/KanakMalpani/Loop-Engineering/blob/main/contributions/PYPI_NAMING.md"
 
-DISCUSSION_11 = f"""## Adoption wave 8 — LSS 1.1 composition mapping feedback
+DISCUSSION_11 = f"""## Adoption wave 8 - LSS 1.1 composition mapping feedback
 
 We stabilized **LSS 1.1** composition blocks (`sequential`, `parallel`, `nested`) and would like framework-specific feedback on how you map them today.
 

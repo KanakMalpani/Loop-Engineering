@@ -10,7 +10,7 @@ You already run a feedback loop. Loop Engineering gives it a **name, spec, and s
 
 | Harness | Typical S | Typical A | Typical O | LSS example in repo |
 |---------|-----------|-----------|-----------|---------------------|
-| **Cursor Agent** | Chat + repo context | Edit/test tools loop | User accept + tests | [cursor-agent-loop](../case-studies/cursor-agent-loop.md) · [coding-agent](../loop-library/coding-agent.yaml) |
+| **Cursor Agent** | Chat + repo context | Edit/test tools loop | User accept + tests | [integrate/CURSOR.md](integrate/CURSOR.md) · [cursor-agent-loop](../case-studies/cursor-agent-loop.md) |
 | **LangGraph** | Graph state | Node workers | Conditional edges / critic node | [langgraph-composition-bridge](../case-studies/langgraph-composition-bridge.md) · [langgraph/](../implementations/langgraph/) |
 | **CrewAI** | Crew memory | Role agents | Task output review | [crewai-composition-bridge](../case-studies/crewai-composition-bridge.md) · [crewai/](../implementations/crewai/) |
 | **OpenAI Agents SDK** | Session | Tool-calling agent | Eval hook | [openai_agents/](../implementations/openai_agents/) |

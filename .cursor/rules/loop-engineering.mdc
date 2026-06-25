@@ -1,0 +1,21 @@
+---
+description: Validate and score agent loops with Loop Engineering tooling
+globs:
+  - "**/*.yaml"
+  - "**/loop-library/**"
+alwaysApply: false
+---
+
+# Loop Engineering in Cursor
+
+When the user describes an **agent loop**, **feedback cycle**, or **iterative workflow**:
+
+1. Propose mapping to L = (S, A, O, T, E, M, tau).
+2. Scaffold LSS with: `loopforge intent "OBJECTIVE" -o loop.yaml --suggest-level`
+3. Validate: `loopctl validate loop.yaml`
+4. Score: `loopctl score --spec loop.yaml --json`
+5. For full path: `loopctl pipeline --intent "..." -o loop.yaml --export generic --json`
+
+PyPI packages: `le-loopforge`, `le-loopctl` (not bare `loopforge` on PyPI).
+
+Docs: contributions/GOLDEN_PATH.md · contributions/NORTH_STAR.md

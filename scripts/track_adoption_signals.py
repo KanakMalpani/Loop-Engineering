@@ -35,6 +35,7 @@ GOOD_FIRST_ISSUES = {
     7: "External case study (new org)",
     8: "Cursor case study extension",
     9: "LoopNet explore histograms",
+    12: "Practitioner exam v0.2 pilots",
 }
 
 DISCUSSIONS = {
@@ -44,7 +45,7 @@ DISCUSSIONS = {
 
 PYPI_MIN_LOOPBENCH = (0, 1, 1)
 PYPI_MIN_LOOPGYM = (0, 1, 1)
-PYPI_MIN_LOOPFORGE = (0, 2, 0)
+PYPI_MIN_LOOPFORGE = (0, 2, 1)
 PYPI_MIN_LOOPCTL = (0, 1, 0)
 PYPI_LOOPGYM_URL = "https://pypi.org/pypi/loopgym/json"
 PYPI_LOOPFORGE_URL = "https://pypi.org/pypi/le-loopforge/json"
@@ -234,6 +235,37 @@ def check_pypi_loopbench() -> Signal:
     )
 
 
+def check_exam_pilot() -> Signal:
+    link = "https://github.com/KanakMalpani/Loop-Engineering/issues/12"
+    try:
+        comments = fetch_json(
+            "https://api.github.com/repos/KanakMalpani/Loop-Engineering/issues/12/comments"
+        )
+    except (urllib.error.URLError, json.JSONDecodeError, TimeoutError) as exc:
+        return Signal("exam_pilot", "Exam pilot reports (#12)", "yellow", str(exc), link)
+    external = [
+        c
+        for c in comments
+        if (c.get("user") or {}).get("login", "").lower() not in MAINTAINER_AUTHORS
+    ]
+    if external:
+        return Signal(
+            "exam_pilot",
+            "Exam pilot reports (#12)",
+            "green",
+            f"{len(external)} external pilot report(s)",
+            link,
+        )
+    n = len(comments)
+    return Signal(
+        "exam_pilot",
+        "Exam pilot reports (#12)",
+        "yellow",
+        f"No external pilots yet ({n} maintainer/bot comment(s))",
+        link,
+    )
+
+
 def check_issue(n: int, label: str) -> Signal:
     url = ISSUES_API.format(n=n)
     try:
@@ -354,6 +386,7 @@ def collect_signals() -> list[Signal]:
         check_pypi_loopforge(),
         check_pypi_loopctl(),
         check_lss_11_stable(),
+        check_exam_pilot(),
     ]
     for num, label in GOOD_FIRST_ISSUES.items():
         signals.append(check_issue(num, label))

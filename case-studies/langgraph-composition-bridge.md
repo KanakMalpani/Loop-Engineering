@@ -1,5 +1,7 @@
 # LangGraph ↔ LSS 1.1 Composition Bridge
 
+**Runnable pack (Phase 10):** [examples/integrate-langgraph/](../examples/integrate-langgraph/) — `python examples/integrate-langgraph/run_demo.py`
+
 **System:** LangGraph StateGraph reflection loop  
 **Pattern:** reflection-loop (Level 2) · composable to LSS 1.1 `composition` blocks  
 **Harness:** [implementations/langgraph/](../implementations/langgraph/)

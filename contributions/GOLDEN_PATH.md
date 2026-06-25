@@ -1,11 +1,10 @@
-# Golden Path — Build Your First Loop in One Hour
+# Golden Path v2 — Integrate Your Loop in 15 Minutes
 
-**The authoritative onboarding path for practitioners.** Follow this document top-to-bottom; you do not need to read five other guides first.
+**Intent-first onboarding** for practitioners who already run agents (Cursor, LangGraph, CrewAI) or want the fastest path to a scored LSS spec.
 
-**Target time:** ~15 min to a validated spec · ~45 min to a scored run  
-**Prerequisites:** Python 3.10+, Git, internet for `pip install`
+**North star:** [NORTH_STAR.md](./NORTH_STAR.md) · **Target:** validated spec + export stub in ~15 min
 
-When finished, post your report on the [reproduction challenge](https://github.com/KanakMalpani/Loop-Engineering/discussions/10).
+When finished, post on [Discussion #10](https://github.com/KanakMalpani/Loop-Engineering/discussions/10).
 
 ---
 
@@ -13,217 +12,114 @@ When finished, post your report on the [reproduction challenge](https://github.c
 
 ```mermaid
 flowchart LR
-  A[Pick pattern] --> B[LoopForge scaffold]
-  B --> C[Validate LSS]
-  C --> D[Score LES]
-  D --> E[Run example]
-  E --> T[Loop Trace]
-  T --> F[LoopBench optional]
+  Intent[loopforge intent] --> Validate[loopctl validate]
+  Validate --> Score[loopctl score]
+  Score --> Export[loopforge export]
+  Export --> Run[run.py + LoopGym]
+  Run --> Trace[Loop Trace]
+  Trace --> Observed[loopctl observed]
 ```
 
 | Step | Time | Outcome |
 |------|------|---------|
-| 0 — Setup | 5 min | Repo cloned, PyPI stack installed |
-| 1 — Scaffold | 10 min | Valid LSS YAML in `loop-library/` |
-| 2 — Validate | 5 min | Schema pass + optional level hint |
-| 3 — Score | 5 min | LES JSON report |
-| 4 — Run | 10 min | Reflection example or exported stub |
-| 4b — Trace | 5 min | Loop Trace 1.0 JSON (optional) |
-| 5 — Benchmark | 15 min | LoopBench run (optional) |
-| 6 — Report | 5 min | Post reproduction |
+| 0 — Setup | 3 min | PyPI stack installed |
+| 1 — Declare | 5 min | Valid LSS YAML from English intent |
+| 2 — Validate + score | 3 min | Schema pass + LES JSON |
+| 3 — Export + run | 5 min | Runnable stub (generic / LangGraph / CrewAI) |
+| 4 — Trace (optional) | 5 min | Loop Trace 1.0 + observed LES |
+| 5 — Report | 2 min | Post reproduction |
 
-Full deep-dive: [REPRODUCE.md](./REPRODUCE.md) · Curriculum: [education/practitioner/](../education/practitioner/README.md)
+**One command (repo clone):**
+
+```bash
+loopctl pipeline \
+  --intent "YOUR LOOP IN ENGLISH" \
+  -o my-loop.yaml \
+  --export generic \
+  --run-loopgym \
+  --json
+```
 
 ---
 
-## Step 0 — Setup (5 min)
+## Step 0 — Setup
 
 ```bash
-git clone https://github.com/KanakMalpani/Loop-Engineering.git
-cd Loop-Engineering
-
-python -m venv .venv
-# Windows: .venv\Scripts\activate
-# Unix:    source .venv/bin/activate
-
-pip install "le-loopforge>=0.2.0" "le-loopctl>=0.1.0" "loopgym>=0.1.2" loopbench
-```
-
-Or from source while developing:
-
-```bash
-pip install -r loopforge/requirements.txt
-pip install -e loopforge -e loopctl
-pip install loopgym loopbench
-```
-
-Verify LoopForge:
-
-```bash
+pip install "le-loopforge>=0.2.1" "le-loopctl>=0.1.1" "loopgym>=0.1.2"
 loopforge list-patterns
-# or: python -m loopforge list-patterns
+```
+
+PyPI names: [PYPI_NAMING.md](./PYPI_NAMING.md)
+
+---
+
+## Step 1 — Declare with intent
+
+```bash
+loopforge intent "Summarize user feedback into actionable themes" -o my-loop.yaml --suggest-level
+```
+
+Composition example:
+
+```bash
+loopforge intent "Parallel research and coding branches then synthesize" -o composed.yaml --suggest-level
+loopctl validate composed.yaml --lss 1.1
 ```
 
 ---
 
-## Step 1 — Scaffold with LoopForge (10 min)
-
-Pick a pattern that matches your task (see [patterns/README.md](../patterns/README.md)):
-
-| Task shape | Pattern |
-|------------|---------|
-| Single worker, quality rubric | `simple` |
-| Generate → critique before commit | `reflection` |
-| Code change + test gates | `verification` |
-| Sourced research brief | `research` |
-
-**Option A — new loop from pattern:**
+## Step 2 — Validate and score
 
 ```bash
-python -m loopforge new \
-  --pattern reflection \
-  --name my-first-loop \
-  --objective "Summarize user feedback into actionable themes" \
-  --output loop-library/my-first-loop.yaml \
-  --suggest-level
-```
-
-**Option B — fork an existing template:**
-
-```bash
-python -m loopforge fork \
-  --from research-agent \
-  --name my-research-v2 \
-  --output loop-library/my-research-v2.yaml \
-  --suggest-level
-```
-
-Edit the generated YAML: refine worker roles, rubric criteria, and input schema for your domain.
-
----
-
-## Step 2 — Validate (5 min)
-
-```bash
-loopctl validate loop-library/my-first-loop.yaml
-```
-
-Or validate the entire library:
-
-```bash
-python scripts/validate_loop_library.py
-```
-
-Expected: `Valid LSS spec` with no schema errors.
-
----
-
-## Step 3 — Score with LES (5 min)
-
-```bash
-loopctl score --spec loop-library/my-first-loop.yaml --json > my_les.json
-```
-
-Inspect eight LES dimensions plus composite score in `my_les.json`.
-
-Optional diagram:
-
-```bash
-loopctl diagram loop-library/my-first-loop.yaml
+loopctl validate my-loop.yaml
+loopctl score --spec my-loop.yaml --json > my-les.json
 ```
 
 ---
 
-## Step 4 — Run (10 min)
-
-**No API keys — smoke the reflection example:**
+## Step 3 — Export and run (PyPI-native)
 
 ```bash
-python examples/reflection-loop/run.py
+loopforge export --spec my-loop.yaml --target langgraph --out ./my-export/
+pip install loopgym
+python my-export/run.py --json --trace trace.json
 ```
 
-Expected: `Success: True` and a quality score.
+Integration packs:
 
-**Or export your spec to a runnable stub:**
+| Harness | Export target | Guide |
+|---------|---------------|-------|
+| LangGraph | `langgraph` | [integrate-langgraph](../examples/integrate-langgraph/) |
+| CrewAI | `crewai` | [integrate-crewai](../examples/integrate-crewai/) |
+| Cursor | (map in IDE) | [integrate/CURSOR.md](./integrate/CURSOR.md) |
+| Generic | `generic` | LoopGym SimEnv fallback |
+
+---
+
+## Step 4 — Trace and observed LES
 
 ```bash
-python -m loopforge export \
-  --target generic \
-  --spec loop-library/my-first-loop.yaml \
-  --out implementations/my-first-loop/
-
-python implementations/my-first-loop/run.py
+loopctl trace validate trace.json
+loopctl observed trace.json --spec my-loop.yaml --json
 ```
 
 ---
 
-## Step 4b — Loop Trace (optional, 5 min)
+## Step 5 — Report
 
-After a run, emit a [Loop Trace 1.0](../standards/LOOP-TRACE-1.0.md) for observed LES and LoopNet export.
-
-**LoopGym (no API keys):**
-
-```python
-import loopgym as lg
-
-env = lg.make("loopbench/code-repair-v1")
-result = env.run_episode(task_id="cr-001", seed=42, trace_path="my-trace.json")
-print(result["loop_trace"]["trace_version"])  # 1.0
-```
-
-**Validate and score from trace:**
-
-```bash
-loopctl trace validate my-trace.json
-loopctl observed my-trace.json --spec loop-library/my-first-loop.yaml --json
-```
-
-Or use the repo smoke script:
-
-```bash
-python scripts/generate_loopgym_trace_demo.py
-```
-
-LoopNet export: [docs/loopnet/CONTRIBUTING-v0.3.md](../docs/loopnet/CONTRIBUTING-v0.3.md)
+Use [TEMPLATE-trace-native.md](../docs/reproduction-reports/TEMPLATE-trace-native.md) on Discussion #10.
 
 ---
 
-## Step 5 — LoopBench (optional, 15 min)
+## Pattern-first path (optional)
+
+If you prefer explicit patterns over intent:
 
 ```bash
-loopbench list
-loopbench run --task LB-CR-1 --spec loop-library/my-first-loop.yaml --seeds 0,1,2,3,4 -o results.json
-loopbench validate results.json
+loopforge new --pattern reflection --name my-loop --objective "..." -o my-loop.yaml --suggest-level
 ```
 
-Guides: [BEAT_LB-CR-1.md](./BEAT_LB-CR-1.md) · [BEAT_TEMPLATE.md](./BEAT_TEMPLATE.md)
-
----
-
-## Step 6 — Report
-
-Comment on [Discussion #10](https://github.com/KanakMalpani/Loop-Engineering/discussions/10) with:
-
-- [ ] Python version and `pip show le-loopforge le-loopctl loopgym loopbench`
-- [ ] LoopForge command used (`new`, `fork`, or `intent`)
-- [ ] `loopctl validate` output
-- [ ] LES JSON snippet
-- [ ] Reflection-loop or exported stub run output
-- [ ] (Optional) Loop Trace + `loopctl observed` output
-- [ ] (Optional) LoopBench `results.json`
-
----
-
-## Success criteria
-
-You have completed the Golden Path when you can:
-
-1. Scaffold a spec with LoopForge (pattern or fork)
-2. Pass LSS validation via `loopctl validate`
-3. Emit an LES JSON report
-4. Run `examples/reflection-loop/run.py` or an exported stub successfully
-
-That meets the 2026 foundation exit criterion and prepares you for [Practitioner curriculum](../education/practitioner/README.md) capstone work.
+See [LOOP_FORGE.md](../All%20about%20loops/LOOP_FORGE.md).
 
 ---
 
@@ -231,8 +127,6 @@ That meets the 2026 foundation exit criterion and prepares you for [Practitioner
 
 | Goal | Link |
 |------|------|
-| Full reproduction checklist | [REPRODUCE.md](./REPRODUCE.md) |
-| LoopForge API & patterns | [LOOP_FORGE.md](../All%20about%20loops/LOOP_FORGE.md) |
-| Submit a benchmark row | [BEAT_TEMPLATE.md](./BEAT_TEMPLATE.md) |
-| Composed loops | `loopforge compose --help` |
-| Practitioner modules | [education/practitioner/](../education/practitioner/README.md) |
+| Practitioner exam v0.2 | [exam-v0.2.md](../education/practitioner/exam-v0.2.md) |
+| LoopBench row | [EXTERNAL_SUBMISSIONS.md](./EXTERNAL_SUBMISSIONS.md) |
+| Full reproduction | [REPRODUCE.md](./REPRODUCE.md) |

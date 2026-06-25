@@ -8,4 +8,4 @@ Intentionally **invalid associativity** fixtures. Daily CI runs [scripts/check_c
 | `sequential-no-adapters.yaml` | sequential adapter gap |
 | `nested-no-adapters.yaml` | nested without adapters |
 
-Do **not** copy these into production specs. See [research/le-op-10-associativity.md](../../research/le-op-10-associativity.md).
+Do **not** copy these into production specs. Evaluator double-counting cases live in [LE-OP-04 benchmark](../../benchmarks/evaluator-composition/results-v0.2.json). See [research/le-op-10-associativity.md](../../research/le-op-10-associativity.md).

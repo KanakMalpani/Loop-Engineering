@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-25T08:21:58.813634+00:00",
+  "generated_at": "2026-06-25T09:02:03.390914+00:00",
   "signals": [
     {
       "id": "external_loopbench",
@@ -39,7 +39,7 @@
     {
       "id": "pypi_loopforge",
       "name": "le-loopforge on PyPI (>= 0.2.0)",
-      "status": "green",
+      "status": "yellow",
       "detail": "PyPI version: 0.2.0",
       "link": "https://pypi.org/project/le-loopforge/"
     },
@@ -56,6 +56,13 @@
       "status": "green",
       "detail": "specs/lss-1.1.md present",
       "link": "https://github.com/KanakMalpani/Loop-Core-Engineering/blob/main/specs/lss-1.1.md"
+    },
+    {
+      "id": "exam_pilot",
+      "name": "Exam pilot reports (#12)",
+      "status": "yellow",
+      "detail": "No external pilots yet (1 maintainer/bot comment(s))",
+      "link": "https://github.com/KanakMalpani/Loop-Engineering/issues/12"
     },
     {
       "id": "issue_4",
@@ -84,6 +91,13 @@
       "status": "green",
       "detail": "closed: [Good first] LoopNet explore script histogram plots",
       "link": "https://github.com/KanakMalpani/Loop-Engineering/issues/9"
+    },
+    {
+      "id": "issue_12",
+      "name": "Practitioner exam v0.2 pilots",
+      "status": "yellow",
+      "detail": "open: Practitioner exam v0.1 \u2014 pilot volunteers wanted",
+      "link": "https://github.com/KanakMalpani/Loop-Engineering/issues/12"
     }
   ]
 }

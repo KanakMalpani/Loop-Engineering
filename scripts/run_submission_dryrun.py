@@ -53,6 +53,13 @@ def main() -> int:
     les.write_text(result.stdout, encoding="utf-8")
     run([sys.executable, "scripts/loopnet_export_trace.py", str(trace), "-o", str(loopnet)])
 
+    loopnet_repo = ROOT.parent / "loopnet"
+    validator = loopnet_repo / "scripts" / "validate_trace_export.py"
+    if validator.exists():
+        run([sys.executable, str(validator), str(loopnet)])
+    else:
+        print(f"skip loopnet validate (not found: {validator})")
+
     summary = {
         "spec": str(spec.relative_to(ROOT)),
         "trace": str(trace.relative_to(ROOT)),

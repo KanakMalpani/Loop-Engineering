@@ -10,7 +10,11 @@ Ready-to-use paths for the three highest-value **community-owned** adoption sign
 
 **Step 1 — scaffold with LoopForge:**
 
-See [external-template-row.json](../docs/submission-dry-run/external-template-row.json) for a copy-paste command block and LoopBench row shape.
+```bash
+pip install "le-loopforge>=0.2.0" "le-loopctl>=0.1.0" "loopgym>=0.1.2" loopbench
+```
+
+See [external-template-row.json](../docs/submission-dry-run/external-template-row.json) for the full command block and LoopBench row shape.
 
 1. Fork [LoopBench](https://github.com/KanakMalpani/LoopBench)
 2. Add your row to `leaderboard/entries.json` (see existing entries)

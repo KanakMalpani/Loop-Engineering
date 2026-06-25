@@ -31,6 +31,7 @@
 - [x] Anchor repo as *definitive resource* for iterative improvement systems
 - [x] Reject scope creep into “another AI tools directory”
 - [x] Publish founding intent in [manifesto/MANIFESTO.md](../manifesto/MANIFESTO.md)
+- [x] North star + five integration promises in [contributions/NORTH_STAR.md](../contributions/NORTH_STAR.md)
 
 ## Stage 2: Reframing the problem
 
@@ -300,7 +301,7 @@
 - [~] Composed loops prototype (LSS 1.1 draft)
 - [ ] Formal mathematics directory
 - [ ] Certification + LoopCon + Institute
-- [ ] Intent→LSS compiler (LE-OP-15, 2027)
+- [~] Intent→LSS compiler (LE-OP-15) — v0.5 beta + `loopctl pipeline` (Phase 10)
 
 ---
 

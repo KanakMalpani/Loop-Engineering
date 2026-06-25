@@ -1,4 +1,4 @@
-## Adoption wave 8 — LSS 1.1 composition mapping feedback
+## Adoption wave 8 - LSS 1.1 composition mapping feedback
 
 We stabilized **LSS 1.1** composition blocks (`sequential`, `parallel`, `nested`) and would like framework-specific feedback on how you map them today.
 

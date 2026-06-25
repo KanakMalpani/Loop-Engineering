@@ -10,6 +10,8 @@ from pathlib import Path
 
 from loopforge.validate import load_schema, validate_spec, validate_yaml_file
 
+from loopctl.pipeline import add_parser as add_pipeline_parser
+
 
 def repo_root() -> Path | None:
     here = Path(__file__).resolve()
@@ -139,6 +141,8 @@ def build_parser() -> argparse.ArgumentParser:
     lvl.add_argument("--iter-len", type=int, default=3)
     lvl.add_argument("--workers", type=int, default=1)
     lvl.set_defaults(func=level)
+
+    add_pipeline_parser(sub)
 
     return parser
 

@@ -1,7 +1,7 @@
 # LoopNet v0.3 contributor path
 
-**Status:** Draft (Phase 7) · **Schema:** Loop Trace 1.0 → LoopNet row  
-**Canonical schema repo:** [KanakMalpani/loopnet](https://github.com/KanakMalpani/loopnet)
+**Status:** Preview (Phase 9) · **Schema:** Loop Trace 1.0 → LoopNet row  
+**Canonical schema repo:** [KanakMalpani/loopnet](https://github.com/KanakMalpani/loopnet) · [`schema/record-v0.3.json`](https://github.com/KanakMalpani/loopnet/blob/phase-9-loopnet-v03/schema/record-v0.3.json)
 
 ---
 
@@ -81,8 +81,9 @@ See [LOOPNET-SCHEMA-CHANGELOG.md](../research/LOOPNET-SCHEMA-CHANGELOG.md).
 ## Step 4 — Submit to LoopNet
 
 1. Fork [loopnet](https://github.com/KanakMalpani/loopnet)
-2. Add row JSON under contributor path (see loopnet repo `CONTRIBUTING.md`)
-3. Open PR referencing your Loop Trace + LSS spec
+2. Validate row: `python scripts/validate_trace_export.py loopnet-row.json` (loopnet repo)
+3. Add row JSON under `data/v0.3-preview/` or contributor path (see loopnet `CONTRIBUTING.md`)
+4. Open PR referencing your Loop Trace + LSS spec
 
 **Reference dry-run:** [docs/submission-dry-run/](../submission-dry-run/) (maintainer-generated, not external adoption)
 

@@ -3,7 +3,7 @@
   "problem": "LE-OP-15",
   "n_intents": 40,
   "n_composition_intents": 10,
-  "pattern_accuracy": 0.95,
+  "pattern_accuracy": 1.0,
   "validation_pass_rate": 1.0,
   "meets_v05_pattern_target": true,
   "meets_v05_valid_target": true,
@@ -35,8 +35,8 @@
     {
       "id": "int-003",
       "expected_pattern": "simple",
-      "predicted_pattern": "reflection",
-      "pattern_match": false,
+      "predicted_pattern": "simple",
+      "pattern_match": true,
       "valid_lss": true,
       "method": "scaffold",
       "fork_source": null,
@@ -431,13 +431,13 @@
     {
       "id": "int-036",
       "expected_pattern": "nested",
-      "predicted_pattern": "reflection",
-      "pattern_match": false,
+      "predicted_pattern": "nested",
+      "pattern_match": true,
       "valid_lss": true,
-      "method": "scaffold",
+      "method": "compose",
       "fork_source": null,
       "loop_name": "wrap-autonomous-debugger-inside",
-      "lss_version": "1.0",
+      "lss_version": "1.1",
       "errors": []
     },
     {

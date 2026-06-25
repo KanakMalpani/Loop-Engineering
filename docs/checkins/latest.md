@@ -1,6 +1,6 @@
 # Daily check-in — 2026-06-25 UTC
 
-**Status:** GREEN (19/19 checks passed)
+**Status:** GREEN (24/24 checks passed)
 **Loop library:** 9 atomic + 5 composed specs
 
 ## Checks
@@ -20,16 +20,21 @@
 | adoption_links | pass | `OK: adoption links present in 10 files` |
 | pypi_naming_guard | pass | `OK: PyPI naming guard passed (7 files)` |
 | evaluator_composition | pass | `Wrote C:\Users\mrkan\Loop Engineering\benchmarks\evaluator-composition\results-v0.2.json   naive_and: false_pass=0 false` |
-| loopforge_scaffold | pass | `Validated 4+ scaffolded specs in C:\Users\mrkan\AppData\Local\Temp\loopforge-demo-kycybyjx` |
+| loopforge_scaffold | pass | `Validated 4+ scaffolded specs in C:\Users\mrkan\AppData\Local\Temp\loopforge-demo-90qkkcpz` |
 | loopctl_validate | pass | `Valid LSS spec: loop-library\research-agent.yaml` |
 | loop_trace_validate | pass | `Valid loop trace: standards\examples\minimal-trace.json` |
-| intent_benchmark | pass | `Pattern accuracy: 95.0% Validation pass:  100.0% Composition intents: 10 Wrote C:\Users\mrkan\Loop Engineering\benchmark` |
+| intent_benchmark | pass | `Pattern accuracy: 100.0% Validation pass:  100.0% Composition intents: 10 Wrote C:\Users\mrkan\Loop Engineering\benchmar` |
+| export_smoke | pass | `OK: export generic OK: export langgraph OK: export crewai OK: 3 export target(s)` |
+| pipeline_smoke | pass | `OK: loopctl pipeline` |
+| integrate_langgraph_smoke | pass | `Level hint: L3 (pattern=multi-agent-coordination, workers=1, confidence=loopnet-v0.2) Wrote C:\Users\mrkan\AppData\Local` |
+| integrate_crewai_smoke | pass | `Level hint: L3 (pattern=multi-agent-coordination, workers=1, confidence=loopnet-v0.2) Wrote C:\Users\mrkan\AppData\Local` |
+| level_recommender_v02 | pass | `misassignment_rate: 0.0% target<=15%: PASS Wrote C:\Users\mrkan\Loop Engineering\benchmarks\results\le-op-11-recommender` |
 | observed_les_smoke | pass | `{   "loop_name": "reflection-example",   "loop_id": "demo-reflection-001",   "observed_les": 78.6,   "observed_categorie` |
 | adoption_tracker | pass | `Wrote C:\Users\mrkan\Loop Engineering\docs\adoption-tracker\latest.json Wrote C:\Users\mrkan\Loop Engineering\docs\adopt` |
 
 ## Adoption tracker
 
-**Summary:** 7 green · 5 yellow · 0 red
+**Summary:** 6 green · 8 yellow · 0 red
 
 Full report: [docs/adoption-tracker/latest.md](docs/adoption-tracker/latest.md)
 
@@ -39,4 +44,4 @@ Full report: [docs/adoption-tracker/latest.md](docs/adoption-tracker/latest.md)
 python scripts/daily_checkin.py
 ```
 
-_Generated at 2026-06-25T08:22:09.455988+00:00_
+_Generated at 2026-06-25T09:02:09.909651+00:00_

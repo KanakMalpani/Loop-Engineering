@@ -71,10 +71,12 @@ Post reproduction notes on [Discussion #10](https://github.com/KanakMalpani/Loop
 
 ---
 
-## Planned v0.3 (not yet)
+## Planned v0.3 extensions (beyond flat trace export)
 
 - Composition-aware trajectory linking (`parent_loop_id`, `branch_id`)
 - LTF trace cross-reference ([loop-observability](https://github.com/KanakMalpani/loop-observability))
 - Tier 2 DUA workflow automation
+
+Flat trace export schema (`record-v0.3.json`) is in preview — see v0.3 draft section above.
 
 See [LOOPNET.md](LOOPNET.md) · [MASTER_CHECKLIST.md](../All%20about%20loops/MASTER_CHECKLIST.md) §3.

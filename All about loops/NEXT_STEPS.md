@@ -129,15 +129,15 @@ Tracked daily: [docs/adoption-tracker/latest.md](../docs/adoption-tracker/latest
 | GitHub outreach | Wave 7 posted on #4, #7, Discussion #10 |
 | Exam pilot issue | [#12](https://github.com/KanakMalpani/Loop-Engineering/issues/12) |
 
-## Phase 9 in progress (maintainer + community)
+## Phase 9 completed (maintainer); community unlocks pending
 
 | Item | Artifact |
 |------|----------|
 | STATUS Q4 | [STATUS-2026-Q4.md](../contributions/STATUS-2026-Q4.md) |
 | External LoopBench template | [external-template-row.json](../docs/submission-dry-run/external-template-row.json) |
 | Trace reproduction template | [TEMPLATE-trace-native.md](../docs/reproduction-reports/TEMPLATE-trace-native.md) |
-| LoopNet v0.3 schema | [docs/loopnet/schema/record-v0.3.json](../docs/loopnet/schema/record-v0.3.json) |
-| Intent v0.5 composition | [intent.py](../loopforge/intent.py) · 40-intent manifest |
+| LoopNet v0.3 schema | [docs/loopnet/schema/record-v0.3.json](../docs/loopnet/schema/record-v0.3.json) · [loopnet PR branch](https://github.com/KanakMalpani/loopnet/tree/phase-9-loopnet-v03) |
+| Intent v0.5 composition | [intent.py](../loopforge/intent.py) · [results-v0.5.json](../benchmarks/intent-to-lss/results-v0.5.json) (40 intents) |
 | LE-OP-10 counterexamples | [composition-counterexamples/](../standards/examples/composition-counterexamples/) |
 | LE-OP-04 v0.2 | [results-v0.2.json](../benchmarks/evaluator-composition/results-v0.2.json) |
 | Adoption wave 8 | [adoption_wave8.py](../scripts/adoption_wave8.py) |
@@ -145,4 +145,18 @@ Tracked daily: [docs/adoption-tracker/latest.md](../docs/adoption-tracker/latest
 
 ## Community (tracked daily)
 
-[docs/adoption-tracker/latest.md](../docs/adoption-tracker/latest.md) · [EXTERNAL_SUBMISSIONS.md](../contributions/EXTERNAL_SUBMISSIONS.md) · [adoption_wave8.py](../scripts/adoption_wave8.py)
+[docs/adoption-tracker/latest.md](../docs/adoption-tracker/latest.md) · [EXTERNAL_SUBMISSIONS.md](../contributions/EXTERNAL_SUBMISSIONS.md) · [adoption_wave9.py](../scripts/adoption_wave9.py)
+
+## Phase 10 in progress (integration-first north star)
+
+| Item | Artifact |
+|------|----------|
+| North star | [NORTH_STAR.md](../contributions/NORTH_STAR.md) |
+| Golden Path v2 | [GOLDEN_PATH.md](../contributions/GOLDEN_PATH.md) |
+| PyPI-native export | [loopforge/export.py](../loopforge/export.py) · [templates/export/](../loopforge/templates/export/) |
+| loopctl pipeline | [loopctl/pipeline.py](../loopctl/pipeline.py) |
+| LangGraph pack | [integrate-langgraph/](../examples/integrate-langgraph/) |
+| CrewAI pack | [integrate-crewai/](../examples/integrate-crewai/) |
+| Cursor pack | [integrate/CURSOR.md](../contributions/integrate/CURSOR.md) |
+| Adoption wave 9 | [adoption_wave9.py](../scripts/adoption_wave9.py) |
+| LE-OP-11 v0.2 gate | [run_level_recommender_benchmark.py](../scripts/run_level_recommender_benchmark.py) |

@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "le-loopforge"
-version = "0.2.0"
+version = "0.2.1"
 description = "Scaffold valid LSS loop specifications from common patterns"
 readme = "README.md"
 license = { text = "MIT" }
@@ -42,4 +42,4 @@ where = ["."]
 include = ["loopforge*"]
 
 [tool.setuptools.package-data]
-loopforge = ["schemas/*.json"]
+loopforge = ["schemas/*.json", "templates/export/**/*"]

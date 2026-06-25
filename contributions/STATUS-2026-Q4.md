@@ -1,13 +1,13 @@
 # Loop Engineering — Status Report Q4 2026
 
 **Period:** June–September 2026 · **Maintainer:** Loop Engineering project  
-**Daily CI:** 18/18 checks green · **Adoption:** 7 green · 5 yellow · 0 red
+**Daily CI:** 19/19 checks green · **Adoption:** 7 green · 5 yellow · 0 red
 
 ---
 
 ## Executive summary
 
-Phases 1–8 delivered the full practitioner stack on PyPI (`le-loopforge`, `le-loopctl`, `loopgym` 0.1.2) with Loop Trace 1.0 and intent v0.4. Phase 9 focuses on **community unlocks** (external LoopBench, reproduction, case study, RFC feedback) and **research hardening** (composition intents, LE-OP-10/04).
+Phases 1–8 delivered the full practitioner stack on PyPI (`le-loopforge`, `le-loopctl`, `loopgym` 0.1.2) with Loop Trace 1.0 and intent v0.4. **Phase 9 maintainer work shipped** (intent v0.5, exam v0.2, templates, LE-OP-10/04 v0.2); **community unlocks** (external LoopBench, reproduction, case study, RFC feedback) remain yellow on the adoption tracker.
 
 ---
 
@@ -18,7 +18,7 @@ Phases 1–8 delivered the full practitioner stack on PyPI (`le-loopforge`, `le-
 | 1–6 | Encyclopedia, composition, benchmarks, Golden Path, traces |
 | 7 | PyPI naming, intent v0.4, LoopNet v0.3 docs |
 | 8 | Stale sweep, PYPI_NAMING guard, wave 7 outreach, exam #12 |
-| 9 | Templates, intent v0.5, LE-OP-10/04 v0.2, loopnet schema draft, wave 8 |
+| 9 | Community templates, intent v0.5, exam v0.2, LE-OP-10/04 v0.2, LoopNet v0.3 schema draft |
 
 ---
 

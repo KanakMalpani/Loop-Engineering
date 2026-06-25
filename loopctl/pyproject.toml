@@ -4,14 +4,14 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "le-loopctl"
-version = "0.1.0"
-description = "Unified CLI for Loop Engineering — validate, score, trace, level"
+version = "0.1.1"
+description = "Unified CLI for Loop Engineering — validate, score, trace, pipeline"
 readme = "README.md"
 license = { text = "MIT" }
 requires-python = ">=3.10"
 authors = [{ name = "Loop Engineering Community" }]
 dependencies = [
-    "le-loopforge>=0.2.0",
+    "le-loopforge>=0.2.1",
     "pyyaml>=6.0",
     "jsonschema>=4.0",
 ]

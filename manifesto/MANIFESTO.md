@@ -158,6 +158,22 @@ The age of loops has begun.
 
 ---
 
+## VII. The Reference Stack
+
+Loop Engineering is not only theory—it ships a **reference stack** anyone can install:
+
+| Stage | Tool | Outcome |
+|-------|------|---------|
+| Declare | LoopForge (`loopforge intent`) | Valid LSS YAML |
+| Integrate | LoopForge export + bridge docs | LangGraph, CrewAI, Cursor, Python |
+| Run | LoopGym | Sim / live / replay environments |
+| Score | loopctl | Structural + observed LES |
+| Prove | LoopBench + LoopNet | Public comparison + trajectory corpus |
+
+North star: [contributions/NORTH_STAR.md](../contributions/NORTH_STAR.md) · Golden Path: [contributions/GOLDEN_PATH.md](../contributions/GOLDEN_PATH.md)
+
+---
+
 *Signed by the Loop Engineering community, 2026.*
 
 → [Core Principles](PRINCIPLES.md)

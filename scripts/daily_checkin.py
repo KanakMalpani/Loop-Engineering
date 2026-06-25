@@ -130,6 +130,11 @@ def main() -> int:
         ("loopctl_validate", [py, "-m", "loopctl", "validate", "loop-library/research-agent.yaml"]),
         ("loop_trace_validate", [py, "-m", "loopctl", "trace", "validate", "standards/examples/minimal-trace.json"]),
         ("intent_benchmark", [py, "scripts/run_intent_benchmark.py"]),
+        ("export_smoke", [py, "scripts/check_export_smoke.py"]),
+        ("pipeline_smoke", [py, "scripts/check_pipeline_smoke.py"]),
+        ("integrate_langgraph_smoke", [py, "examples/integrate-langgraph/run_demo.py"]),
+        ("integrate_crewai_smoke", [py, "examples/integrate-crewai/run_demo.py"]),
+        ("level_recommender_v02", [py, "scripts/run_level_recommender_benchmark.py"]),
         ("observed_les_smoke", [py, "tools/observed_les.py", "standards/examples/minimal-trace.json", "--json"]),
     ]
 

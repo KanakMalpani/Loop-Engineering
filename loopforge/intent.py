@@ -23,7 +23,7 @@ COMPOSE_RULES: list[tuple[str, str]] = [
     (
         r"\b(nested|sub.?loop|"
         r"(?:inner|outer).{0,12}(?:loop|debug|agent)|"
-        r"wrap(?:ped)?\s+(?:inside|within))\b",
+        r"wrap(?:ped)?(?:\s+\w+){0,8}\s+(?:inside|within))\b",
         "nested",
     ),
     (
@@ -38,9 +38,9 @@ COMPOSE_RULES: list[tuple[str, str]] = [
 INTENT_RULES: list[tuple[str, Pattern, str | None]] = [
     (r"\b(research|literature|sources?|cite|citation|brief|synthesize|hypothesis|papers?)\b", Pattern.RESEARCH, "research-agent"),
     (r"\b(test|verify|debug|fix|failing|ci|lint|suite|patch|regression|flaky|validate)\b", Pattern.VERIFICATION, "autonomous-debugger"),
+    (r"\b(summarize|summary|themes?|simple|single|one-shot|meeting|changelog|extract|interview)\b", Pattern.SIMPLE, None),
     (r"\b(reflect|critique|review|feedback|revise|draft|peer|iterate|clarity)\b", Pattern.REFLECTION, None),
     (r"\b(code|implement|feature|diff|caching|security)\b", Pattern.VERIFICATION, "coding-agent"),
-    (r"\b(summarize|summary|themes?|simple|single|one-shot|meeting|changelog|extract|interview)\b", Pattern.SIMPLE, None),
 ]
 
 FORK_DEFAULTS = {
