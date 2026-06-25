@@ -24,6 +24,8 @@ python scripts/loopnet_export_trace.py docs/submission-dry-run/trace.json -o row
 
 Contributor guide: [docs/loopnet/CONTRIBUTING-v0.3.md](../docs/loopnet/CONTRIBUTING-v0.3.md).
 
+**Phase 9 (June 2026):** Schema promoted to sibling repo — [loopnet/schema/record-v0.3.json](https://github.com/KanakMalpani/loopnet/blob/main/schema/record-v0.3.json), `scripts/validate_trace_export.py`, preview row in `data/v0.3-preview/`.
+
 See [LOOP-TRACE-1.0.md](../standards/LOOP-TRACE-1.0.md).
 
 ---

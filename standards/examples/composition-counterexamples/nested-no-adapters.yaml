@@ -1,0 +1,62 @@
+loop_name: counterexample-nested-no-adapters
+version: 1.0.0
+objective: LE-OP-10 counterexample — nested without outer-to-inner adapters
+inputs:
+  schema:
+    task:
+      type: string
+      required: true
+memory:
+  type: ephemeral
+workers:
+- id: orchestrator
+  role: Coordinate nested loops
+  model:
+    provider: openai
+    name: gpt-4.1-mini
+  inputs:
+  - from: inputs.task
+  outputs:
+    name: out
+    format: text
+evaluators:
+- id: gate
+  type: llm_rubric
+  runs_after:
+  - orchestrator
+  rubric:
+    dimensions:
+    - name: q
+      weight: 1.0
+      scale: [0, 1]
+      criteria: ok
+    pass_threshold: 0.8
+  model:
+    provider: openai
+    name: gpt-4.1-mini
+termination_conditions:
+  success:
+  - metric: composite_quality
+    operator: gte
+    value: 0.8
+    consecutive: 1
+  failure:
+  - type: max_iterations
+    value: 5
+    action: halt
+metrics:
+- name: composite_quality
+  primary: true
+  source: evaluators.gate
+composition:
+  type: nested
+  children:
+  - id: outer
+    ref: loop-library/coding-agent.yaml
+    role: outer
+  - id: inner
+    ref: loop-library/autonomous-debugger.yaml
+    role: inner
+  adapters: []
+metadata:
+  schema_version: "1.1"

@@ -1,0 +1,65 @@
+loop_name: counterexample-parallel-first-wins
+version: 1.0.0
+objective: LE-OP-10 counterexample — first_wins merge is order-sensitive
+inputs:
+  schema:
+    task:
+      type: string
+      required: true
+memory:
+  type: ephemeral
+workers:
+- id: orchestrator
+  role: Merge parallel branches
+  model:
+    provider: openai
+    name: gpt-4.1-mini
+  inputs:
+  - from: inputs.task
+  outputs:
+    name: out
+    format: text
+evaluators:
+- id: gate
+  type: llm_rubric
+  runs_after:
+  - orchestrator
+  rubric:
+    dimensions:
+    - name: q
+      weight: 1.0
+      scale: [0, 1]
+      criteria: ok
+    pass_threshold: 0.8
+  model:
+    provider: openai
+    name: gpt-4.1-mini
+termination_conditions:
+  success:
+  - metric: composite_quality
+    operator: gte
+    value: 0.8
+    consecutive: 1
+  failure:
+  - type: max_iterations
+    value: 5
+    action: halt
+metrics:
+- name: composite_quality
+  primary: true
+  source: evaluators.gate
+composition:
+  type: parallel
+  children:
+  - id: a
+    ref: loop-library/research-agent.yaml
+    role: branch
+  - id: b
+    ref: loop-library/coding-agent.yaml
+    role: branch
+  merge:
+    strategy: first_wins
+    min_branches_pass: 1
+  adapters: []
+metadata:
+  schema_version: "1.1"

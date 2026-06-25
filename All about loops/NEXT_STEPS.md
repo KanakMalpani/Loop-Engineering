@@ -121,17 +121,28 @@ Tracked daily: [docs/adoption-tracker/latest.md](../docs/adoption-tracker/latest
 | Trace-native dry-run | [run_submission_dryrun.py](../scripts/run_submission_dryrun.py) |
 | Adoption wave 7 | [adoption_wave7.py](../scripts/adoption_wave7.py) |
 
-## Phase 8 in progress (maintainer + community)
+## Phase 8 completed (maintainer + community)
 
 | Item | Artifact |
 |------|----------|
 | Stale doc sweep | [PYPI_NAMING.md](../contributions/PYPI_NAMING.md) · [check_pypi_naming.py](../scripts/check_pypi_naming.py) |
 | GitHub outreach | Wave 7 posted on #4, #7, Discussion #10 |
-| Exam pilot issue | [#12](https://github.com/KanakMalpani/Loop-Engineering/issues/12) · [exam-v0.1.md](../education/practitioner/exam-v0.1.md) |
-| External LoopBench row | [BEAT_TEMPLATE.md](../contributions/BEAT_TEMPLATE.md) · [submission-dry-run](../docs/submission-dry-run/) |
-| LoopNet v0.3 PR | Sibling [loopnet](https://github.com/KanakMalpani/loopnet) repo |
-| RFC #11 feedback | LangGraph / CrewAI bridge threads |
+| Exam pilot issue | [#12](https://github.com/KanakMalpani/Loop-Engineering/issues/12) |
+
+## Phase 9 in progress (maintainer + community)
+
+| Item | Artifact |
+|------|----------|
+| STATUS Q4 | [STATUS-2026-Q4.md](../contributions/STATUS-2026-Q4.md) |
+| External LoopBench template | [external-template-row.json](../docs/submission-dry-run/external-template-row.json) |
+| Trace reproduction template | [TEMPLATE-trace-native.md](../docs/reproduction-reports/TEMPLATE-trace-native.md) |
+| LoopNet v0.3 schema | [docs/loopnet/schema/record-v0.3.json](../docs/loopnet/schema/record-v0.3.json) |
+| Intent v0.5 composition | [intent.py](../loopforge/intent.py) · 40-intent manifest |
+| LE-OP-10 counterexamples | [composition-counterexamples/](../standards/examples/composition-counterexamples/) |
+| LE-OP-04 v0.2 | [results-v0.2.json](../benchmarks/evaluator-composition/results-v0.2.json) |
+| Adoption wave 8 | [adoption_wave8.py](../scripts/adoption_wave8.py) |
+| Exam v0.2 | [exam-v0.2.md](../education/practitioner/exam-v0.2.md) |
 
 ## Community (tracked daily)
 
-[docs/adoption-tracker/latest.md](../docs/adoption-tracker/latest.md) · [EXTERNAL_SUBMISSIONS.md](../contributions/EXTERNAL_SUBMISSIONS.md) · [adoption_wave7.py](../scripts/adoption_wave7.py)
+[docs/adoption-tracker/latest.md](../docs/adoption-tracker/latest.md) · [EXTERNAL_SUBMISSIONS.md](../contributions/EXTERNAL_SUBMISSIONS.md) · [adoption_wave8.py](../scripts/adoption_wave8.py)

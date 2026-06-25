@@ -1,0 +1,31 @@
+{
+  "submitter": "YOUR_ORG_OR_HANDLE",
+  "maintainer_note": "Replace submitter and loop_name; do not count as external until a non-maintainer merges to LoopBench",
+  "task_id": "LB-CR-1",
+  "spec_path": "my-submission.yaml",
+  "results_path": "results.json",
+  "trace_path": "trace.json",
+  "observed_les_path": "observed-les.json",
+  "pip_install": "pip install \"le-loopforge>=0.2.0\" \"le-loopctl>=0.1.0\" \"loopgym>=0.1.2\" loopbench",
+  "commands": [
+    "loopforge intent \"Fix failing tests from CI\" -o my-submission.yaml --suggest-level",
+    "loopctl validate my-submission.yaml",
+    "python -c \"import loopgym as lg; lg.make('loopbench/code-repair-v1').run_episode(task_id='cr-001', seed=42, trace_path='trace.json')\"",
+    "loopctl trace validate trace.json",
+    "loopctl observed trace.json --spec my-submission.yaml --json > observed-les.json",
+    "loopbench run --task LB-CR-1 --spec my-submission.yaml --seeds 0,1,2,3,4 -o results.json",
+    "loopbench validate results.json"
+  ],
+  "loopbench_row_template": {
+    "submitter": "YOUR_ORG_OR_HANDLE",
+    "task": "LB-CR-1",
+    "loop_name": "my-submission",
+    "les_observed": null,
+    "les_structural": null,
+    "success_rate": null,
+    "trace_uri": "https://github.com/YOUR_ORG/YOUR_REPO/blob/main/trace.json",
+    "spec_uri": "https://github.com/YOUR_ORG/YOUR_REPO/blob/main/my-submission.yaml",
+    "notes": "Trace-native submission via le-loopforge + loopctl observed"
+  },
+  "reference_dry_run": "docs/submission-dry-run/summary.json"
+}

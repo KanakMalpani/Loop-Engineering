@@ -1,7 +1,7 @@
 {
-  "version": "0.4",
+  "version": "0.5",
   "problem": "LE-OP-15",
-  "description": "Benchmark intents for loopforge intent compiler v0.4",
+  "description": "Benchmark intents for loopforge intent compiler v0.5 (includes composition routing)",
   "intents": [
     {
       "id": "int-001",
@@ -182,6 +182,66 @@
       "text": "Validate security patch against regression test suite",
       "expected_pattern": "verification",
       "reference_fork": "autonomous-debugger"
+    },
+    {
+      "id": "int-031",
+      "text": "Run research and coding agents in parallel then synthesize results",
+      "expected_pattern": "parallel",
+      "reference_fork": null
+    },
+    {
+      "id": "int-032",
+      "text": "Parallel branches for literature review and implementation draft",
+      "expected_pattern": "parallel",
+      "reference_fork": null
+    },
+    {
+      "id": "int-033",
+      "text": "Sequential pipeline of stages from research to writing",
+      "expected_pattern": "sequential",
+      "reference_fork": null
+    },
+    {
+      "id": "int-034",
+      "text": "Chain from research sources followed by a writing polish stage",
+      "expected_pattern": "sequential",
+      "reference_fork": null
+    },
+    {
+      "id": "int-035",
+      "text": "Nested inner debug loop wrapped inside outer coding loop",
+      "expected_pattern": "nested",
+      "reference_fork": null
+    },
+    {
+      "id": "int-036",
+      "text": "Wrap autonomous debugger inside the coding agent hierarchy",
+      "expected_pattern": "nested",
+      "reference_fork": null
+    },
+    {
+      "id": "int-037",
+      "text": "Concurrent swarm of research and code branches with merge",
+      "expected_pattern": "parallel",
+      "reference_fork": null
+    },
+    {
+      "id": "int-038",
+      "text": "Stages in sequence from sources to final brief",
+      "expected_pattern": "sequential",
+      "reference_fork": null
+    },
+    {
+      "id": "int-039",
+      "text": "Sub-loop for test repair nested within implementer loop",
+      "expected_pattern": "nested",
+      "reference_fork": null
+    },
+    {
+      "id": "int-040",
+      "text": "Fan out parallel research and verification then combine",
+      "expected_pattern": "parallel",
+      "reference_fork": null
     }
   ]
 }

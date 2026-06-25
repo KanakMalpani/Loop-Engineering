@@ -73,7 +73,7 @@ while not env.done:
 ## Try it in 60 seconds
 
 ```bash
-pip install loopgym
+pip install "loopgym>=0.1.2"
 
 python -c "
 import loopgym as lg
@@ -127,9 +127,27 @@ Bundled specs under [`envs/loopbench/`](envs/loopbench/) — validated against [
 
 ---
 
-## Observability
+## Observability (Loop Trace 1.0 — v0.1.2+)
 
-Trace loop iterations without raw chat logs ([LTF 0.1](https://github.com/KanakMalpani/loop-observability)):
+Emit a **Loop Trace 1.0** JSON from any SimEnv episode (no `loopotel` required):
+
+```python
+import loopgym as lg
+
+env = lg.make("loopbench/code-repair-v1")
+result = env.run_episode(task_id="cr-001", seed=42, trace_path="trace.json")
+print(result["success"], "iterations:", len(result.get("iterations", [])))
+```
+
+Validate and score with Loop Engineering tooling:
+
+```bash
+pip install "le-loopctl>=0.1.0"
+loopctl trace validate trace.json
+loopctl observed trace.json --json
+```
+
+Optional LTF spans via [loopotel](https://github.com/KanakMalpani/loop-observability):
 
 ```bash
 pip install loopotel loopgym

@@ -1,0 +1,62 @@
+loop_name: counterexample-sequential-no-adapters
+version: 1.0.0
+objective: LE-OP-10 counterexample — sequential without declared adapters
+inputs:
+  schema:
+    task:
+      type: string
+      required: true
+memory:
+  type: ephemeral
+workers:
+- id: orchestrator
+  role: Run sequential stages
+  model:
+    provider: openai
+    name: gpt-4.1-mini
+  inputs:
+  - from: inputs.task
+  outputs:
+    name: out
+    format: text
+evaluators:
+- id: gate
+  type: llm_rubric
+  runs_after:
+  - orchestrator
+  rubric:
+    dimensions:
+    - name: q
+      weight: 1.0
+      scale: [0, 1]
+      criteria: ok
+    pass_threshold: 0.8
+  model:
+    provider: openai
+    name: gpt-4.1-mini
+termination_conditions:
+  success:
+  - metric: composite_quality
+    operator: gte
+    value: 0.8
+    consecutive: 1
+  failure:
+  - type: max_iterations
+    value: 5
+    action: halt
+metrics:
+- name: composite_quality
+  primary: true
+  source: evaluators.gate
+composition:
+  type: sequential
+  children:
+  - id: stage1
+    ref: loop-library/research-agent.yaml
+    role: stage
+  - id: stage2
+    ref: loop-library/writing-assistant.yaml
+    role: stage
+  adapters: []
+metadata:
+  schema_version: "1.1"

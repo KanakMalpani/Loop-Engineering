@@ -1,0 +1,283 @@
+{
+  "benchmark_id": "evaluator-composition-v0.2",
+  "threshold": 0.8,
+  "n_cases": 8,
+  "policies": {
+    "naive_and": {
+      "false_pass_count": 0,
+      "false_continue_count": 1,
+      "cases": [
+        {
+          "case_id": "good",
+          "composite": 0.88,
+          "passed": true,
+          "should_pass": true
+        },
+        {
+          "case_id": "syntax_fail",
+          "composite": 0.4,
+          "passed": false,
+          "should_pass": false
+        },
+        {
+          "case_id": "test_fail",
+          "composite": 0.55,
+          "passed": false,
+          "should_pass": false
+        },
+        {
+          "case_id": "rubric_only_pass",
+          "composite": 0.72,
+          "passed": false,
+          "should_pass": true
+        },
+        {
+          "case_id": "double_count_trap",
+          "composite": 0.78,
+          "passed": false,
+          "should_pass": false
+        },
+        {
+          "case_id": "all_marginal",
+          "composite": 0.79,
+          "passed": false,
+          "should_pass": false
+        },
+        {
+          "case_id": "double_count_severe",
+          "composite": 0.7,
+          "passed": false,
+          "should_pass": false
+        },
+        {
+          "case_id": "syntax_marginal_behavior_fail",
+          "composite": 0.76,
+          "passed": false,
+          "should_pass": false
+        }
+      ]
+    },
+    "double_count_avg": {
+      "false_pass_count": 6,
+      "false_continue_count": 0,
+      "cases": [
+        {
+          "case_id": "good",
+          "composite": 1.0,
+          "passed": true,
+          "should_pass": true
+        },
+        {
+          "case_id": "syntax_fail",
+          "composite": 0.8675,
+          "passed": true,
+          "should_pass": false
+        },
+        {
+          "case_id": "test_fail",
+          "composite": 0.8065,
+          "passed": true,
+          "should_pass": false
+        },
+        {
+          "case_id": "rubric_only_pass",
+          "composite": 0.9235,
+          "passed": true,
+          "should_pass": true
+        },
+        {
+          "case_id": "double_count_trap",
+          "composite": 0.914,
+          "passed": true,
+          "should_pass": false
+        },
+        {
+          "case_id": "all_marginal",
+          "composite": 0.8775,
+          "passed": true,
+          "should_pass": false
+        },
+        {
+          "case_id": "double_count_severe",
+          "composite": 0.899,
+          "passed": true,
+          "should_pass": false
+        },
+        {
+          "case_id": "syntax_marginal_behavior_fail",
+          "composite": 0.9395,
+          "passed": true,
+          "should_pass": false
+        }
+      ]
+    },
+    "rubric_product": {
+      "false_pass_count": 4,
+      "false_continue_count": 0,
+      "cases": [
+        {
+          "case_id": "good",
+          "composite": 0.9245,
+          "passed": true,
+          "should_pass": true
+        },
+        {
+          "case_id": "syntax_fail",
+          "composite": 0.5915,
+          "passed": false,
+          "should_pass": false
+        },
+        {
+          "case_id": "test_fail",
+          "composite": 0.7987,
+          "passed": false,
+          "should_pass": false
+        },
+        {
+          "case_id": "rubric_only_pass",
+          "composite": 0.8769,
+          "passed": true,
+          "should_pass": true
+        },
+        {
+          "case_id": "double_count_trap",
+          "composite": 0.849,
+          "passed": true,
+          "should_pass": false
+        },
+        {
+          "case_id": "all_marginal",
+          "composite": 0.8025,
+          "passed": true,
+          "should_pass": false
+        },
+        {
+          "case_id": "double_count_severe",
+          "composite": 0.8259,
+          "passed": true,
+          "should_pass": false
+        },
+        {
+          "case_id": "syntax_marginal_behavior_fail",
+          "composite": 0.8155,
+          "passed": true,
+          "should_pass": false
+        }
+      ]
+    },
+    "partition_merge": {
+      "false_pass_count": 2,
+      "false_continue_count": 1,
+      "cases": [
+        {
+          "case_id": "good",
+          "composite": 0.91,
+          "passed": true,
+          "should_pass": true
+        },
+        {
+          "case_id": "syntax_fail",
+          "composite": 0.4,
+          "passed": false,
+          "should_pass": false
+        },
+        {
+          "case_id": "test_fail",
+          "composite": 0.6175,
+          "passed": false,
+          "should_pass": false
+        },
+        {
+          "case_id": "rubric_only_pass",
+          "composite": 0.7675,
+          "passed": false,
+          "should_pass": true
+        },
+        {
+          "case_id": "double_count_trap",
+          "composite": 0.8,
+          "passed": true,
+          "should_pass": false
+        },
+        {
+          "case_id": "all_marginal",
+          "composite": 0.7925,
+          "passed": false,
+          "should_pass": false
+        },
+        {
+          "case_id": "double_count_severe",
+          "composite": 0.755,
+          "passed": false,
+          "should_pass": false
+        },
+        {
+          "case_id": "syntax_marginal_behavior_fail",
+          "composite": 0.8775,
+          "passed": true,
+          "should_pass": false
+        }
+      ]
+    },
+    "library_composed_gate": {
+      "false_pass_count": 2,
+      "false_continue_count": 0,
+      "cases": [
+        {
+          "case_id": "good",
+          "composite": 0.908,
+          "passed": true,
+          "should_pass": true
+        },
+        {
+          "case_id": "syntax_fail",
+          "composite": 0.4,
+          "passed": false,
+          "should_pass": false
+        },
+        {
+          "case_id": "test_fail",
+          "composite": 0.71,
+          "passed": false,
+          "should_pass": false
+        },
+        {
+          "case_id": "rubric_only_pass",
+          "composite": 0.812,
+          "passed": true,
+          "should_pass": true
+        },
+        {
+          "case_id": "double_count_trap",
+          "composite": 0.82,
+          "passed": true,
+          "should_pass": false
+        },
+        {
+          "case_id": "all_marginal",
+          "composite": 0.798,
+          "passed": false,
+          "should_pass": false
+        },
+        {
+          "case_id": "double_count_severe",
+          "composite": 0.76,
+          "passed": false,
+          "should_pass": false
+        },
+        {
+          "case_id": "syntax_marginal_behavior_fail",
+          "composite": 0.826,
+          "passed": true,
+          "should_pass": false
+        }
+      ]
+    }
+  },
+  "summary": {
+    "false_pass_reduction_vs_double_count": 4,
+    "partition_merge_beats_double_count": true,
+    "library_composed_beats_double_count": true,
+    "double_count_false_pass_baseline": 6
+  }
+}

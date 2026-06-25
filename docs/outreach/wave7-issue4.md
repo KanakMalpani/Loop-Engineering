@@ -23,4 +23,5 @@ loopbench run --task LB-CR-1 --spec my-loop.yaml --seeds 0,1,2,3,4 -o results.js
 - BEAT template: https://github.com/KanakMalpani/Loop-Engineering/blob/main/contributions/BEAT_TEMPLATE.md
 - LoopNet v0.3: https://github.com/KanakMalpani/Loop-Engineering/blob/main/docs/loopnet/CONTRIBUTING-v0.3.md
 - Maintainer dry-run: https://github.com/KanakMalpani/Loop-Engineering/tree/main/docs/submission-dry-run
+- External template row: https://github.com/KanakMalpani/Loop-Engineering/blob/main/docs/submission-dry-run/external-template-row.json
 - PyPI naming: https://github.com/KanakMalpani/Loop-Engineering/blob/main/contributions/PYPI_NAMING.md

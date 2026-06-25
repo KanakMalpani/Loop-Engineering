@@ -81,7 +81,7 @@ Each pattern ships with: ephemeral memory, prompt-refinement optimization, safet
 - [x] Composition scaffolds (`loopforge compose`)
 - [x] LE-OP-11 level hint on save (`--suggest-level`)
 - [x] Export to LangGraph / CrewAI / generic stubs
-- [ ] NL intent→LSS compiler (LE-OP-15, Phase 6) — **v0.3 prototype:** `loopforge intent`
+- [x] NL intent→LSS compiler (LE-OP-15) — **v0.5 beta:** `loopforge intent` with composition routing (`parallel`, `sequential`, `nested`)
 
 ## Files
 

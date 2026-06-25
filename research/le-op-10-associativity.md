@@ -36,7 +36,10 @@ These are **validator warnings** in [composition_validator.py](../tools/composit
 ```bash
 python tools/composition_validator.py --library          # warn on adapter gaps
 python tools/composition_validator.py --library --strict # fail on parallel merge / adapter gaps
+python scripts/check_composition_counterexamples.py      # LE-OP-10 fixture warnings (daily CI)
 ```
+
+Counterexample fixtures: [standards/examples/composition-counterexamples/](../standards/examples/composition-counterexamples/)
 
 Daily CI: [daily_checkin.yml](../.github/workflows/daily-checkin.yml) runs `--strict` on composed specs.
 

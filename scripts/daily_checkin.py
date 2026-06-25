@@ -111,6 +111,7 @@ def main() -> int:
             [py, "examples/compose-loop/run.py", "loop-library/compositions/code-debug-repair.yaml"],
         ),
         ("composition_validator", [py, "tools/composition_validator.py", "--library", "--strict"]),
+        ("composition_counterexamples", [py, "scripts/check_composition_counterexamples.py"]),
         ("baseline_les_audit", [py, "scripts/validate_baselines.py"]),
         ("langgraph_smoke", [py, "implementations/langgraph/run.py"]),
         ("crewai_smoke", [py, "implementations/crewai/run.py"]),

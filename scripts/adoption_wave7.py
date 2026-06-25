@@ -34,6 +34,7 @@ loopbench run --task LB-CR-1 --spec my-loop.yaml --seeds 0,1,2,3,4 -o results.js
 - BEAT template: {BEAT}
 - LoopNet v0.3: {LOOPNET}
 - Maintainer dry-run: {DRYRUN}
+- External template row: https://github.com/KanakMalpani/Loop-Engineering/blob/main/docs/submission-dry-run/external-template-row.json
 """
 
 DISCUSSION_10 = f"""## Reproduction v3 — PyPI install names
