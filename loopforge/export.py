@@ -8,7 +8,7 @@ from typing import Any
 
 import yaml
 
-EXPORT_TARGETS = ("generic", "langgraph", "crewai")
+EXPORT_TARGETS = ("generic", "langgraph", "crewai", "openai_agents")
 
 
 def _read_template(*parts: str) -> str:

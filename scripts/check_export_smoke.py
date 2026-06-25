@@ -14,7 +14,7 @@ sys.path.insert(0, str(ROOT))
 from loopforge.export import export_stub  # noqa: E402
 
 SPEC = ROOT / "loop-library" / "research-agent.yaml"
-TARGETS = ("generic", "langgraph", "crewai")
+TARGETS = ("generic", "langgraph", "crewai", "openai_agents")
 
 
 def main() -> int:

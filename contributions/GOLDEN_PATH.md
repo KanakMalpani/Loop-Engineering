@@ -1,8 +1,8 @@
-# Golden Path v2 — Integrate Your Loop in 15 Minutes
+# Golden Path v3 — Integrate Your Loop in 15 Minutes
 
-**Intent-first onboarding** for practitioners who already run agents (Cursor, LangGraph, CrewAI) or want the fastest path to a scored LSS spec.
+**Intent-first onboarding** for practitioners who already run agents (Claude Code, Codex, Cursor, LangGraph, CrewAI) or want the fastest path to a scored LSS spec.
 
-**North star:** [NORTH_STAR.md](./NORTH_STAR.md) · **Target:** validated spec + export stub in ~15 min
+**North star:** [NORTH_STAR.md](./NORTH_STAR.md) · **Target:** validated spec + score + export in ~15 min (PyPI-only)
 
 When finished, post on [Discussion #10](https://github.com/KanakMalpani/Loop-Engineering/discussions/10).
 
@@ -22,14 +22,14 @@ flowchart LR
 
 | Step | Time | Outcome |
 |------|------|---------|
-| 0 — Setup | 3 min | PyPI stack installed |
+| 0 — Setup | 2 min | **One-line** PyPI stack |
 | 1 — Declare | 5 min | Valid LSS YAML from English intent |
-| 2 — Validate + score | 3 min | Schema pass + LES JSON |
-| 3 — Export + run | 5 min | Runnable stub (generic / LangGraph / CrewAI) |
+| 2 — Validate + score | 3 min | Schema pass + LES JSON (no repo clone) |
+| 3 — Export + run | 5 min | Runnable stub (generic / LangGraph / CrewAI / OpenAI Agents) |
 | 4 — Trace (optional) | 5 min | Loop Trace 1.0 + observed LES |
 | 5 — Report | 2 min | Post reproduction |
 
-**One command (repo clone):**
+**One command:**
 
 ```bash
 loopctl pipeline \
@@ -44,12 +44,22 @@ loopctl pipeline \
 
 ## Step 0 — Setup
 
+**Recommended (one line):**
+
 ```bash
-pip install "le-loopforge>=0.2.1" "le-loopctl>=0.1.1" "loopgym>=0.1.2"
+pip install "le-loop-stack>=0.1.0"
 loopforge list-patterns
 ```
 
-PyPI names: [PYPI_NAMING.md](./PYPI_NAMING.md)
+**Manual pins** (if you need granular control):
+
+```bash
+pip install "le-loopforge>=0.2.1" "le-loopctl>=0.2.0" "loopgym>=0.1.2"
+```
+
+Optional extras: `pip install "le-loop-stack[bench,langgraph,crewai]"`
+
+PyPI names: [PYPI_NAMING.md](./PYPI_NAMING.md) · Integration hub: [integrate/README.md](./integrate/README.md)
 
 ---
 
@@ -89,8 +99,13 @@ Integration packs:
 
 | Harness | Export target | Guide |
 |---------|---------------|-------|
+| Claude Code | (map in IDE) | [integrate/CLAUDE_CODE.md](./integrate/CLAUDE_CODE.md) |
+| OpenAI Codex | (map + score) | [integrate/CODEX.md](./integrate/CODEX.md) |
+| OpenAI Agents SDK | `openai_agents` | [integrate/OPENAI_AGENTS.md](./integrate/OPENAI_AGENTS.md) |
 | LangGraph | `langgraph` | [integrate-langgraph](../examples/integrate-langgraph/) |
 | CrewAI | `crewai` | [integrate-crewai](../examples/integrate-crewai/) |
+| Aider | (map + score) | [integrate/AIDER.md](./integrate/AIDER.md) |
+| Gemini CLI | (map + score) | [integrate/GEMINI_CLI.md](./integrate/GEMINI_CLI.md) |
 | Cursor | (map in IDE) | [integrate/CURSOR.md](./integrate/CURSOR.md) |
 | Generic | `generic` | LoopGym SimEnv fallback |
 

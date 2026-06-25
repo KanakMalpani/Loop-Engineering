@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
-"""Smoke test loopctl pipeline (Phase 10)."""
+"""Smoke test loopctl pipeline with structural score (Phase 11)."""
 
 from __future__ import annotations
 
+import json
 import subprocess
 import sys
 from pathlib import Path
@@ -18,7 +19,6 @@ def main() -> int:
         "pipeline",
         "--intent",
         "Summarize user feedback into actionable themes",
-        "--skip-score",
         "--export",
         "generic",
         "--json",
@@ -27,10 +27,14 @@ def main() -> int:
     if proc.returncode != 0:
         print(proc.stderr or proc.stdout, file=sys.stderr)
         return proc.returncode
-    if "valid" not in proc.stdout.lower():
-        print("FAIL: pipeline JSON missing valid flag", file=sys.stderr)
+    data = json.loads(proc.stdout)
+    if not data.get("valid"):
+        print("FAIL: pipeline not valid", file=sys.stderr)
         return 1
-    print("OK: loopctl pipeline")
+    if "structural_les" not in data:
+        print("FAIL: pipeline missing structural_les", file=sys.stderr)
+        return 1
+    print("OK: loopctl pipeline with score")
     return 0
 
 

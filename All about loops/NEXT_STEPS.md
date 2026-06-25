@@ -147,16 +147,28 @@ Tracked daily: [docs/adoption-tracker/latest.md](../docs/adoption-tracker/latest
 
 [docs/adoption-tracker/latest.md](../docs/adoption-tracker/latest.md) · [EXTERNAL_SUBMISSIONS.md](../contributions/EXTERNAL_SUBMISSIONS.md) · [adoption_wave9.py](../scripts/adoption_wave9.py)
 
-## Phase 10 in progress (integration-first north star)
+## Phase 10 completed (maintainer)
 
 | Item | Artifact |
 |------|----------|
 | North star | [NORTH_STAR.md](../contributions/NORTH_STAR.md) |
 | Golden Path v2 | [GOLDEN_PATH.md](../contributions/GOLDEN_PATH.md) |
-| PyPI-native export | [loopforge/export.py](../loopforge/export.py) · [templates/export/](../loopforge/templates/export/) |
+| PyPI-native export | [loopforge/export.py](../loopforge/export.py) |
 | loopctl pipeline | [loopctl/pipeline.py](../loopctl/pipeline.py) |
-| LangGraph pack | [integrate-langgraph/](../examples/integrate-langgraph/) |
-| CrewAI pack | [integrate-crewai/](../examples/integrate-crewai/) |
-| Cursor pack | [integrate/CURSOR.md](../contributions/integrate/CURSOR.md) |
+| LangGraph / CrewAI / Cursor packs | [integrate-langgraph](../examples/integrate-langgraph/) · [integrate-crewai](../examples/integrate-crewai/) · [CURSOR.md](../contributions/integrate/CURSOR.md) |
 | Adoption wave 9 | [adoption_wave9.py](../scripts/adoption_wave9.py) |
 | LE-OP-11 v0.2 gate | [run_level_recommender_benchmark.py](../scripts/run_level_recommender_benchmark.py) |
+
+## Phase 11 completed (maintainer); community unlocks pending
+
+| Item | Artifact |
+|------|----------|
+| Portable scoring | [loopctl/scoring/](../loopctl/scoring/) · `le-loopctl` **0.2.0** |
+| Meta-package | [stack/](../stack/) · `le-loop-stack` **0.1.0** |
+| Golden Path v3 | [GOLDEN_PATH.md](../contributions/GOLDEN_PATH.md) |
+| Integration hub | [integrate/README.md](../contributions/integrate/README.md) |
+| Claude Code / Codex / Agents / Aider / Gemini | [integrate/](../contributions/integrate/) · [examples/integrate-*](../examples/) |
+| Copilot / Devin bridges | [COPILOT.md](../contributions/integrate/COPILOT.md) · [DEVIN.md](../contributions/integrate/DEVIN.md) |
+| Adoption wave 10 | [adoption_wave10.py](../scripts/adoption_wave10.py) |
+| STATUS Q1 2027 | [STATUS-2027-Q1.md](../contributions/STATUS-2027-Q1.md) |
+| LoopNet HF v0.3 preview path | [HF-v0.3-preview.md](../docs/loopnet/HF-v0.3-preview.md) |

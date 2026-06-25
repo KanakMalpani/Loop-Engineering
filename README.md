@@ -34,7 +34,9 @@ Not prompt tricks. Not single agents. **Closed loops** — observe, act, evaluat
 > Agent engineering optimizes autonomous actors.  
 > **Loop engineering optimizes systems that get better through feedback.**
 
-**North star:** Loop Engineering is the **default stack** to declare, run, score, and integrate feedback loops — from intent to LSS, export to LangGraph/CrewAI/Cursor, trace to observed LES, without rewriting what you already run. → [contributions/NORTH_STAR.md](contributions/NORTH_STAR.md)
+**North star:** Loop Engineering is the **default stack** to declare, run, score, and integrate feedback loops — Claude Code, Codex, LangGraph, CrewAI, Cursor, and more. → [contributions/NORTH_STAR.md](contributions/NORTH_STAR.md)
+
+**Quick install:** `pip install "le-loop-stack>=0.1.0"`
 
 ---
 
@@ -122,12 +124,37 @@ termination_conditions:
 
 ---
 
+## Building with agent harnesses
+
+Map your existing agent — **no runtime swap required**. Install once, score in minutes.
+
+| Harness | Guide |
+|---------|-------|
+| Claude Code | [integrate/CLAUDE_CODE.md](contributions/integrate/CLAUDE_CODE.md) |
+| OpenAI Codex | [integrate/CODEX.md](contributions/integrate/CODEX.md) |
+| LangGraph | [examples/integrate-langgraph/](examples/integrate-langgraph/) |
+| CrewAI | [examples/integrate-crewai/](examples/integrate-crewai/) |
+| Cursor | [integrate/CURSOR.md](contributions/integrate/CURSOR.md) |
+| OpenAI Agents SDK | [integrate/OPENAI_AGENTS.md](contributions/integrate/OPENAI_AGENTS.md) |
+| Aider | [integrate/AIDER.md](contributions/integrate/AIDER.md) |
+| Gemini CLI | [integrate/GEMINI_CLI.md](contributions/integrate/GEMINI_CLI.md) |
+
+Full hub: [contributions/integrate/README.md](contributions/integrate/README.md)
+
+```bash
+pip install "le-loop-stack>=0.1.0"
+loopforge intent "YOUR LOOP IN ENGLISH" -o mapped.yaml --suggest-level
+loopctl score --spec mapped.yaml --json
+```
+
+---
+
 ## Where to start
 
 | You are… | Path | Time |
 |----------|------|------|
 | **Curious** | [Manifesto](manifesto/MANIFESTO.md) → [Fundamentals](fundamentals/README.md) | ~2 hours |
-| **Building** | [Golden Path v2](contributions/GOLDEN_PATH.md) → `loopctl pipeline` → [integrate packs](examples/integrate-langgraph/) | ~15 min |
+| **Building** | [Golden Path v3](contributions/GOLDEN_PATH.md) → `pip install le-loop-stack` → [integrate hub](contributions/integrate/README.md) | ~15 min |
 | **Researching** | [Paper series](research/PAPER_SERIES.md) → [LoopNet v0.2](research/LOOPNET.md) → [Case studies](case-studies/README.md) | ~1 day |
 | **Leading a team** | [D-D-M-I-S framework](framework/README.md) → [LES scoring](scoring/LES-1.0.md) | ~2 hours |
 

@@ -18,7 +18,7 @@ Starter case study: [cursor-agent-loop.md](../case-studies/cursor-agent-loop.md)
 ## 15-minute path
 
 ```bash
-pip install "le-loopforge>=0.2.1" "le-loopctl>=0.1.1"
+pip install "le-loop-stack>=0.1.0"
 
 loopforge intent "Fix failing tests from CI with minimal diff" -o cursor-mapped.yaml --suggest-level
 loopctl validate cursor-mapped.yaml

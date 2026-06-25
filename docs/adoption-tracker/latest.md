@@ -1,6 +1,6 @@
 # Adoption tracker — 2026-06-25 UTC
 
-**Summary:** 6 green · 8 yellow · 0 red
+**Summary:** 6 green · 9 yellow · 0 red
 
 Automated by `scripts/track_adoption_signals.py` (daily with [daily-checkin.yml](../.github/workflows/daily-checkin.yml)).
 
@@ -11,8 +11,9 @@ Automated by `scripts/track_adoption_signals.py` (daily with [daily-checkin.yml]
 | RFC LSS 1.1 — framework feedback [discussion_11](https://github.com/KanakMalpani/Loop-Engineering/discussions/11) | **YELLOW** | No external comments yet (3 maintainer/bot comment(s)) |
 | loopbench on PyPI (>= 0.1.1) [pypi_loopbench](https://pypi.org/project/loopbench/) | **GREEN** | PyPI version: 0.1.1 |
 | loopgym on PyPI (>= 0.1.1) [pypi_loopgym](https://pypi.org/project/loopgym/) | **GREEN** | PyPI version: 0.1.2 |
-| le-loopforge on PyPI (>= 0.2.0) [pypi_loopforge](https://pypi.org/project/le-loopforge/) | **YELLOW** | PyPI version: 0.2.0 |
-| le-loopctl on PyPI (>= 0.1.0) [pypi_loopctl](https://pypi.org/project/le-loopctl/) | **GREEN** | PyPI version: 0.1.0 |
+| le-loopforge on PyPI (>= 0.2.0) [pypi_loopforge](https://pypi.org/project/le-loopforge/) | **GREEN** | PyPI version: 0.2.1 |
+| le-loopctl on PyPI (>= 0.2.0) [pypi_loopctl](https://pypi.org/project/le-loopctl/) | **YELLOW** | PyPI version: 0.1.1 |
+| le-loop-stack on PyPI (>= 0.1.0) [pypi_loop_stack](https://pypi.org/project/le-loop-stack/) | **YELLOW** | PyPI unreachable: HTTP Error 404: Not Found |
 | LSS 1.1 stable in Loop-Core [lss_11_stable](https://github.com/KanakMalpani/Loop-Core-Engineering/blob/main/specs/lss-1.1.md) | **GREEN** | specs/lss-1.1.md present |
 | Exam pilot reports (#12) [exam_pilot](https://github.com/KanakMalpani/Loop-Engineering/issues/12) | **YELLOW** | No external pilots yet (1 maintainer/bot comment(s)) |
 | Non-maintainer LoopBench row (LB-CR-1) [issue_4](https://github.com/KanakMalpani/Loop-Engineering/issues/4) | **YELLOW** | open: [Good first] Publish ALS-T1 Research Synthesis baseline |
@@ -28,4 +29,4 @@ python scripts/track_adoption_signals.py
 python scripts/daily_checkin.py --output docs/checkins/latest.md
 ```
 
-_Generated at 2026-06-25T09:02:03.390914+00:00_
+_Generated at 2026-06-25T09:28:20.987421+00:00_

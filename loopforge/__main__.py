@@ -246,7 +246,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     export_p = sub.add_parser("export", help="Export spec to runnable stub")
     export_p.add_argument("--spec", required=True, help="LSS YAML path")
-    export_p.add_argument("--target", required=True, choices=["generic", "langgraph", "crewai"])
+    export_p.add_argument("--target", required=True, choices=["generic", "langgraph", "crewai", "openai_agents"])
     export_p.add_argument("--out", required=True, help="Output directory")
     export_p.set_defaults(func=cmd_export)
 

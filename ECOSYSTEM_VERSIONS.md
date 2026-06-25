@@ -23,7 +23,7 @@ Update this file when any component releases; mirror changes in sibling repo REA
 
 | Component | Version | Records | Location |
 |-----------|---------|---------|----------|
-| LoopNet Tier 1 | **v0.2** | 545 trajectories | [Hugging Face](https://huggingface.co/datasets/KanakMalpani/loopnet-v0.2) · [GitHub](https://github.com/KanakMalpani/loopnet) |
+| LoopNet Tier 1 | **v0.2** (live) · **v0.3** schema preview | 545+ trajectories | [Hugging Face v0.2](https://huggingface.co/datasets/KanakMalpani/loopnet-v0.2) · [v0.3 preview](docs/loopnet/HF-v0.3-preview.md) · [GitHub](https://github.com/KanakMalpani/loopnet) |
 
 **Deprecated:** `loopnet-seed-v0.1` — do not cite in new work; use v0.2.
 
@@ -33,12 +33,13 @@ Update this file when any component releases; mirror changes in sibling repo REA
 
 | Package | Version | Install | Repository |
 |---------|---------|---------|------------|
-| le-loopforge | **0.2.1** | `pip install "le-loopforge>=0.2.1"` (CLI: `loopforge`) | [Loop-Engineering/loopforge](loopforge/) |
-| le-loopctl | **0.1.1** | `pip install "le-loopctl>=0.1.1"` (CLI: `loopctl`) | [Loop-Engineering/loopctl](loopctl/) |
+| **le-loop-stack** | **0.1.0** | `pip install "le-loop-stack>=0.1.0"` | [stack/](stack/) |
+| le-loopforge | **0.2.1** | `pip install "le-loopforge>=0.2.1"` (CLI: `loopforge`) | [loopforge/](loopforge/) |
+| le-loopctl | **0.2.0** | `pip install "le-loopctl>=0.2.0"` (CLI: `loopctl`) | [loopctl/](loopctl/) |
 | loopgym | **0.1.2** | `pip install "loopgym>=0.1.2"` | [LoopGym](https://github.com/KanakMalpani/LoopGym) |
 | loopbench | **0.1.1** | `pip install "loopbench>=0.1.1"` | [LoopBench](https://github.com/KanakMalpani/LoopBench) |
 
-Pin exact versions in reproduction docs; run `pip show le-loopforge le-loopctl loopgym loopbench` after install.
+Pin exact versions in reproduction docs; run `pip show le-loop-stack le-loopforge le-loopctl loopgym loopbench` after install.
 
 **PyPI naming:** [PYPI_NAMING.md](contributions/PYPI_NAMING.md) — use `le-loopforge` / `le-loopctl`, not bare `loopforge` / `loopctl`.
 

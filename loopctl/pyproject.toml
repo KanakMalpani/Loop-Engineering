@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "le-loopctl"
-version = "0.1.1"
+version = "0.2.0"
 description = "Unified CLI for Loop Engineering — validate, score, trace, pipeline"
 readme = "README.md"
 license = { text = "MIT" }
@@ -28,7 +28,8 @@ package-dir = { "loopctl" = "." }
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["loopctl*"]
+include = ["scoring*"]
+namespaces = false
 
 [tool.setuptools.package-data]
-loopctl = ["schemas/*.json"]
+loopctl = ["schemas/*.json", "schemas/*.yaml"]

@@ -11,6 +11,8 @@ from pathlib import Path
 from loopforge.validate import load_schema, validate_spec, validate_yaml_file
 
 from loopctl.pipeline import add_parser as add_pipeline_parser
+from loopctl.scoring.observed import score_trace
+from loopctl.scoring.structural import format_report, load_spec, score_spec_file
 
 
 def repo_root() -> Path | None:
@@ -19,6 +21,18 @@ def repo_root() -> Path | None:
         if (parent / "tools" / "les_calculator.py").is_file():
             return parent
     return None
+
+
+def bundled_minimal_spec() -> Path:
+    local = Path(__file__).resolve().parent / "schemas" / "minimal-loop.yaml"
+    if local.is_file():
+        return local
+    root = repo_root()
+    if root:
+        fallback = root / "standards" / "examples" / "minimal-loop.yaml"
+        if fallback.is_file():
+            return fallback
+    raise FileNotFoundError("minimal-loop.yaml not found in loopctl package or repo")
 
 
 def cmd_validate(args: argparse.Namespace) -> int:
@@ -36,14 +50,28 @@ def cmd_validate(args: argparse.Namespace) -> int:
 
 
 def cmd_score(args: argparse.Namespace) -> int:
-    root = repo_root()
-    if root:
-        cmd = [sys.executable, str(root / "tools" / "les_calculator.py"), "--spec", str(args.spec)]
-        if args.json:
-            cmd.append("--json")
-        return subprocess.call(cmd, cwd=root)
-    print("Structural score requires discipline repo clone (tools/les_calculator.py)", file=sys.stderr)
-    return 1
+    path = Path(args.spec)
+    if not path.exists():
+        print(f"Error: not found: {path}", file=sys.stderr)
+        return 2
+    try:
+        report = score_spec_file(path)
+    except Exception as exc:
+        print(f"Score failed: {exc}", file=sys.stderr)
+        return 1
+
+    if args.json:
+        print(json.dumps(report, indent=2))
+    else:
+        print(
+            format_report(
+                report["loop_name"],
+                report["les"],
+                report["categories"],
+                report["source"],
+            )
+        )
+    return 0
 
 
 def cmd_trace_validate(args: argparse.Namespace) -> int:
@@ -65,16 +93,20 @@ def cmd_trace_validate(args: argparse.Namespace) -> int:
 
 
 def cmd_observed(args: argparse.Namespace) -> int:
-    root = repo_root()
-    if not root:
-        print("Observed LES requires discipline repo (tools/observed_les.py)", file=sys.stderr)
-        return 1
-    cmd = [sys.executable, str(root / "tools" / "observed_les.py"), str(args.trace)]
-    if args.spec:
-        cmd.extend(["--spec", str(args.spec)])
+    path = Path(args.trace)
+    if not path.exists():
+        print(f"Error: not found: {path}", file=sys.stderr)
+        return 2
+    trace = json.loads(path.read_text(encoding="utf-8"))
+    spec = load_spec(Path(args.spec)) if args.spec else None
+    report = score_trace(trace, spec)
     if args.json:
-        cmd.append("--json")
-    return subprocess.call(cmd, cwd=root)
+        print(json.dumps(report, indent=2))
+    else:
+        print(f"Observed LES: {report['observed_les']:.1f}")
+        if report.get("structural_les") is not None:
+            print(f"Structural LES: {report['structural_les']:.1f}")
+    return 0
 
 
 def cmd_forge(args: argparse.Namespace) -> int:
@@ -102,7 +134,7 @@ def build_parser() -> argparse.ArgumentParser:
     val.add_argument("--lss", choices=["1.0", "1.1"], default="1.0")
     val.set_defaults(func=cmd_validate)
 
-    score = sub.add_parser("score", help="Structural LES from spec")
+    score = sub.add_parser("score", help="Structural LES from spec (PyPI-native)")
     score.add_argument("--spec", required=True)
     score.add_argument("--json", action="store_true")
     score.set_defaults(func=cmd_score)
@@ -113,7 +145,7 @@ def build_parser() -> argparse.ArgumentParser:
     tv.add_argument("file")
     tv.set_defaults(func=cmd_trace_validate)
 
-    obs = sub.add_parser("observed", help="Observed LES from trace JSON")
+    obs = sub.add_parser("observed", help="Observed LES from trace JSON (PyPI-native)")
     obs.add_argument("trace")
     obs.add_argument("--spec")
     obs.add_argument("--json", action="store_true")
@@ -125,7 +157,7 @@ def build_parser() -> argparse.ArgumentParser:
             cmd.extend(["--output", args.output])
         return cmd_repo_passthrough("loop_diagram_generator.py", cmd)
 
-    diag = sub.add_parser("diagram", help="Mermaid diagram (repo clone)")
+    diag = sub.add_parser("diagram", help="Mermaid diagram (requires repo clone)")
     diag.add_argument("spec")
     diag.add_argument("--output", "-o")
     diag.set_defaults(func=diagram)
@@ -136,7 +168,7 @@ def build_parser() -> argparse.ArgumentParser:
             cmd.extend(["--pattern", args.pattern, "--iter-len", str(args.iter_len), "--workers", str(args.workers)])
         return cmd_repo_passthrough("level_recommender.py", cmd)
 
-    lvl = sub.add_parser("level", help="LE-OP-11 level (repo clone)")
+    lvl = sub.add_parser("level", help="LE-OP-11 level (requires repo clone)")
     lvl.add_argument("--pattern")
     lvl.add_argument("--iter-len", type=int, default=3)
     lvl.add_argument("--workers", type=int, default=1)

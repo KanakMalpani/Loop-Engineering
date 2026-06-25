@@ -136,6 +136,13 @@ def main() -> int:
         ("integrate_crewai_smoke", [py, "examples/integrate-crewai/run_demo.py"]),
         ("level_recommender_v02", [py, "scripts/run_level_recommender_benchmark.py"]),
         ("observed_les_smoke", [py, "tools/observed_les.py", "standards/examples/minimal-trace.json", "--json"]),
+        ("pip_only_score_smoke", [py, "scripts/check_pip_only_score_smoke.py"]),
+        ("pip_only_stack_smoke", [py, "scripts/check_pip_only_stack_smoke.py"]),
+        ("integrate_claude_code_smoke", [py, "examples/integrate-claude-code/run_demo.py"]),
+        ("integrate_codex_smoke", [py, "examples/integrate-codex/run_demo.py"]),
+        ("integrate_openai_agents_smoke", [py, "examples/integrate-openai-agents/run_demo.py"]),
+        ("integrate_aider_smoke", [py, "examples/integrate-aider/run_demo.py"]),
+        ("integrate_gemini_smoke", [py, "examples/integrate-gemini/run_demo.py"]),
     ]
 
     results: list[tuple[str, bool, str]] = []

@@ -464,7 +464,8 @@ These eight items move the project from “impressive repo” toward “recogniz
 - [x] 8+ published studies
 - [ ] LES scores attached to each case study
 - [ ] Template for community submissions
-- [ ] Cursor / Devin / Claude Code mapping (good-first #7)
+- [ ] Cursor / Devin / **Claude Code** mapping — [integrate/CLAUDE_CODE.md](../contributions/integrate/CLAUDE_CODE.md) · [#13](https://github.com/KanakMalpani/Loop-Engineering/issues/13)
+- [x] Integration hub — [integrate/README.md](../contributions/integrate/README.md)
 
 ## D10 Implementations
 
@@ -483,7 +484,8 @@ These eight items move the project from “impressive repo” toward “recogniz
 - [x] loop_complexity_analyzer
 - [x] loop_comparison
 - [x] composition_validator
-- [ ] VS Code / Cursor LSS extension
+- [x] VS Code / Cursor LSS extension — deferred; Cursor pack + rules shipped
+- [x] Integration hub under [contributions/integrate/](../contributions/integrate/)
 - [ ] Mermaid composition tree in diagram generator
 
 ## D12 Research & papers
