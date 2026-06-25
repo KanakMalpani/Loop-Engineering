@@ -25,6 +25,8 @@
     "success_rate": null,
     "trace_uri": "https://github.com/YOUR_ORG/YOUR_REPO/blob/main/trace.json",
     "spec_uri": "https://github.com/YOUR_ORG/YOUR_REPO/blob/main/my-submission.yaml",
+    "repro_command": "loopbench run --task LB-CR-1 --spec my-submission.yaml --seeds 0,1,2,3,4 -o results.json",
+    "harness": "native",
     "notes": "Trace-native submission via le-loopforge + loopctl observed"
   },
   "reference_dry_run": "docs/submission-dry-run/summary.json"

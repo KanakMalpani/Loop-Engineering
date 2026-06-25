@@ -155,6 +155,7 @@ loopctl score --spec mapped.yaml --json
 |----------|------|------|
 | **Curious** | [Manifesto](manifesto/MANIFESTO.md) → [Fundamentals](fundamentals/README.md) | ~2 hours |
 | **Building** | [Golden Path v3](contributions/GOLDEN_PATH.md) → `pip install le-loop-stack` → [integrate hub](contributions/integrate/README.md) | ~15 min |
+| **Try your loop** | [Loop Playground](contributions/LOOP_PLAYGROUND.md) → [LoopBench leaderboard](https://github.com/KanakMalpani/LoopBench) | ~30 min |
 | **Researching** | [Paper series](research/PAPER_SERIES.md) → [LoopNet v0.2](research/LOOPNET.md) → [Case studies](case-studies/README.md) | ~1 day |
 | **Leading a team** | [D-D-M-I-S framework](framework/README.md) → [LES scoring](scoring/LES-1.0.md) | ~2 hours |
 
@@ -208,7 +209,7 @@ loopctl score --spec mapped.yaml --json
 
 New patterns, case studies, implementations, and benchmark results welcome.
 
-→ [CONTRIBUTING.md](contributions/CONTRIBUTING.md) · [GOVERNANCE.md](contributions/GOVERNANCE.md) · [**Reproduction challenge**](https://github.com/KanakMalpani/Loop-Engineering/discussions/10) · [REPRODUCE.md](contributions/REPRODUCE.md)
+→ [CONTRIBUTING.md](contributions/CONTRIBUTING.md) · [GOVERNANCE.md](contributions/GOVERNANCE.md) · [**Loop Playground**](contributions/LOOP_PLAYGROUND.md) · [**Community spotlight**](docs/community/spotlight/) · [**Reproduction challenge**](https://github.com/KanakMalpani/Loop-Engineering/discussions/10) · [REPRODUCE.md](contributions/REPRODUCE.md)
 
 ---
 

@@ -25,7 +25,7 @@ loopbench list
 
 <br>
 
-[**Run your first score**](#score-in-2-minutes) · [**Leaderboard**](leaderboard/entries.json) · [**Suite overview**](SUITE-OVERVIEW.md)
+[**Run your first score**](#score-in-2-minutes) · [**Loop Playground**](https://github.com/KanakMalpani/Loop-Engineering/blob/main/contributions/LOOP_PLAYGROUND.md) · [**Leaderboard**](leaderboard/LIVE.md) · [**Suite overview**](SUITE-OVERVIEW.md)
 
 <br>
 
@@ -91,6 +91,13 @@ New to the stack? Start with the [LoopNet end-to-end tutorial](https://github.co
 | **`LB-COMP-1`** | Composed swarm rehearsal | Parallel branches + merge (MiroFish-style LSS) |
 
 Five seeds per task. Details in [`tasks/`](tasks/).
+
+## Live leaderboard
+
+<!-- LEADERBOARD:START -->
+<!-- auto-generated; do not edit -->
+**Live board** — [full rankings](leaderboard/LIVE.md) · [Submit your loop →](https://github.com/KanakMalpani/Loop-Engineering/blob/main/contributions/LOOP_PLAYGROUND.md)
+<!-- LEADERBOARD:END -->
 
 ---
 

@@ -4,6 +4,8 @@
 
 **North star:** [NORTH_STAR.md](./NORTH_STAR.md) · **Target:** validated spec + score + export in ~15 min (PyPI-only)
 
+**Benchmark + leaderboard:** continue to [LOOP_PLAYGROUND.md](./LOOP_PLAYGROUND.md) after scoring.
+
 When finished, post on [Discussion #10](https://github.com/KanakMalpani/Loop-Engineering/discussions/10).
 
 ---

@@ -1,5 +1,7 @@
 # External submission pack
 
+**Start here:** [LOOP_PLAYGROUND.md](./LOOP_PLAYGROUND.md) — test your loop, run benchmarks, submit for recognition.
+
 Ready-to-use paths for the three highest-value **community-owned** adoption signals. Maintainer dry-runs do not count toward the [adoption tracker](../docs/adoption-tracker/latest.md).
 
 ---

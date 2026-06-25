@@ -1,6 +1,8 @@
 # Next Steps — 2027 execution (June 2026)
 
-**Adoption path:** [REPRODUCE.md](../contributions/REPRODUCE.md) → [Discussion #10](https://github.com/KanakMalpani/Loop-Engineering/discussions/10)
+**Adoption path:** [LOOP_PLAYGROUND.md](../contributions/LOOP_PLAYGROUND.md) · [REPRODUCE.md](../contributions/REPRODUCE.md) → [Discussion #10](https://github.com/KanakMalpani/Loop-Engineering/discussions/10)
+
+**Community platform rollout:** [COMMUNITY_PLATFORM_STATUS.md](../docs/maintainer/COMMUNITY_PLATFORM_STATUS.md)
 
 ---
 
@@ -16,6 +18,7 @@
 | BEAT_LB-CR-1 amplification | [BEAT_LB-CR-1.md](../contributions/BEAT_LB-CR-1.md) · LoopBench README · HF card |
 | RFC #11 outreach | [LangGraph #8186](https://github.com/langchain-ai/langgraph/issues/8186) · [CrewAI #6316](https://github.com/crewAIInc/crewAI/issues/6316) |
 | External submission pack | [EXTERNAL_SUBMISSIONS.md](../contributions/EXTERNAL_SUBMISSIONS.md) |
+| Community platform v1 (LE) | [LOOP_PLAYGROUND.md](../contributions/LOOP_PLAYGROUND.md) · [COMMUNITY_PLATFORM_STATUS.md](../docs/maintainer/COMMUNITY_PLATFORM_STATUS.md) |
 
 ---
 
@@ -25,7 +28,7 @@ Tracked daily: [docs/adoption-tracker/latest.md](../docs/adoption-tracker/latest
 
 | Item | Entry |
 |------|-------|
-| Non-maintainer LoopBench row | [EXTERNAL_SUBMISSIONS.md](../contributions/EXTERNAL_SUBMISSIONS.md) · [BEAT_LB-CR-1.md](../contributions/BEAT_LB-CR-1.md) · [#4](https://github.com/KanakMalpani/Loop-Engineering/issues/4) |
+| Non-maintainer LoopBench row | [LOOP_PLAYGROUND.md](../contributions/LOOP_PLAYGROUND.md) · [BEAT_LB-CR-1.md](../contributions/BEAT_LB-CR-1.md) · [#4](https://github.com/KanakMalpani/Loop-Engineering/issues/4) |
 | External reproduction | [EXTERNAL_SUBMISSIONS.md](../contributions/EXTERNAL_SUBMISSIONS.md) · [#10](https://github.com/KanakMalpani/Loop-Engineering/discussions/10) |
 | External case study | [EXTERNAL_SUBMISSIONS.md](../contributions/EXTERNAL_SUBMISSIONS.md) · [#7](https://github.com/KanakMalpani/Loop-Engineering/issues/7) |
 | RFC #11 framework comments | LangGraph [#8186](https://github.com/langchain-ai/langgraph/issues/8186) · CrewAI [#6316](https://github.com/crewAIInc/crewAI/issues/6316) · [#11](https://github.com/KanakMalpani/Loop-Engineering/discussions/11) |

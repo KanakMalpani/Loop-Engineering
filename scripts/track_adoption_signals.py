@@ -60,6 +60,9 @@ ISSUES_API = "https://api.github.com/repos/KanakMalpani/Loop-Engineering/issues/
 CORE_LSS_STABLE_URL = (
     "https://raw.githubusercontent.com/KanakMalpani/Loop-Core-Engineering/main/specs/lss-1.1.md"
 )
+LOOPBENCH_LIVE_MD_URL = (
+    "https://raw.githubusercontent.com/KanakMalpani/LoopBench/main/leaderboard/LIVE.md"
+)
 
 
 @dataclass
@@ -401,9 +404,71 @@ def check_lss_11_stable() -> Signal:
     )
 
 
+def check_community_platform_v1() -> Signal:
+    playground = ROOT / "contributions" / "LOOP_PLAYGROUND.md"
+    digest_wf = ROOT / ".github" / "workflows" / "ecosystem-digest.yml"
+    status_doc = ROOT / "docs" / "maintainer" / "COMMUNITY_PLATFORM_STATUS.md"
+    link = "https://github.com/KanakMalpani/Loop-Engineering/blob/main/docs/maintainer/COMMUNITY_PLATFORM_STATUS.md"
+
+    missing = [
+        name
+        for path, name in (
+            (playground, "LOOP_PLAYGROUND.md"),
+            (digest_wf, "ecosystem-digest.yml"),
+            (status_doc, "COMMUNITY_PLATFORM_STATUS.md"),
+        )
+        if not path.is_file()
+    ]
+    if missing:
+        return Signal(
+            "community_platform_v1",
+            "Community platform v1 (playground + digest)",
+            "yellow",
+            f"Missing: {', '.join(missing)}",
+            link,
+        )
+
+    live_ok = False
+    try:
+        req = urllib.request.Request(
+            LOOPBENCH_LIVE_MD_URL,
+            method="HEAD",
+            headers={"User-Agent": "loop-engineering-tracker"},
+        )
+        with urllib.request.urlopen(req, timeout=20) as resp:
+            live_ok = resp.status == 200
+    except urllib.error.HTTPError as exc:
+        live_ok = exc.code == 200
+    except (urllib.error.URLError, TimeoutError) as exc:
+        return Signal(
+            "community_platform_v1",
+            "Community platform v1 (playground + digest)",
+            "yellow",
+            f"LoopBench LIVE.md check failed: {exc}",
+            link,
+        )
+
+    if live_ok:
+        return Signal(
+            "community_platform_v1",
+            "Community platform v1 (playground + digest)",
+            "green",
+            "Playground + digest workflow + LoopBench LIVE.md live",
+            link,
+        )
+    return Signal(
+        "community_platform_v1",
+        "Community platform v1 (playground + digest)",
+        "yellow",
+        "LE shipped; push LoopBench sync pack for LIVE.md (see ecosystem-sync/LoopBench/)",
+        link,
+    )
+
+
 def collect_signals() -> list[Signal]:
     signals: list[Signal] = [
         check_loopbench_leaderboard(),
+        check_community_platform_v1(),
         check_discussion(10, DISCUSSIONS[10]),
         check_discussion(11, DISCUSSIONS[11]),
         check_pypi_loopbench(),

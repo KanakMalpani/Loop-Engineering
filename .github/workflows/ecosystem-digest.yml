@@ -1,0 +1,55 @@
+name: Ecosystem digest
+
+on:
+  schedule:
+    - cron: "0 */6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  digest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install pyyaml jsonschema
+
+      - name: Restore digest hash cache
+        uses: actions/cache@v4
+        with:
+          path: .digest-hash
+          key: ecosystem-digest-v1
+
+      - name: Run ecosystem digest
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          OPS_DASHBOARD_ISSUE_NUMBER: ${{ vars.OPS_DASHBOARD_ISSUE_NUMBER }}
+        run: |
+          CACHE_FILE=""
+          if [ -f .digest-hash/current ]; then
+            CACHE_FILE=".digest-hash/current"
+          fi
+          python scripts/ecosystem_digest.py \
+            ${CACHE_FILE:+--cache-file "$CACHE_FILE"} \
+            --write-cache .digest-hash/current \
+            --append-log
+
+      - name: Commit automation log if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/maintainer/COMMUNITY_PLATFORM_STATUS.md
+          if git diff --staged --quiet; then
+            echo "No automation log changes"
+          else
+            git commit -m "chore: ecosystem digest automation log"
+            git push
+          fi

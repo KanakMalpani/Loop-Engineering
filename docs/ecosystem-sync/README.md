@@ -10,6 +10,7 @@ Edit these files, then push to sibling repos with [MAINTAINER-SYNC.md](../../con
 | [Loop-Core-Engineering-README.md](./Loop-Core-Engineering-README.md) | `KanakMalpani/Loop-Core-Engineering` README.md |
 | [LoopBench-tasks-index.yaml](./LoopBench-tasks-index.yaml) | `LoopBench/tasks/index.yaml` |
 | [LoopBench-LB-COMP-1-task.yaml](./LoopBench-LB-COMP-1-task.yaml) | `LoopBench/tasks/LB-COMP-1/task.yaml` |
+| [LoopBench/](./LoopBench/) | Community platform sync pack (scripts, workflows, leaderboard docs) |
 | [Loop-Core-lss-1.1-draft.md](./Loop-Core-lss-1.1-draft.md) | `Loop-Core-Engineering/specs/lss-1.1-draft.md` |
 | [Loop-Core-lss-1.1-composition.schema.json](./Loop-Core-lss-1.1-composition.schema.json) | `Loop-Core-Engineering/specs/lss-1.1-composition.schema.json` |
 
