@@ -1,24 +1,29 @@
 # LoopBench — community platform sync pack
 
-Push these files to [KanakMalpani/LoopBench](https://github.com/KanakMalpani/LoopBench) after review.
+**Source of truth:** edit here in Loop-Engineering, then merge to `main`. LoopBench pulls this pack automatically every hour via [`sync-platform-pack.yml`](.github/workflows/sync-platform-pack.yml) — no manual push required.
 
 | Local path | Remote path |
 |------------|-------------|
 | `scripts/render_leaderboard.py` | `scripts/render_leaderboard.py` |
 | `scripts/leaderboard_common.py` | `scripts/leaderboard_common.py` |
-| `docs/index.html` | `docs/index.html` (GitHub Pages — [live site](https://kanakmalpani.github.io/LoopBench/)) |
-| `leaderboard/ROW_SCHEMA.md` | `leaderboard/ROW_SCHEMA.md` |
-| `.github/workflows/leaderboard-render.yml` | `.github/workflows/leaderboard-render.yml` |
-| `.github/workflows/leaderboard-pr-hint.yml` | `.github/workflows/leaderboard-pr-hint.yml` |
+| `docs/**` | `docs/**` (GitHub Pages — [live site](https://kanakmalpani.github.io/LoopBench/)) |
+| `leaderboard/README.md`, `ROW_SCHEMA.md` | same |
+| `.github/workflows/*.yml` | same |
 
-Also merge [LoopBench-README.md](../LoopBench-README.md) (includes `<!-- LEADERBOARD:START -->` markers).
+Also merge [LoopBench-README.md](../LoopBench-README.md) (includes `<!-- LEADERBOARD:START -->` markers) when README structure changes.
 
-```bash
-# Example (from Loop-Engineering root)
-python scripts/push_github_file.py --repo LoopBench --path scripts/render_leaderboard.py \
-  --file docs/ecosystem-sync/LoopBench/scripts/render_leaderboard.py --message "feat: live leaderboard render"
-```
+## Automatic pipeline (LoopBench remote)
 
-After push, run `leaderboard-render` workflow once to generate `leaderboard/LIVE.md`.
+| Trigger | Workflow | Result |
+|---------|----------|--------|
+| PR changes `entries.json` | `leaderboard-validate.yml` | Schema + render dry-run |
+| PR changes `entries.json` | `leaderboard-pr-hint.yml` | Bot checklist comment |
+| Merge to `main` (`entries.json`) | `leaderboard-render.yml` | Updates `LIVE.md`, README block, `docs/data/leaderboard.json` |
+| After render / `docs/**` push | `pages.yml` | Deploys [GitHub Pages](https://kanakmalpani.github.io/LoopBench/) |
+| Hourly + manual | `sync-platform-pack.yml` | Pulls this sync pack from Loop-Engineering `main` |
+| Mon 08:00 UTC | `leaderboard-render.yml` | Weekly re-render |
+| Every 6h (Loop-Engineering) | `ecosystem-digest.yml` | Updates pinned ops issue [#13](https://github.com/KanakMalpani/Loop-Engineering/issues/13) |
+
+**Do not edit** `leaderboard/entries.json`, `LIVE.md`, or generated JSON on LoopBench without a PR — render workflow owns those outputs.
 
 Tracker: [COMMUNITY_PLATFORM_STATUS.md](../../maintainer/COMMUNITY_PLATFORM_STATUS.md)

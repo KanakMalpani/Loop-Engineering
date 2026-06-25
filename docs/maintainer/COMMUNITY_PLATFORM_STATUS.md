@@ -29,8 +29,10 @@ Related: [LOOP_PLAYGROUND.md](../../contributions/LOOP_PLAYGROUND.md) · [ADOPTI
 - [x] `docs/ecosystem-sync/LoopBench/leaderboard/README.md`
 - [x] `docs/ecosystem-sync/LoopBench/.github/workflows/leaderboard-render.yml`
 - [x] `docs/ecosystem-sync/LoopBench/.github/workflows/leaderboard-pr-hint.yml`
-- [x] `docs/ecosystem-sync/LoopBench/leaderboard/ROW_SCHEMA.md`
-- [x] **Push mirrors to LoopBench** (2026-06-25 — scripts, docs, workflows, LIVE.md)
+- [x] `docs/ecosystem-sync/LoopBench/.github/workflows/pages.yml`
+- [x] `docs/ecosystem-sync/LoopBench/.github/workflows/sync-platform-pack.yml` (hourly pull from LE)
+- [x] `docs/ecosystem-sync/LoopBench/.github/workflows/leaderboard-validate.yml`
+- [x] **Push mirrors to LoopBench** — automated via `sync-platform-pack` (LE mirror is source of truth)
 - [x] LoopBench README `<!-- LEADERBOARD:START -->` markers live on remote
 
 ### Manual setup (maintainer)
@@ -51,7 +53,7 @@ Related: [LOOP_PLAYGROUND.md](../../contributions/LOOP_PLAYGROUND.md) · [ADOPTI
 | 2026-06-17 | Leaderboard render (LE preview) | [render_leaderboard_preview.py](../../scripts/render_leaderboard_preview.py) |
 | 2026-06-17 | Ecosystem digest | [ecosystem_digest.py](../../scripts/ecosystem_digest.py) |
 | 2026-06-17 | LoopBench sync pack | [docs/ecosystem-sync/LoopBench/](../ecosystem-sync/LoopBench/) |
-| 2026-06-25 | LoopBench remote deploy | [LoopBench LIVE.md](https://github.com/KanakMalpani/LoopBench/blob/main/leaderboard/LIVE.md) · workflows live |
+| 2026-06-25 | Full LoopBench automation | Hourly sync pack pull · validate on PR · render → Pages chain |
 | 2026-06-25 | Pinned ops dashboard | [Issue #13](https://github.com/KanakMalpani/Loop-Engineering/issues/13) · `OPS_DASHBOARD_ISSUE_NUMBER=13` |
 
 ---
