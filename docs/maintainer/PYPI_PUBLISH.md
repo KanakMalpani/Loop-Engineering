@@ -13,6 +13,8 @@ GitHub Actions tried **OIDC trusted publishing** because the workflow had `permi
 
 Workflows now use **API token auth only** (`PYPI_API_TOKEN`). Trusted publishing is optional (see below).
 
+Note: GitHub does not allow `secrets` in `if:` conditions — missing tokens surface as publish-step errors from `pypa/gh-action-pypi-publish`.
+
 ---
 
 ## Quick fix — API token (recommended)

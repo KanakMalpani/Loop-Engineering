@@ -14,14 +14,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Require PyPI API token
-        if: ${{ secrets.PYPI_API_TOKEN == '' }}
-        run: |
-          echo "::error::PYPI_API_TOKEN is not set in repo Secrets → Actions."
-          echo "Add an API token from https://pypi.org/manage/account/token/"
-          echo "Or configure trusted publishing — see docs/maintainer/PYPI_PUBLISH.md"
-          exit 1
-
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
