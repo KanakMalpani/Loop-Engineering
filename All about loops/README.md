@@ -6,6 +6,8 @@ Master planning layer for the Loop Engineering discipline — from original ambi
 |----------|---------|
 | [**MASTER_CHECKLIST.md**](./MASTER_CHECKLIST.md) | Full phased checklist (Stages 1–15) |
 | [**NEXT_STEPS.md**](./NEXT_STEPS.md) | Prioritized immediate actions |
+| [**LOOP_FORGE.md**](./LOOP_FORGE.md) | **LoopForge** — Python library to scaffold LSS loop specs |
+| [**GOLDEN_PATH.md**](../contributions/GOLDEN_PATH.md) | One-hour builder onboarding (LoopForge-first) |
 | [../README.md](../README.md) | Public repo home |
 | [../contributions/RESEARCH_ROADMAP.md](../contributions/RESEARCH_ROADMAP.md) | Dated 2026–2030 targets |
 | [../contributions/EXIT_CRITERIA_2026.md](../contributions/EXIT_CRITERIA_2026.md) | Honest maturity scorecard |

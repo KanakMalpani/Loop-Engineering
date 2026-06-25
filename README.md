@@ -58,21 +58,25 @@ Everything below is **live on GitHub and PyPI**. Version registry: [ECOSYSTEM_VE
 ```mermaid
 flowchart TB
   DOCS["<b>Loop Engineering</b><br/><i>you are here</i><br/>manifesto · patterns · case studies"]
+  FORGE["LoopForge<br/>pip install loopforge"]
   CORE["Loop Core Engineering<br/>LSS · LES · validators"]
   NET["LoopNet v0.2<br/>545 trajectories"]
   GYM["LoopGym<br/>pip install loopgym"]
   BENCH["LoopBench<br/>pip install loopbench"]
 
-  DOCS -.-> CORE
+  DOCS --> FORGE
+  FORGE --> CORE
   CORE --> NET
   CORE --> GYM
   NET --> GYM
   GYM --> BENCH
   CORE --> BENCH
+  FORGE --> GYM
 ```
 
 | Repository | One line | Link |
 |------------|----------|------|
+| **LoopForge** | Creation — scaffold valid LSS specs from patterns | [loopforge/](../loopforge/) · `pip install loopforge` · [loopctl](../loopctl/) · [Golden Path](contributions/GOLDEN_PATH.md) |
 | **Loop Core Engineering** | Specs & governance — the constitution | [GitHub →](https://github.com/KanakMalpani/Loop-Core-Engineering) |
 | **LoopNet** | Dataset — ground truth for loops | [GitHub →](https://github.com/KanakMalpani/loopnet) · [Hugging Face →](https://huggingface.co/datasets/KanakMalpani/loopnet-v0.2) |
 | **LoopGym** | Runtime — run loops in sim, live, or replay | [GitHub →](https://github.com/KanakMalpani/LoopGym) · `pip install loopgym` |
@@ -119,7 +123,7 @@ termination_conditions:
 | You are… | Path | Time |
 |----------|------|------|
 | **Curious** | [Manifesto](manifesto/MANIFESTO.md) → [Fundamentals](fundamentals/README.md) | ~2 hours |
-| **Building** | [Patterns](patterns/README.md) → [REPRODUCE.md](contributions/REPRODUCE.md) → `pip install loopgym loopbench` | ~1 hour |
+| **Building** | [Golden Path](contributions/GOLDEN_PATH.md) → [Practitioner track](education/practitioner/README.md) → `pip install loopforge` | ~1 hour |
 | **Researching** | [Paper series](research/PAPER_SERIES.md) → [LoopNet v0.2](research/LOOPNET.md) → [Case studies](case-studies/README.md) | ~1 day |
 | **Leading a team** | [D-D-M-I-S framework](framework/README.md) → [LES scoring](scoring/LES-1.0.md) | ~2 hours |
 
@@ -136,6 +140,7 @@ termination_conditions:
 | [`framework/`](framework/) | D-D-M-I-S methodology |
 | [`case-studies/`](case-studies/) | AlphaGo, GitHub PRs, Toyota, coding agents |
 | [`loop-library/`](loop-library/) | Production-ready loop YAML |
+| [`loopforge/`](loopforge/) | Scaffold LSS specs from patterns |
 | [`implementations/`](implementations/) | Python, LangGraph, CrewAI examples |
 | [`research/`](research/) | Open problems and roadmap |
 
@@ -160,7 +165,8 @@ termination_conditions:
 
 | Tool | Purpose |
 |------|---------|
-| [`les_calculator.py`](tools/les_calculator.py) | Structural LES estimate (local mirror) |
+| [`loopctl.py`](../tools/loopctl.py) | Unified CLI — validate, score, diagram, level |
+| [`loopforge`](../loopforge/) | Scaffold LSS YAML from patterns (`python -m loopforge`) |
 | [`loop_validator.py`](tools/loop_validator.py) | LSS validation (prefer [canonical validator](https://github.com/KanakMalpani/Loop-Core-Engineering/tree/main/tools)) |
 | [`daily_checkin.py`](scripts/daily_checkin.py) | Daily health check ([log](docs/checkins/latest.md)) |
 | [`loop_diagram_generator.py`](tools/loop_diagram_generator.py) | Mermaid from LSS |

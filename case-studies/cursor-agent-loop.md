@@ -64,6 +64,13 @@ Parallel variant: multiple subagents on independent subtasks — maps to `compos
 
 ## LSS mapping
 
+**LoopForge scaffold:**
+
+```bash
+loopforge intent "IDE agent with tool calls and test verification" -o cursor-mapped.yaml --suggest-level
+loopctl validate cursor-mapped.yaml
+```
+
 | Cursor concept | LSS field |
 |----------------|-----------|
 | `.cursor/rules`, AGENTS.md | `workers[].role` + `safety_constraints` |

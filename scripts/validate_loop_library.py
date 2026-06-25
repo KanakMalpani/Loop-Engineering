@@ -15,6 +15,8 @@ LIB = ROOT / "loop-library"
 COMP = LIB / "compositions"
 VALIDATOR = ROOT / "tools" / "loop_validator.py"
 COMP_VALIDATOR = ROOT / "tools" / "composition_validator.py"
+SCHEMA_10 = ROOT / "standards" / "schema" / "lss-1.0.schema.json"
+SCHEMA_11 = ROOT / "standards" / "schema" / "lss-1.1-composition.schema.json"
 
 sys.path.insert(0, str(ROOT))
 from tools.level_recommender import LevelRecommender, load_records  # noqa: E402
@@ -77,9 +79,23 @@ def warn_taxonomy_levels(warn: bool) -> list[str]:
     return warnings
 
 
+def schema_for_spec(spec: dict, path: Path) -> Path:
+    if spec.get("composition") or path.parent.name == "compositions":
+        return SCHEMA_11
+    meta = spec.get("metadata") or {}
+    if meta.get("schema_version") == "1.1" and spec.get("composition"):
+        return SCHEMA_11
+    return SCHEMA_10
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--warn-level", action="store_true", help="Warn on taxonomy_level vs LE-OP-11 recommender")
+    parser.add_argument(
+        "--warn-composition",
+        action="store_true",
+        help="Warn on LE-OP-10 composition issues (composed specs)",
+    )
     args = parser.parse_args()
 
     if not VALIDATOR.exists():
@@ -96,7 +112,10 @@ def main() -> int:
 
     failed: list[str] = []
     for path in all_files:
-        code, out = run([sys.executable, str(VALIDATOR), str(path)])
+        spec = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+        schema = schema_for_spec(spec, path)
+        cmd = [sys.executable, str(VALIDATOR), str(path), "--schema", str(schema)]
+        code, out = run(cmd)
         if code != 0:
             failed.append(path.name)
             print(out)
@@ -106,6 +125,15 @@ def main() -> int:
         if code != 0:
             failed.append("composition-graph")
             print(out)
+
+    if COMP_VALIDATOR.exists() and comp_files and args.warn_composition:
+        for path in comp_files:
+            spec = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+            from tools.composition_validator import validate_composition
+
+            _, comp_warnings = validate_composition(path, spec)
+            for w in comp_warnings:
+                print(f"WARN composition: {path.name}: {w}")
 
     for w in warn_taxonomy_levels(args.warn_level):
         print(f"WARN: {w}")

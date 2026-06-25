@@ -8,14 +8,21 @@ Ready-to-use paths for the three highest-value **community-owned** adoption sign
 
 **Target:** Non-maintainer submitter on [leaderboard/entries.json](https://github.com/KanakMalpani/LoopBench/blob/main/leaderboard/entries.json).
 
+**Step 1 — scaffold with LoopForge:**
+
 ```bash
-pip install "loopbench>=0.1.1" loopgym pyyaml jsonschema
+pip install "loopforge>=0.1.0" "loopbench>=0.1.1" loopgym pyyaml jsonschema
 git clone https://github.com/KanakMalpani/Loop-Engineering.git
 cd Loop-Engineering
 
+loopforge fork --from autonomous-debugger --name my-submission -o my-submission.yaml --suggest-level
+python -m loopctl validate my-submission.yaml
+```
+
+```bash
 loopbench run \
   --task LB-CR-1 \
-  --spec loop-library/autonomous-debugger.yaml \
+  --spec my-submission.yaml \
   --seeds 0,1,2,3,4 \
   -o results.json
 
@@ -36,7 +43,7 @@ Full guides: [BEAT_LB-CR-1.md](BEAT_LB-CR-1.md) · [BEAT_LB-RS-1.md](BEAT_LB-RS-
 
 **Target:** Comment on [#10](https://github.com/KanakMalpani/Loop-Engineering/discussions/10) from a **non-maintainer** GitHub account.
 
-Follow [REPRODUCE.md](REPRODUCE.md) (~60 min). Include in your post:
+Follow [GOLDEN_PATH.md](GOLDEN_PATH.md) (~60 min). Include in your post:
 
 - Fork URL
 - `python scripts/validate_loop_library.py` result

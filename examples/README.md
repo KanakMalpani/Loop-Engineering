@@ -11,6 +11,7 @@ Minimal examples demonstrating loop patterns without API keys.
 
 Optional plots: `pip install matplotlib datasets`
 | [compose-loop](compose-loop/) | Nested/sequential composition | `python run.py` |
+| [loopforge-scaffold](loopforge-scaffold/) | Scaffold LSS YAML from patterns | `python run_demo.py` |
 
 Requires: see each example README. Full path: [contributions/REPRODUCE.md](../contributions/REPRODUCE.md).
 

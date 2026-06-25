@@ -98,9 +98,34 @@ def validate_composition(spec_path: Path, spec: dict) -> tuple[list[str], list[s
             min_pass = merge.get("min_branches_pass")
             if min_pass is not None and min_pass > len(children):
                 errors.append("merge.min_branches_pass cannot exceed child count")
+            strategy = merge.get("strategy")
+            if strategy == "first_wins":
+                warnings.append(
+                    "LE-OP-10: merge.strategy first_wins is order-sensitive; "
+                    "(A || B) || C may differ from A || (B || C)"
+                )
+            if strategy and strategy not in ("synthesize", "vote", "first_pass", "all_pass", "first_wins"):
+                warnings.append(f"LE-OP-10: unknown merge.strategy {strategy!r}")
         branches = [c for c in children if c.get("role") == "branch"]
         if len(branches) < 2:
             errors.append("parallel composition should declare >=2 children with role: branch")
+
+    if ctype == "sequential":
+        for i in range(len(children) - 1):
+            a, b = children[i], children[i + 1]
+            if not comp.get("adapters"):
+                warnings.append(
+                    f"LE-OP-10: sequential adapter gap between {a.get('id')} and {b.get('id')} — "
+                    "associativity may fail if outputs/inputs misalign"
+                )
+                break
+
+    if ctype == "nested":
+        inner_ids = [c.get("id") for c in children if c.get("role") == "inner"]
+        if inner_ids and not adapters:
+            warnings.append(
+                f"LE-OP-10: nested composition without adapters — inner {inner_ids[0]} may read undeclared outer state"
+            )
 
     for j, adapter in enumerate(adapters):
         if not isinstance(adapter, dict):

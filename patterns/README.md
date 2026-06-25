@@ -2,6 +2,12 @@
 
 Patterns are **reusable loop compositions**—proven control structures you embed inside a taxonomy level. A pattern answers *how* to wire observe–act–evaluate phases; a level answers *how deep* the cognition goes.
 
+**Scaffold a spec:** once you pick a pattern, use [LoopForge](../All%20about%20loops/LOOP_FORGE.md) or the [Golden Path](../contributions/GOLDEN_PATH.md):
+
+```bash
+python -m loopforge new --pattern reflection --name my-loop --objective "Your goal" --output loop-library/my-loop.yaml
+```
+
 Each pattern document is self-contained: problem, solution, architecture, workflow, mermaid diagram, pseudocode, implementation notes, tradeoffs, and failure modes.
 
 ---

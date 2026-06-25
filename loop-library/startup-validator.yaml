@@ -1,142 +1,156 @@
 loop_name: startup-validator
 version: 1.0.0
+objective: 'Validate startup hypotheses via experiments and produce PMF evidence ledger. Achieve primary_quality
+  >= 0.78 within cost_limits with zero safety violations.
 
-objective: >
-  Validate startup hypotheses via experiments and produce PMF evidence ledger.
-  Achieve primary_quality >= 0.78 within cost_limits with zero safety violations.
-
+  '
 inputs:
   schema:
     task:
       type: string
-      description: "Primary task description or domain context"
+      description: Primary task description or domain context
       required: true
   examples:
-    - task: "Complete the declared objective for this loop profile."
-
+  - task: Complete the declared objective for this loop profile.
 memory:
   type: ephemeral
-
 workers:
-  - id: experiment_designer
-    role: "Design falsifiable PMF experiments"
-    model:
-      provider: openai
-      name: gpt-4.1-mini
-      temperature: 0.2
-    inputs:
-      - from: inputs.task
-    outputs:
-      name: ExperimentDesignerOutput
-      format: text
-    timeout_seconds: 120
-    retries: 1
-    cost_budget_usd: 0.30
-  - id: operator
-    role: "Execute experiment automation"
-    model:
-      provider: openai
-      name: gpt-4.1-mini
-      temperature: 0.2
-    depends_on: [experiment_designer]
-    inputs:
-      - from: inputs.task
-    outputs:
-      name: OperatorOutput
-      format: text
-    timeout_seconds: 120
-    retries: 1
-    cost_budget_usd: 0.30
-  - id: interviewer
-    role: "Synthesize qualitative signals"
-    model:
-      provider: openai
-      name: gpt-4.1-mini
-      temperature: 0.2
-    depends_on: [operator]
-    inputs:
-      - from: inputs.task
-    outputs:
-      name: InterviewerOutput
-      format: text
-    timeout_seconds: 120
-    retries: 1
-    cost_budget_usd: 0.30
-  - id: judge
-    role: "Neutral kill-continue-pivot verdict"
-    model:
-      provider: openai
-      name: gpt-4.1-mini
-      temperature: 0.2
-    depends_on: [interviewer]
-    inputs:
-      - from: inputs.task
-    outputs:
-      name: JudgeOutput
-      format: text
-    timeout_seconds: 120
-    retries: 1
-    cost_budget_usd: 0.30
-
+- id: experiment_designer
+  role: Design falsifiable PMF experiments
+  model:
+    provider: openai
+    name: gpt-4.1-mini
+    temperature: 0.2
+  inputs:
+  - from: inputs.task
+  outputs:
+    name: ExperimentDesignerOutput
+    format: text
+  timeout_seconds: 120
+  retries: 1
+  cost_budget_usd: 0.3
+- id: operator
+  role: Execute experiment automation
+  model:
+    provider: openai
+    name: gpt-4.1-mini
+    temperature: 0.2
+  depends_on:
+  - experiment_designer
+  inputs:
+  - from: inputs.task
+  outputs:
+    name: OperatorOutput
+    format: text
+  timeout_seconds: 120
+  retries: 1
+  cost_budget_usd: 0.3
+- id: interviewer
+  role: Synthesize qualitative signals
+  model:
+    provider: openai
+    name: gpt-4.1-mini
+    temperature: 0.2
+  depends_on:
+  - operator
+  inputs:
+  - from: inputs.task
+  outputs:
+    name: InterviewerOutput
+    format: text
+  timeout_seconds: 120
+  retries: 1
+  cost_budget_usd: 0.3
+- id: judge
+  role: Neutral kill-continue-pivot verdict
+  model:
+    provider: openai
+    name: gpt-4.1-mini
+    temperature: 0.2
+  depends_on:
+  - interviewer
+  inputs:
+  - from: inputs.task
+  outputs:
+    name: JudgeOutput
+    format: text
+  timeout_seconds: 120
+  retries: 1
+  cost_budget_usd: 0.3
 evaluators:
-  - id: falsification_log
-    type: llm_rubric
-    runs_after: [experiment_designer, operator]
-    rubric:
-      dimensions:
-        - name: quality
-          weight: 1.0
-          scale: [0, 1]
-          criteria: "Hypothesis falsification record"
-      pass_threshold: 0.75
-    model:
-      provider: openai
-      name: gpt-4.1-mini
-      temperature: 0
-  - id: signal_strength
-    type: llm_rubric
-    runs_after: [experiment_designer, operator]
-    rubric:
-      dimensions:
-        - name: quality
-          weight: 1.0
-          scale: [0, 1]
-          criteria: "Evidence strength rubric"
-      pass_threshold: 0.75
-    model:
-      provider: openai
-      name: gpt-4.1-mini
-      temperature: 0
-  - id: experiment_integrity
-    type: llm_rubric
-    runs_after: [experiment_designer, operator]
-    rubric:
-      dimensions:
-        - name: quality
-          weight: 1.0
-          scale: [0, 1]
-          criteria: "Protocol adherence check"
-      pass_threshold: 0.75
-    model:
-      provider: openai
-      name: gpt-4.1-mini
-      temperature: 0
-
+- id: falsification_log
+  type: llm_rubric
+  runs_after:
+  - experiment_designer
+  - operator
+  rubric:
+    dimensions:
+    - name: quality
+      weight: 1.0
+      scale:
+      - 0
+      - 1
+      criteria: Hypothesis falsification record
+    pass_threshold: 0.75
+  model:
+    provider: openai
+    name: gpt-4.1-mini
+    temperature: 0
+- id: signal_strength
+  type: llm_rubric
+  runs_after:
+  - experiment_designer
+  - operator
+  rubric:
+    dimensions:
+    - name: quality
+      weight: 1.0
+      scale:
+      - 0
+      - 1
+      criteria: Evidence strength rubric
+    pass_threshold: 0.75
+  model:
+    provider: openai
+    name: gpt-4.1-mini
+    temperature: 0
+- id: experiment_integrity
+  type: llm_rubric
+  runs_after:
+  - experiment_designer
+  - operator
+  rubric:
+    dimensions:
+    - name: quality
+      weight: 1.0
+      scale:
+      - 0
+      - 1
+      criteria: Protocol adherence check
+    pass_threshold: 0.75
+  model:
+    provider: openai
+    name: gpt-4.1-mini
+    temperature: 0
 feedback_channels:
-  - id: quality_to_judge
-    source: evaluators.falsification_log
-    destination: workers.judge
-    format: structured
-    fields: [failure_codes, dimension_scores, remediation_hints]
-    max_tokens: 500
-    when: "score < pass_threshold"
-  - id: quality_to_optimizer
-    source: evaluators.falsification_log
-    destination: optimization_strategy.prompt_refinement
-    format: structured
-    fields: [failure_codes, remediation_hints]
-    max_tokens: 200
-
+- id: quality_to_judge
+  source: evaluators.falsification_log
+  destination: workers.judge
+  format: structured
+  fields:
+  - failure_codes
+  - dimension_scores
+  - remediation_hints
+  max_tokens: 500
+  when: score < pass_threshold
+- id: quality_to_optimizer
+  source: evaluators.falsification_log
+  destination: optimization_strategy.prompt_refinement
+  format: structured
+  fields:
+  - failure_codes
+  - remediation_hints
+  max_tokens: 200
 optimization_strategy:
   type: prompt_refinement
   max_steps: 8
@@ -145,63 +159,63 @@ optimization_strategy:
   rollback:
     on_metric_drop: 0.05
     on_safety_failure: true
-
 termination_conditions:
   success:
-    - metric: primary_quality
-      operator: gte
-      value: 0.78
-      consecutive: 1
+  - metric: primary_quality
+    operator: gte
+    value: 0.78
+    consecutive: 1
   failure:
-    - type: safety_violation
-      action: halt
-    - type: max_iterations
-      value: 8
-      action: halt
+  - type: safety_violation
+    action: halt
+  - type: max_iterations
+    value: 8
+    action: halt
   stall:
-    - metric: primary_quality
-      window_iterations: 3
-      min_improvement: 0.03
-      action: halt
-
+  - metric: primary_quality
+    window_iterations: 3
+    min_improvement: 0.03
+    action: halt
 metrics:
-  - name: primary_quality
-    primary: true
-    definition: "Weighted score from primary evaluator rubric"
-    source: evaluators.falsification_log
-    unit: ratio
-    target: 0.78
-    regression_threshold: 0.05
-  - name: cost_usd
-    definition: "Total API spend per loop run"
-    source: telemetry.cost
-    unit: usd
-    target: 1.00
-
+- name: primary_quality
+  primary: true
+  definition: Weighted score from primary evaluator rubric
+  source: evaluators.falsification_log
+  unit: ratio
+  target: 0.78
+  regression_threshold: 0.05
+- name: cost_usd
+  definition: Total API spend per loop run
+  source: telemetry.cost
+  unit: usd
+  target: 1.0
 safety_constraints:
-  - id: injection-guard
-    type: injection_detect
-    scope: pre_worker
-    applies_to: [experiment_designer, operator, interviewer, judge]
-    action: quarantine
-    severity: S1
-    on_error: halt
-    config:
-      max_risk_score: 0.7
-
+- id: injection-guard
+  type: injection_detect
+  scope: pre_worker
+  applies_to:
+  - experiment_designer
+  - operator
+  - interviewer
+  - judge
+  action: quarantine
+  severity: S1
+  on_error: halt
+  config:
+    max_risk_score: 0.7
 cost_limits:
   per_iteration_usd: 0.25
-  cumulative_usd: 2.00
+  cumulative_usd: 2.0
   token_soft_cap: 12000
   on_approach:
     threshold_percent: 80
     action: warn
   on_exceed:
     action: halt
-
 metadata:
   taxonomy_level: 2
   les_estimate: 74
   worker_count: 4
   evaluator_count: 3
-  enriched: "2026-06-17 architecture-aligned LSS 1.0"
+  enriched: 2026-06-17 architecture-aligned LSS 1.0
+  schema_version: '1.1'

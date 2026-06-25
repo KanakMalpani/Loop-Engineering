@@ -30,6 +30,20 @@ Map a real system to the Loop Engineering tuple and score it structurally where 
 
 ---
 
+## LoopForge mapping (required for new submissions)
+
+| Step | Command / artifact |
+|------|-------------------|
+| Pattern pick | From [patterns/README.md](../patterns/README.md) or `loopforge intent "..."` |
+| Scaffold | `loopforge new`, `loopforge fork`, or `loopforge intent` |
+| Validate | `loopctl validate <spec>.yaml` |
+| Structural LES | `loopctl score --spec <spec>.yaml --json` |
+| Trace (if run) | Loop Trace 1.0 JSON + `loopctl observed trace.json` |
+
+Document which LoopForge command produced the LSS spec and any manual edits to worker roles or evaluators.
+
+---
+
 ## Loop diagram
 
 ```mermaid

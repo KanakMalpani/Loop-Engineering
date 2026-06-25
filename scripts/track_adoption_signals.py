@@ -44,7 +44,9 @@ DISCUSSIONS = {
 
 PYPI_MIN_LOOPBENCH = (0, 1, 1)
 PYPI_MIN_LOOPGYM = (0, 1, 1)
+PYPI_MIN_LOOPFORGE = (0, 2, 0)
 PYPI_LOOPGYM_URL = "https://pypi.org/pypi/loopgym/json"
+PYPI_LOOPFORGE_URL = "https://pypi.org/pypi/loopforge/json"
 LEADERBOARD_URL = (
     "https://raw.githubusercontent.com/KanakMalpani/LoopBench/main/leaderboard/entries.json"
 )
@@ -135,6 +137,29 @@ def check_loopbench_leaderboard() -> Signal:
         "yellow",
         f"No external rows yet ({len(entries)} entries: {submitters})",
         "https://github.com/KanakMalpani/Loop-Engineering/issues/4",
+    )
+
+
+def check_pypi_loopforge() -> Signal:
+    try:
+        data = fetch_json(PYPI_LOOPFORGE_URL)
+        version = data.get("info", {}).get("version", "0.0.0")
+    except (urllib.error.URLError, json.JSONDecodeError, TimeoutError) as exc:
+        return Signal(
+            "pypi_loopforge",
+            "loopforge on PyPI (>= 0.2.0)",
+            "yellow",
+            f"PyPI unreachable: {exc}",
+            "https://pypi.org/project/loopforge/",
+        )
+
+    ok = parse_version(version) >= PYPI_MIN_LOOPFORGE
+    return Signal(
+        "pypi_loopforge",
+        "loopforge on PyPI (>= 0.1.0)",
+        "green" if ok else "yellow",
+        f"PyPI version: {version}",
+        "https://pypi.org/project/loopforge/",
     )
 
 
@@ -301,6 +326,7 @@ def collect_signals() -> list[Signal]:
         check_discussion(11, DISCUSSIONS[11]),
         check_pypi_loopbench(),
         check_pypi_loopgym(),
+        check_pypi_loopforge(),
         check_lss_11_stable(),
     ]
     for num, label in GOOD_FIRST_ISSUES.items():

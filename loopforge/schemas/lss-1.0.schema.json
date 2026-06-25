@@ -1,0 +1,952 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://loop-engineering.org/schema/lss-1.0.schema.json",
+  "title": "Loop Specification Standard 1.0",
+  "description": "Canonical JSON Schema for LSS 1.0 loop specifications. Validates autonomous agent loop documents declaring workers, evaluators, feedback routing, termination, metrics, safety, and cost envelopes.",
+  "type": "object",
+  "additionalProperties": true,
+  "patternProperties": {
+    "^x_": {}
+  },
+  "required": [
+    "loop_name",
+    "version",
+    "objective",
+    "inputs",
+    "memory",
+    "workers",
+    "evaluators",
+    "feedback_channels",
+    "optimization_strategy",
+    "termination_conditions",
+    "metrics",
+    "safety_constraints",
+    "cost_limits"
+  ],
+  "properties": {
+    "loop_name": { "$ref": "#/$defs/LoopName" },
+    "version": { "$ref": "#/$defs/Semver" },
+    "objective": { "$ref": "#/$defs/Objective" },
+    "inputs": { "$ref": "#/$defs/Inputs" },
+    "memory": { "$ref": "#/$defs/Memory" },
+    "workers": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/Worker" }
+    },
+    "evaluators": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/Evaluator" }
+    },
+    "feedback_channels": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/FeedbackChannel" }
+    },
+    "optimization_strategy": { "$ref": "#/$defs/OptimizationStrategy" },
+    "termination_conditions": { "$ref": "#/$defs/TerminationConditions" },
+    "metrics": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/Metric" }
+    },
+    "safety_constraints": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/SafetyConstraint" }
+    },
+    "cost_limits": { "$ref": "#/$defs/CostLimits" },
+    "extensions": {
+      "type": "object",
+      "additionalProperties": true
+    }
+  },
+  "$defs": {
+    "LoopName": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]*$",
+      "minLength": 3,
+      "maxLength": 64,
+      "description": "Stable kebab-case identifier for the loop across versions."
+    },
+    "Semver": {
+      "type": "string",
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?$",
+      "description": "Semantic version per semver 2.0.0."
+    },
+    "Objective": {
+      "type": "string",
+      "minLength": 10,
+      "description": "Declarative outcome statement judgeable by metrics and evaluators."
+    },
+    "InputFieldType": {
+      "type": "string",
+      "enum": ["string", "number", "boolean", "enum", "array", "object"]
+    },
+    "InputField": {
+      "type": "object",
+      "required": ["type", "description"],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "$ref": "#/$defs/InputFieldType" },
+        "description": {
+          "type": "string",
+          "minLength": 1
+        },
+        "required": {
+          "type": "boolean",
+          "default": false
+        },
+        "max_length": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "min_length": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "pattern": {
+          "type": "string"
+        },
+        "values": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": ["string", "number", "boolean"]
+          }
+        },
+        "default": {},
+        "minimum": { "type": "number" },
+        "maximum": { "type": "number" },
+        "items": { "$ref": "#/$defs/InputFieldType" }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": { "type": { "const": "enum" } },
+            "required": ["type"]
+          },
+          "then": { "required": ["values"] }
+        }
+      ]
+    },
+    "Inputs": {
+      "type": "object",
+      "required": ["schema"],
+      "additionalProperties": false,
+      "properties": {
+        "schema": {
+          "type": "object",
+          "minProperties": 1,
+          "additionalProperties": { "$ref": "#/$defs/InputField" },
+          "description": "Object map of input field names to field definitions (not an array)."
+        },
+        "examples": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": true
+          }
+        }
+      }
+    },
+    "MemoryType": {
+      "type": "string",
+      "enum": ["ephemeral", "session", "persistent"]
+    },
+    "MemoryBackend": {
+      "type": ["string", "null"],
+      "enum": [null, "redis", "postgres", "vector", "composite"]
+    },
+    "RetentionUnit": {
+      "type": "string",
+      "enum": ["iteration", "hour", "day"]
+    },
+    "Retention": {
+      "type": "object",
+      "required": ["unit", "value"],
+      "additionalProperties": false,
+      "properties": {
+        "unit": { "$ref": "#/$defs/RetentionUnit" },
+        "value": {
+          "type": "number",
+          "minimum": 1
+        }
+      }
+    },
+    "WritePolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "allowed_writers": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "schema": {
+          "type": "string",
+          "minLength": 1
+        },
+        "max_entries": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
+    "ReadPolicy": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "Memory": {
+      "type": "object",
+      "required": ["type"],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "$ref": "#/$defs/MemoryType" },
+        "backend": { "$ref": "#/$defs/MemoryBackend" },
+        "retention": { "$ref": "#/$defs/Retention" },
+        "write_policy": { "$ref": "#/$defs/WritePolicy" },
+        "read_policy": { "$ref": "#/$defs/ReadPolicy" },
+        "redaction": {
+          "type": "object",
+          "additionalProperties": true
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": { "type": { "const": "persistent" } },
+            "required": ["type"]
+          },
+          "then": {
+            "required": ["backend"],
+            "properties": {
+              "backend": {
+                "type": "string",
+                "not": { "const": null }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "ModelProvider": {
+      "type": "string",
+      "minLength": 1,
+      "description": "LLM provider identifier (e.g. openai, anthropic)."
+    },
+    "Model": {
+      "type": "object",
+      "required": ["provider", "name"],
+      "additionalProperties": false,
+      "properties": {
+        "provider": { "$ref": "#/$defs/ModelProvider" },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "temperature": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 2
+        },
+        "max_tokens": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "top_p": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        }
+      }
+    },
+    "WorkerInputRef": {
+      "type": "object",
+      "required": ["from"],
+      "additionalProperties": false,
+      "properties": {
+        "from": {
+          "type": "string",
+          "pattern": "^(inputs\\.[a-zA-Z_][a-zA-Z0-9_.]*|memory\\.[a-zA-Z_][a-zA-Z0-9_.]*|workers\\.[a-z][a-z0-9_-]*)$",
+          "description": "Binding path to inputs, memory, or upstream worker output."
+        }
+      }
+    },
+    "OutputFormat": {
+      "type": "string",
+      "enum": ["text", "json", "markdown", "code", "binary"]
+    },
+    "WorkerOutput": {
+      "type": "object",
+      "required": ["name", "format"],
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "format": { "$ref": "#/$defs/OutputFormat" },
+        "schema_ref": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "WorkerId": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_-]*$",
+      "minLength": 1,
+      "maxLength": 64
+    },
+    "Worker": {
+      "type": "object",
+      "required": ["id", "role", "model", "inputs", "outputs"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "$ref": "#/$defs/WorkerId" },
+        "role": {
+          "type": "string",
+          "minLength": 1
+        },
+        "model": { "$ref": "#/$defs/Model" },
+        "depends_on": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/WorkerId" },
+          "uniqueItems": true
+        },
+        "inputs": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/WorkerInputRef" }
+        },
+        "outputs": { "$ref": "#/$defs/WorkerOutput" },
+        "tools": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "timeout_seconds": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "retries": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "cost_budget_usd": {
+          "type": "number",
+          "minimum": 0
+        }
+      }
+    },
+    "RubricDimension": {
+      "type": "object",
+      "required": ["name", "weight", "scale", "criteria"],
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "weight": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "maximum": 1
+        },
+        "scale": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "prefixItems": [
+            { "type": "number" },
+            { "type": "number" }
+          ],
+          "items": false
+        },
+        "criteria": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "Rubric": {
+      "type": "object",
+      "required": ["dimensions", "pass_threshold"],
+      "additionalProperties": false,
+      "properties": {
+        "dimensions": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/RubricDimension" }
+        },
+        "pass_threshold": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        }
+      }
+    },
+    "EvaluatorId": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_-]*$",
+      "minLength": 1,
+      "maxLength": 64
+    },
+    "EvaluatorType": {
+      "type": "string",
+      "enum": ["llm_rubric", "deterministic", "human"]
+    },
+    "EvaluatorAggregation": {
+      "type": "string",
+      "enum": ["min", "weighted_avg", "veto"]
+    },
+    "EvaluatorBase": {
+      "type": "object",
+      "required": ["id", "type", "runs_after"],
+      "properties": {
+        "id": { "$ref": "#/$defs/EvaluatorId" },
+        "type": { "$ref": "#/$defs/EvaluatorType" },
+        "runs_after": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "oneOf": [
+              { "$ref": "#/$defs/WorkerId" },
+              { "const": "*" }
+            ]
+          },
+          "uniqueItems": true
+        },
+        "aggregation": { "$ref": "#/$defs/EvaluatorAggregation" }
+      }
+    },
+    "DeterministicEvaluator": {
+      "allOf": [
+        { "$ref": "#/$defs/EvaluatorBase" },
+        {
+          "type": "object",
+          "required": ["implementation"],
+          "additionalProperties": false,
+          "properties": {
+            "id": { "$ref": "#/$defs/EvaluatorId" },
+            "type": { "const": "deterministic" },
+            "runs_after": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "oneOf": [
+                  { "$ref": "#/$defs/WorkerId" },
+                  { "const": "*" }
+                ]
+              }
+            },
+            "aggregation": { "$ref": "#/$defs/EvaluatorAggregation" },
+            "implementation": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Reference to deterministic evaluator implementation (e.g. evaluators.schema_validate)."
+            }
+          }
+        }
+      ]
+    },
+    "LlmRubricEvaluator": {
+      "allOf": [
+        { "$ref": "#/$defs/EvaluatorBase" },
+        {
+          "type": "object",
+          "required": ["rubric", "model"],
+          "additionalProperties": false,
+          "properties": {
+            "id": { "$ref": "#/$defs/EvaluatorId" },
+            "type": { "const": "llm_rubric" },
+            "runs_after": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "oneOf": [
+                  { "$ref": "#/$defs/WorkerId" },
+                  { "const": "*" }
+                ]
+              }
+            },
+            "aggregation": { "$ref": "#/$defs/EvaluatorAggregation" },
+            "rubric": { "$ref": "#/$defs/Rubric" },
+            "model": { "$ref": "#/$defs/Model" }
+          }
+        }
+      ]
+    },
+    "HumanEvaluator": {
+      "allOf": [
+        { "$ref": "#/$defs/EvaluatorBase" },
+        {
+          "type": "object",
+          "required": ["timeout_seconds"],
+          "additionalProperties": false,
+          "properties": {
+            "id": { "$ref": "#/$defs/EvaluatorId" },
+            "type": { "const": "human" },
+            "runs_after": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "oneOf": [
+                  { "$ref": "#/$defs/WorkerId" },
+                  { "const": "*" }
+                ]
+              }
+            },
+            "aggregation": { "$ref": "#/$defs/EvaluatorAggregation" },
+            "timeout_seconds": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "SLA for async human review in seconds."
+            },
+            "queue": {
+              "type": "string",
+              "minLength": 1
+            },
+            "instructions": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      ]
+    },
+    "Evaluator": {
+      "oneOf": [
+        { "$ref": "#/$defs/DeterministicEvaluator" },
+        { "$ref": "#/$defs/LlmRubricEvaluator" },
+        { "$ref": "#/$defs/HumanEvaluator" }
+      ]
+    },
+    "FeedbackSource": {
+      "type": "string",
+      "pattern": "^(evaluators|workers)\\.[a-z][a-z0-9_-]*$",
+      "description": "Source path: evaluators.{id} or workers.{id}."
+    },
+    "FeedbackDestination": {
+      "type": "string",
+      "pattern": "^(workers\\.[a-z][a-z0-9_-]*|optimization_strategy(\\.prompt_refinement|\\.parameter_search|\\.memory_update|\\.structural|\\.manual)?)$",
+      "description": "Destination path: workers.{id}, optimization_strategy, or optimization_strategy.{type}."
+    },
+    "FeedbackFormat": {
+      "type": "string",
+      "enum": ["structured", "template", "human_queue"]
+    },
+    "FeedbackField": {
+      "type": "string",
+      "enum": [
+        "failure_codes",
+        "dimension_scores",
+        "remediation_hints",
+        "passed",
+        "score",
+        "raw_output",
+        "summary"
+      ]
+    },
+    "FeedbackChannel": {
+      "type": "object",
+      "required": ["id", "source", "destination", "format"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_-]*$",
+          "minLength": 1
+        },
+        "source": { "$ref": "#/$defs/FeedbackSource" },
+        "destination": { "$ref": "#/$defs/FeedbackDestination" },
+        "format": { "$ref": "#/$defs/FeedbackFormat" },
+        "fields": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/FeedbackField" },
+          "uniqueItems": true
+        },
+        "max_tokens": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "when": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Optional condition expression governing when feedback is emitted."
+        },
+        "template_ref": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "OptimizationType": {
+      "type": "string",
+      "enum": [
+        "prompt_refinement",
+        "parameter_search",
+        "memory_update",
+        "structural",
+        "manual"
+      ]
+    },
+    "RollbackPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "on_metric_drop": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "on_safety_failure": {
+          "type": "boolean"
+        }
+      }
+    },
+    "OptimizationConfig": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "refinement_target": {
+          "type": "string",
+          "pattern": "^workers\\.[a-z][a-z0-9_-]*$"
+        },
+        "secondary_targets": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^workers\\.[a-z][a-z0-9_-]*$"
+          },
+          "uniqueItems": true
+        },
+        "preserve_sections": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "human_gate_on": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "search_space": {
+          "type": "object",
+          "additionalProperties": true
+        }
+      }
+    },
+    "OptimizationStrategy": {
+      "type": "object",
+      "required": ["type", "max_steps"],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "$ref": "#/$defs/OptimizationType" },
+        "max_steps": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "config": { "$ref": "#/$defs/OptimizationConfig" },
+        "rollback": { "$ref": "#/$defs/RollbackPolicy" }
+      }
+    },
+    "ComparisonOperator": {
+      "type": "string",
+      "enum": ["gte", "lte", "eq", "gt", "lt"]
+    },
+    "TerminationAction": {
+      "type": "string",
+      "enum": ["halt", "escalate_human", "retry_iteration"]
+    },
+    "SuccessCondition": {
+      "type": "object",
+      "required": ["metric", "operator", "value"],
+      "additionalProperties": false,
+      "properties": {
+        "metric": {
+          "type": "string",
+          "minLength": 1
+        },
+        "operator": { "$ref": "#/$defs/ComparisonOperator" },
+        "value": {
+          "type": "number"
+        },
+        "consecutive": {
+          "type": "integer",
+          "minimum": 1,
+          "default": 1
+        }
+      }
+    },
+    "FailureType": {
+      "type": "string",
+      "enum": [
+        "safety_violation",
+        "max_iterations",
+        "evaluator_error",
+        "cost_exceeded",
+        "human_rejected",
+        "timeout"
+      ]
+    },
+    "FailureCondition": {
+      "type": "object",
+      "required": ["type"],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "$ref": "#/$defs/FailureType" },
+        "action": { "$ref": "#/$defs/TerminationAction" },
+        "value": {
+          "type": "number",
+          "minimum": 1
+        },
+        "consecutive": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": { "type": { "const": "max_iterations" } },
+            "required": ["type"]
+          },
+          "then": { "required": ["value"] }
+        }
+      ]
+    },
+    "StallCondition": {
+      "type": "object",
+      "required": ["metric", "window_iterations", "min_improvement", "action"],
+      "additionalProperties": false,
+      "properties": {
+        "metric": {
+          "type": "string",
+          "minLength": 1
+        },
+        "window_iterations": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "min_improvement": {
+          "type": "number",
+          "minimum": 0
+        },
+        "action": { "$ref": "#/$defs/TerminationAction" }
+      }
+    },
+    "TerminationConditions": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "success": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/SuccessCondition" }
+        },
+        "failure": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/FailureCondition" }
+        },
+        "stall": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/StallCondition" }
+        }
+      },
+      "anyOf": [
+        {
+          "properties": { "success": { "minItems": 1 } },
+          "required": ["success"]
+        },
+        {
+          "properties": { "failure": { "minItems": 1 } },
+          "required": ["failure"]
+        },
+        {
+          "properties": { "stall": { "minItems": 1 } },
+          "required": ["stall"]
+        }
+      ]
+    },
+    "MetricUnit": {
+      "type": "string",
+      "enum": ["ratio", "count", "usd", "seconds", "tokens", "percent"]
+    },
+    "MetricSource": {
+      "type": "string",
+      "pattern": "^(evaluators\\.[a-z][a-z0-9_-]*|workers\\.[a-z][a-z0-9_-]*|telemetry\\.[a-z][a-z0-9_.-]*)$",
+      "description": "Metric provenance: evaluators.{id}, workers.{id}, or telemetry.{signal}."
+    },
+    "Metric": {
+      "type": "object",
+      "required": ["name", "definition", "source", "unit"],
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]*$",
+          "minLength": 1
+        },
+        "primary": {
+          "type": "boolean",
+          "default": false
+        },
+        "definition": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source": { "$ref": "#/$defs/MetricSource" },
+        "unit": { "$ref": "#/$defs/MetricUnit" },
+        "target": {
+          "type": "number"
+        },
+        "regression_threshold": {
+          "type": "number",
+          "minimum": 0
+        }
+      }
+    },
+    "SafetyScope": {
+      "type": "string",
+      "enum": [
+        "pre_worker",
+        "post_worker",
+        "pre_output",
+        "pre_memory_write",
+        "pre_evaluator"
+      ]
+    },
+    "SafetyAction": {
+      "type": "string",
+      "enum": ["halt", "quarantine", "escalate_human", "warn", "strip"]
+    },
+    "SafetySeverity": {
+      "type": "string",
+      "pattern": "^S[0-3]$"
+    },
+    "SafetyConstraintType": {
+      "type": "string",
+      "enum": [
+        "injection_detect",
+        "secret_scan",
+        "pii_detect",
+        "egress_monitor",
+        "tool_allowlist",
+        "schema_enforce",
+        "human_gate",
+        "tenant_isolation",
+        "output_bounds",
+        "rate_limit"
+      ]
+    },
+    "SafetyConstraint": {
+      "type": "object",
+      "required": ["id", "type", "scope", "action"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_-]*$",
+          "minLength": 1
+        },
+        "type": { "$ref": "#/$defs/SafetyConstraintType" },
+        "scope": { "$ref": "#/$defs/SafetyScope" },
+        "applies_to": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "oneOf": [
+              { "$ref": "#/$defs/WorkerId" },
+              { "const": "*" }
+            ]
+          },
+          "uniqueItems": true
+        },
+        "action": { "$ref": "#/$defs/SafetyAction" },
+        "severity": { "$ref": "#/$defs/SafetySeverity" },
+        "on_error": {
+          "type": "string",
+          "enum": ["halt", "warn", "quarantine"]
+        },
+        "config": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "rule": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "CostLimitApproachAction": {
+      "type": "string",
+      "enum": ["warn", "throttle", "halt"]
+    },
+    "CostLimitExceedAction": {
+      "type": "string",
+      "enum": ["halt", "warn", "throttle"]
+    },
+    "CostLimitApproach": {
+      "type": "object",
+      "required": ["threshold_percent", "action"],
+      "additionalProperties": false,
+      "properties": {
+        "threshold_percent": {
+          "type": "number",
+          "minimum": 1,
+          "maximum": 100
+        },
+        "action": { "$ref": "#/$defs/CostLimitApproachAction" }
+      }
+    },
+    "CostLimitExceed": {
+      "type": "object",
+      "required": ["action"],
+      "additionalProperties": false,
+      "properties": {
+        "action": { "$ref": "#/$defs/CostLimitExceedAction" }
+      }
+    },
+    "CostLimits": {
+      "type": "object",
+      "required": ["per_iteration_usd", "cumulative_usd", "on_exceed"],
+      "additionalProperties": false,
+      "properties": {
+        "per_iteration_usd": {
+          "type": "number",
+          "minimum": 0
+        },
+        "cumulative_usd": {
+          "type": "number",
+          "minimum": 0
+        },
+        "token_soft_cap": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "on_approach": { "$ref": "#/$defs/CostLimitApproach" },
+        "on_exceed": { "$ref": "#/$defs/CostLimitExceed" },
+        "price_table_ref": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  }
+}

@@ -79,4 +79,24 @@ obs = env.reset(record_id="ln-00042")
 
 ## Adoption
 
-Validated your harness? Post on the [reproduction challenge](https://github.com/KanakMalpani/Loop-Engineering/discussions/10) after [REPRODUCE.md](../contributions/REPRODUCE.md).
+Validated your harness? Post on the [reproduction challenge](https://github.com/KanakMalpani/Loop-Engineering/discussions/10) after [GOLDEN_PATH.md](../contributions/GOLDEN_PATH.md).
+
+---
+
+## Loop Trace 1.0
+
+On episode completion, LoopGym SHOULD emit a JSON trace matching [Loop Trace 1.0](../standards/LOOP-TRACE-1.0.md):
+
+| Field | Required |
+|-------|----------|
+| `trace_version` | `"1.0"` |
+| `loop_id`, `loop_name`, `started_at` | Yes |
+| `iterations[]` | Per-step worker/evaluator/cost records |
+
+Validate traces locally:
+
+```bash
+python -m loopctl trace validate path/to/trace.json
+```
+
+LoopBench observed LES dimensions MAY ingest trace files in future releases.

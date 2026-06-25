@@ -1,142 +1,156 @@
 loop_name: scientific-discovery-agent
 version: 1.0.0
+objective: 'Generate and evaluate hypotheses until supported model emerges or search exhausts. Achieve
+  primary_quality >= 0.75 within cost_limits with zero safety violations.
 
-objective: >
-  Generate and evaluate hypotheses until supported model emerges or search exhausts.
-  Achieve primary_quality >= 0.75 within cost_limits with zero safety violations.
-
+  '
 inputs:
   schema:
     task:
       type: string
-      description: "Primary task description or domain context"
+      description: Primary task description or domain context
       required: true
   examples:
-    - task: "Complete the declared objective for this loop profile."
-
+  - task: Complete the declared objective for this loop profile.
 memory:
   type: ephemeral
-
 workers:
-  - id: hypothesis_generator
-    role: "Propose competing hypotheses"
-    model:
-      provider: openai
-      name: gpt-4.1-mini
-      temperature: 0.2
-    inputs:
-      - from: inputs.task
-    outputs:
-      name: HypothesisGeneratorOutput
-      format: text
-    timeout_seconds: 120
-    retries: 1
-    cost_budget_usd: 0.30
-  - id: experiment_designer
-    role: "Pre-register experiment protocol"
-    model:
-      provider: openai
-      name: gpt-4.1-mini
-      temperature: 0.2
-    depends_on: [hypothesis_generator]
-    inputs:
-      - from: inputs.task
-    outputs:
-      name: ExperimentDesignerOutput
-      format: text
-    timeout_seconds: 120
-    retries: 1
-    cost_budget_usd: 0.30
-  - id: executor
-    role: "Run deterministic experiment code"
-    model:
-      provider: openai
-      name: gpt-4.1-mini
-      temperature: 0.2
-    depends_on: [experiment_designer]
-    inputs:
-      - from: inputs.task
-    outputs:
-      name: ExecutorOutput
-      format: text
-    timeout_seconds: 120
-    retries: 1
-    cost_budget_usd: 0.30
-  - id: analyst
-    role: "Statistical analysis and model selection"
-    model:
-      provider: openai
-      name: gpt-4.1-mini
-      temperature: 0.2
-    depends_on: [executor]
-    inputs:
-      - from: inputs.task
-    outputs:
-      name: AnalystOutput
-      format: text
-    timeout_seconds: 120
-    retries: 1
-    cost_budget_usd: 0.30
-
+- id: hypothesis_generator
+  role: Propose competing hypotheses
+  model:
+    provider: openai
+    name: gpt-4.1-mini
+    temperature: 0.2
+  inputs:
+  - from: inputs.task
+  outputs:
+    name: HypothesisGeneratorOutput
+    format: text
+  timeout_seconds: 120
+  retries: 1
+  cost_budget_usd: 0.3
+- id: experiment_designer
+  role: Pre-register experiment protocol
+  model:
+    provider: openai
+    name: gpt-4.1-mini
+    temperature: 0.2
+  depends_on:
+  - hypothesis_generator
+  inputs:
+  - from: inputs.task
+  outputs:
+    name: ExperimentDesignerOutput
+    format: text
+  timeout_seconds: 120
+  retries: 1
+  cost_budget_usd: 0.3
+- id: executor
+  role: Run deterministic experiment code
+  model:
+    provider: openai
+    name: gpt-4.1-mini
+    temperature: 0.2
+  depends_on:
+  - experiment_designer
+  inputs:
+  - from: inputs.task
+  outputs:
+    name: ExecutorOutput
+    format: text
+  timeout_seconds: 120
+  retries: 1
+  cost_budget_usd: 0.3
+- id: analyst
+  role: Statistical analysis and model selection
+  model:
+    provider: openai
+    name: gpt-4.1-mini
+    temperature: 0.2
+  depends_on:
+  - executor
+  inputs:
+  - from: inputs.task
+  outputs:
+    name: AnalystOutput
+    format: text
+  timeout_seconds: 120
+  retries: 1
+  cost_budget_usd: 0.3
 evaluators:
-  - id: significance_test
-    type: llm_rubric
-    runs_after: [hypothesis_generator, experiment_designer]
-    rubric:
-      dimensions:
-        - name: quality
-          weight: 1.0
-          scale: [0, 1]
-          criteria: "Statistical significance gate"
-      pass_threshold: 0.75
-    model:
-      provider: openai
-      name: gpt-4.1-mini
-      temperature: 0
-  - id: replication_check
-    type: llm_rubric
-    runs_after: [hypothesis_generator, experiment_designer]
-    rubric:
-      dimensions:
-        - name: quality
-          weight: 1.0
-          scale: [0, 1]
-          criteria: "Replication consistency"
-      pass_threshold: 0.75
-    model:
-      provider: openai
-      name: gpt-4.1-mini
-      temperature: 0
-  - id: hypothesis_diversity
-    type: llm_rubric
-    runs_after: [hypothesis_generator, experiment_designer]
-    rubric:
-      dimensions:
-        - name: quality
-          weight: 1.0
-          scale: [0, 1]
-          criteria: "Maintain competing hypotheses"
-      pass_threshold: 0.75
-    model:
-      provider: openai
-      name: gpt-4.1-mini
-      temperature: 0
-
+- id: significance_test
+  type: llm_rubric
+  runs_after:
+  - hypothesis_generator
+  - experiment_designer
+  rubric:
+    dimensions:
+    - name: quality
+      weight: 1.0
+      scale:
+      - 0
+      - 1
+      criteria: Statistical significance gate
+    pass_threshold: 0.75
+  model:
+    provider: openai
+    name: gpt-4.1-mini
+    temperature: 0
+- id: replication_check
+  type: llm_rubric
+  runs_after:
+  - hypothesis_generator
+  - experiment_designer
+  rubric:
+    dimensions:
+    - name: quality
+      weight: 1.0
+      scale:
+      - 0
+      - 1
+      criteria: Replication consistency
+    pass_threshold: 0.75
+  model:
+    provider: openai
+    name: gpt-4.1-mini
+    temperature: 0
+- id: hypothesis_diversity
+  type: llm_rubric
+  runs_after:
+  - hypothesis_generator
+  - experiment_designer
+  rubric:
+    dimensions:
+    - name: quality
+      weight: 1.0
+      scale:
+      - 0
+      - 1
+      criteria: Maintain competing hypotheses
+    pass_threshold: 0.75
+  model:
+    provider: openai
+    name: gpt-4.1-mini
+    temperature: 0
 feedback_channels:
-  - id: quality_to_analyst
-    source: evaluators.significance_test
-    destination: workers.analyst
-    format: structured
-    fields: [failure_codes, dimension_scores, remediation_hints]
-    max_tokens: 500
-    when: "score < pass_threshold"
-  - id: quality_to_optimizer
-    source: evaluators.significance_test
-    destination: optimization_strategy.prompt_refinement
-    format: structured
-    fields: [failure_codes, remediation_hints]
-    max_tokens: 200
-
+- id: quality_to_analyst
+  source: evaluators.significance_test
+  destination: workers.analyst
+  format: structured
+  fields:
+  - failure_codes
+  - dimension_scores
+  - remediation_hints
+  max_tokens: 500
+  when: score < pass_threshold
+- id: quality_to_optimizer
+  source: evaluators.significance_test
+  destination: optimization_strategy.prompt_refinement
+  format: structured
+  fields:
+  - failure_codes
+  - remediation_hints
+  max_tokens: 200
 optimization_strategy:
   type: prompt_refinement
   max_steps: 20
@@ -145,63 +159,63 @@ optimization_strategy:
   rollback:
     on_metric_drop: 0.05
     on_safety_failure: true
-
 termination_conditions:
   success:
-    - metric: primary_quality
-      operator: gte
-      value: 0.75
-      consecutive: 1
+  - metric: primary_quality
+    operator: gte
+    value: 0.75
+    consecutive: 1
   failure:
-    - type: safety_violation
-      action: halt
-    - type: max_iterations
-      value: 20
-      action: halt
+  - type: safety_violation
+    action: halt
+  - type: max_iterations
+    value: 20
+    action: halt
   stall:
-    - metric: primary_quality
-      window_iterations: 3
-      min_improvement: 0.03
-      action: halt
-
+  - metric: primary_quality
+    window_iterations: 3
+    min_improvement: 0.03
+    action: halt
 metrics:
-  - name: primary_quality
-    primary: true
-    definition: "Weighted score from primary evaluator rubric"
-    source: evaluators.significance_test
-    unit: ratio
-    target: 0.75
-    regression_threshold: 0.05
-  - name: cost_usd
-    definition: "Total API spend per loop run"
-    source: telemetry.cost
-    unit: usd
-    target: 4.00
-
+- name: primary_quality
+  primary: true
+  definition: Weighted score from primary evaluator rubric
+  source: evaluators.significance_test
+  unit: ratio
+  target: 0.75
+  regression_threshold: 0.05
+- name: cost_usd
+  definition: Total API spend per loop run
+  source: telemetry.cost
+  unit: usd
+  target: 4.0
 safety_constraints:
-  - id: injection-guard
-    type: injection_detect
-    scope: pre_worker
-    applies_to: [hypothesis_generator, experiment_designer, executor, analyst]
-    action: quarantine
-    severity: S1
-    on_error: halt
-    config:
-      max_risk_score: 0.7
-
+- id: injection-guard
+  type: injection_detect
+  scope: pre_worker
+  applies_to:
+  - hypothesis_generator
+  - experiment_designer
+  - executor
+  - analyst
+  action: quarantine
+  severity: S1
+  on_error: halt
+  config:
+    max_risk_score: 0.7
 cost_limits:
-  per_iteration_usd: 0.40
-  cumulative_usd: 8.00
+  per_iteration_usd: 0.4
+  cumulative_usd: 8.0
   token_soft_cap: 12000
   on_approach:
     threshold_percent: 80
     action: warn
   on_exceed:
     action: halt
-
 metadata:
   taxonomy_level: 4
   les_estimate: 71
   worker_count: 4
   evaluator_count: 3
-  enriched: "2026-06-17 architecture-aligned LSS 1.0"
+  enriched: 2026-06-17 architecture-aligned LSS 1.0
+  schema_version: '1.1'

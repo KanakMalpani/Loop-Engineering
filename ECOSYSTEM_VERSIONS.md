@@ -3,7 +3,7 @@
 Single source of truth for public version strings across the five-repo stack.  
 Update this file when any component releases; mirror changes in sibling repo READMEs.
 
-**Last updated:** 2026-06-24
+**Last updated:** 2026-06-25
 
 ---
 
@@ -14,6 +14,7 @@ Update this file when any component releases; mirror changes in sibling repo REA
 | LSS (Loop Specification Standard) | **1.0** + **1.1** composition | [lss-1.0.md](https://github.com/KanakMalpani/Loop-Core-Engineering/blob/main/specs/lss-1.0.md) · [lss-1.1.md](https://github.com/KanakMalpani/Loop-Core-Engineering/blob/main/specs/lss-1.1.md) |
 | Schema versioning policy | **1.0** | [schema-versioning.md](https://github.com/KanakMalpani/Loop-Core-Engineering/blob/main/specs/schema-versioning.md) |
 | LES (Loop Engineering Score) | **1.0** | [Loop-Core-Engineering/specs/les-1.0.md](https://github.com/KanakMalpani/Loop-Core-Engineering/blob/main/specs/les-1.0.md) |
+| Loop Trace | **1.0** | [standards/LOOP-TRACE-1.0.md](standards/LOOP-TRACE-1.0.md) |
 | Loop ID registry | **1.0** | [Loop-Core-Engineering/specs/loop-ids.md](https://github.com/KanakMalpani/Loop-Core-Engineering/blob/main/specs/loop-ids.md) |
 
 ---
@@ -32,6 +33,8 @@ Update this file when any component releases; mirror changes in sibling repo REA
 
 | Package | Version | Install | Repository |
 |---------|---------|---------|------------|
+| loopforge | **0.2.0** | `pip install "loopforge>=0.2.0"` | [Loop-Engineering/loopforge](loopforge/) |
+| loopctl | **0.1.0** | `pip install "loopctl>=0.1.0"` | [Loop-Engineering/loopctl](loopctl/) |
 | loopgym | **0.1.1** | `pip install "loopgym>=0.1.1"` | [LoopGym](https://github.com/KanakMalpani/LoopGym) |
 | loopbench | **0.1.1** | `pip install "loopbench>=0.1.1"` | [LoopBench](https://github.com/KanakMalpani/LoopBench) |
 

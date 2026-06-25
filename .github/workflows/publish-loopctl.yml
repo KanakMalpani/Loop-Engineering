@@ -1,0 +1,42 @@
+name: Publish loopctl to PyPI
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Sync schemas
+        run: |
+          mkdir -p loopctl/schemas
+          cp standards/schema/loop-trace-1.0.schema.json loopctl/schemas/
+
+      - name: Build loopforge first (dependency)
+        working-directory: loopforge
+        run: |
+          pip install build
+          python -m build
+          pip install dist/*.whl
+
+      - name: Build loopctl
+        working-directory: loopctl
+        run: |
+          pip install build
+          python -m build
+
+      - name: Publish loopctl
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: loopctl/dist/

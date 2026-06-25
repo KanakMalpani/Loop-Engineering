@@ -1,142 +1,156 @@
 loop_name: research-agent
 version: 1.0.0
+objective: 'Produce a sourced research brief with traceable citations and explicit uncertainty. Achieve
+  primary_quality >= 0.80 within cost_limits with zero safety violations.
 
-objective: >
-  Produce a sourced research brief with traceable citations and explicit uncertainty.
-  Achieve primary_quality >= 0.80 within cost_limits with zero safety violations.
-
+  '
 inputs:
   schema:
     task:
       type: string
-      description: "Primary task description or domain context"
+      description: Primary task description or domain context
       required: true
   examples:
-    - task: "Complete the declared objective for this loop profile."
-
+  - task: Complete the declared objective for this loop profile.
 memory:
   type: ephemeral
-
 workers:
-  - id: query_planner
-    role: "Decompose question into retrieval queries"
-    model:
-      provider: openai
-      name: gpt-4.1-mini
-      temperature: 0.2
-    inputs:
-      - from: inputs.task
-    outputs:
-      name: QueryPlannerOutput
-      format: text
-    timeout_seconds: 120
-    retries: 1
-    cost_budget_usd: 0.30
-  - id: retriever
-    role: "Fetch evidence from search and corpora"
-    model:
-      provider: openai
-      name: gpt-4.1-mini
-      temperature: 0.2
-    depends_on: [query_planner]
-    inputs:
-      - from: inputs.task
-    outputs:
-      name: RetrieverOutput
-      format: text
-    timeout_seconds: 120
-    retries: 1
-    cost_budget_usd: 0.30
-  - id: synthesizer
-    role: "Draft brief from retrieved evidence"
-    model:
-      provider: openai
-      name: gpt-4.1-mini
-      temperature: 0.2
-    depends_on: [retriever]
-    inputs:
-      - from: inputs.task
-    outputs:
-      name: SynthesizerOutput
-      format: text
-    timeout_seconds: 120
-    retries: 1
-    cost_budget_usd: 0.30
-  - id: critic
-    role: "Adversarial review triggering re-retrieval"
-    model:
-      provider: openai
-      name: gpt-4.1-mini
-      temperature: 0.2
-    depends_on: [synthesizer]
-    inputs:
-      - from: inputs.task
-    outputs:
-      name: CriticOutput
-      format: text
-    timeout_seconds: 120
-    retries: 1
-    cost_budget_usd: 0.30
-
+- id: query_planner
+  role: Decompose question into retrieval queries
+  model:
+    provider: openai
+    name: gpt-4.1-mini
+    temperature: 0.2
+  inputs:
+  - from: inputs.task
+  outputs:
+    name: QueryPlannerOutput
+    format: text
+  timeout_seconds: 120
+  retries: 1
+  cost_budget_usd: 0.3
+- id: retriever
+  role: Fetch evidence from search and corpora
+  model:
+    provider: openai
+    name: gpt-4.1-mini
+    temperature: 0.2
+  depends_on:
+  - query_planner
+  inputs:
+  - from: inputs.task
+  outputs:
+    name: RetrieverOutput
+    format: text
+  timeout_seconds: 120
+  retries: 1
+  cost_budget_usd: 0.3
+- id: synthesizer
+  role: Draft brief from retrieved evidence
+  model:
+    provider: openai
+    name: gpt-4.1-mini
+    temperature: 0.2
+  depends_on:
+  - retriever
+  inputs:
+  - from: inputs.task
+  outputs:
+    name: SynthesizerOutput
+    format: text
+  timeout_seconds: 120
+  retries: 1
+  cost_budget_usd: 0.3
+- id: critic
+  role: Adversarial review triggering re-retrieval
+  model:
+    provider: openai
+    name: gpt-4.1-mini
+    temperature: 0.2
+  depends_on:
+  - synthesizer
+  inputs:
+  - from: inputs.task
+  outputs:
+    name: CriticOutput
+    format: text
+  timeout_seconds: 120
+  retries: 1
+  cost_budget_usd: 0.3
 evaluators:
-  - id: citation_verifier
-    type: llm_rubric
-    runs_after: [query_planner, retriever]
-    rubric:
-      dimensions:
-        - name: quality
-          weight: 1.0
-          scale: [0, 1]
-          criteria: "Citation integrity oracle"
-      pass_threshold: 0.75
-    model:
-      provider: openai
-      name: gpt-4.1-mini
-      temperature: 0
-  - id: hallucination_scan
-    type: llm_rubric
-    runs_after: [query_planner, retriever]
-    rubric:
-      dimensions:
-        - name: quality
-          weight: 1.0
-          scale: [0, 1]
-          criteria: "Entailment alignment check"
-      pass_threshold: 0.75
-    model:
-      provider: openai
-      name: gpt-4.1-mini
-      temperature: 0
-  - id: coherence_rubric
-    type: llm_rubric
-    runs_after: [query_planner, retriever]
-    rubric:
-      dimensions:
-        - name: quality
-          weight: 1.0
-          scale: [0, 1]
-          criteria: "Rhetorical coherence rubric"
-      pass_threshold: 0.75
-    model:
-      provider: openai
-      name: gpt-4.1-mini
-      temperature: 0
-
+- id: citation_verifier
+  type: llm_rubric
+  runs_after:
+  - query_planner
+  - retriever
+  rubric:
+    dimensions:
+    - name: quality
+      weight: 1.0
+      scale:
+      - 0
+      - 1
+      criteria: Citation integrity oracle
+    pass_threshold: 0.75
+  model:
+    provider: openai
+    name: gpt-4.1-mini
+    temperature: 0
+- id: hallucination_scan
+  type: llm_rubric
+  runs_after:
+  - query_planner
+  - retriever
+  rubric:
+    dimensions:
+    - name: quality
+      weight: 1.0
+      scale:
+      - 0
+      - 1
+      criteria: Entailment alignment check
+    pass_threshold: 0.75
+  model:
+    provider: openai
+    name: gpt-4.1-mini
+    temperature: 0
+- id: coherence_rubric
+  type: llm_rubric
+  runs_after:
+  - query_planner
+  - retriever
+  rubric:
+    dimensions:
+    - name: quality
+      weight: 1.0
+      scale:
+      - 0
+      - 1
+      criteria: Rhetorical coherence rubric
+    pass_threshold: 0.75
+  model:
+    provider: openai
+    name: gpt-4.1-mini
+    temperature: 0
 feedback_channels:
-  - id: quality_to_critic
-    source: evaluators.citation_verifier
-    destination: workers.critic
-    format: structured
-    fields: [failure_codes, dimension_scores, remediation_hints]
-    max_tokens: 500
-    when: "score < pass_threshold"
-  - id: quality_to_optimizer
-    source: evaluators.citation_verifier
-    destination: optimization_strategy.prompt_refinement
-    format: structured
-    fields: [failure_codes, remediation_hints]
-    max_tokens: 200
-
+- id: quality_to_critic
+  source: evaluators.citation_verifier
+  destination: workers.critic
+  format: structured
+  fields:
+  - failure_codes
+  - dimension_scores
+  - remediation_hints
+  max_tokens: 500
+  when: score < pass_threshold
+- id: quality_to_optimizer
+  source: evaluators.citation_verifier
+  destination: optimization_strategy.prompt_refinement
+  format: structured
+  fields:
+  - failure_codes
+  - remediation_hints
+  max_tokens: 200
 optimization_strategy:
   type: prompt_refinement
   max_steps: 10
@@ -145,63 +159,63 @@ optimization_strategy:
   rollback:
     on_metric_drop: 0.05
     on_safety_failure: true
-
 termination_conditions:
   success:
-    - metric: primary_quality
-      operator: gte
-      value: 0.80
-      consecutive: 1
+  - metric: primary_quality
+    operator: gte
+    value: 0.8
+    consecutive: 1
   failure:
-    - type: safety_violation
-      action: halt
-    - type: max_iterations
-      value: 10
-      action: halt
+  - type: safety_violation
+    action: halt
+  - type: max_iterations
+    value: 10
+    action: halt
   stall:
-    - metric: primary_quality
-      window_iterations: 3
-      min_improvement: 0.03
-      action: halt
-
+  - metric: primary_quality
+    window_iterations: 3
+    min_improvement: 0.03
+    action: halt
 metrics:
-  - name: primary_quality
-    primary: true
-    definition: "Weighted score from primary evaluator rubric"
-    source: evaluators.citation_verifier
-    unit: ratio
-    target: 0.80
-    regression_threshold: 0.05
-  - name: cost_usd
-    definition: "Total API spend per loop run"
-    source: telemetry.cost
-    unit: usd
-    target: 1.25
-
+- name: primary_quality
+  primary: true
+  definition: Weighted score from primary evaluator rubric
+  source: evaluators.citation_verifier
+  unit: ratio
+  target: 0.8
+  regression_threshold: 0.05
+- name: cost_usd
+  definition: Total API spend per loop run
+  source: telemetry.cost
+  unit: usd
+  target: 1.25
 safety_constraints:
-  - id: injection-guard
-    type: injection_detect
-    scope: pre_worker
-    applies_to: [query_planner, retriever, synthesizer, critic]
-    action: quarantine
-    severity: S1
-    on_error: halt
-    config:
-      max_risk_score: 0.7
-
+- id: injection-guard
+  type: injection_detect
+  scope: pre_worker
+  applies_to:
+  - query_planner
+  - retriever
+  - synthesizer
+  - critic
+  action: quarantine
+  severity: S1
+  on_error: halt
+  config:
+    max_risk_score: 0.7
 cost_limits:
   per_iteration_usd: 0.25
-  cumulative_usd: 2.50
+  cumulative_usd: 2.5
   token_soft_cap: 12000
   on_approach:
     threshold_percent: 80
     action: warn
   on_exceed:
     action: halt
-
 metadata:
   taxonomy_level: 2
   les_estimate: 78
   worker_count: 4
   evaluator_count: 3
-  enriched: "2026-06-17 architecture-aligned LSS 1.0"
+  enriched: 2026-06-17 architecture-aligned LSS 1.0
+  schema_version: '1.1'

@@ -1,0 +1,121 @@
+{
+  "version": "0.1",
+  "problem": "LE-OP-15",
+  "n_intents": 10,
+  "pattern_accuracy": 0.9,
+  "validation_pass_rate": 1.0,
+  "meets_v03_pattern_target": true,
+  "meets_v03_valid_target": true,
+  "results": [
+    {
+      "id": "int-001",
+      "expected_pattern": "verification",
+      "predicted_pattern": "verification",
+      "pattern_match": true,
+      "valid_lss": true,
+      "method": "fork",
+      "fork_source": "autonomous-debugger",
+      "loop_name": "fix-failing-unit-tests",
+      "errors": []
+    },
+    {
+      "id": "int-002",
+      "expected_pattern": "research",
+      "predicted_pattern": "research",
+      "pattern_match": true,
+      "valid_lss": true,
+      "method": "fork",
+      "fork_source": "research-agent",
+      "loop_name": "produce-a-sourced-research",
+      "errors": []
+    },
+    {
+      "id": "int-003",
+      "expected_pattern": "simple",
+      "predicted_pattern": "reflection",
+      "pattern_match": false,
+      "valid_lss": true,
+      "method": "scaffold",
+      "fork_source": null,
+      "loop_name": "summarize-user-feedback-into",
+      "errors": []
+    },
+    {
+      "id": "int-004",
+      "expected_pattern": "reflection",
+      "predicted_pattern": "reflection",
+      "pattern_match": true,
+      "valid_lss": true,
+      "method": "scaffold",
+      "fork_source": null,
+      "loop_name": "draft-and-critique-a",
+      "errors": []
+    },
+    {
+      "id": "int-005",
+      "expected_pattern": "verification",
+      "predicted_pattern": "verification",
+      "pattern_match": true,
+      "valid_lss": true,
+      "method": "fork",
+      "fork_source": "autonomous-debugger",
+      "loop_name": "implement-a-new-api",
+      "errors": []
+    },
+    {
+      "id": "int-006",
+      "expected_pattern": "research",
+      "predicted_pattern": "research",
+      "pattern_match": true,
+      "valid_lss": true,
+      "method": "fork",
+      "fork_source": "research-agent",
+      "loop_name": "gather-literature-on-loop",
+      "errors": []
+    },
+    {
+      "id": "int-007",
+      "expected_pattern": "reflection",
+      "predicted_pattern": "reflection",
+      "pattern_match": true,
+      "valid_lss": true,
+      "method": "scaffold",
+      "fork_source": null,
+      "loop_name": "reflect-on-code-quality",
+      "errors": []
+    },
+    {
+      "id": "int-008",
+      "expected_pattern": "verification",
+      "predicted_pattern": "verification",
+      "pattern_match": true,
+      "valid_lss": true,
+      "method": "fork",
+      "fork_source": "autonomous-debugger",
+      "loop_name": "debug-production-error-from",
+      "errors": []
+    },
+    {
+      "id": "int-009",
+      "expected_pattern": "simple",
+      "predicted_pattern": "simple",
+      "pattern_match": true,
+      "valid_lss": true,
+      "method": "scaffold",
+      "fork_source": null,
+      "loop_name": "write-a-concise-executive",
+      "errors": []
+    },
+    {
+      "id": "int-010",
+      "expected_pattern": "research",
+      "predicted_pattern": "research",
+      "pattern_match": true,
+      "valid_lss": true,
+      "method": "fork",
+      "fork_source": "research-agent",
+      "loop_name": "research-competitor-pricing-and",
+      "errors": []
+    }
+  ]
+}

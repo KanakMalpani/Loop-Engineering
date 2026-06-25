@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://loop-engineering.org/schema/loop-trace-1.0.schema.json",
+  "title": "Loop Trace 1.0",
+  "description": "Standard JSON trace format for loop run observability — iterations, worker outputs, evaluator scores, cost, termination.",
+  "type": "object",
+  "required": ["trace_version", "loop_id", "loop_name", "started_at", "iterations"],
+  "properties": {
+    "trace_version": { "type": "string", "const": "1.0" },
+    "loop_id": { "type": "string", "minLength": 1 },
+    "loop_name": { "type": "string", "minLength": 1 },
+    "spec_path": { "type": "string" },
+    "started_at": { "type": "string", "format": "date-time" },
+    "ended_at": { "type": "string", "format": "date-time" },
+    "success": { "type": "boolean" },
+    "termination_reason": { "type": "string" },
+    "total_cost_usd": { "type": "number", "minimum": 0 },
+    "iterations": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/IterationRecord" }
+    },
+    "metadata": { "type": "object", "additionalProperties": true }
+  },
+  "additionalProperties": true,
+  "$defs": {
+    "IterationRecord": {
+      "type": "object",
+      "required": ["iteration", "timestamp"],
+      "properties": {
+        "iteration": { "type": "integer", "minimum": 0 },
+        "timestamp": { "type": "string", "format": "date-time" },
+        "worker_id": { "type": "string" },
+        "worker_output": { "type": "string" },
+        "evaluator_scores": {
+          "type": "object",
+          "additionalProperties": { "type": "number" }
+        },
+        "cost_usd": { "type": "number", "minimum": 0 },
+        "feedback": { "type": "array", "items": { "type": "string" } }
+      },
+      "additionalProperties": true
+    }
+  }
+}

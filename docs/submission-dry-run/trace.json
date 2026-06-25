@@ -1,0 +1,42 @@
+{
+  "trace_version": "1.0",
+  "loop_id": "336a3198-07d9-4d76-ae38-06584245559d",
+  "loop_name": "runtime-minimal-loop",
+  "spec_path": "examples\\specs\\runtime-minimal.yaml",
+  "started_at": "2026-06-25T06:19:42Z",
+  "ended_at": "2026-06-25T06:19:42Z",
+  "success": true,
+  "termination_reason": "quality_threshold (0.99 >= 0.8)",
+  "total_cost_usd": 0.0005,
+  "iterations": [
+    {
+      "iteration": 0,
+      "timestamp": "2026-06-25T06:19:42Z",
+      "worker_id": "worker",
+      "worker_output": "Revised output for role=worker: Structured answer addressing: 'Revise output based on feedback:\\n\\nPrevious output:\\n'... [quality_boost=0.51]",
+      "evaluator_scores": {
+        "quality": 0.7200000000000001
+      },
+      "cost_usd": 0.0002,
+      "feedback": [
+        "Evaluation score: 0.55. FAIL. Notes: Needs clearer structure and evidence."
+      ]
+    },
+    {
+      "iteration": 1,
+      "timestamp": "2026-06-25T06:19:42Z",
+      "worker_id": "worker",
+      "worker_output": "Revised output for role=worker: Structured answer addressing: 'Revise output based on feedback:\\nEvaluation score: 0.55. FAIL. Notes: Needs clea'... [quality_boost=0.36]",
+      "evaluator_scores": {
+        "quality": 0.99
+      },
+      "cost_usd": 0.0002,
+      "feedback": [
+        "Evaluation score: 0.82. PASS. Notes: Meets rubric criteria."
+      ]
+    }
+  ],
+  "metadata": {
+    "runtime": "generic/loop_runtime"
+  }
+}

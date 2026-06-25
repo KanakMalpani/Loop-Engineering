@@ -124,6 +124,11 @@ def main() -> int:
         ),
         ("adoption_links", [py, "scripts/check_adoption_links.py"]),
         ("evaluator_composition", [py, "scripts/run_evaluator_composition_demo.py"]),
+        ("loopforge_scaffold", [py, "-m", "loopforge", "demo"]),
+        ("loopctl_validate", [py, "-m", "loopctl", "validate", "loop-library/research-agent.yaml"]),
+        ("loop_trace_validate", [py, "-m", "loopctl", "trace", "validate", "standards/examples/minimal-trace.json"]),
+        ("intent_benchmark", [py, "scripts/run_intent_benchmark.py"]),
+        ("observed_les_smoke", [py, "tools/observed_les.py", "standards/examples/minimal-trace.json", "--json"]),
     ]
 
     results: list[tuple[str, bool, str]] = []

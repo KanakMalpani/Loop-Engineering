@@ -6,7 +6,25 @@
 
 ---
 
-## v0.1 → v0.2 (June 2026)
+## v0.3 draft (Phase 6 — June 2026)
+
+| Change | v0.2 | v0.3 (draft) |
+|--------|------|--------------|
+| Trace import | Manual | `scripts/loopnet_export_trace.py` from Loop Trace 1.0 |
+| Source field | — | `metadata.source: loop-trace-1.0` |
+| Success flag | Inferred | `metadata.success` from trace |
+| Contributor path | HF PR | Trace JSON → row JSON → loopnet PR |
+
+Export locally:
+
+```bash
+python scripts/generate_trace_demo.py
+python scripts/loopnet_export_trace.py docs/submission-dry-run/trace.json -o row.json
+```
+
+See [LOOP-TRACE-1.0.md](../standards/LOOP-TRACE-1.0.md).
+
+---
 
 | Change | v0.1 | v0.2 |
 |--------|------|------|

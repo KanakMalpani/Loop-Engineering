@@ -1,0 +1,67 @@
+{
+  "version": "0.1",
+  "problem": "LE-OP-15",
+  "description": "Benchmark intents for loopforge intent compiler v0.3",
+  "intents": [
+    {
+      "id": "int-001",
+      "text": "Fix failing unit tests from CI logs with minimal code changes",
+      "expected_pattern": "verification",
+      "reference_fork": "autonomous-debugger"
+    },
+    {
+      "id": "int-002",
+      "text": "Produce a sourced research brief on transformer efficiency with citations",
+      "expected_pattern": "research",
+      "reference_fork": "research-agent"
+    },
+    {
+      "id": "int-003",
+      "text": "Summarize user feedback into actionable product themes",
+      "expected_pattern": "simple",
+      "reference_fork": null
+    },
+    {
+      "id": "int-004",
+      "text": "Draft and critique a blog post before publishing",
+      "expected_pattern": "reflection",
+      "reference_fork": null
+    },
+    {
+      "id": "int-005",
+      "text": "Implement a new API endpoint and verify with integration tests",
+      "expected_pattern": "verification",
+      "reference_fork": "coding-agent"
+    },
+    {
+      "id": "int-006",
+      "text": "Gather literature on loop engineering and synthesize key findings",
+      "expected_pattern": "research",
+      "reference_fork": "research-agent"
+    },
+    {
+      "id": "int-007",
+      "text": "Reflect on code quality and revise until rubric passes",
+      "expected_pattern": "reflection",
+      "reference_fork": "coding-agent"
+    },
+    {
+      "id": "int-008",
+      "text": "Debug production error from stack trace and validate fix",
+      "expected_pattern": "verification",
+      "reference_fork": "autonomous-debugger"
+    },
+    {
+      "id": "int-009",
+      "text": "Write a concise executive summary of quarterly metrics",
+      "expected_pattern": "simple",
+      "reference_fork": null
+    },
+    {
+      "id": "int-010",
+      "text": "Research competitor pricing and draft strategy recommendations",
+      "expected_pattern": "research",
+      "reference_fork": "research-agent"
+    }
+  ]
+}

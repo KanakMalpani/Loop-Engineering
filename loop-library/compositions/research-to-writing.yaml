@@ -1,63 +1,63 @@
 loop_name: research-to-writing
 version: 1.0.0
+objective: 'Synthesize research into a publication-ready document via sequential research then writing
+  loops. Achieve composite_quality >= 0.84 within cost_limits.
 
-objective: >
-  Synthesize research into a publication-ready document via sequential research then writing loops.
-  Achieve composite_quality >= 0.84 within cost_limits.
-
+  '
 inputs:
   schema:
     task:
       type: string
-      description: "Top-level task for the composed pipeline"
+      description: Top-level task for the composed pipeline
       required: true
   examples:
-    - task: "Run the composed loop pipeline on this objective."
-
+  - task: Run the composed loop pipeline on this objective.
 memory:
   type: ephemeral
-
 workers:
-  - id: orchestrator
-    role: "Route work across composed child loops and merge stage outputs"
-    model:
-      provider: openai
-      name: gpt-4.1-mini
-      temperature: 0.2
-    inputs:
-      - from: inputs.task
-    outputs:
-      name: OrchestratorOutput
-      format: text
-    timeout_seconds: 180
-    retries: 1
-    cost_budget_usd: 0.50
-
+- id: orchestrator
+  role: Route work across composed child loops and merge stage outputs
+  model:
+    provider: openai
+    name: gpt-4.1-mini
+    temperature: 0.2
+  inputs:
+  - from: inputs.task
+  outputs:
+    name: OrchestratorOutput
+    format: text
+  timeout_seconds: 180
+  retries: 1
+  cost_budget_usd: 0.5
 evaluators:
-  - id: composite_gate
-    type: llm_rubric
-    runs_after: [orchestrator]
-    rubric:
-      dimensions:
-        - name: pipeline_quality
-          weight: 1.0
-          scale: [0, 1]
-          criteria: "All child loop stages met their pass thresholds"
-      pass_threshold: 0.84
-    model:
-      provider: openai
-      name: gpt-4.1-mini
-      temperature: 0
-
+- id: composite_gate
+  type: llm_rubric
+  runs_after:
+  - orchestrator
+  rubric:
+    dimensions:
+    - name: pipeline_quality
+      weight: 1.0
+      scale:
+      - 0
+      - 1
+      criteria: All child loop stages met their pass thresholds
+    pass_threshold: 0.84
+  model:
+    provider: openai
+    name: gpt-4.1-mini
+    temperature: 0
 feedback_channels:
-  - id: composite_to_orchestrator
-    source: evaluators.composite_gate
-    destination: workers.orchestrator
-    format: structured
-    fields: [failure_codes, dimension_scores, remediation_hints]
-    max_tokens: 600
-    when: "score < pass_threshold"
-
+- id: composite_to_orchestrator
+  source: evaluators.composite_gate
+  destination: workers.orchestrator
+  format: structured
+  fields:
+  - failure_codes
+  - dimension_scores
+  - remediation_hints
+  max_tokens: 600
+  when: score < pass_threshold
 optimization_strategy:
   type: prompt_refinement
   max_steps: 15
@@ -66,65 +66,62 @@ optimization_strategy:
   rollback:
     on_metric_drop: 0.05
     on_safety_failure: true
-
 termination_conditions:
   success:
-    - metric: composite_quality
-      operator: gte
-      value: 0.84
-      consecutive: 1
+  - metric: composite_quality
+    operator: gte
+    value: 0.84
+    consecutive: 1
   failure:
-    - type: safety_violation
-      action: halt
-    - type: max_iterations
-      value: 15
-      action: halt
-
+  - type: safety_violation
+    action: halt
+  - type: max_iterations
+    value: 15
+    action: halt
 metrics:
-  - name: composite_quality
-    primary: true
-    definition: "Product of child stage quality scores"
-    source: evaluators.composite_gate
-    unit: ratio
-    target: 0.84
-  - name: cost_usd
-    definition: "Cumulative spend across all child loops"
-    source: telemetry.cost
-    unit: usd
-    target: 3.60
-
+- name: composite_quality
+  primary: true
+  definition: Product of child stage quality scores
+  source: evaluators.composite_gate
+  unit: ratio
+  target: 0.84
+- name: cost_usd
+  definition: Cumulative spend across all child loops
+  source: telemetry.cost
+  unit: usd
+  target: 3.6
 safety_constraints:
-  - id: composition-guard
-    type: injection_detect
-    scope: pre_worker
-    applies_to: [orchestrator]
-    action: quarantine
-    severity: S1
-    on_error: halt
-
+- id: composition-guard
+  type: injection_detect
+  scope: pre_worker
+  applies_to:
+  - orchestrator
+  action: quarantine
+  severity: S1
+  on_error: halt
 cost_limits:
-  per_iteration_usd: 0.40
-  cumulative_usd: 6.00
+  per_iteration_usd: 0.4
+  cumulative_usd: 6.0
   token_soft_cap: 20000
   on_exceed:
     action: halt
-
 composition:
   type: sequential
   children:
-    - id: research
-      ref: ../research-agent.yaml
-      role: stage
-    - id: writing
-      ref: ../writing-assistant.yaml
-      role: stage
+  - id: research
+    ref: ../research-agent.yaml
+    role: stage
+  - id: writing
+    ref: ../writing-assistant.yaml
+    role: stage
   adapters:
-    - from: children.research.outputs.synthesizer
-      to: children.writing.inputs.task
-
+  - from: children.research.outputs.synthesizer
+    to: children.writing.inputs.task
 metadata:
   taxonomy_level: 3
   les_estimate: 81
   composition_type: sequential
-  child_loops: ['research', 'writing']
-  lss_extension: "1.1-composition-draft"
+  child_loops:
+  - research
+  - writing
+  schema_version: '1.1'

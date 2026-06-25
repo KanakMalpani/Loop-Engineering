@@ -14,6 +14,34 @@ This checklist satisfies the 2026 roadmap exit criterion: an external team can f
 - Git
 - Internet access (pip, Hugging Face optional for Step 6)
 
+**Fast path:** [GOLDEN_PATH.md](GOLDEN_PATH.md) — LoopForge-first onboarding (~1 hour).
+
+---
+
+## Step 0 — Scaffold a loop with LoopForge (10 min)
+
+Before hand-editing YAML, generate a schema-valid skeleton:
+
+```bash
+pip install -r loopforge/requirements.txt
+
+python -m loopforge list-patterns
+
+python -m loopforge new \
+  --pattern reflection \
+  --name my-repro-loop \
+  --objective "Demonstrate Loop Engineering reproduction path" \
+  --output loop-library/my-repro-loop.yaml
+```
+
+Or fork an existing template:
+
+```bash
+python -m loopforge fork --from research-agent --name my-research --output loop-library/my-research.yaml
+```
+
+See [LOOP_FORGE.md](../All%20about%20loops/LOOP_FORGE.md) and [GOLDEN_PATH.md](GOLDEN_PATH.md).
+
 ---
 
 ## Step 1 — Clone repositories (5 min)
@@ -34,7 +62,8 @@ python -m venv .venv
 # Unix:    source .venv/bin/activate
 
 pip install pyyaml jsonschema
-pip install loopgym loopbench   # optional but recommended for Steps 5–6
+pip install -r loopforge/requirements.txt
+pip install loopgym loopbench loopforge   # optional but recommended for Steps 5–6
 ```
 
 Record installed versions:

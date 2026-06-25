@@ -80,3 +80,31 @@ Tracked daily: [docs/adoption-tracker/latest.md](../docs/adoption-tracker/latest
 | LE-OP-21 v0.2 | [le-op-21-harness-compare-v0.2.json](../benchmarks/results/le-op-21-harness-compare-v0.2.json) |
 | Pareto LES tool | [loop_comparison.py --pareto](../tools/loop_comparison.py) |
 | Level warn CI | `validate_loop_library --warn-level` in daily checkin |
+
+## Phase 5 completed (maintainer)
+
+| Item | Artifact |
+|------|----------|
+| Golden Path onboarding | [GOLDEN_PATH.md](../contributions/GOLDEN_PATH.md) |
+| LoopForge v0.2 | [loopforge/](../loopforge/) — fork, compose, export, level hints |
+| LoopForge PyPI layout | [loopforge/pyproject.toml](../loopforge/pyproject.toml) · publish workflow |
+| loopctl CLI | [tools/loopctl.py](../tools/loopctl.py) |
+| LSS 1.1 metadata | `metadata.schema_version: "1.1"` on all loop-library specs |
+| Loop Trace 1.0 | [LOOP-TRACE-1.0.md](../standards/LOOP-TRACE-1.0.md) |
+| Practitioner curriculum | [education/practitioner/](../education/practitioner/README.md) |
+| Adoption wave 5 | [adoption_wave5.py](../scripts/adoption_wave5.py) · [BEAT_TEMPLATE.md](../contributions/BEAT_TEMPLATE.md) |
+
+## Phase 6 completed (maintainer)
+
+| Item | Artifact |
+|------|----------|
+| loopctl package | [loopctl/](../loopctl/) · PyPI publish workflow |
+| Loop Trace emitter | [trace_emitter.py](../implementations/generic/trace_emitter.py) |
+| Observed LES | [observed_les.py](../tools/observed_les.py) · `loopctl observed` |
+| LoopForge intent (LE-OP-15) | [intent.py](../loopforge/intent.py) · [intent-to-lss benchmark](../benchmarks/intent-to-lss/) |
+| LE-OP-10 composition warnings | [composition_validator.py](../tools/composition_validator.py) |
+| Adoption wave 6 | [adoption_wave6.py](../scripts/adoption_wave6.py) |
+| Submission dry-run | [docs/submission-dry-run/](../docs/submission-dry-run/) |
+| LoopNet v0.3 prep | [loopnet_export_trace.py](../scripts/loopnet_export_trace.py) |
+| Practitioner exam | [exam-v0.1.md](../education/practitioner/exam-v0.1.md) |
+| Q3 status report | [STATUS-2026-Q3.md](../contributions/STATUS-2026-Q3.md) |
