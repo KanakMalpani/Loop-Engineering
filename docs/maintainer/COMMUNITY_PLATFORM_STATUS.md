@@ -62,7 +62,7 @@ Related: [LOOP_PLAYGROUND.md](../../contributions/LOOP_PLAYGROUND.md) · [ADOPTI
 
 | Item | Owner | Notes |
 |------|-------|-------|
-| First external LoopBench row | Community | [#4](https://github.com/KanakMalpani/Loop-Engineering/issues/4) |
+| First external LoopBench row | Community | [#4](https://github.com/KanakMalpani/Loop-Engineering/issues/4) · outreach wave 11 sent 2026-06-25 |
 
 ---
 
@@ -106,6 +106,7 @@ _Append-only. CI adds lines when leaderboard or adoption signals change (max 1 p
 <!-- AUTOMATION-LOG:START -->
 - 2026-06-25 UTC: Platform shipped — LoopBench LIVE.md live, ops dashboard [#13](https://github.com/KanakMalpani/Loop-Engineering/issues/13) populated.
 - 2026-06-25 14:39 UTC: digest changed; external=none
+- 2026-06-25 UTC: Adoption wave 11 — invited [Agentless #86](https://github.com/OpenAutoCoder/Agentless/issues/86), [Aider #5328](https://github.com/Aider-AI/aider/issues/5328), [OpenHands #14984](https://github.com/OpenHands/OpenHands/issues/14984) for first external LoopBench row.
 <!-- AUTOMATION-LOG:END -->
 
 ---

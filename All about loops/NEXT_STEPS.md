@@ -28,7 +28,7 @@ Tracked daily: [docs/adoption-tracker/latest.md](../docs/adoption-tracker/latest
 
 | Item | Entry |
 |------|-------|
-| Non-maintainer LoopBench row | [LOOP_PLAYGROUND.md](../contributions/LOOP_PLAYGROUND.md) · [BEAT_LB-CR-1.md](../contributions/BEAT_LB-CR-1.md) · [#4](https://github.com/KanakMalpani/Loop-Engineering/issues/4) |
+| Non-maintainer LoopBench row | [LOOP_PLAYGROUND.md](../contributions/LOOP_PLAYGROUND.md) · [BEAT_LB-CR-1.md](../contributions/BEAT_LB-CR-1.md) · [#4](https://github.com/KanakMalpani/Loop-Engineering/issues/4) · wave 11 outreach |
 | External reproduction | [EXTERNAL_SUBMISSIONS.md](../contributions/EXTERNAL_SUBMISSIONS.md) · [#10](https://github.com/KanakMalpani/Loop-Engineering/discussions/10) |
 | External case study | [EXTERNAL_SUBMISSIONS.md](../contributions/EXTERNAL_SUBMISSIONS.md) · [#7](https://github.com/KanakMalpani/Loop-Engineering/issues/7) |
 | RFC #11 framework comments | LangGraph [#8186](https://github.com/langchain-ai/langgraph/issues/8186) · CrewAI [#6316](https://github.com/crewAIInc/crewAI/issues/6316) · [#11](https://github.com/KanakMalpani/Loop-Engineering/discussions/11) |
