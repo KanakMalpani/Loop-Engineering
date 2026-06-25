@@ -2,7 +2,7 @@
 
 **Single entry point:** declare a loop, score it, run a benchmark, submit for recognition.
 
-**North star:** [NORTH_STAR.md](./NORTH_STAR.md) · **Live rankings:** [LoopBench leaderboard](https://github.com/KanakMalpani/LoopBench) · **Status:** [COMMUNITY_PLATFORM_STATUS.md](../docs/maintainer/COMMUNITY_PLATFORM_STATUS.md)
+**North star:** [NORTH_STAR.md](./NORTH_STAR.md) · **Live rankings:** [LoopBench leaderboard](https://kanakmalpani.github.io/LoopBench/) · **Status:** [COMMUNITY_PLATFORM_STATUS.md](../docs/maintainer/COMMUNITY_PLATFORM_STATUS.md)
 
 ---
 

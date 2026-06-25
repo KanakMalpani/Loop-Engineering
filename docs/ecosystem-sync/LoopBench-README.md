@@ -25,7 +25,7 @@ loopbench list
 
 <br>
 
-[**Run your first score**](#score-in-2-minutes) · [**Loop Playground**](https://github.com/KanakMalpani/Loop-Engineering/blob/main/contributions/LOOP_PLAYGROUND.md) · [**Leaderboard**](leaderboard/LIVE.md) · [**Suite overview**](SUITE-OVERVIEW.md)
+[**Run your first score**](#score-in-2-minutes) · [**Live leaderboard**](https://kanakmalpani.github.io/LoopBench/) · [**Loop Playground**](https://github.com/KanakMalpani/Loop-Engineering/blob/main/contributions/LOOP_PLAYGROUND.md) · [**Leaderboard JSON**](leaderboard/entries.json) · [**Suite overview**](SUITE-OVERVIEW.md)
 
 <br>
 
