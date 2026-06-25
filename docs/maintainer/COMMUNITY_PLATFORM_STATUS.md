@@ -105,6 +105,7 @@ _Append-only. CI adds lines when leaderboard or adoption signals change (max 1 p
 
 <!-- AUTOMATION-LOG:START -->
 - 2026-06-25 UTC: Platform shipped — LoopBench LIVE.md live, ops dashboard [#13](https://github.com/KanakMalpani/Loop-Engineering/issues/13) populated.
+- 2026-06-25 14:39 UTC: digest changed; external=none
 <!-- AUTOMATION-LOG:END -->
 
 ---
