@@ -136,7 +136,7 @@ Tracked daily: [docs/adoption-tracker/latest.md](../docs/adoption-tracker/latest
 | STATUS Q4 | [STATUS-2026-Q4.md](../contributions/STATUS-2026-Q4.md) |
 | External LoopBench template | [external-template-row.json](../docs/submission-dry-run/external-template-row.json) |
 | Trace reproduction template | [TEMPLATE-trace-native.md](../docs/reproduction-reports/TEMPLATE-trace-native.md) |
-| LoopNet v0.3 schema | [docs/loopnet/schema/record-v0.3.json](../docs/loopnet/schema/record-v0.3.json) · [loopnet PR branch](https://github.com/KanakMalpani/loopnet/tree/phase-9-loopnet-v03) |
+| LoopNet v0.3 schema | Merged [loopnet PR #1](https://github.com/KanakMalpani/loopnet/pull/1) |
 | Intent v0.5 composition | [intent.py](../loopforge/intent.py) · [results-v0.5.json](../benchmarks/intent-to-lss/results-v0.5.json) (40 intents) |
 | LE-OP-10 counterexamples | [composition-counterexamples/](../standards/examples/composition-counterexamples/) |
 | LE-OP-04 v0.2 | [results-v0.2.json](../benchmarks/evaluator-composition/results-v0.2.json) |
