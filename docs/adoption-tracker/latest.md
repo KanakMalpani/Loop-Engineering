@@ -1,21 +1,22 @@
 # Adoption tracker — 2026-06-25 UTC
 
-**Summary:** 6 green · 9 yellow · 0 red
+**Summary:** 9 green · 7 yellow · 0 red
 
 Automated by `scripts/track_adoption_signals.py` (daily with [daily-checkin.yml](../.github/workflows/daily-checkin.yml)).
 
 | Signal | Status | Detail |
 |--------|--------|--------|
 | Non-maintainer LoopBench row [external_loopbench](https://github.com/KanakMalpani/Loop-Engineering/issues/4) | **YELLOW** | No external rows yet (6 entries: Loop Engineering maintainer, Loop Engineering maintainer (MA-1), Te |
-| Reproduction challenge — external report [discussion_10](https://github.com/KanakMalpani/Loop-Engineering/discussions/10) | **YELLOW** | No external comments yet (7 maintainer/bot comment(s)) |
+| Community platform v1 (playground + digest) [community_platform_v1](https://github.com/KanakMalpani/Loop-Engineering/blob/main/docs/maintainer/COMMUNITY_PLATFORM_STATUS.md) | **GREEN** | Playground + digest workflow + LoopBench LIVE.md live |
+| Reproduction challenge — external report [discussion_10](https://github.com/KanakMalpani/Loop-Engineering/discussions/10) | **YELLOW** | No external comments yet (8 maintainer/bot comment(s)) |
 | RFC LSS 1.1 — framework feedback [discussion_11](https://github.com/KanakMalpani/Loop-Engineering/discussions/11) | **YELLOW** | No external comments yet (3 maintainer/bot comment(s)) |
 | loopbench on PyPI (>= 0.1.1) [pypi_loopbench](https://pypi.org/project/loopbench/) | **GREEN** | PyPI version: 0.1.1 |
 | loopgym on PyPI (>= 0.1.1) [pypi_loopgym](https://pypi.org/project/loopgym/) | **GREEN** | PyPI version: 0.1.2 |
 | le-loopforge on PyPI (>= 0.2.0) [pypi_loopforge](https://pypi.org/project/le-loopforge/) | **GREEN** | PyPI version: 0.2.1 |
-| le-loopctl on PyPI (>= 0.2.0) [pypi_loopctl](https://pypi.org/project/le-loopctl/) | **YELLOW** | PyPI version: 0.1.1 |
-| le-loop-stack on PyPI (>= 0.1.0) [pypi_loop_stack](https://pypi.org/project/le-loop-stack/) | **YELLOW** | PyPI unreachable: HTTP Error 404: Not Found |
+| le-loopctl on PyPI (>= 0.2.0) [pypi_loopctl](https://pypi.org/project/le-loopctl/) | **GREEN** | PyPI version: 0.2.0 |
+| le-loop-stack on PyPI (>= 0.1.0) [pypi_loop_stack](https://pypi.org/project/le-loop-stack/) | **GREEN** | PyPI version: 0.1.0 |
 | LSS 1.1 stable in Loop-Core [lss_11_stable](https://github.com/KanakMalpani/Loop-Core-Engineering/blob/main/specs/lss-1.1.md) | **GREEN** | specs/lss-1.1.md present |
-| Exam pilot reports (#12) [exam_pilot](https://github.com/KanakMalpani/Loop-Engineering/issues/12) | **YELLOW** | No external pilots yet (1 maintainer/bot comment(s)) |
+| Exam pilot reports (#12) [exam_pilot](https://github.com/KanakMalpani/Loop-Engineering/issues/12) | **YELLOW** | No external pilots yet (2 maintainer/bot comment(s)) |
 | Non-maintainer LoopBench row (LB-CR-1) [issue_4](https://github.com/KanakMalpani/Loop-Engineering/issues/4) | **YELLOW** | open: [Good first] Publish ALS-T1 Research Synthesis baseline |
 | External case study (new org) [issue_7](https://github.com/KanakMalpani/Loop-Engineering/issues/7) | **YELLOW** | open: [Good first] Map Cursor agent loop to LSS case study |
 | Cursor case study extension [issue_8](https://github.com/KanakMalpani/Loop-Engineering/issues/8) | **GREEN** | closed: [Good first] LE-OP-11 task-to-level recommender v0.1 |
@@ -29,4 +30,4 @@ python scripts/track_adoption_signals.py
 python scripts/daily_checkin.py --output docs/checkins/latest.md
 ```
 
-_Generated at 2026-06-25T09:28:20.987421+00:00_
+_Generated at 2026-06-25T16:29:10.010467+00:00_

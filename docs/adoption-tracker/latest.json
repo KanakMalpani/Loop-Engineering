@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-25T09:28:20.987421+00:00",
+  "generated_at": "2026-06-25T16:29:10.010467+00:00",
   "signals": [
     {
       "id": "external_loopbench",
@@ -9,10 +9,17 @@
       "link": "https://github.com/KanakMalpani/Loop-Engineering/issues/4"
     },
     {
+      "id": "community_platform_v1",
+      "name": "Community platform v1 (playground + digest)",
+      "status": "green",
+      "detail": "Playground + digest workflow + LoopBench LIVE.md live",
+      "link": "https://github.com/KanakMalpani/Loop-Engineering/blob/main/docs/maintainer/COMMUNITY_PLATFORM_STATUS.md"
+    },
+    {
       "id": "discussion_10",
       "name": "Reproduction challenge \u2014 external report",
       "status": "yellow",
-      "detail": "No external comments yet (7 maintainer/bot comment(s))",
+      "detail": "No external comments yet (8 maintainer/bot comment(s))",
       "link": "https://github.com/KanakMalpani/Loop-Engineering/discussions/10"
     },
     {
@@ -46,15 +53,15 @@
     {
       "id": "pypi_loopctl",
       "name": "le-loopctl on PyPI (>= 0.2.0)",
-      "status": "yellow",
-      "detail": "PyPI version: 0.1.1",
+      "status": "green",
+      "detail": "PyPI version: 0.2.0",
       "link": "https://pypi.org/project/le-loopctl/"
     },
     {
       "id": "pypi_loop_stack",
       "name": "le-loop-stack on PyPI (>= 0.1.0)",
-      "status": "yellow",
-      "detail": "PyPI unreachable: HTTP Error 404: Not Found",
+      "status": "green",
+      "detail": "PyPI version: 0.1.0",
       "link": "https://pypi.org/project/le-loop-stack/"
     },
     {
@@ -68,7 +75,7 @@
       "id": "exam_pilot",
       "name": "Exam pilot reports (#12)",
       "status": "yellow",
-      "detail": "No external pilots yet (1 maintainer/bot comment(s))",
+      "detail": "No external pilots yet (2 maintainer/bot comment(s))",
       "link": "https://github.com/KanakMalpani/Loop-Engineering/issues/12"
     },
     {
