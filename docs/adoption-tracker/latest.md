@@ -1,4 +1,4 @@
-# Adoption tracker — 2026-06-25 UTC
+# Adoption tracker — 2026-06-26 UTC
 
 **Summary:** 9 green · 7 yellow · 0 red
 
@@ -30,4 +30,4 @@ python scripts/track_adoption_signals.py
 python scripts/daily_checkin.py --output docs/checkins/latest.md
 ```
 
-_Generated at 2026-06-25T16:29:10.010467+00:00_
+_Generated at 2026-06-26T16:20:53.752560+00:00_
