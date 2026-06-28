@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-27T15:19:10.832307+00:00",
+  "generated_at": "2026-06-28T15:21:09.684285+00:00",
   "signals": [
     {
       "id": "external_loopbench",
@@ -19,14 +19,14 @@
       "id": "discussion_10",
       "name": "Reproduction challenge \u2014 external report",
       "status": "yellow",
-      "detail": "No external comments yet (8 maintainer/bot comment(s))",
+      "detail": "No external comments yet (9 maintainer/bot comment(s))",
       "link": "https://github.com/KanakMalpani/Loop-Engineering/discussions/10"
     },
     {
       "id": "discussion_11",
       "name": "RFC LSS 1.1 \u2014 framework feedback",
       "status": "yellow",
-      "detail": "No external comments yet (3 maintainer/bot comment(s))",
+      "detail": "No external comments yet (4 maintainer/bot comment(s))",
       "link": "https://github.com/KanakMalpani/Loop-Engineering/discussions/11"
     },
     {
@@ -75,7 +75,7 @@
       "id": "exam_pilot",
       "name": "Exam pilot reports (#12)",
       "status": "yellow",
-      "detail": "No external pilots yet (2 maintainer/bot comment(s))",
+      "detail": "No external pilots yet (3 maintainer/bot comment(s))",
       "link": "https://github.com/KanakMalpani/Loop-Engineering/issues/12"
     },
     {
