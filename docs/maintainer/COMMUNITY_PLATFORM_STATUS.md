@@ -59,7 +59,7 @@ Related: [LOOP_PLAYGROUND.md](../../contributions/LOOP_PLAYGROUND.md) · [ADOPTI
 | 2026-06-25 | Full LoopBench automation | Hourly sync pack pull · validate on PR · render → Pages chain |
 | 2026-06-25 | Pinned ops dashboard | [Issue #13](https://github.com/KanakMalpani/Loop-Engineering/issues/13) · `OPS_DASHBOARD_ISSUE_NUMBER=13` |
 | 2026-06-28 | Wave 13 outreach | Reflexion · DSPy · SmolAgents · #10 beat challenge · #12 exam pilots · #11 RFC |
-| 2026-06-28 | Loop institute v0.1 | [13-loop-institute/CHARTER.md](file:///C:/Users/mrkan/All%20about%20loops/13-loop-institute/CHARTER.md) · RFC template |
+| 2026-06-28 | Loop institute v0.1 | `13-loop-institute/CHARTER.md` · RFC template |
 | 2026-06-28 | LoopNet HF CLI fix | `hf upload` workflow · [HF_TOKEN_SETUP.md](./HF_TOKEN_SETUP.md) |
 
 ---
