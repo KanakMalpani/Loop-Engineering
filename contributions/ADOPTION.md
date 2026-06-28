@@ -24,6 +24,7 @@ Full pack: [EXTERNAL_SUBMISSIONS.md](EXTERNAL_SUBMISSIONS.md)
 ```bash
 python scripts/adoption_wave11.py  # Invite loop repo owners (Agentless, Aider, OpenHands)
 python scripts/adoption_wave12.py  # Follow-up with partner submission pack
+python scripts/adoption_wave13.py  # Reflexion, DSPy, SmolAgents + community unlock posts
 python scripts/adoption_wave10.py  # Platform gravity (Golden Path v3 / le-loop-stack)
 python scripts/adoption_wave8.py   # LSS 1.1 composition mapping (#11)
 python scripts/adoption_wave7.py   # Trace-native LoopBench dry-run

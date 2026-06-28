@@ -2,7 +2,7 @@
 
 **North star:** Loop-Engineering = learn + try · LoopBench = rank + recognize · Ops = pinned GitHub dashboard (change-only).
 
-**Last updated:** 2026-06-25  
+**Last updated:** 2026-06-28  
 **Current phase:** Phase 13 — Community Platform v1 (shipped)  
 **Living tracker:** update this file when milestones ship; CI may append to [Automation log](#automation-log) only.
 
@@ -58,6 +58,9 @@ Related: [LOOP_PLAYGROUND.md](../../contributions/LOOP_PLAYGROUND.md) · [ADOPTI
 | 2026-06-25 | PyPI stack + partner pack + wave 12 | `le-loop-stack` + `le-loopctl` 0.2.0 on PyPI · [PARTNER_LOOPBENCH_SUBMIT.md](../../contributions/PARTNER_LOOPBENCH_SUBMIT.md) |
 | 2026-06-25 | Full LoopBench automation | Hourly sync pack pull · validate on PR · render → Pages chain |
 | 2026-06-25 | Pinned ops dashboard | [Issue #13](https://github.com/KanakMalpani/Loop-Engineering/issues/13) · `OPS_DASHBOARD_ISSUE_NUMBER=13` |
+| 2026-06-28 | Wave 13 outreach | Reflexion · DSPy · SmolAgents · #10 beat challenge · #12 exam pilots · #11 RFC |
+| 2026-06-28 | Loop institute v0.1 | [13-loop-institute/CHARTER.md](file:///C:/Users/mrkan/All%20about%20loops/13-loop-institute/CHARTER.md) · RFC template |
+| 2026-06-28 | LoopNet HF CLI fix | `hf upload` workflow · [HF_TOKEN_SETUP.md](./HF_TOKEN_SETUP.md) |
 
 ---
 
@@ -65,7 +68,7 @@ Related: [LOOP_PLAYGROUND.md](../../contributions/LOOP_PLAYGROUND.md) · [ADOPTI
 
 | Item | Owner | Notes |
 |------|-------|-------|
-| First external LoopBench row | Community | [#4](https://github.com/KanakMalpani/Loop-Engineering/issues/4) · wave 11+12 sent · [partner pack](../../contributions/PARTNER_LOOPBENCH_SUBMIT.md) |
+| First external LoopBench row | Community | [#4](https://github.com/KanakMalpani/Loop-Engineering/issues/4) · wave 11–13 sent · [partner pack](../../contributions/PARTNER_LOOPBENCH_SUBMIT.md) |
 
 ---
 

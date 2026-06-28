@@ -44,4 +44,6 @@ jobs:
             echo "HF_TOKEN secret not configured — skipping upload"
             exit 0
           fi
-          huggingface-cli upload "KanakMalpani/${SLUG}" . --repo-type dataset --exclude ".git/*"
+          export HF_TOKEN
+          hf auth login --token "$HF_TOKEN" --add-to-git-credential
+          hf upload "KanakMalpani/${SLUG}" . --repo-type dataset --exclude ".git/*"
