@@ -27,4 +27,4 @@ python scripts/track_adoption_signals.py --output docs/adoption-tracker/latest.m
 
 Included in `scripts/daily_checkin.py` and [.github/workflows/daily-checkin.yml](../.github/workflows/daily-checkin.yml).
 
-See [All about loops/NEXT_STEPS.md](../../All%20about%20loops/NEXT_STEPS.md).
+See [00-planning/NEXT_STEPS.md](../../00-planning/NEXT_STEPS.md).

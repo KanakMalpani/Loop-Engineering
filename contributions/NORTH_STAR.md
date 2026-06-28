@@ -1,6 +1,6 @@
 # Loop Engineering — North Star
 
-**Canonical goal statement** — propagate to [README.md](../README.md), [manifesto/MANIFESTO.md](../manifesto/MANIFESTO.md), and [MASTER_CHECKLIST.md](../All%20about%20loops/MASTER_CHECKLIST.md).
+**Canonical goal statement** — propagate to [README.md](../README.md), [manifesto/MANIFESTO.md](../manifesto/MANIFESTO.md), and [MASTER_CHECKLIST.md](../00-planning/MASTER_CHECKLIST.md).
 
 ---
 

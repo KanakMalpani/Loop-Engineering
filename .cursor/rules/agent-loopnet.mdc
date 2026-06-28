@@ -1,0 +1,20 @@
+---
+description: loopnet agent — dataset corpus and Hugging Face distribution (mirror paths)
+globs:
+  - "docs/ecosystem-sync/loopnet/**"
+  - "docs/ecosystem-sync/loopnet-README.md"
+  - "docs/loopnet/**"
+  - "research/LOOPNET.md"
+alwaysApply: false
+---
+
+# loopnet agent
+
+Full brief: `../AGENT_BRIEFS/loopnet.md`  
+Remote: https://github.com/KanakMalpani/loopnet · HF: `KanakMalpani/loopnet-v0.2`
+
+You own **ground-truth trajectories** (`ln/record-v1`), DATACARD, community submissions. **Cite v0.2+** — seed-v0.1 is deprecated.
+
+~40% failure rate is intentional. LoopBench defines tasks; you store trajectories. Schema pins `lss@1.0.0` + `les@1.0.0`.
+
+Mirror README: `docs/ecosystem-sync/loopnet-README.md`. HF workflow: `docs/ecosystem-sync/loopnet/.github/workflows/`. Push via `MAINTAINER-SYNC.md`.

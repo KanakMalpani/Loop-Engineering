@@ -1,0 +1,33 @@
+---
+description: Loop-Engineering repo agent — discipline home, loopforge, loopctl, adoption
+globs:
+  - "loopforge/**"
+  - "loopctl/**"
+  - "stack/**"
+  - "loop-library/**"
+  - "contributions/**"
+  - "scripts/**"
+  - "case-studies/**"
+  - "tools/**"
+alwaysApply: false
+---
+
+# Loop-Engineering agent
+
+Full brief: `../AGENT_BRIEFS/loop-engineering.md`
+
+You own the **discipline + practitioner hub**: manifesto, patterns, Golden Path, loopforge/loopctl PyPI packages, adoption, integration hub.
+
+**North star:** `contributions/NORTH_STAR.md` · **Golden Path:** `contributions/GOLDEN_PATH.md` · **Status:** `docs/maintainer/COMMUNITY_PLATFORM_STATUS.md`
+
+**Quick commands:**
+```bash
+pip install "le-loop-stack>=0.1.0"
+loopctl pipeline --intent "..." -o loop.yaml --export generic --json
+python scripts/ecosystem_digest.py
+python scripts/adoption_wave11.py
+```
+
+**Sibling mirrors:** `docs/ecosystem-sync/` — push via `contributions/MAINTAINER-SYNC.md`. LoopBench platform pack source of truth: `docs/ecosystem-sync/LoopBench/`.
+
+**Never** fabricate external LoopBench rows or auto-merge external PRs. Update `ECOSYSTEM_VERSIONS.md` on releases.

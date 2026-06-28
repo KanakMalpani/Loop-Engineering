@@ -31,8 +31,12 @@ Optional trace from LoopGym when validating scoring logic:
 loopctl pipeline --intent "Fix failing tests from CI" -o cursor-mapped.yaml --run-loopgym --json
 ```
 
-## Cursor rule
+## Cursor rules
 
-Enable [.cursor/rules/loop-engineering.mdc](../../.cursor/rules/loop-engineering.mdc) in this repo (or copy into your project).
+| Rule | Purpose |
+|------|---------|
+| [.cursor/rules/loop-engineering.mdc](../../.cursor/rules/loop-engineering.mdc) | Map agent loops to LSS in chat |
+| [.cursor/rules/agent-loop-engineering.mdc](../../.cursor/rules/agent-loop-engineering.mdc) | Full repo agent context (scoped) |
+| [AGENT_BRIEFS.md](../../docs/maintainer/AGENT_BRIEFS.md) | Multi-repo delegation — `All about loops/AGENT_BRIEFS/` |
 
 North star: [NORTH_STAR.md](../NORTH_STAR.md)

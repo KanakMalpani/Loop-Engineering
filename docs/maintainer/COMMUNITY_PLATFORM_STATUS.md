@@ -6,7 +6,7 @@
 **Current phase:** Phase 13 — Community Platform v1 (shipped)  
 **Living tracker:** update this file when milestones ship; CI may append to [Automation log](#automation-log) only.
 
-Related: [LOOP_PLAYGROUND.md](../../contributions/LOOP_PLAYGROUND.md) · [ADOPTION_AUTOMATION.md](./ADOPTION_AUTOMATION.md) · [EXTERNAL_SUBMISSIONS.md](../../contributions/EXTERNAL_SUBMISSIONS.md)
+Related: [LOOP_PLAYGROUND.md](../../contributions/LOOP_PLAYGROUND.md) · [ADOPTION_AUTOMATION.md](./ADOPTION_AUTOMATION.md) · [EXTERNAL_SUBMISSIONS.md](../../contributions/EXTERNAL_SUBMISSIONS.md) · [AGENT_BRIEFS.md](./AGENT_BRIEFS.md)
 
 ---
 

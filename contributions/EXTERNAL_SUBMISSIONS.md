@@ -83,6 +83,8 @@ Template:
 
 ## Campaign
 
-Re-run maintainer outreach: `python scripts/adoption_wave8.py` · `python scripts/adoption_wave7.py`
+Partner outreach: `python scripts/adoption_wave11.py` · follow-up `python scripts/adoption_wave12.py`
 
-Community handoff: [COMMUNITY_HANDOFF_PHASE4.md](COMMUNITY_HANDOFF_PHASE4.md) · [ADOPTION.md](ADOPTION.md)
+Partner pack: [PARTNER_LOOPBENCH_SUBMIT.md](PARTNER_LOOPBENCH_SUBMIT.md) · Playbook: [EXTERNAL_ROW_PLAYBOOK.md](../docs/maintainer/EXTERNAL_ROW_PLAYBOOK.md)
+
+One-pager: [ADOPTION.md](ADOPTION.md)

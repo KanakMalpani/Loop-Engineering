@@ -55,4 +55,4 @@ CI audit: `python scripts/validate_baselines.py`
 - External submissions on leaderboard ([good-first #4](https://github.com/KanakMalpani/Loop-Engineering/issues/4))
 - Dedicated LoopGym env for LB-COMP-1 — **shipped** (`loopbench/composed-swarm-v1`)
 
-See [All about loops/NEXT_STEPS.md](../../All%20about%20loops/NEXT_STEPS.md).
+See [00-planning/NEXT_STEPS.md](../../00-planning/NEXT_STEPS.md).

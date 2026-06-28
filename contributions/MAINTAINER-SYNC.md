@@ -34,7 +34,7 @@ See `scripts/push_github_file.py` for arguments.
 4. Run `python scripts/track_adoption_signals.py` — see [docs/adoption-tracker/](../docs/adoption-tracker/)
 5. Community pack: [contributions/EXTERNAL_SUBMISSIONS.md](../contributions/EXTERNAL_SUBMISSIONS.md) · [LOOP_PLAYGROUND.md](../contributions/LOOP_PLAYGROUND.md)
 6. Community platform status: [docs/maintainer/COMMUNITY_PLATFORM_STATUS.md](../docs/maintainer/COMMUNITY_PLATFORM_STATUS.md)
-7. Adoption wave 2: `python scripts/adoption_wave2.py`
+7. Partner outreach: `python scripts/adoption_wave11.py` · follow-up `adoption_wave12.py`
 8. Append row to [docs/AUDIT-2026-06.md](../docs/AUDIT-2026-06.md) if versions changed
 
 Local mirrors for sibling READMEs live in [docs/ecosystem-sync/](../docs/ecosystem-sync/) — edit there, then push with `push_github_file.py`.

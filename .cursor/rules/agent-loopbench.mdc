@@ -1,0 +1,24 @@
+---
+description: LoopBench agent — tasks, leaderboard, Pages UI (sync pack)
+globs:
+  - "docs/ecosystem-sync/LoopBench/**"
+  - "docs/ecosystem-sync/LoopBench-README.md"
+  - "docs/ecosystem-sync/LoopBench-tasks-index.yaml"
+  - "docs/ecosystem-sync/LoopBench-LB-COMP-1-task.yaml"
+  - "scripts/leaderboard_common.py"
+  - "scripts/render_leaderboard_preview.py"
+alwaysApply: false
+---
+
+# LoopBench agent
+
+Full brief: `../AGENT_BRIEFS/loopbench.md`  
+Remote: https://github.com/KanakMalpani/LoopBench · Live: https://kanakmalpani.github.io/LoopBench/
+
+You own **tasks, scoring, leaderboard/entries.json, Pages UI**. LoopGym executes; you measure.
+
+**Source of truth for platform pack:** `docs/ecosystem-sync/LoopBench/` (hourly sync to remote). Edit mirror first.
+
+Tasks: LB-CR-1, LB-RS-1, LB-MA-1, LB-COMP-1. Partner guide: `contributions/PARTNER_LOOPBENCH_SUBMIT.md`.
+
+**Never** auto-merge external leaderboard PRs or add maintainer rows as external proof.

@@ -1,0 +1,19 @@
+---
+description: loop-observability agent — Loop Trace 1.0 and observed LES
+globs:
+  - "standards/LOOP-TRACE*"
+  - "implementations/generic/trace_emitter.py"
+  - "tools/observed_les.py"
+alwaysApply: false
+---
+
+# loop-observability agent
+
+Full brief: `../AGENT_BRIEFS/loop-observability.md`  
+Remote: https://github.com/KanakMalpani/loop-observability
+
+You own **LTF traces + OTel integration**. Spec: `standards/LOOP-TRACE-1.0.md`. Emitter: `implementations/generic/trace_emitter.py`.
+
+Flow: LoopGym run → trace → `loopctl observed` → observed LES → optional loopnet export.
+
+Emit facts only — Loop-Core defines LES; loopctl computes. Coordinate with LoopGym for episode hooks.

@@ -1,0 +1,20 @@
+---
+description: Loop-Core-Engineering agent — LSS/LES specs and validators (mirror paths)
+globs:
+  - "docs/ecosystem-sync/Loop-Core*"
+  - "standards/**"
+alwaysApply: false
+---
+
+# Loop-Core-Engineering agent
+
+Full brief: `../AGENT_BRIEFS/loop-core-engineering.md`  
+Remote: https://github.com/KanakMalpani/Loop-Core-Engineering
+
+You own **LSS, LES, failure taxonomy, validators** — the constitutional layer. Everything else pins you.
+
+When editing `docs/ecosystem-sync/Loop-Core*`, canonicalize to remote `specs/` with semver + CI. **No runtime logic here** — LoopGym runs, LoopBench scores.
+
+RFC flow: Loop-Engineering `contributions/RFC-*.md` → promote to Loop-Core `specs/`.
+
+Never break consumers without schema version bump. Link philosophy to Loop-Engineering, not duplicate it.

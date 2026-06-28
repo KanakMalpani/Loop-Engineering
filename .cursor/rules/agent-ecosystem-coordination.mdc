@@ -1,0 +1,16 @@
+---
+description: Cross-repo coordination rules for the Loop Engineering ecosystem
+alwaysApply: true
+---
+
+# Loop ecosystem coordination
+
+Full doc: `../AGENT_BRIEFS/ecosystem-coordination.md`
+
+**Stack:** Loop-Core (specs) → loopnet (data) → LoopGym (run) → LoopBench (score). Loop-Engineering = narrative + Golden Path + adoption.
+
+**Handoffs:** Spec changes → Loop-Core canonicalizes. New task → LoopGym env then LoopBench task then LE BEAT guide. LoopBench platform pack → edit `docs/ecosystem-sync/LoopBench/` first. Versions → `ECOSYSTEM_VERSIONS.md`.
+
+**Never:** fake external adoption, auto-merge external LoopBench PRs, or count maintainer dry-runs as community proof.
+
+When work spans repos, read the repo-specific brief in `../AGENT_BRIEFS/`.

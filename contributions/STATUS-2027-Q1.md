@@ -29,7 +29,7 @@
 
 | Signal | Action |
 |--------|--------|
-| External LoopBench #4 | [wave10](../docs/outreach/wave10-platform-gravity.md) |
+| External LoopBench #4 | [outreach README](../docs/outreach/README.md) · wave 11/12 partner outreach |
 | Discussion #10 repro | Trace-native template + Golden Path v3 |
 | Issue #7 case study | Claude Code / Codex mappers |
 | Discussion #11 RFC | Framework tuple replies |

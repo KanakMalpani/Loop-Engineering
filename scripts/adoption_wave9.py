@@ -26,7 +26,7 @@ loopctl pipeline \\
 ```
 
 - North star: {NORTH}
-- Golden Path v2: {GOLDEN}
+- Golden Path v3: {GOLDEN}
 - Trace template: {TEMPLATE}
 """
 

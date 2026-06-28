@@ -20,4 +20,4 @@ python -m loopforge new \
   --output loop-library/my-bug-fixer.yaml
 ```
 
-See [All about loops/LOOP_FORGE.md](../../All%20about%20loops/LOOP_FORGE.md) for the full guide.
+See [00-planning/LOOP_FORGE.md](../../00-planning/LOOP_FORGE.md) for the full guide.

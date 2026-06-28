@@ -75,7 +75,7 @@ Implemented examples: [loop-library/compositions/](../loop-library/compositions/
 2. Link to an LE-OP entry in [open-problems.md](../research/open-problems.md)
 3. Add a validator warning or test when the math implies a checkable invariant
 
-See [contributions/CONTRIBUTING.md](../contributions/CONTRIBUTING.md) and [All about loops/MASTER_CHECKLIST.md](../All%20about%20loops/MASTER_CHECKLIST.md) Part C.1.
+See [contributions/CONTRIBUTING.md](../contributions/CONTRIBUTING.md) and [00-planning/MASTER_CHECKLIST.md](../00-planning/MASTER_CHECKLIST.md) Part C.1.
 
 ---
 

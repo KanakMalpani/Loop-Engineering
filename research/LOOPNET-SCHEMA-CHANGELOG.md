@@ -79,4 +79,4 @@ Post reproduction notes on [Discussion #10](https://github.com/KanakMalpani/Loop
 
 Flat trace export schema (`record-v0.3.json`) is in preview — see v0.3 draft section above.
 
-See [LOOPNET.md](LOOPNET.md) · [MASTER_CHECKLIST.md](../All%20about%20loops/MASTER_CHECKLIST.md) §3.
+See [LOOPNET.md](LOOPNET.md) · [MASTER_CHECKLIST.md](../00-planning/MASTER_CHECKLIST.md) §3.

@@ -18,4 +18,4 @@ When the user describes an **agent loop**, **feedback cycle**, or **iterative wo
 
 PyPI packages: `le-loopforge`, `le-loopctl` (not bare `loopforge` on PyPI).
 
-Docs: contributions/GOLDEN_PATH.md · contributions/NORTH_STAR.md
+Docs: contributions/GOLDEN_PATH.md · contributions/NORTH_STAR.md · ../AGENT_BRIEFS/loop-engineering.md

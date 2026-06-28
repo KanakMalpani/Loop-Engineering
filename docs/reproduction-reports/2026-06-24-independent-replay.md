@@ -36,7 +36,7 @@ Author: Kanak Malpani
 Author-email: 
 License: MIT
 Location: C:\Users\mrkan\AppData\Local\Programs\Python\Python314\Lib\site-packages
-Editable project location: C:\Users\mrkan\All about loops\05-loopgym
+Editable project location: ../06-loopgym
 Requires: pyyaml
 Required-by: 
 ---

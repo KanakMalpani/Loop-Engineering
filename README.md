@@ -236,7 +236,7 @@ A preview of pre-declared loops available in [`loop-library/`](loop-library/):
 | [Scenario Swarm (parallel)](loop-library/compositions/scenario-swarm-rehearsal.yaml) | Level 4 | SWARM decision rehearsal: 3 parallel perspectives with a unified merged forecast |
 | [Startup Validator](loop-library/startup-validator.yaml) | Level 2 | PMF hypothesis verification and fast lean iterations |
 
-→ [Browse the Full Spec Library](loop-library/README.md) · [Master Checklist](All%20about%20loops/MASTER_CHECKLIST.md) · [Next Steps](All%20about%20loops/NEXT_STEPS.md)
+→ [Browse the Full Spec Library](loop-library/README.md) · [Master Checklist](../00-planning/MASTER_CHECKLIST.md) · [Next Steps](../00-planning/NEXT_STEPS.md)
 
 ---
 

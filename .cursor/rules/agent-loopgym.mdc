@@ -1,0 +1,18 @@
+---
+description: LoopGym agent — Sim/Live/Replay runtime (mirror paths)
+globs:
+  - "docs/ecosystem-sync/LoopGym*"
+  - "research/LOOPGYM.md"
+alwaysApply: false
+---
+
+# LoopGym agent
+
+Full brief: `../AGENT_BRIEFS/loopgym.md`  
+Remote: https://github.com/KanakMalpani/LoopGym · PyPI: `loopgym>=0.1.2`
+
+**LSS declares. LoopGym runs. LoopBench scores.** Three backends: SimEnv (deterministic CI), LiveEnv (real LLMs), ReplayEnv (LoopNet).
+
+Key env: `loopbench/composed-swarm-v1` for LB-COMP-1. Do not embed scoring formulas. SimEnv must stay seed-deterministic.
+
+Mirror: `docs/ecosystem-sync/LoopGym-README.md`. Export traces → LoopNet via Loop-Engineering `scripts/loopnet_export_trace.py`.

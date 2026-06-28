@@ -16,3 +16,5 @@ Edit these files, then push to sibling repos with [MAINTAINER-SYNC.md](../../con
 | [Loop-Core-lss-1.1-composition.schema.json](./Loop-Core-lss-1.1-composition.schema.json) | `Loop-Core-Engineering/specs/lss-1.1-composition.schema.json` |
 
 Verify locally: `python scripts/check_adoption_links.py`
+
+**Multi-repo agents:** [AGENT_BRIEFS.md](../maintainer/AGENT_BRIEFS.md) → `../AGENT_BRIEFS (workspace root)\`
