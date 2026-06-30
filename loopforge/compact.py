@@ -25,9 +25,10 @@ def estimate_tokens(spec: dict[str, Any] | str, *, chars_per_token: float = 4.0)
 
 def compact_spec(spec: dict[str, Any], *, aggressive: bool = False) -> dict[str, Any]:
     """Drop verbose optional fields; keep scoring-relevant structure."""
+    saved_meta = spec.get("metadata") if isinstance(spec.get("metadata"), dict) else {}
     out = _compact_value(spec, aggressive=aggressive)
     if isinstance(out, dict):
-        meta = out.pop("metadata", None)
+        meta = saved_meta or out.pop("metadata", None)
         if isinstance(meta, dict):
             if meta.get("forked_from"):
                 out["forked_from"] = meta["forked_from"]
@@ -35,6 +36,12 @@ def compact_spec(spec: dict[str, Any], *, aggressive: bool = False) -> dict[str,
                 out["composed_from"] = meta["composed_from"]
             if meta.get("compose_mode"):
                 out["compose_mode"] = meta["compose_mode"]
+            if meta.get("compose_certificates"):
+                out["compose_certificates"] = meta["compose_certificates"]
+            if meta.get("compose_valid") is not None:
+                out["compose_valid"] = meta["compose_valid"]
+            if meta.get("proof_source"):
+                out["proof_source"] = meta["proof_source"]
         if aggressive and out.get("composition"):
             comp = out["composition"]
             if isinstance(comp, dict) and comp.get("children"):

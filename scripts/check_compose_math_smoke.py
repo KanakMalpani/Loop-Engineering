@@ -34,7 +34,8 @@ def main() -> int:
         validate=False,
     )
     meta_block = spec.get("metadata") or {}
-    if not meta_block.get("compose_certificates"):
+    certs = meta_block.get("compose_certificates") or spec.get("compose_certificates")
+    if not certs:
         print("WARN: combine metadata missing compose_certificates (optional)")
 
     print(f"OK compose_math_smoke valid={cert.get('valid')} theory={len(cert.get('theory_ref') or [])}")

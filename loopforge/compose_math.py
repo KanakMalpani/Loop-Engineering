@@ -71,12 +71,10 @@ def attach_compose_metadata(
 
     certs: list[dict[str, Any]] = []
     if mode == "sequential":
-        acc = child_specs[0]
-        for nxt in child_specs[1:]:
-            c = compose_certificate(acc, nxt, mode="sequential")
+        for i in range(len(child_specs) - 1):
+            c = compose_certificate(child_specs[i], child_specs[i + 1], mode="sequential")
             if c:
                 certs.append(c)
-            acc = composed
     else:
         for i in range(0, len(child_specs), 2):
             if i + 1 < len(child_specs):
