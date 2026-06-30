@@ -90,6 +90,18 @@ def compose_specs(
 
     composed["memory"] = a.get("memory") or b.get("memory") or {"type": "ephemeral"}
     composed["inputs"] = a.get("inputs") or b.get("inputs") or {"schema": {"task": {"type": "string", "required": True}}}
+
+    try:
+        from loopforge.compose_math import compose_certificate
+
+        cert = compose_certificate(a, b, mode=mode)
+        if cert:
+            meta = composed.setdefault("metadata", {})
+            if isinstance(meta, dict):
+                meta.setdefault("compose_certificates", []).append(cert)
+    except ImportError:
+        pass
+
     return composed
 
 
@@ -258,6 +270,13 @@ def combine_loops(
             spec = compose_specs_many(child_specs, mode=meta["mode"] if meta["mode"] != "nested" else "sequential")
             spec["loop_name"] = loop_name
             spec["objective"] = objective
+            from loopforge.compose_math import attach_compose_metadata
+
+            spec = attach_compose_metadata(
+                spec,
+                child_specs,
+                mode="sequential" if meta["mode"] == "nested" else meta["mode"],  # type: ignore[arg-type]
+            )
         else:
             from loopforge.composition import build_composition_spec
             import tempfile

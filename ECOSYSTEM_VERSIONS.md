@@ -3,7 +3,7 @@
 Single source of truth for public version strings across the five-repo stack.  
 Update this file when any component releases; mirror changes in sibling repo READMEs.
 
-**Last updated:** 2026-06-28
+**Last updated:** 2026-06-30
 
 ---
 
@@ -36,8 +36,9 @@ Update this file when any component releases; mirror changes in sibling repo REA
 | **le-loop-stack** | **0.4.0** | `pip install "le-loop-stack>=0.4.0"` | [stack/](stack/) |
 | le-loopforge | **0.5.0** | `pip install "le-loopforge>=0.5.0"` (CLI: `loopforge`, `combine`, `LoopChain`) | [loopforge/](loopforge/) |
 | le-loopctl | **0.5.0** | `pip install "le-loopctl>=0.5.0"` (CLI: `loopctl`, `loop`, `combine`) | [loopctl/](loopctl/) |
-| loopgym | **0.1.2** | `pip install "loopgym>=0.1.2"` | [LoopGym](https://github.com/KanakMalpani/LoopGym) |
+| loopgym | **0.1.3** | `pip install "loopgym>=0.1.3"` | [LoopGym](https://github.com/KanakMalpani/LoopGym) |
 | loopbench | **0.2.0** | `pip install "loopbench>=0.2.0"` | [LoopBench](https://github.com/KanakMalpani/LoopBench) |
+| loopmath | **0.1.0** (optional) | `pip install loopmath` or local `03-loop-math/loopmath` | [03-loop-math](../03-loop-math/) |
 
 Pin exact versions in reproduction docs; run `pip show le-loop-stack le-loopforge le-loopctl loopgym loopbench` after install.
 

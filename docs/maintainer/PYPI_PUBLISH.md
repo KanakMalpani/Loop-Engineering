@@ -45,7 +45,8 @@ Run workflows on `main` in this order:
 | 1 | Publish loopforge to PyPI | `le-loopforge` | 0.5.0 |
 | 2 | Publish loopctl to PyPI | `le-loopctl` | 0.5.0 |
 | 3 | Publish loopbench to PyPI | `loopbench` | 0.2.0 |
-| 4 | Publish le-loop-stack to PyPI | `le-loop-stack` | 0.4.0 |
+| 4 | Publish loopgym to PyPI | `loopgym` | 0.1.3 |
+| 5 | Publish le-loop-stack to PyPI | `le-loop-stack` | 0.4.0 |
 
 **Actions** → select workflow → **Run workflow** → branch `main`.
 
@@ -106,6 +107,7 @@ Wheels for Wave 16 stack (built locally):
 | Package | Version | Path |
 |---------|---------|------|
 | loopbench | 0.2.0 | `07-loopbench/dist/` |
+| loopgym | 0.1.3 | `06-loopgym/dist/` |
 | le-loopforge | 0.5.0 | `01-loop-engineering/loopforge/dist/` |
 | le-loopctl | 0.5.0 | `01-loop-engineering/loopctl/dist/` |
 | le-loop-stack | 0.4.0 | `01-loop-engineering/stack/dist/` |
@@ -115,6 +117,6 @@ cd loopctl && python -m build
 python -m twine upload dist/*   # TWINE_USERNAME=__token__ TWINE_PASSWORD=pypi-...
 ```
 
-Publish order: loopbench → loopforge → loopctl → le-loop-stack.
+Publish order: loopbench → loopgym → loopforge → loopctl → le-loop-stack.
 
 Registry: [ECOSYSTEM_VERSIONS.md](../../ECOSYSTEM_VERSIONS.md)

@@ -26,6 +26,9 @@ dependencies = [
     "jsonschema>=4.0",
 ]
 
+[project.optional-dependencies]
+math = ["loopmath>=0.1.0"]
+
 [project.scripts]
 loopforge = "loopforge.__main__:main"
 

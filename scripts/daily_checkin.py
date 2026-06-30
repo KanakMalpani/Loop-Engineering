@@ -145,6 +145,7 @@ def main() -> int:
         ("combine_smoke", [py, "scripts/check_combine_smoke.py"]),
         ("minjson_smoke", [py, "scripts/check_minjson_smoke.py"]),
         ("simenv_smoke", [py, "scripts/check_simenv_smoke.py"]),
+        ("compose_math_smoke", [py, "scripts/check_compose_math_smoke.py"]),
         ("suite_scoring_logic", [py, "scripts/check_suite_scoring_logic.py"]),
         ("integrate_claude_code_smoke", [py, "examples/integrate-claude-code/run_demo.py"]),
         ("integrate_codex_smoke", [py, "examples/integrate-codex/run_demo.py"]),

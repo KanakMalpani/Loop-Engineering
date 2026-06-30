@@ -64,6 +64,53 @@ def partner_dryrun(partner: str) -> int:
     return 0
 
 
+def partner_combine_dryrun() -> int:
+    """Partner path: combine flat spec → suite-repair → row template."""
+    OUT.mkdir(parents=True, exist_ok=True)
+    spec = OUT / "partner-combine-suite.yaml"
+    row_out = OUT / "partner-combine-row.json"
+
+    run(
+        [
+            sys.executable,
+            "-m",
+            "loopctl",
+            "combine",
+            "--library",
+            "research-agent,autonomous-debugger",
+            "--intent",
+            "Research then repair failing tests for external submission",
+            "-o",
+            str(spec),
+            "--json",
+        ]
+    )
+    run([sys.executable, "-m", "loopctl", "validate", str(spec)])
+
+    template = json.loads((PARTNER_DIR / "combine-suite-row-template.json").read_text(encoding="utf-8"))
+    template["notes"] = "Partner combine dry-run — fill submitter + results after loopbench suite run"
+    template["repro_command"] = (
+        f"loopbench run --suite suite-repair --spec {spec.name} --seeds 0,1,2,3,4 -o results.json"
+    )
+    row_out.write_text(json.dumps(template, indent=2) + "\n", encoding="utf-8")
+
+    summary = {
+        "path": "combine",
+        "spec": str(spec.relative_to(ROOT)),
+        "entries_row_template": str(row_out.relative_to(ROOT)),
+        "next_steps": [
+            f"loopbench run --suite suite-repair --spec {spec.name} --seeds 0,1,2,3,4 -o results.json",
+            "loopbench validate results.json",
+            "Fork LoopBench → merge row → comment on Loop-Engineering #4",
+        ],
+        "guide": "contributions/PARTNER_LOOPBENCH_SUBMIT.md",
+        "outreach": "python scripts/adoption_wave16.py --post",
+    }
+    (OUT / "partner-combine-summary.json").write_text(json.dumps(summary, indent=2) + "\n", encoding="utf-8")
+    print(json.dumps(summary, indent=2))
+    return 0
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Submission dry-run")
     parser.add_argument(
@@ -71,7 +118,15 @@ def main() -> int:
         choices=sorted(PARTNER_SPECS),
         help="Use partner LSS stub (agentless, aider, openhands)",
     )
+    parser.add_argument(
+        "--combine-suite",
+        action="store_true",
+        help="Partner combine path → suite-repair row template",
+    )
     args = parser.parse_args()
+
+    if args.combine_suite:
+        return partner_combine_dryrun()
 
     if args.partner:
         return partner_dryrun(args.partner)

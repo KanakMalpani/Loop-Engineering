@@ -219,6 +219,22 @@ See [LOOP_FORGE.md](../00-planning/LOOP_FORGE.md).
 
 ---
 
+## Optional: proof-carrying compose (`loopmath`)
+
+When `loopmath` is installed, `combine` attaches compose validity certificates to spec metadata:
+
+```bash
+pip install -e path/to/03-loop-math/loopmath    # local package
+pip install "le-loop-stack[math]"               # after loopmath on PyPI
+
+loop combine --library research-agent,coding-agent -o out.yaml --json
+# metadata.compose_certificates + metadata.proof_source=loopmath when available
+```
+
+Without `loopmath`, built-in flatten/compact still works — certificates are omitted.
+
+---
+
 ## Next steps
 
 | Goal | Link |

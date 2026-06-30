@@ -29,7 +29,7 @@ loop mix dev-agent --intent "Fix failing tests from CI" --json
 loop quick "Fix failing tests from CI" --agent aider
 ```
 
-JSON output includes `spec`, `les`, `bench_cmd`, and `tokens` (estimated).
+Optional extras: `pip install "le-loop-stack[math,agents,bench]"` — proof-carrying compose when loopmath installed.
 
 ## Supported agents
 
