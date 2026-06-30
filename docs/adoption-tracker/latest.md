@@ -1,6 +1,6 @@
 # Adoption tracker — 2026-06-30 UTC
 
-**Summary:** 5 green · 11 yellow · 0 red
+**Summary:** 4 green · 12 yellow · 0 red
 
 Automated by `scripts/track_adoption_signals.py` (daily with [daily-checkin.yml](../.github/workflows/daily-checkin.yml)).
 
@@ -11,7 +11,7 @@ Automated by `scripts/track_adoption_signals.py` (daily with [daily-checkin.yml]
 | Reproduction challenge — external report [discussion_10](https://github.com/KanakMalpani/Loop-Engineering/discussions/10) | **YELLOW** | No external comments yet (9 maintainer/bot comment(s)) |
 | RFC LSS 1.1 — framework feedback [discussion_11](https://github.com/KanakMalpani/Loop-Engineering/discussions/11) | **YELLOW** | No external comments yet (4 maintainer/bot comment(s)) |
 | loopbench on PyPI (>= 0.1.1) [pypi_loopbench](https://pypi.org/project/loopbench/) | **YELLOW** | PyPI version: 0.1.1 |
-| loopgym on PyPI (>= 0.1.1) [pypi_loopgym](https://pypi.org/project/loopgym/) | **GREEN** | PyPI version: 0.1.2 |
+| loopgym on PyPI (>= 0.1.1) [pypi_loopgym](https://pypi.org/project/loopgym/) | **YELLOW** | PyPI version: 0.1.2 |
 | le-loopforge on PyPI (>= 0.2.0) [pypi_loopforge](https://pypi.org/project/le-loopforge/) | **YELLOW** | PyPI version: 0.2.1 |
 | le-loopctl on PyPI (>= 0.2.0) [pypi_loopctl](https://pypi.org/project/le-loopctl/) | **YELLOW** | PyPI version: 0.2.0 |
 | le-loop-stack on PyPI (>= 0.1.0) [pypi_loop_stack](https://pypi.org/project/le-loop-stack/) | **YELLOW** | PyPI version: 0.1.0 |
@@ -30,4 +30,4 @@ python scripts/track_adoption_signals.py
 python scripts/daily_checkin.py --output docs/checkins/latest.md
 ```
 
-_Generated at 2026-06-30T10:45:40.779401+00:00_
+_Generated at 2026-06-30T11:55:16.124637+00:00_

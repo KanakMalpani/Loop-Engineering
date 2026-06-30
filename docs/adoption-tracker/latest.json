@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-30T10:45:40.779401+00:00",
+  "generated_at": "2026-06-30T11:55:16.124637+00:00",
   "signals": [
     {
       "id": "external_loopbench",
@@ -39,7 +39,7 @@
     {
       "id": "pypi_loopgym",
       "name": "loopgym on PyPI (>= 0.1.1)",
-      "status": "green",
+      "status": "yellow",
       "detail": "PyPI version: 0.1.2",
       "link": "https://pypi.org/project/loopgym/"
     },
