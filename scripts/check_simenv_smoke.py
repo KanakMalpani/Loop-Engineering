@@ -19,7 +19,11 @@ def main() -> int:
         ("loopbench/safety-constrained-v1", "LB-SAFE-2"),
     ]
     for env_id, task_id in cases:
-        env = lg.make(env_id)
+        try:
+            env = lg.make(env_id)
+        except ValueError:
+            print(f"SKIP: {env_id} not in installed loopgym (publish loopgym 0.1.3+)")
+            continue
         result = env.run_episode(task_id=task_id, seed=42)
         if "success" not in result:
             print(f"FAIL: {env_id} missing success", file=sys.stderr)
