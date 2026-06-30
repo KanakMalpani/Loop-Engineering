@@ -43,11 +43,11 @@ DISCUSSIONS = {
     11: "RFC LSS 1.1 — framework feedback",
 }
 
-PYPI_MIN_LOOPBENCH = (0, 1, 1)
-PYPI_MIN_LOOPGYM = (0, 1, 1)
-PYPI_MIN_LOOPFORGE = (0, 2, 1)
-PYPI_MIN_LOOPCTL = (0, 2, 0)
-PYPI_MIN_LOOPSTACK = (0, 1, 0)
+PYPI_MIN_LOOPBENCH = (0, 2, 0)
+PYPI_MIN_LOOPGYM = (0, 1, 2)
+PYPI_MIN_LOOPFORGE = (0, 5, 0)
+PYPI_MIN_LOOPCTL = (0, 5, 0)
+PYPI_MIN_LOOPSTACK = (0, 4, 0)
 PYPI_LOOPGYM_URL = "https://pypi.org/pypi/loopgym/json"
 PYPI_LOOPFORGE_URL = "https://pypi.org/pypi/le-loopforge/json"
 PYPI_LOOPCTL_URL = "https://pypi.org/pypi/le-loopctl/json"

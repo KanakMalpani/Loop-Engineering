@@ -4,16 +4,18 @@
 from __future__ import annotations
 
 import argparse
+import os
 import subprocess
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+CHECK_ENV = {**os.environ, "PYTHONPATH": str(ROOT)}
 
 
 def run_step(name: str, cmd: list[str]) -> tuple[bool, str]:
-    result = subprocess.run(cmd, capture_output=True, text=True, cwd=ROOT)
+    result = subprocess.run(cmd, capture_output=True, text=True, cwd=ROOT, env=CHECK_ENV)
     out = (result.stdout or "").strip()
     err = (result.stderr or "").strip()
     combined = "\n".join(x for x in (out, err) if x)
@@ -25,7 +27,8 @@ def count_specs() -> tuple[int, int]:
     lib = ROOT / "loop-library"
     atomic = len(list(lib.glob("*.yaml")))
     composed = len(list((lib / "compositions").glob("*.yaml"))) if (lib / "compositions").is_dir() else 0
-    return atomic, composed
+    flat = len(list((lib / "compositions" / "flat").glob("*.yaml"))) if (lib / "compositions" / "flat").is_dir() else 0
+    return atomic, composed + flat
 
 
 def build_report(
@@ -138,6 +141,11 @@ def main() -> int:
         ("observed_les_smoke", [py, "tools/observed_les.py", "standards/examples/minimal-trace.json", "--json"]),
         ("pip_only_score_smoke", [py, "scripts/check_pip_only_score_smoke.py"]),
         ("pip_only_stack_smoke", [py, "scripts/check_pip_only_stack_smoke.py"]),
+        ("mix_suite_smoke", [py, "scripts/check_mix_suite_smoke.py"]),
+        ("combine_smoke", [py, "scripts/check_combine_smoke.py"]),
+        ("minjson_smoke", [py, "scripts/check_minjson_smoke.py"]),
+        ("simenv_smoke", [py, "scripts/check_simenv_smoke.py"]),
+        ("suite_scoring_logic", [py, "scripts/check_suite_scoring_logic.py"]),
         ("integrate_claude_code_smoke", [py, "examples/integrate-claude-code/run_demo.py"]),
         ("integrate_codex_smoke", [py, "examples/integrate-codex/run_demo.py"]),
         ("integrate_openai_agents_smoke", [py, "examples/integrate-openai-agents/run_demo.py"]),

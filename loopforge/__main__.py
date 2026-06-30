@@ -116,11 +116,17 @@ def cmd_export(args: argparse.Namespace) -> int:
         print(f"Error: spec not found: {spec_path}", file=sys.stderr)
         return 2
     try:
-        out = export_stub(spec_path, Path(args.out), args.target)
+        if args.format == "minjson":
+            out = export_minjson(spec_path, Path(args.out) if args.out else None)
+        else:
+            if not args.target:
+                print("Error: --target required for stub export", file=sys.stderr)
+                return 2
+            out = export_stub(spec_path, Path(args.out), args.target)
     except ValueError as exc:
         print(str(exc), file=sys.stderr)
         return 1
-    print(f"Exported {args.target} stub to {out}")
+    print(f"Exported {args.format or args.target} to {out}")
     return 0
 
 
@@ -194,6 +200,111 @@ def cmd_intent(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_combine(args: argparse.Namespace) -> int:
+    from loopforge.combine import combine_loops, save_combined_spec
+    from loopforge.compact import dumps_compact_json
+
+    library = [x.strip() for x in args.library.split(",")] if args.library else None
+    paths = [x.strip() for x in args.specs.split(",")] if args.specs else None
+    patterns = [p.strip() for p in args.patterns.split(",")] if args.patterns else None
+    forks = [f.strip() for f in args.forks.split(",")] if args.forks else None
+
+    if not any([args.recipe, library, paths, patterns, forks]):
+        print("Error: provide recipe, --library, --specs, --patterns, or --forks", file=sys.stderr)
+        return 2
+    if not args.output:
+        print("Error: -o/--output required", file=sys.stderr)
+        return 2
+
+    loop_name = args.name or (args.recipe or "combined-loop")
+    objective = args.objective or f"Run the {loop_name} combined pipeline."
+    try:
+        spec, meta = combine_loops(
+            loop_name,
+            objective,
+            recipe_id=args.recipe,
+            patterns=patterns,
+            forks=forks,
+            library_names=library,
+            spec_paths=paths,
+            mode=args.mode,
+            flatten=not args.no_flatten,
+            compact=not args.no_compact,
+            validate=not args.no_validate,
+            max_tokens=args.max_tokens,
+        )
+        out = Path(args.output)
+        stats = save_combined_spec(spec, out, compact=not args.no_compact, validate=not args.no_validate)
+    except (KeyError, ValueError, FileNotFoundError) as exc:
+        print(str(exc), file=sys.stderr)
+        return 1
+
+    if args.json:
+        print(
+            dumps_compact_json(
+                {
+                    "ok": True,
+                    "spec": str(out),
+                    "mode": meta.get("mode"),
+                    "flatten": meta.get("flatten"),
+                    "tokens": stats.get("estimated_tokens"),
+                    "method": meta.get("method"),
+                }
+            )
+        )
+    else:
+        print(f"Wrote {out} (mode={meta.get('mode')}, flatten={meta.get('flatten')}, ~{stats.get('estimated_tokens')} tokens)")
+    if args.print_yaml:
+        print(out.read_text(encoding="utf-8"))
+    return 0
+
+
+def cmd_mix(args: argparse.Namespace) -> int:
+    from loopforge.mix import list_recipes, mix_spec, save_mixed_spec
+
+    if args.list:
+        for recipe in list_recipes():
+            suite = recipe.get("default_suite") or "grand"
+            print(f"  {recipe['id']:18}  {recipe.get('label', '')}  suite={suite}")
+        return 0
+
+    recipe_id = args.recipe
+    patterns = [p.strip() for p in args.patterns.split(",")] if args.patterns else None
+    forks = [f.strip() for f in args.forks.split(",")] if args.forks else None
+    if not recipe_id and not patterns and not forks:
+        print("Error: provide recipe, --patterns, or --forks", file=sys.stderr)
+        return 2
+
+    if not args.output:
+        print("Error: -o/--output required", file=sys.stderr)
+        return 2
+
+    loop_name = args.name or (recipe_id or "mixed-loop")
+    objective = args.objective or f"Run the {loop_name} mixed loop pipeline."
+    try:
+        spec, meta = mix_spec(
+            loop_name=loop_name,
+            objective=objective,
+            recipe_id=recipe_id,
+            patterns=patterns,
+            forks=forks,
+            mode=args.mode,
+            flatten=args.flatten,
+        )
+        out = Path(args.output)
+        save_mixed_spec(spec, out, validate=not args.no_validate, compact=args.compact)
+    except (KeyError, ValueError, FileNotFoundError) as exc:
+        print(str(exc), file=sys.stderr)
+        return 1
+    from loopforge.compact import estimate_tokens
+
+    tokens = estimate_tokens(spec)
+    print(f"Wrote {out} (mode={meta.get('mode')}, recipe={recipe_id}, flatten={meta.get('flatten')}, ~{tokens} tokens)")
+    if args.print_yaml:
+        print(out.read_text(encoding="utf-8"))
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="loopforge",
@@ -244,10 +355,11 @@ def build_parser() -> argparse.ArgumentParser:
     compose_p.add_argument("--no-validate", action="store_true")
     compose_p.set_defaults(func=cmd_compose)
 
-    export_p = sub.add_parser("export", help="Export spec to runnable stub")
+    export_p = sub.add_parser("export", help="Export spec to runnable stub or LSS-min JSON")
     export_p.add_argument("--spec", required=True, help="LSS YAML path")
-    export_p.add_argument("--target", required=True, choices=["generic", "langgraph", "crewai", "openai_agents"])
-    export_p.add_argument("--out", required=True, help="Output directory")
+    export_p.add_argument("--format", choices=["stub", "minjson"], default="stub")
+    export_p.add_argument("--target", choices=["generic", "langgraph", "crewai", "openai_agents"], help="Stub target")
+    export_p.add_argument("--out", required=True, help="Output directory or .min.json path")
     export_p.set_defaults(func=cmd_export)
 
     intent_p = sub.add_parser("intent", help="Compile natural language intent to LSS YAML (LE-OP-15)")
@@ -269,6 +381,41 @@ def build_parser() -> argparse.ArgumentParser:
     sub.add_parser("demo", help="Scaffold and validate all patterns (smoke test)").set_defaults(
         func=cmd_demo
     )
+
+    mix_p = sub.add_parser("mix", help="Mix patterns/recipes into one LSS spec")
+    mix_p.add_argument("--list", action="store_true", help="List bundled recipes")
+    mix_p.add_argument("recipe", nargs="?", help="Recipe id (dev-agent, swarm-review, …)")
+    mix_p.add_argument("--patterns", help="Comma-separated patterns")
+    mix_p.add_argument("--forks", help="Comma-separated library fork names")
+    mix_p.add_argument("--mode", choices=["sequential", "parallel", "nested"])
+    mix_p.add_argument("--objective", help="Pipeline objective")
+    mix_p.add_argument("--name", "-n", help="loop_name")
+    mix_p.add_argument("-o", "--output", help="Output YAML path")
+    mix_p.add_argument("--flatten", action="store_true", default=True, help="Flat single-file spec (default)")
+    mix_p.add_argument("--no-flatten", dest="flatten", action="store_false")
+    mix_p.add_argument("--compact", action="store_true", default=True, help="Compact YAML (default)")
+    mix_p.add_argument("--no-compact", dest="compact", action="store_false")
+    mix_p.add_argument("--no-validate", action="store_true")
+    mix_p.add_argument("--print-yaml", action="store_true")
+    mix_p.set_defaults(func=cmd_mix)
+
+    comb_p = sub.add_parser("combine", help="Combine library loops, specs, or recipes (token-efficient)")
+    comb_p.add_argument("recipe", nargs="?", help="Recipe id (optional if using --library/--specs)")
+    comb_p.add_argument("--library", help="Comma-separated loop-library names (research-agent,coding-agent)")
+    comb_p.add_argument("--specs", help="Comma-separated paths to LSS YAML files")
+    comb_p.add_argument("--patterns", help="Comma-separated patterns")
+    comb_p.add_argument("--forks", help="Comma-separated library fork names")
+    comb_p.add_argument("--mode", choices=["sequential", "parallel", "nested"], default="sequential")
+    comb_p.add_argument("--objective", help="Combined pipeline objective")
+    comb_p.add_argument("--name", "-n", help="loop_name")
+    comb_p.add_argument("-o", "--output", help="Output YAML path")
+    comb_p.add_argument("--no-flatten", action="store_true", help="Keep LSS 1.1 child refs instead of flat merge")
+    comb_p.add_argument("--no-compact", action="store_true", help="Verbose YAML")
+    comb_p.add_argument("--no-validate", action="store_true")
+    comb_p.add_argument("--max-tokens", type=int, help="Cap estimated spec tokens")
+    comb_p.add_argument("--json", action="store_true")
+    comb_p.add_argument("--print-yaml", action="store_true")
+    comb_p.set_defaults(func=cmd_combine)
 
     return parser
 

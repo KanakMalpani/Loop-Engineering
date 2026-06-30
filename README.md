@@ -42,7 +42,7 @@ Not prompt tricks. Not single agents. **Closed loops** — observe, act, evaluat
 
 **Quick Install:**
 ```bash
-pip install "le-loop-stack>=0.1.0"
+pip install "le-loop-stack>=0.4.0"
 ```
 
 ---
@@ -183,7 +183,7 @@ You do not need to replace your existing agent stack. Map your existing agent lo
 
 ```bash
 # Install the complete stack
-pip install "le-loop-stack>=0.1.0"
+pip install "le-loop-stack>=0.4.0"
 
 # Scaffold a loop spec from an English description
 loopforge intent "Create a code-repair loop with a test-runner evaluator" -o mapped.yaml --suggest-level
@@ -199,7 +199,7 @@ loopctl score --spec mapped.yaml --json
 | Profile | Recommended Onboarding Path | Expected Time |
 | :--- | :--- | :--- |
 | **The Theorist** | [Manifesto](manifesto/MANIFESTO.md) → [Fundamentals](fundamentals/README.md) | ~2 hours |
-| **The Builder** | [Golden Path v3](contributions/GOLDEN_PATH.md) → `pip install le-loop-stack` → [Integration Hub](contributions/integrate/README.md) | ~15 min |
+| **The Builder** | [Golden Path v6](contributions/GOLDEN_PATH.md) → `pip install le-loop-stack` → [Integration Hub](contributions/integrate/README.md) | ~15 min |
 | **The Practitioner** | [Loop Playground](contributions/LOOP_PLAYGROUND.md) → [Live Leaderboard](https://kanakmalpani.github.io/LoopBench/) | ~30 min |
 | **The Researcher** | [Paper Series](research/PAPER_SERIES.md) → [LoopNet v0.2](research/LOOPNET.md) → [Case Studies](case-studies/README.md) | ~1 day |
 | **The Architect** | [D-D-M-I-S Framework](framework/README.md) → [LES scoring](scoring/LES-1.0.md) | ~2 hours |

@@ -1,0 +1,83 @@
+{
+  "schema_version": "1.1",
+  "tools": [
+    {
+      "name": "loop_combine",
+      "description": "Merge loop-library templates into one flat compact LSS spec (token-efficient)",
+      "command": "loop combine --library {library} --intent \"{intent}\" -o {output} --json",
+      "parameters": {
+        "library": { "type": "string", "description": "Comma-separated loop-library names" },
+        "intent": { "type": "string" },
+        "output": { "type": "string", "default": "combined.yaml" },
+        "mode": { "type": "string", "enum": ["sequential", "parallel", "nested"], "default": "sequential", "optional": true },
+        "max_tokens": { "type": "integer", "optional": true, "description": "Progressive compact until estimate <= budget" }
+      },
+      "returns": { "ok": "boolean", "spec": "string", "tokens": "number", "token_budget": "object", "bench_cmd": "string" }
+    },
+    {
+      "name": "loop_chain_quick",
+      "description": "Quick combine via library with optional token budget",
+      "command": "loop quick \"{intent}\" --library {library} --max-tokens {max_tokens} --json",
+      "parameters": {
+        "intent": { "type": "string" },
+        "library": { "type": "string" },
+        "max_tokens": { "type": "integer", "default": 1200, "optional": true }
+      },
+      "returns": { "ok": "boolean", "spec": "string", "tokens": "number", "les": "number" }
+    },
+    {
+      "name": "loop_spec_minify",
+      "description": "Export LSS-min JSON subset for agent system prompts",
+      "command": "loopctl spec minify {spec} -o {output} --json",
+      "parameters": {
+        "spec": { "type": "string" },
+        "output": { "type": "string", "optional": true }
+      },
+      "returns": { "ok": "boolean", "path": "string" }
+    },
+    {
+      "name": "loop_mix",
+      "description": "Mix named recipes or patterns into one LSS YAML spec (flatten + compact by default)",
+      "command": "loop mix {recipe} --intent \"{intent}\" --json",
+      "parameters": {
+        "recipe": { "type": "string", "enum": ["dev-agent", "research-pipeline", "swarm-review", "safe-repair", "full-stack", "cursor-repair", "dspy-compile"] },
+        "intent": { "type": "string" },
+        "output": { "type": "string", "optional": true }
+      },
+      "returns": { "ok": "boolean", "spec": "string", "suite": "string", "tokens": "number" }
+    },
+    {
+      "name": "loop_quick",
+      "description": "One-liner intent → compact spec + LES + bench hint",
+      "command": "loop quick \"{intent}\" --json",
+      "parameters": {
+        "intent": { "type": "string" },
+        "library": { "type": "string", "optional": true },
+        "recipe": { "type": "string", "optional": true },
+        "max_tokens": { "type": "integer", "optional": true }
+      },
+      "returns": { "ok": "boolean", "spec": "string", "les": "number", "tokens": "number" }
+    },
+    {
+      "name": "loopbench_run_suite",
+      "description": "Run a LoopBench comparison suite on an LSS spec (SimEnv)",
+      "command": "loopbench run --suite {suite} --spec {spec} --seeds 0,1,2,3,4 -o {output}",
+      "parameters": {
+        "suite": { "type": "string", "enum": ["suite-repair", "suite-agent", "suite-knowledge", "suite-rigor"] },
+        "spec": { "type": "string" },
+        "output": { "type": "string", "default": "results.json" }
+      }
+    },
+    {
+      "name": "loopctl_pipeline",
+      "description": "Intent or recipe → validated LSS YAML + structural LES + bench command",
+      "command": "loopctl pipeline --recipe {recipe} --intent \"{intent}\" --suite {suite} --compact --json",
+      "parameters": {
+        "recipe": { "type": "string", "optional": true },
+        "intent": { "type": "string" },
+        "suite": { "type": "string", "optional": true }
+      }
+    }
+  ],
+  "install": "pip install \"le-loop-stack>=0.4.0\""
+}

@@ -42,9 +42,10 @@ Run workflows on `main` in this order:
 
 | Order | Workflow | Package | Version in repo |
 |-------|----------|---------|-----------------|
-| 1 | Publish loopforge to PyPI | `le-loopforge` | 0.2.1 |
-| 2 | Publish loopctl to PyPI | `le-loopctl` | 0.2.0 |
-| 3 | Publish le-loop-stack to PyPI | `le-loop-stack` | 0.1.0 |
+| 1 | Publish loopforge to PyPI | `le-loopforge` | 0.5.0 |
+| 2 | Publish loopctl to PyPI | `le-loopctl` | 0.5.0 |
+| 3 | Publish loopbench to PyPI | `loopbench` | 0.2.0 |
+| 4 | Publish le-loop-stack to PyPI | `le-loop-stack` | 0.4.0 |
 
 **Actions** → select workflow → **Run workflow** → branch `main`.
 
@@ -58,7 +59,7 @@ pip index versions le-loop-stack
 Or fresh venv:
 
 ```bash
-pip install "le-loop-stack>=0.1.0"
+pip install "le-loop-stack>=0.4.0"
 loopctl score --spec path/to/minimal-loop.yaml --json
 ```
 
@@ -100,9 +101,20 @@ First upload of `le-loop-stack` requires either:
 
 ## Local publish (fallback)
 
+Wheels for Wave 16 stack (built locally):
+
+| Package | Version | Path |
+|---------|---------|------|
+| loopbench | 0.2.0 | `07-loopbench/dist/` |
+| le-loopforge | 0.5.0 | `01-loop-engineering/loopforge/dist/` |
+| le-loopctl | 0.5.0 | `01-loop-engineering/loopctl/dist/` |
+| le-loop-stack | 0.4.0 | `01-loop-engineering/stack/dist/` |
+
 ```bash
 cd loopctl && python -m build
 python -m twine upload dist/*   # TWINE_USERNAME=__token__ TWINE_PASSWORD=pypi-...
 ```
+
+Publish order: loopbench → loopforge → loopctl → le-loop-stack.
 
 Registry: [ECOSYSTEM_VERSIONS.md](../../ECOSYSTEM_VERSIONS.md)

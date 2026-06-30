@@ -1,0 +1,19 @@
+# Example user recipe overrides
+
+# Merge with bundled recipes.yaml via load_recipes_index().
+# Place at ~/.loop/recipes.yaml or ./recipes.local.yaml
+
+recipes:
+  - id: dev-agent
+    label: Team dev agent (custom forks)
+    patterns: [plan, react, verification]
+    forks: [coding-agent, autonomous-debugger, autonomous-debugger]
+    mode: sequential
+    default_suite: suite-repair
+
+  - id: my-team-pipeline
+    label: Custom research → repair pipeline
+    patterns: [research, verification]
+    forks: [research-agent, autonomous-debugger]
+    mode: sequential
+    default_suite: suite-knowledge

@@ -20,8 +20,17 @@ def main() -> int:
         py = venv / ("Scripts" if sys.platform == "win32" else "bin") / "python"
 
         steps = [
-            [str(pip), "install", "-q", "-e", str(ROOT / "loopforge"), "-e", str(ROOT / "loopctl"), "loopgym"],
-            [str(pip), "install", "-q", "-e", str(ROOT / "stack")],
+            [
+                str(pip),
+                "install",
+                "-q",
+                "-e",
+                str(ROOT / "loopforge"),
+                "-e",
+                str(ROOT / "loopctl"),
+                "loopgym",
+            ],
+            [str(pip), "install", "-q", "-e", str(ROOT / "stack"), "--no-deps"],
             [str(py), "-m", "loopforge", "demo"],
             [str(py), "-m", "loopctl", "validate", str(spec)],
         ]

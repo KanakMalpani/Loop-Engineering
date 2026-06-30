@@ -11,9 +11,9 @@
 | Loop ID registry | [Loop-Core-Engineering/specs/loop-ids.md](https://github.com/KanakMalpani/Loop-Core-Engineering/blob/main/specs/loop-ids.md) |
 | Failure taxonomy | [Loop-Core-Engineering/specs/failure-taxonomy.md](https://github.com/KanakMalpani/Loop-Core-Engineering/blob/main/specs/failure-taxonomy.md) |
 | Loop Trace 1.0 | [standards/LOOP-TRACE-1.0.md](../standards/LOOP-TRACE-1.0.md) (discipline repo) |
-| LoopForge (creation) | [loopforge/](../loopforge/) · PyPI **`le-loopforge`** **0.2.1** (CLI: `loopforge`) |
-| loopctl (toolchain) | [loopctl/](../loopctl/) · PyPI **`le-loopctl`** **0.2.0** (CLI: `loopctl`) |
-| le-loop-stack (meta) | [stack/](../stack/) · PyPI **`le-loop-stack`** **0.1.0** |
+| LoopForge (creation) | [loopforge/](../loopforge/) · PyPI **`le-loopforge`** **0.5.0** (CLI: `loopforge`, `combine`, `LoopChain`) |
+| loopctl (toolchain) | [loopctl/](../loopctl/) · PyPI **`le-loopctl`** **0.5.0** (CLI: `loopctl`, `loop`, `combine`) |
+| le-loop-stack (meta) | [stack/](../stack/) · PyPI **`le-loop-stack`** **0.4.0** |
 
 PyPI naming: [PYPI_NAMING.md](../contributions/PYPI_NAMING.md)
 
@@ -29,9 +29,9 @@ Version registry: [ECOSYSTEM_VERSIONS.md](../ECOSYSTEM_VERSIONS.md) (discipline 
 | LoopNet | https://github.com/KanakMalpani/loopnet | **v0.3** schema (preview) · v0.2 dataset live |
 | LoopGym | https://github.com/KanakMalpani/LoopGym | PyPI `loopgym` **0.1.2** |
 | LoopBench | https://github.com/KanakMalpani/LoopBench | PyPI `loopbench` **0.1.1** |
-| LoopForge | https://github.com/KanakMalpani/Loop-Engineering/tree/main/loopforge | PyPI **`le-loopforge`** **0.2.1** |
-| loopctl | https://github.com/KanakMalpani/Loop-Engineering/tree/main/loopctl | PyPI **`le-loopctl`** **0.2.0** |
-| le-loop-stack | https://github.com/KanakMalpani/Loop-Engineering/tree/main/stack | PyPI **`le-loop-stack`** **0.1.0** |
+| LoopForge | https://github.com/KanakMalpani/Loop-Engineering/tree/main/loopforge | PyPI **`le-loopforge`** **0.5.0** |
+| loopctl | https://github.com/KanakMalpani/Loop-Engineering/tree/main/loopctl | PyPI **`le-loopctl`** **0.5.0** |
+| le-loop-stack | https://github.com/KanakMalpani/Loop-Engineering/tree/main/stack | PyPI **`le-loop-stack`** **0.4.0** |
 
 LoopNet dataset (Tier 1): https://huggingface.co/datasets/KanakMalpani/loopnet-v0.2  
 LoopNet v0.3 preview: [docs/loopnet/HF-v0.3-preview.md](../docs/loopnet/HF-v0.3-preview.md)

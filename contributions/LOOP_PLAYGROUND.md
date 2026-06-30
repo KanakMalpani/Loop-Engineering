@@ -9,7 +9,7 @@
 ## 60-second path (no benchmark)
 
 ```bash
-pip install "le-loop-stack>=0.1.0"
+pip install "le-loop-stack>=0.3.0"
 
 loopforge intent "Fix failing tests with minimal diff" -o my-loop.yaml --suggest-level
 loopctl validate my-loop.yaml
@@ -24,6 +24,39 @@ You now have a validated LSS spec and structural LES. Optional: [Golden Path v3]
 
 Run on fixed tasks and seeds — results are auditable.
 
+### Comparison suites (Wave 15 — preferred)
+
+LoopBench v0.2 ranks **19 micro-tasks** via **4 comparison suites** — not 19 flat leaderboard columns. Full task list: [SUITE-OVERVIEW.md](../docs/ecosystem-sync/LoopBench/docs/SUITE-OVERVIEW.md).
+
+| Suite | Micro-tasks | Mix recipe | Guide |
+|-------|-------------|------------|-------|
+| `suite-repair` | CR, ReAct, Reflexion, OPT, SAFE | `dev-agent` | [BEAT_suite-repair.md](./BEAT_suite-repair.md) |
+| `suite-agent` | MA, Crew, Graph, ToT, Vote | `swarm-review` | [BEAT_suite-agent.md](./BEAT_suite-agent.md) |
+| `suite-knowledge` | RS, RAG, Bootstrap, Auto | `research-pipeline` | [BEAT_suite-knowledge.md](./BEAT_suite-knowledge.md) |
+| `suite-rigor` | COMP, Nest, Sim, HITL, Mem | `safe-repair` | [BEAT_suite-rigor.md](./BEAT_suite-rigor.md) |
+
+**Typical suite run:**
+
+```bash
+pip install "le-loop-stack>=0.3.0"
+
+loop mix dev-agent --intent "Fix CI tests" -o my-loop.yaml --json
+loopbench run --suite suite-repair --spec my-loop.yaml --seeds 0,1,2,3,4 -o results.json
+loopbench validate results.json
+```
+
+**Ranking:** **Generalist** tab uses `grand_composite.rank_score` (mean of suite scores). **Suite tabs** use `suite_scores.<suite-id>.rank_score`. Rows with `partial: true` (fewer than 4 suites) appear on suite tabs only.
+
+Run all four suites for full generalist eligibility:
+
+```bash
+for s in suite-repair suite-agent suite-knowledge suite-rigor; do
+  loopbench run --suite "$s" --spec my-loop.yaml --seeds 0,1,2,3,4 -o "results-$s.json"
+done
+```
+
+### Single-task path (still valid — easy on-ramp)
+
 | Task | Guide | Good-first issue |
 |------|-------|------------------|
 | LB-CR-1 Code repair | [BEAT_LB-CR-1.md](./BEAT_LB-CR-1.md) | [#4](https://github.com/KanakMalpani/Loop-Engineering/issues/4) |
@@ -31,17 +64,10 @@ Run on fixed tasks and seeds — results are auditable.
 | LB-MA-1 Multi-agent debate | [BEAT_LB-MA-1.md](./BEAT_LB-MA-1.md) | [#6](https://github.com/KanakMalpani/Loop-Engineering/issues/6) |
 | LB-COMP-1 Composed swarm | [BEAT_LB-COMP-1.md](./BEAT_LB-COMP-1.md) | composed spec + LoopGym |
 
-**Typical run:**
-
 ```bash
-pip install "le-loop-stack>=0.1.0" loopbench loopgym pyyaml jsonschema
+pip install "le-loop-stack>=0.3.0"
 
-loopbench run \
-  --task LB-CR-1 \
-  --spec my-loop.yaml \
-  --seeds 0,1,2,3,4 \
-  -o results.json
-
+loopbench run --task LB-CR-1 --spec my-loop.yaml --seeds 0,1,2,3,4 -o results.json
 loopbench validate results.json
 ```
 
@@ -83,7 +109,7 @@ Maintainer dry-runs do **not** count toward [adoption tracker](../docs/adoption-
 | Documented seeds (default `0,1,2,3,4`) | Reproducibility |
 | `repro_command` in row (single-line) | One-click re-run for reviewers |
 
-Optional row fields: `harness` (`native`, `cursor`, `langgraph`, `crewai`), `trace_uri`, `verified_external: true` (set by maintainer on merge).
+Optional row fields: `harness` (`native`, `cursor`, `langgraph`, `crewai`), `trace_uri`, `suite_scores`, `grand_composite`, `primary_suite`, `partial`, `verified_external: true` (set by maintainer on merge).
 
 Full template: [external-template-row.json](../docs/submission-dry-run/external-template-row.json)
 

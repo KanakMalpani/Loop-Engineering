@@ -4,8 +4,22 @@
   "spec_hash": "sha256:REPLACE_AFTER_HASHING_SPEC",
   "harness": "native",
   "trace_uri": "https://github.com/YOUR_ORG/YOUR_REPO/blob/main/partner/trace.json",
-  "repro_command": "loopbench run --task LB-CR-1 --spec partner/lb-cr-1-spec.yaml --seeds 0,1,2,3,4 -o results.json",
-  "notes": "Partner submission — replace submitter, URLs, spec_hash, and results aggregate from loopbench validate",
+  "repro_command": "loopbench run --suite suite-repair --spec partner/lb-cr-1-spec.yaml --seeds 0,1,2,3,4 -o results.json",
+  "primary_suite": "suite-repair",
+  "partial": true,
+  "suite_scores": {
+    "suite-repair": {
+      "les_observed": 86.1,
+      "rank_score": 86.1,
+      "success_at_k": 0.8
+    }
+  },
+  "grand_composite": {
+    "les_observed": 86.1,
+    "rank_score": 86.1,
+    "suite_count": 1
+  },
+  "notes": "Partner submission — set partial:true until all 4 suites run; replace submitter, URLs, spec_hash, and aggregates from loopbench validate",
   "results": [
     {
       "task_id": "LB-CR-1",

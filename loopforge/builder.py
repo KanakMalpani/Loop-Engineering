@@ -145,6 +145,9 @@ class LoopBuilder:
             Pattern.REFLECTION: self._build_reflection,
             Pattern.VERIFICATION: self._build_verification,
             Pattern.RESEARCH: self._build_research,
+            Pattern.REACT: self._build_react,
+            Pattern.CREW: self._build_crew,
+            Pattern.PLAN: self._build_plan,
         }
         spec = builders[self._pattern]()
         spec["loop_name"] = self.loop_name
@@ -472,4 +475,77 @@ class LoopBuilder:
                 dimension_name="research_quality",
             )
         ]
+        return spec
+
+    def _build_react(self) -> dict[str, Any]:
+        router = "router"
+        tool = "tool_worker"
+        spec = self._shared_tail([router, tool], tool)
+        spec["memory"] = {"type": "session", "retention": {"unit": "iteration", "value": 1}}
+        spec["workers"] = [
+            self._worker(router, "Reason about next action from observations"),
+            self._worker(
+                tool,
+                "Execute tool call and return observation",
+                depends_on=[router],
+            ),
+        ]
+        spec["evaluators"] = [
+            self._quality_rubric(
+                "quality_rubric",
+                [tool],
+                criteria="Tool output moves task toward goal; no hallucinated observations",
+                dimension_name="tool_quality",
+            )
+        ]
+        spec["feedback_channels"].append(
+            {
+                "id": "observation_to_router",
+                "source": f"workers.{tool}",
+                "destination": f"workers.{router}",
+                "format": "structured",
+                "fields": ["raw_output", "summary", "passed"],
+                "max_tokens": 256,
+            }
+        )
+        return spec
+
+    def _build_crew(self) -> dict[str, Any]:
+        planner = "planner"
+        implementer = "implementer"
+        reviewer = "reviewer"
+        spec = self._shared_tail([planner, implementer, reviewer], reviewer)
+        spec["workers"] = [
+            self._worker(planner, "Break task into crew steps"),
+            self._worker(implementer, "Execute assigned crew task", depends_on=[planner]),
+            self._worker(reviewer, "Verify crew output quality", depends_on=[implementer]),
+        ]
+        spec["evaluators"] = [
+            self._quality_rubric(
+                "quality_rubric",
+                [reviewer],
+                criteria="Crew deliverable meets objective with clear handoffs",
+                dimension_name="crew_quality",
+            )
+        ]
+        return spec
+
+    def _build_plan(self) -> dict[str, Any]:
+        planner = "planner"
+        executor = "executor"
+        spec = self._shared_tail([planner, executor], executor)
+        spec["memory"] = {"type": "session", "retention": {"unit": "iteration", "value": 8}}
+        spec["workers"] = [
+            self._worker(planner, "Produce step plan under budget"),
+            self._worker(executor, "Execute current plan step", depends_on=[planner]),
+        ]
+        spec["evaluators"] = [
+            self._quality_rubric(
+                "quality_rubric",
+                [executor],
+                criteria="Plan step completed without scope creep",
+                dimension_name="plan_quality",
+            )
+        ]
+        spec["cost_limits"]["token_soft_cap"] = 6000
         return spec

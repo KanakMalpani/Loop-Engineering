@@ -5,7 +5,7 @@ Map your existing agent loop to LSS, score it, and optionally export — **witho
 **Install (one line):**
 
 ```bash
-pip install "le-loop-stack>=0.1.0"
+pip install "le-loop-stack>=0.3.0"
 ```
 
 **Golden Path:** [GOLDEN_PATH.md](../GOLDEN_PATH.md) · **North star:** [NORTH_STAR.md](../NORTH_STAR.md)

@@ -1,0 +1,44 @@
+# Named loop blends — reference in one token via `loopforge mix` / `loop mix`
+version: "0.1.0"
+recipes:
+  - id: dev-agent
+    label: Dev agent (plan -> react -> verify)
+    patterns: [plan, react, verification]
+    mode: sequential
+    default_suite: suite-repair
+  - id: research-pipeline
+    label: Research pipeline (research -> RAG-style retrieval -> reflection)
+    patterns: [research, research, reflection]
+    forks: [research-agent, research-agent, null]
+    mode: sequential
+    default_suite: suite-knowledge
+  - id: swarm-review
+    label: Swarm review (parallel research + debate -> merge)
+    patterns: [research, crew]
+    forks: [research-agent, coding-agent]
+    mode: parallel
+    default_suite: suite-agent
+  - id: safe-repair
+    label: Safe repair (verification nested with safety guard)
+    patterns: [verification, verification]
+    forks: [autonomous-debugger, autonomous-debugger]
+    mode: nested
+    default_suite: suite-rigor
+  - id: full-stack
+    label: Full stack (research -> crew -> verify)
+    patterns: [research, crew, verification]
+    forks: [research-agent, coding-agent, autonomous-debugger]
+    mode: sequential
+    default_suite: null
+  - id: cursor-repair
+    label: Cursor / IDE agent (verify + reflection)
+    patterns: [verification, reflection]
+    forks: [autonomous-debugger, coding-agent]
+    mode: sequential
+    default_suite: suite-repair
+  - id: dspy-compile
+    label: DSPy compile loop (bootstrap-optimize + verify)
+    patterns: [verification, verification]
+    forks: [autonomous-debugger, autonomous-debugger]
+    mode: nested
+    default_suite: suite-repair

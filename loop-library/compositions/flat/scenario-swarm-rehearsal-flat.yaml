@@ -1,0 +1,79 @@
+{loop_name: scenario-swarm-rehearsal-flat, version: 1.0.0, objective: Parallel worldview rehearsal then merged forecast (flat
+    pre-merge)., workers: [{id: experiment_designer, role: Design falsifiable PMF experiments, model: {provider: openai, name: gpt-4.1-mini,
+        temperature: 0.2}, inputs: [{from: inputs.task}], outputs: {name: ExperimentDesignerOutput, format: text}, timeout_seconds: 120,
+      retries: 1, cost_budget_usd: 0.3}, {id: operator, role: Execute experiment automation, model: {provider: openai, name: gpt-4.1-mini,
+        temperature: 0.2}, depends_on: [experiment_designer], inputs: [{from: inputs.task}], outputs: {name: OperatorOutput,
+        format: text}, timeout_seconds: 120, retries: 1, cost_budget_usd: 0.3}, {id: interviewer, role: Synthesize qualitative
+        signals, model: {provider: openai, name: gpt-4.1-mini, temperature: 0.2}, depends_on: [operator], inputs: [{from: inputs.task}],
+      outputs: {name: InterviewerOutput, format: text}, timeout_seconds: 120, retries: 1, cost_budget_usd: 0.3}, {id: judge,
+      role: Neutral kill-continue-pivot verdict, model: {provider: openai, name: gpt-4.1-mini, temperature: 0.2}, depends_on: [
+        interviewer], inputs: [{from: inputs.task}], outputs: {name: JudgeOutput, format: text}, timeout_seconds: 120, retries: 1,
+      cost_budget_usd: 0.3}, {id: query_planner, role: Decompose question into retrieval queries, model: {provider: openai,
+        name: gpt-4.1-mini, temperature: 0.2}, inputs: [{from: inputs.task}], outputs: {name: QueryPlannerOutput, format: text},
+      timeout_seconds: 120, retries: 1, cost_budget_usd: 0.3}, {id: retriever, role: Fetch evidence from search and corpora,
+      model: {provider: openai, name: gpt-4.1-mini, temperature: 0.2}, depends_on: [query_planner], inputs: [{from: inputs.task}],
+      outputs: {name: RetrieverOutput, format: text}, timeout_seconds: 120, retries: 1, cost_budget_usd: 0.3}, {id: synthesizer,
+      role: Draft brief from retrieved evidence, model: {provider: openai, name: gpt-4.1-mini, temperature: 0.2}, depends_on: [
+        retriever], inputs: [{from: inputs.task}], outputs: {name: SynthesizerOutput, format: text}, timeout_seconds: 120,
+      retries: 1, cost_budget_usd: 0.3}, {id: critic, role: Adversarial review triggering re-retrieval, model: {provider: openai,
+        name: gpt-4.1-mini, temperature: 0.2}, depends_on: [synthesizer], inputs: [{from: inputs.task}], outputs: {name: CriticOutput,
+        format: text}, timeout_seconds: 120, retries: 1, cost_budget_usd: 0.3}, {id: strategist, role: Generate ranked strategic
+        options, model: {provider: openai, name: gpt-4.1-mini, temperature: 0.2}, inputs: [{from: inputs.task}], outputs: {
+        name: StrategistOutput, format: text}, timeout_seconds: 120, retries: 1, cost_budget_usd: 0.3}, {id: financial_modeler,
+      role: Quantify scenario outcomes, model: {provider: openai, name: gpt-4.1-mini, temperature: 0.2}, depends_on: [strategist],
+      inputs: [{from: inputs.task}], outputs: {name: FinancialModelerOutput, format: text}, timeout_seconds: 120, retries: 1,
+      cost_budget_usd: 0.3}, {id: red_team, role: Adversarial challenge of assumptions, model: {provider: openai, name: gpt-4.1-mini,
+        temperature: 0.2}, depends_on: [strategist], inputs: [{from: inputs.task}], outputs: {name: RedTeamOutput, format: text},
+      timeout_seconds: 120, retries: 1, cost_budget_usd: 0.3}, {id: synthesizer, role: Merge into decision memo, model: {
+        provider: openai, name: gpt-4.1-mini, temperature: 0.2}, depends_on: [financial_modeler, red_team], inputs: [{from: inputs.task}],
+      outputs: {name: SynthesizerOutput, format: text}, timeout_seconds: 120, retries: 1, cost_budget_usd: 0.3}], evaluators: [
+    {id: falsification_log, type: llm_rubric, runs_after: [experiment_designer, operator], rubric: {dimensions: [{name: quality,
+            weight: 1.0, scale: [0, 1], criteria: Hypothesis falsification record}], pass_threshold: 0.75}, model: {provider: openai,
+        name: gpt-4.1-mini, temperature: 0}}, {id: signal_strength, type: llm_rubric, runs_after: [experiment_designer, operator],
+      rubric: {dimensions: [{name: quality, weight: 1.0, scale: [0, 1], criteria: Evidence strength rubric}], pass_threshold: 0.75},
+      model: {provider: openai, name: gpt-4.1-mini, temperature: 0}}, {id: experiment_integrity, type: llm_rubric, runs_after: [
+        experiment_designer, operator], rubric: {dimensions: [{name: quality, weight: 1.0, scale: [0, 1], criteria: Protocol
+              adherence check}], pass_threshold: 0.75}, model: {provider: openai, name: gpt-4.1-mini, temperature: 0}}, {
+      id: citation_verifier, type: llm_rubric, runs_after: [query_planner, retriever], rubric: {dimensions: [{name: quality,
+            weight: 1.0, scale: [0, 1], criteria: Citation integrity oracle}], pass_threshold: 0.75}, model: {provider: openai,
+        name: gpt-4.1-mini, temperature: 0}}, {id: hallucination_scan, type: llm_rubric, runs_after: [query_planner, retriever],
+      rubric: {dimensions: [{name: quality, weight: 1.0, scale: [0, 1], criteria: Entailment alignment check}], pass_threshold: 0.75},
+      model: {provider: openai, name: gpt-4.1-mini, temperature: 0}}, {id: coherence_rubric, type: llm_rubric, runs_after: [
+        query_planner, retriever], rubric: {dimensions: [{name: quality, weight: 1.0, scale: [0, 1], criteria: Rhetorical
+              coherence rubric}], pass_threshold: 0.75}, model: {provider: openai, name: gpt-4.1-mini, temperature: 0}}, {
+      id: scenario_stress, type: llm_rubric, runs_after: [strategist, financial_modeler], rubric: {dimensions: [{name: quality,
+            weight: 1.0, scale: [0, 1], criteria: Scenario stress tests}], pass_threshold: 0.75}, model: {provider: openai,
+        name: gpt-4.1-mini, temperature: 0}}, {id: kpi_alignment, type: llm_rubric, runs_after: [strategist, financial_modeler],
+      rubric: {dimensions: [{name: quality, weight: 1.0, scale: [0, 1], criteria: KPI alignment rubric}], pass_threshold: 0.75},
+      model: {provider: openai, name: gpt-4.1-mini, temperature: 0}}, {id: assumption_audit, type: llm_rubric, runs_after: [
+        strategist, financial_modeler], rubric: {dimensions: [{name: quality, weight: 1.0, scale: [0, 1], criteria: Explicit
+              assumption tracking}], pass_threshold: 0.75}, model: {provider: openai, name: gpt-4.1-mini, temperature: 0}}],
+  optimization_strategy: {type: prompt_refinement, max_steps: 28, config: {refinement_target: workers.judge}, rollback: {
+      on_metric_drop: 0.05, on_safety_failure: true}}, termination_conditions: {success: [{metric: primary_quality, operator: gte,
+        value: 0.82, consecutive: 1}], failure: [{type: safety_violation, action: halt}, {type: max_iterations, value: 10,
+        action: halt}], stall: [{metric: primary_quality, window_iterations: 3, min_improvement: 0.03, action: halt}]}, metrics: [
+    {name: primary_quality, primary: true, definition: Weighted score from primary evaluator rubric, source: evaluators.falsification_log,
+      unit: ratio, target: 0.78, regression_threshold: 0.05}, {name: cost_usd, definition: Total API spend per loop run, source: telemetry.cost,
+      unit: usd, target: 1.0}, {name: primary_quality, primary: true, definition: Weighted score from primary evaluator rubric,
+      source: evaluators.citation_verifier, unit: ratio, target: 0.8, regression_threshold: 0.05}, {name: cost_usd, definition: Total
+        API spend per loop run, source: telemetry.cost, unit: usd, target: 1.25}, {name: primary_quality, primary: true, definition: Weighted
+        score from primary evaluator rubric, source: evaluators.scenario_stress, unit: ratio, target: 0.82, regression_threshold: 0.05},
+    {name: cost_usd, definition: Total API spend per loop run, source: telemetry.cost, unit: usd, target: 2.0}], feedback_channels: [
+    {id: quality_to_judge, source: evaluators.falsification_log, destination: workers.judge, format: structured, fields: [
+        failure_codes, dimension_scores, remediation_hints], max_tokens: 500, when: score < pass_threshold}, {id: quality_to_optimizer,
+      source: evaluators.falsification_log, destination: optimization_strategy.prompt_refinement, format: structured, fields: [
+        failure_codes, remediation_hints], max_tokens: 200}, {id: quality_to_critic, source: evaluators.citation_verifier,
+      destination: workers.critic, format: structured, fields: [failure_codes, dimension_scores, remediation_hints], max_tokens: 500,
+      when: score < pass_threshold}, {id: quality_to_optimizer, source: evaluators.citation_verifier, destination: optimization_strategy.prompt_refinement,
+      format: structured, fields: [failure_codes, remediation_hints], max_tokens: 200}, {id: quality_to_synthesizer, source: evaluators.scenario_stress,
+      destination: workers.synthesizer, format: structured, fields: [failure_codes, dimension_scores, remediation_hints],
+      max_tokens: 500, when: score < pass_threshold}, {id: quality_to_optimizer, source: evaluators.scenario_stress, destination: optimization_strategy.prompt_refinement,
+      format: structured, fields: [failure_codes, remediation_hints], max_tokens: 200}], safety_constraints: [{id: injection-guard,
+      type: injection_detect, scope: pre_worker, applies_to: [experiment_designer, operator, interviewer, judge], action: quarantine,
+      severity: S1, on_error: halt, config: {max_risk_score: 0.7}}, {id: injection-guard, type: injection_detect, scope: pre_worker,
+      applies_to: [query_planner, retriever, synthesizer, critic], action: quarantine, severity: S1, on_error: halt, config: {
+        max_risk_score: 0.7}}, {id: injection-guard, type: injection_detect, scope: pre_worker, applies_to: [strategist, financial_modeler,
+        red_team, synthesizer], action: quarantine, severity: S1, on_error: halt, config: {max_risk_score: 0.7}}], cost_limits: {
+    per_iteration_usd: 0.9, cumulative_usd: 8.5, token_soft_cap: 12000, on_approach: {threshold_percent: 80, action: warn},
+    on_exceed: {action: halt}}, memory: {type: ephemeral}, inputs: {schema: {task: {type: string, description: Primary task
+          description or domain context, required: true}}}}

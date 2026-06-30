@@ -3,7 +3,7 @@
 Single source of truth for public version strings across the five-repo stack.  
 Update this file when any component releases; mirror changes in sibling repo READMEs.
 
-**Last updated:** 2026-06-25
+**Last updated:** 2026-06-28
 
 ---
 
@@ -33,11 +33,11 @@ Update this file when any component releases; mirror changes in sibling repo REA
 
 | Package | Version | Install | Repository |
 |---------|---------|---------|------------|
-| **le-loop-stack** | **0.1.0** | `pip install "le-loop-stack>=0.1.0"` | [stack/](stack/) |
-| le-loopforge | **0.2.1** | `pip install "le-loopforge>=0.2.1"` (CLI: `loopforge`) | [loopforge/](loopforge/) |
-| le-loopctl | **0.2.0** | `pip install "le-loopctl>=0.2.0"` (CLI: `loopctl`) | [loopctl/](loopctl/) |
+| **le-loop-stack** | **0.4.0** | `pip install "le-loop-stack>=0.4.0"` | [stack/](stack/) |
+| le-loopforge | **0.5.0** | `pip install "le-loopforge>=0.5.0"` (CLI: `loopforge`, `combine`, `LoopChain`) | [loopforge/](loopforge/) |
+| le-loopctl | **0.5.0** | `pip install "le-loopctl>=0.5.0"` (CLI: `loopctl`, `loop`, `combine`) | [loopctl/](loopctl/) |
 | loopgym | **0.1.2** | `pip install "loopgym>=0.1.2"` | [LoopGym](https://github.com/KanakMalpani/LoopGym) |
-| loopbench | **0.1.1** | `pip install "loopbench>=0.1.1"` | [LoopBench](https://github.com/KanakMalpani/LoopBench) |
+| loopbench | **0.2.0** | `pip install "loopbench>=0.2.0"` | [LoopBench](https://github.com/KanakMalpani/LoopBench) |
 
 Pin exact versions in reproduction docs; run `pip show le-loop-stack le-loopforge le-loopctl loopgym loopbench` after install.
 

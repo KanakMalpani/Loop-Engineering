@@ -1,0 +1,45 @@
+{
+  "Combine library loops": {
+    "prefix": "loop combine",
+    "body": [
+      "loop combine --library ${1:research-agent},${2:autonomous-debugger} \\",
+      "  --intent \"${3:Fix failing tests from CI}\" -o ${4:pipeline.yaml} --json"
+    ],
+    "description": "Merge loop-library templates into flat compact LSS"
+  },
+  "Quick with library": {
+    "prefix": "loop quick library",
+    "body": [
+      "loop quick \"${1:Fix failing tests}\" --library ${2:research-agent},${3:coding-agent} --json"
+    ],
+    "description": "One-liner combine + score JSON"
+  },
+  "Mix dev-agent recipe": {
+    "prefix": "@dev-agent",
+    "body": [
+      "loop mix dev-agent --intent \"${1:Fix CI tests}\" -o mixed.yaml --json"
+    ],
+    "description": "Named dev-agent recipe mix"
+  },
+  "Mix library pair": {
+    "prefix": "@library",
+    "body": [
+      "loop combine --library ${1:research-agent}+${2:coding-agent} --intent \"${3:Research then implement}\" -o out.yaml --json"
+    ],
+    "description": "Combine two library templates"
+  },
+  "LSS-min JSON export": {
+    "prefix": "loopforge minjson",
+    "body": [
+      "loopforge export --format minjson --spec ${1:spec.yaml} --out ${2:spec.min.json}"
+    ],
+    "description": "Export token-efficient LSS-min JSON for agent prompts"
+  },
+  "Token budget combine": {
+    "prefix": "loop combine budget",
+    "body": [
+      "loop combine --library ${1:research-agent},${2:coding-agent} --max-tokens ${3:800} --json -o compact.yaml"
+    ],
+    "description": "Combine with max token budget"
+  }
+}

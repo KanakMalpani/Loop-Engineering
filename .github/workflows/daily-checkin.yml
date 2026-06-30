@@ -21,7 +21,10 @@ jobs:
           python-version: "3.11"
 
       - name: Install dependencies
-        run: pip install pyyaml jsonschema
+        run: |
+          pip install loopgym
+          pip install -e ./loopforge
+          pip install -e ./loopctl --no-deps
 
       - name: Run daily health check
         id: check
@@ -32,6 +35,7 @@ jobs:
         continue-on-error: true
         env:
           GH_TOKEN: ${{ github.token }}
+          PYTHONPATH: ${{ github.workspace }}
 
       - name: Commit check-in log
         run: |

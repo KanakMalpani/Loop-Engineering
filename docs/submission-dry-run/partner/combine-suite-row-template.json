@@ -1,0 +1,12 @@
+{
+  "loop_id": "partner-combine-dry-run-001",
+  "loop_name": "partner-combine-repair",
+  "submitter": "EXTERNAL-PARTNER-DRY-RUN",
+  "spec_path": "https://raw.githubusercontent.com/KanakMalpani/Loop-Engineering/main/loop-library/compositions/flat/debug-repair-flat.yaml",
+  "repro_command": "loopbench run --suite suite-repair --spec loop-library/compositions/flat/debug-repair-flat.yaml --seeds 0,1,2,3,4 -o results.json",
+  "notes": "DRY-RUN TEMPLATE ONLY — replace submitter, spec_path, and results before opening PR to LoopBench. Use loop combine or flat pre-merge path.",
+  "suite_scores": {
+    "suite-repair": { "mean": 0.0, "tasks": {} }
+  },
+  "grand_composite": { "mean": 0.0 }
+}

@@ -1,15 +1,15 @@
 # Partner LoopBench submission (30 minutes)
 
-For maintainers invited via [adoption wave 11](../scripts/adoption_wave11.py) — Agentless, Aider, OpenHands, and similar repair loops.
+For maintainers invited via [adoption wave 11](../scripts/adoption_wave11.py) or [wave 15](../scripts/adoption_wave15.py) — Agentless, Aider, OpenHands, and similar repair loops.
 
-**Goal:** First **non-maintainer** row on [LoopBench](https://kanakmalpani.github.io/LoopBench/) for task **LB-CR-1** (code repair).
+**Goal:** First **non-maintainer** row on [LoopBench](https://kanakmalpani.github.io/LoopBench/). **Preferred:** `suite-repair` via `--suite` (Path 1b). **Easy on-ramp:** single **LB-CR-1** task (Path 1a).
 
 ---
 
 ## Prerequisites
 
 ```bash
-pip install "le-loop-stack[bench]>=0.1.0"
+pip install "le-loop-stack[bench]>=0.4.0"
 ```
 
 Partner LSS stubs: [`docs/submission-dry-run/partner/`](../docs/submission-dry-run/partner/)
@@ -41,6 +41,19 @@ python scripts/run_submission_dryrun.py --partner agentless
 ```
 
 ### 2. Run benchmark (SimEnv — no API keys)
+
+**Preferred — suite-repair (Path 1b) with combine:**
+
+```bash
+loop combine --library research-agent,autonomous-debugger --intent "Fix CI tests" -o partner.yaml --json
+# Or zero-compose: loop-library/compositions/flat/debug-repair-flat.yaml
+loopbench run --suite suite-repair --spec partner.yaml --seeds 0,1,2,3,4 -o results.json
+loopbench validate results.json
+```
+
+Include `suite_scores.suite-repair` + `grand_composite` in your LoopBench row. See [BEAT_suite-repair.md](BEAT_suite-repair.md).
+
+**Easy on-ramp — single task (Path 1a):**
 
 ```bash
 loopbench run --task LB-CR-1 --spec my-lb-cr-1.yaml --seeds 0,1,2,3,4 -o results.json

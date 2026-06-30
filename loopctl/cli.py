@@ -8,9 +8,15 @@ import subprocess
 import sys
 from pathlib import Path
 
+from loopforge.export import export_minjson
 from loopforge.validate import load_schema, validate_spec, validate_yaml_file
 
+from loopctl.agent_cmds import add_agent_parsers
+from loopctl.bench_cmd import add_bench_parser
+from loopctl.combine_cmd import add_combine_parser
+from loopctl.mix_cmd import add_mix_parser
 from loopctl.pipeline import add_parser as add_pipeline_parser
+from loopctl.quick_cmd import add_quick_parser
 from loopctl.scoring.observed import score_trace
 from loopctl.scoring.structural import format_report, load_spec, score_spec_file
 
@@ -33,6 +39,24 @@ def bundled_minimal_spec() -> Path:
         if fallback.is_file():
             return fallback
     raise FileNotFoundError("minimal-loop.yaml not found in loopctl package or repo")
+
+
+def cmd_spec_minify(args: argparse.Namespace) -> int:
+    path = Path(args.spec)
+    if not path.exists():
+        print(f"Error: not found: {path}", file=sys.stderr)
+        return 2
+    out = Path(args.output) if args.output else path.with_suffix(".min.json")
+    try:
+        written = export_minjson(path, out)
+    except ValueError as exc:
+        print(str(exc), file=sys.stderr)
+        return 1
+    if args.json:
+        print(json.dumps({"ok": True, "path": str(written)}, separators=(",", ":")))
+    else:
+        print(f"Wrote LSS-min JSON: {written}")
+    return 0
 
 
 def cmd_validate(args: argparse.Namespace) -> int:
@@ -175,6 +199,19 @@ def build_parser() -> argparse.ArgumentParser:
     lvl.set_defaults(func=level)
 
     add_pipeline_parser(sub)
+    add_agent_parsers(sub)
+    add_quick_parser(sub)
+    add_mix_parser(sub)
+    add_combine_parser(sub)
+    add_bench_parser(sub)
+
+    spec = sub.add_parser("spec", help="Spec utilities")
+    spec_sub = spec.add_subparsers(dest="spec_cmd", required=True)
+    minify = spec_sub.add_parser("minify", help="Export LSS-min JSON for agent prompts")
+    minify.add_argument("spec", help="LSS YAML path")
+    minify.add_argument("-o", "--output", help="Output .min.json path")
+    minify.add_argument("--json", action="store_true")
+    minify.set_defaults(func=cmd_spec_minify)
 
     return parser
 

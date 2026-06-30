@@ -6,6 +6,7 @@ import re
 from pathlib import Path
 from typing import Any
 
+from loopforge.bundled_paths import library_root as bundled_lib_root
 from loopforge.builder import LoopBuilder
 from loopforge.composition import build_composition_spec
 from loopforge.library import fork_spec
@@ -37,9 +38,12 @@ COMPOSE_RULES: list[tuple[str, str]] = [
 
 INTENT_RULES: list[tuple[str, Pattern, str | None]] = [
     (r"\b(research|literature|sources?|cite|citation|brief|synthesize|hypothesis|papers?)\b", Pattern.RESEARCH, "research-agent"),
+    (r"\b(tool|react|observe|action|function.?call|smolagent)\b", Pattern.REACT, None),
+    (r"\b(crew|role|delegate|hierarchical|sequential crew)\b", Pattern.CREW, "coding-agent"),
+    (r"\b(plan|autogpt|autonomous|long.?horizon|multi.?step plan)\b", Pattern.PLAN, "coding-agent"),
     (r"\b(test|verify|debug|fix|failing|ci|lint|suite|patch|regression|flaky|validate)\b", Pattern.VERIFICATION, "autonomous-debugger"),
     (r"\b(summarize|summary|themes?|simple|single|one-shot|meeting|changelog|extract|interview)\b", Pattern.SIMPLE, None),
-    (r"\b(reflect|critique|review|feedback|revise|draft|peer|iterate|clarity)\b", Pattern.REFLECTION, None),
+    (r"\b(reflect|critique|review|feedback|revise|draft|peer|iterate|clarity|reflexion|memory)\b", Pattern.REFLECTION, None),
     (r"\b(code|implement|feature|diff|caching|security)\b", Pattern.VERIFICATION, "coding-agent"),
 ]
 
@@ -47,12 +51,18 @@ FORK_DEFAULTS = {
     Pattern.RESEARCH: "research-agent",
     Pattern.VERIFICATION: "autonomous-debugger",
     Pattern.REFLECTION: "coding-agent",
+    Pattern.REACT: None,
+    Pattern.CREW: "coding-agent",
+    Pattern.PLAN: "coding-agent",
     Pattern.SIMPLE: None,
 }
 
 
 def repo_root() -> Path:
-    return Path(__file__).resolve().parents[1]
+    root = Path(__file__).resolve().parents[1]
+    if (root / "loop-library").is_dir():
+        return root
+    return Path(__file__).resolve().parent
 
 
 def classify_compose_mode(text: str) -> str | None:
@@ -86,7 +96,7 @@ def slug_from_intent(text: str) -> str:
 
 
 def _child_specs_for_mode(mode: str) -> list[tuple[str, Path, str]]:
-    lib = repo_root() / "loop-library"
+    lib = bundled_lib_root()
     if mode == "parallel":
         return [
             ("research", lib / "research-agent.yaml", "research"),
@@ -114,7 +124,7 @@ def compile_intent(
     name = loop_name or slug_from_intent(intent)
 
     if label in COMPOSE_MODES:
-        out_stub = repo_root() / "loop-library" / "compositions" / f"{name}.yaml"
+        out_stub = bundled_lib_root() / "compositions" / f"{name}.yaml"
         child_specs = _child_specs_for_mode(label)
         spec = build_composition_spec(
             name,

@@ -1,0 +1,57 @@
+{loop_name: debug-repair-flat, version: 1.0.0, objective: Implement change then auto-debug until tests pass (flat pre-merge).,
+  workers: [{id: architect, role: Produce file-touch plan and test strategy before code changes, model: {provider: openai,
+        name: gpt-4.1-mini, temperature: 0.2}, inputs: [{from: inputs.task}], outputs: {name: ArchitectOutput, format: text},
+      timeout_seconds: 120, retries: 1, cost_budget_usd: 0.3}, {id: implementer, role: Implement change and run edit-test
+        inner loop, model: {provider: openai, name: gpt-4.1-mini, temperature: 0.2}, depends_on: [architect], inputs: [{from: inputs.task}],
+      outputs: {name: ImplementerOutput, format: text}, timeout_seconds: 120, retries: 1, cost_budget_usd: 0.3}, {id: reviewer,
+      role: 'Review diff for security, scope, and diff budget', model: {provider: openai, name: gpt-4.1-mini, temperature: 0.2},
+      depends_on: [implementer], inputs: [{from: inputs.task}], outputs: {name: ReviewerOutput, format: text}, timeout_seconds: 120,
+      retries: 1, cost_budget_usd: 0.3}, {id: reproducer, role: Confirm failure reproduces deterministically, model: {provider: openai,
+        name: gpt-4.1-mini, temperature: 0.2}, inputs: [{from: inputs.task}], outputs: {name: ReproducerOutput, format: text},
+      timeout_seconds: 120, retries: 1, cost_budget_usd: 0.3}, {id: diagnostician, role: Rank root-cause hypotheses from traces,
+      model: {provider: openai, name: gpt-4.1-mini, temperature: 0.2}, depends_on: [reproducer], inputs: [{from: inputs.task}],
+      outputs: {name: DiagnosticianOutput, format: text}, timeout_seconds: 120, retries: 1, cost_budget_usd: 0.3}, {id: patcher,
+      role: Apply minimal diff addressing root cause, model: {provider: openai, name: gpt-4.1-mini, temperature: 0.2}, depends_on: [
+        diagnostician], inputs: [{from: inputs.task}], outputs: {name: PatcherOutput, format: text}, timeout_seconds: 120,
+      retries: 1, cost_budget_usd: 0.3}, {id: verifier, role: Reject symptom fixes; require full suite pass, model: {provider: openai,
+        name: gpt-4.1-mini, temperature: 0.2}, depends_on: [patcher], inputs: [{from: inputs.task}], outputs: {name: VerifierOutput,
+        format: text}, timeout_seconds: 120, retries: 1, cost_budget_usd: 0.3}], evaluators: [{id: test_suite, type: llm_rubric,
+      runs_after: [architect, implementer], rubric: {dimensions: [{name: quality, weight: 1.0, scale: [0, 1], criteria: Functional
+              test oracle}], pass_threshold: 0.75}, model: {provider: openai, name: gpt-4.1-mini, temperature: 0}}, {id: linter,
+      type: llm_rubric, runs_after: [architect, implementer], rubric: {dimensions: [{name: quality, weight: 1.0, scale: [
+              0, 1], criteria: Static analysis gate}], pass_threshold: 0.75}, model: {provider: openai, name: gpt-4.1-mini,
+        temperature: 0}}, {id: diff_budget, type: llm_rubric, runs_after: [architect, implementer], rubric: {dimensions: [
+          {name: quality, weight: 1.0, scale: [0, 1], criteria: Complexity cap on changed lines}], pass_threshold: 0.75},
+      model: {provider: openai, name: gpt-4.1-mini, temperature: 0}}, {id: scope_guard, type: llm_rubric, runs_after: [architect,
+        implementer], rubric: {dimensions: [{name: quality, weight: 1.0, scale: [0, 1], criteria: Path allowlist enforcement}],
+        pass_threshold: 0.75}, model: {provider: openai, name: gpt-4.1-mini, temperature: 0}}, {id: repro_oracle, type: llm_rubric,
+      runs_after: [reproducer, diagnostician], rubric: {dimensions: [{name: quality, weight: 1.0, scale: [0, 1], criteria: Failure
+              reproduces before diagnose}], pass_threshold: 0.75}, model: {provider: openai, name: gpt-4.1-mini, temperature: 0}},
+    {id: test_suite, type: llm_rubric, runs_after: [reproducer, diagnostician], rubric: {dimensions: [{name: quality, weight: 1.0,
+            scale: [0, 1], criteria: Full test suite pass}], pass_threshold: 0.75}, model: {provider: openai, name: gpt-4.1-mini,
+        temperature: 0}}, {id: patch_budget, type: llm_rubric, runs_after: [reproducer, diagnostician], rubric: {dimensions: [
+          {name: quality, weight: 1.0, scale: [0, 1], criteria: Diff size within budget}], pass_threshold: 0.75}, model: {
+        provider: openai, name: gpt-4.1-mini, temperature: 0}}, {id: regression_guard, type: llm_rubric, runs_after: [reproducer,
+        diagnostician], rubric: {dimensions: [{name: quality, weight: 1.0, scale: [0, 1], criteria: No unrelated file changes}],
+        pass_threshold: 0.75}, model: {provider: openai, name: gpt-4.1-mini, temperature: 0}}], optimization_strategy: {type: prompt_refinement,
+    max_steps: 27, config: {refinement_target: workers.reviewer}, rollback: {on_metric_drop: 0.05, on_safety_failure: true}},
+  termination_conditions: {success: [{metric: primary_quality, operator: gte, value: 0.85, consecutive: 1}], failure: [{type: safety_violation,
+        action: halt}, {type: max_iterations, value: 15, action: halt}], stall: [{metric: primary_quality, window_iterations: 3,
+        min_improvement: 0.03, action: halt}]}, metrics: [{name: primary_quality, primary: true, definition: Weighted score
+        from primary evaluator rubric, source: evaluators.test_suite, unit: ratio, target: 0.88, regression_threshold: 0.05},
+    {name: cost_usd, definition: Total API spend per loop run, source: telemetry.cost, unit: usd, target: 2.5}, {name: primary_quality,
+      primary: true, definition: Weighted score from primary evaluator rubric, source: evaluators.repro_oracle, unit: ratio,
+      target: 0.85, regression_threshold: 0.05}, {name: cost_usd, definition: Total API spend per loop run, source: telemetry.cost,
+      unit: usd, target: 1.75}], feedback_channels: [{id: quality_to_reviewer, source: evaluators.test_suite, destination: workers.reviewer,
+      format: structured, fields: [failure_codes, dimension_scores, remediation_hints], max_tokens: 500, when: score < pass_threshold},
+    {id: quality_to_optimizer, source: evaluators.test_suite, destination: optimization_strategy.prompt_refinement, format: structured,
+      fields: [failure_codes, remediation_hints], max_tokens: 200}, {id: quality_to_verifier, source: evaluators.repro_oracle,
+      destination: workers.verifier, format: structured, fields: [failure_codes, dimension_scores, remediation_hints], max_tokens: 500,
+      when: score < pass_threshold}, {id: quality_to_optimizer, source: evaluators.repro_oracle, destination: optimization_strategy.prompt_refinement,
+      format: structured, fields: [failure_codes, remediation_hints], max_tokens: 200}], safety_constraints: [{id: injection-guard,
+      type: injection_detect, scope: pre_worker, applies_to: [architect, implementer, reviewer], action: quarantine, severity: S1,
+      on_error: halt, config: {max_risk_score: 0.7}}, {id: injection-guard, type: injection_detect, scope: pre_worker, applies_to: [
+        reproducer, diagnostician, patcher, verifier], action: quarantine, severity: S1, on_error: halt, config: {max_risk_score: 0.7}}],
+  cost_limits: {per_iteration_usd: 0.65, cumulative_usd: 8.5, token_soft_cap: 12000, on_approach: {threshold_percent: 80,
+      action: warn}, on_exceed: {action: halt}}, memory: {type: ephemeral}, inputs: {schema: {task: {type: string, description: Primary
+          task description or domain context, required: true}}}}

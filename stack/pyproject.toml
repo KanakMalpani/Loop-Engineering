@@ -4,13 +4,13 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "le-loop-stack"
-version = "0.1.0"
-description = "One-line install for Loop Engineering — loopforge, loopctl, and LoopGym"
+version = "0.4.0"
+description = "Everything for loop engineering — forge, score, run, benchmark, agent bridges"
 readme = "README.md"
 license = { text = "MIT" }
 requires-python = ">=3.10"
 authors = [{ name = "Loop Engineering Community" }]
-keywords = ["loop-engineering", "lss", "agents", "meta-package"]
+keywords = ["loop-engineering", "lss", "agents", "langgraph", "crewai", "meta-package"]
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
@@ -18,16 +18,21 @@ classifiers = [
     "Programming Language :: Python :: 3",
 ]
 dependencies = [
-    "le-loopforge>=0.2.1",
-    "le-loopctl>=0.2.0",
+    "le-loopforge>=0.5.0",
+    "le-loopctl>=0.5.0",
     "loopgym>=0.1.2",
+    "loopbench>=0.1.1",
 ]
 
 [project.optional-dependencies]
 langgraph = ["langgraph>=0.2.0"]
 crewai = ["crewai>=0.1.0"]
-bench = ["loopbench>=0.1.1"]
-all = ["langgraph>=0.2.0", "crewai>=0.1.0", "loopbench>=0.1.1"]
+agents = ["langgraph>=0.2.0", "crewai>=0.1.0"]
+all = ["langgraph>=0.2.0", "crewai>=0.1.0"]
+
+[project.scripts]
+loop = "loopctl.cli:main"
+loopctl = "loopctl.cli:main"
 
 [project.urls]
 Homepage = "https://github.com/KanakMalpani/Loop-Engineering"

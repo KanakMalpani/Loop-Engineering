@@ -35,6 +35,17 @@ def load_spec(path: Path) -> dict[str, Any]:
     return data
 
 
+def export_minjson(spec_path: Path, out_path: Path | None = None) -> Path:
+    """Write LSS-min JSON optimized for agent system prompts."""
+    from loopforge.compact import dumps_minjson, to_minjson
+
+    spec = load_spec(spec_path)
+    target = out_path or spec_path.with_suffix(".min.json")
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_text(dumps_minjson(to_minjson(spec)) + "\n", encoding="utf-8")
+    return target
+
+
 def export_stub(spec_path: Path, out_dir: Path, target: str) -> Path:
     if target not in EXPORT_TARGETS:
         raise ValueError(f"Unknown export target: {target} (choose {EXPORT_TARGETS})")

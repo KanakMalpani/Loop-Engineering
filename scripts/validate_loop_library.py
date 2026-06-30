@@ -104,7 +104,9 @@ def main() -> int:
 
     yaml_files = sorted(LIB.glob("*.yaml"))
     comp_files = sorted(COMP.glob("*.yaml")) if COMP.is_dir() else []
-    all_files = yaml_files + comp_files
+    flat_dir = COMP / "flat"
+    flat_files = sorted(flat_dir.glob("*.yaml")) if flat_dir.is_dir() else []
+    all_files = yaml_files + comp_files + flat_files
 
     if not all_files:
         print(f"Error: no YAML files in {LIB}", file=sys.stderr)
@@ -144,7 +146,7 @@ def main() -> int:
             print(f"  - {name}", file=sys.stderr)
         return 1
 
-    n_comp = len(comp_files)
+    n_comp = len(comp_files) + len(flat_files)
     print(f"OK: {len(yaml_files)} atomic + {n_comp} composed specs valid")
     return 0
 

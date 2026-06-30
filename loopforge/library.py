@@ -8,14 +8,19 @@ from pathlib import Path
 import yaml
 
 
+from loopforge.bundled_paths import library_root as _library_root
+
+
 def repo_root() -> Path:
-    return Path(__file__).resolve().parents[1]
+    """Discipline repo root when cloned; else bundled package parent."""
+    root = Path(__file__).resolve().parents[1]
+    if (root / "loop-library").is_dir():
+        return root
+    return Path(__file__).resolve().parent
 
 
 def library_root(custom: Path | None = None) -> Path:
-    if custom is not None:
-        return custom
-    return repo_root() / "loop-library"
+    return _library_root(custom)
 
 
 def resolve_library_path(name: str, library_dir: Path | None = None) -> Path:

@@ -10,21 +10,44 @@ Ready-to-use paths for the three highest-value **community-owned** adoption sign
 
 **Target:** Non-maintainer submitter on [leaderboard/entries.json](https://github.com/KanakMalpani/LoopBench/blob/main/leaderboard/entries.json).
 
-**Step 1 — scaffold with LoopForge:**
+### Dual-track policy (Wave 15/16)
+
+| Track | Path | When to use |
+|-------|------|-------------|
+| **Easy** | Path 1a — single `--task LB-CR-1` | First submission, repair harnesses, wave 11–12 partners |
+| **Preferred** | Path 1b — `--suite` + `suite_scores` | Generalist + suite-tab ranking, loop mix recipes |
+
+Both count as external adoption. Suite submissions rank on **generalist** (`grand_composite`) and **per-suite tabs**; single-task rows rank on that task only.
+
+### Path 1a — single task (LB-CR-1 easy on-ramp)
 
 ```bash
-pip install "le-loopforge>=0.2.0" "le-loopctl>=0.1.0" "loopgym>=0.1.2" loopbench
+pip install "le-loop-stack>=0.3.0"
 ```
 
-See [external-template-row.json](../docs/submission-dry-run/external-template-row.json) for the full command block and LoopBench row shape.
+See [external-template-row.json](../docs/submission-dry-run/external-template-row.json) for the full command block.
 
 1. Fork [LoopBench](https://github.com/KanakMalpani/LoopBench)
-2. Add your row to `leaderboard/entries.json` (see existing entries)
+2. Add your row to `leaderboard/entries.json`
 3. Open PR — reference [good-first #4](https://github.com/KanakMalpani/Loop-Engineering/issues/4)
 
-Full guides: [BEAT_LB-CR-1.md](BEAT_LB-CR-1.md) · [BEAT_LB-RS-1.md](BEAT_LB-RS-1.md) · [BEAT_LB-MA-1.md](BEAT_LB-MA-1.md) · [BEAT_LB-COMP-1.md](BEAT_LB-COMP-1.md)
+Guide: [BEAT_LB-CR-1.md](BEAT_LB-CR-1.md) · Partner pack: [PARTNER_LOOPBENCH_SUBMIT.md](PARTNER_LOOPBENCH_SUBMIT.md)
 
-**Other tasks:** LB-RS-1 → [#5](https://github.com/KanakMalpani/Loop-Engineering/issues/5) · LB-MA-1 → [#6](https://github.com/KanakMalpani/Loop-Engineering/issues/6) · LB-COMP-1 → composed spec + [LoopGym composed-swarm-v1](https://github.com/KanakMalpani/LoopGym)
+### Path 1b — comparison suite (preferred)
+
+```bash
+pip install "le-loop-stack>=0.3.0"
+
+loop mix dev-agent --intent "Fix CI tests" -o mixed.yaml --json
+loopbench run --suite suite-repair --spec mixed.yaml --seeds 0,1,2,3,4 -o results.json
+loopbench validate results.json
+```
+
+Submit with `suite_scores`, `grand_composite`, optional `primary_suite`, and `partial: false` when all 4 suites are present. Micro-task map: [SUITE-OVERVIEW.md](../docs/ecosystem-sync/LoopBench/docs/SUITE-OVERVIEW.md).
+
+Suite guides: [BEAT_suite-repair.md](BEAT_suite-repair.md) · [BEAT_suite-agent.md](BEAT_suite-agent.md) · [BEAT_suite-knowledge.md](BEAT_suite-knowledge.md) · [BEAT_suite-rigor.md](BEAT_suite-rigor.md)
+
+**Legacy single-task guides:** [BEAT_LB-RS-1.md](BEAT_LB-RS-1.md) · [BEAT_LB-MA-1.md](BEAT_LB-MA-1.md) · [BEAT_LB-COMP-1.md](BEAT_LB-COMP-1.md) · LB-RS-1 → [#5](https://github.com/KanakMalpani/Loop-Engineering/issues/5) · LB-MA-1 → [#6](https://github.com/KanakMalpani/Loop-Engineering/issues/6)
 
 ---
 
@@ -83,7 +106,7 @@ Template:
 
 ## Campaign
 
-Partner outreach: `python scripts/adoption_wave11.py` · follow-up `python scripts/adoption_wave12.py`
+Partner outreach: `python scripts/adoption_wave11.py` · follow-up `python scripts/adoption_wave12.py` · **Wave 15 suites:** `python scripts/adoption_wave15.py`
 
 Partner pack: [PARTNER_LOOPBENCH_SUBMIT.md](PARTNER_LOOPBENCH_SUBMIT.md) · Playbook: [EXTERNAL_ROW_PLAYBOOK.md](../docs/maintainer/EXTERNAL_ROW_PLAYBOOK.md)
 

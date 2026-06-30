@@ -12,6 +12,9 @@ class Pattern(str, Enum):
     REFLECTION = "reflection"
     VERIFICATION = "verification"
     RESEARCH = "research"
+    REACT = "react"
+    CREW = "crew"
+    PLAN = "plan"
 
     @classmethod
     def choices(cls) -> list[str]:
@@ -27,6 +30,14 @@ class Pattern(str, Enum):
             "verify": cls.VERIFICATION,
             "verification-loop": cls.VERIFICATION,
             "research-loop": cls.RESEARCH,
+            "tool-loop": cls.REACT,
+            "tool": cls.REACT,
+            "react-loop": cls.REACT,
+            "crew-loop": cls.CREW,
+            "sequential-crew-loop": cls.CREW,
+            "plan-execute-loop": cls.PLAN,
+            "plan": cls.PLAN,
+            "autogpt": cls.PLAN,
         }
         if normalized in aliases:
             return aliases[normalized]

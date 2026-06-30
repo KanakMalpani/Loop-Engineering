@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "le-loopforge"
-version = "0.2.1"
+version = "0.5.0"
 description = "Scaffold valid LSS loop specifications from common patterns"
 readme = "README.md"
 license = { text = "MIT" }
@@ -36,10 +36,7 @@ Repository = "https://github.com/KanakMalpani/Loop-Engineering"
 
 [tool.setuptools]
 package-dir = { "loopforge" = "." }
-
-[tool.setuptools.packages.find]
-where = ["."]
-include = ["loopforge*"]
+packages = ["loopforge"]
 
 [tool.setuptools.package-data]
-loopforge = ["schemas/*.json", "templates/export/**/*"]
+loopforge = ["schemas/*.json", "templates/export/**/*", "loop_library/**/*.yaml", "recipes.yaml"]

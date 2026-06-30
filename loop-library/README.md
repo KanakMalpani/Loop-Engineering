@@ -16,9 +16,9 @@ Production-ready **LSS 1.0** atomic loops plus **LSS 1.1 draft** composed loops 
 | [Interview Coach](./interview-coach.yaml) | 2 | Interview prep | 77 |
 | [Writing Assistant](./writing-assistant.yaml) | 2 | Long-form composition | 79 |
 
-## Composed loops (5)
+## Composed loops (5 + 3 flat pre-merged)
 
-Nested, sequential, and **parallel** pipelines in [`compositions/`](compositions/README.md):
+Nested, sequential, parallel, and **flat pre-merged** pipelines in [`compositions/`](compositions/README.md):
 
 | Composition | Type | Power |
 |-------------|------|-------|
@@ -27,6 +27,8 @@ Nested, sequential, and **parallel** pipelines in [`compositions/`](compositions
 | [research-code-nest](./compositions/research-code-nest.yaml) | **nested** | Research → prototype code |
 | [research-to-writing](./compositions/research-to-writing.yaml) | sequential | Brief → polished doc |
 | [startup-to-strategy](./compositions/startup-to-strategy.yaml) | sequential | PMF → strategy memo |
+
+**Zero-compose (flat, token-optimized):** [`compositions/flat/`](compositions/flat/README.md) — `debug-repair-flat.yaml`, `research-to-writing-flat.yaml`, `scenario-swarm-rehearsal-flat.yaml`
 
 ```bash
 python scripts/validate_loop_library.py

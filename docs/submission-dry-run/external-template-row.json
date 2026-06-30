@@ -6,14 +6,11 @@
   "results_path": "results.json",
   "trace_path": "trace.json",
   "observed_les_path": "observed-les.json",
-  "pip_install": "pip install \"le-loopforge>=0.2.0\" \"le-loopctl>=0.1.0\" \"loopgym>=0.1.2\" loopbench",
+  "pip_install": "pip install \"le-loop-stack>=0.3.0\"",
   "commands": [
-    "loopforge intent \"Fix failing tests from CI\" -o my-submission.yaml --suggest-level",
+    "loop mix dev-agent --intent \"Fix failing tests from CI\" -o my-submission.yaml --json",
     "loopctl validate my-submission.yaml",
-    "python -c \"import loopgym as lg; lg.make('loopbench/code-repair-v1').run_episode(task_id='cr-001', seed=42, trace_path='trace.json')\"",
-    "loopctl trace validate trace.json",
-    "loopctl observed trace.json --spec my-submission.yaml --json > observed-les.json",
-    "loopbench run --task LB-CR-1 --spec my-submission.yaml --seeds 0,1,2,3,4 -o results.json",
+    "loopbench run --suite suite-repair --spec my-submission.yaml --seeds 0,1,2,3,4 -o results.json",
     "loopbench validate results.json"
   ],
   "loopbench_row_template": {
@@ -25,9 +22,38 @@
     "success_rate": null,
     "trace_uri": "https://github.com/YOUR_ORG/YOUR_REPO/blob/main/trace.json",
     "spec_uri": "https://github.com/YOUR_ORG/YOUR_REPO/blob/main/my-submission.yaml",
-    "repro_command": "loopbench run --task LB-CR-1 --spec my-submission.yaml --seeds 0,1,2,3,4 -o results.json",
+    "repro_command": "loopbench run --suite suite-repair --spec my-submission.yaml --seeds 0,1,2,3,4 -o results.json",
     "harness": "native",
-    "notes": "Trace-native submission via le-loopforge + loopctl observed"
+    "primary_suite": "suite-repair",
+    "partial": false,
+    "suite_scores": {
+      "suite-repair": {
+        "les_observed": 84.2,
+        "rank_score": 84.2,
+        "success_at_k": 0.8
+      },
+      "suite-agent": {
+        "les_observed": 79.1,
+        "rank_score": 79.1,
+        "success_at_k": 0.6
+      },
+      "suite-knowledge": {
+        "les_observed": 81.0,
+        "rank_score": 81.0,
+        "success_at_k": 0.7
+      },
+      "suite-rigor": {
+        "les_observed": 78.5,
+        "rank_score": 78.5,
+        "success_at_k": 0.6
+      }
+    },
+    "grand_composite": {
+      "les_observed": 80.7,
+      "rank_score": 80.7,
+      "suite_count": 4
+    },
+    "notes": "Suite submission via loop mix dev-agent + loopbench run --suite"
   },
   "reference_dry_run": "docs/submission-dry-run/summary.json"
 }
