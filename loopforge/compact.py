@@ -205,6 +205,17 @@ def apply_token_budget(spec: dict[str, Any], max_tokens: int, *, chars_per_token
         meta["applied"] = True
         return working, meta
 
+    # Optional proof metadata (loopmath certificates) is not needed for execution;
+    # shed it first since it is the least destructive way to recover tokens.
+    if any(k in working for k in ("compose_certificates", "compose_valid", "proof_source")):
+        for k in ("compose_certificates", "compose_valid", "proof_source"):
+            working.pop(k, None)
+        meta["steps"].append("drop_proof_metadata")
+        if fits(working):
+            meta["after"] = estimate_tokens(working, chars_per_token=chars_per_token)
+            meta["applied"] = True
+            return working, meta
+
     evals = working.get("evaluators") or []
     if isinstance(evals, list) and len(evals) > 1:
         primary = next((e for e in evals if isinstance(e, dict) and e.get("type") in ("test_suite", "deterministic")), evals[0])
