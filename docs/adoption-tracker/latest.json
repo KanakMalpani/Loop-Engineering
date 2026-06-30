@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-30T11:55:16.124637+00:00",
+  "generated_at": "2026-06-30T16:25:17.994224+00:00",
   "signals": [
     {
       "id": "external_loopbench",
@@ -32,36 +32,36 @@
     {
       "id": "pypi_loopbench",
       "name": "loopbench on PyPI (>= 0.1.1)",
-      "status": "yellow",
-      "detail": "PyPI version: 0.1.1",
+      "status": "green",
+      "detail": "PyPI version: 0.2.0",
       "link": "https://pypi.org/project/loopbench/"
     },
     {
       "id": "pypi_loopgym",
       "name": "loopgym on PyPI (>= 0.1.1)",
-      "status": "yellow",
-      "detail": "PyPI version: 0.1.2",
+      "status": "green",
+      "detail": "PyPI version: 0.1.3",
       "link": "https://pypi.org/project/loopgym/"
     },
     {
       "id": "pypi_loopforge",
       "name": "le-loopforge on PyPI (>= 0.2.0)",
-      "status": "yellow",
-      "detail": "PyPI version: 0.2.1",
+      "status": "green",
+      "detail": "PyPI version: 0.5.0",
       "link": "https://pypi.org/project/le-loopforge/"
     },
     {
       "id": "pypi_loopctl",
       "name": "le-loopctl on PyPI (>= 0.2.0)",
-      "status": "yellow",
-      "detail": "PyPI version: 0.2.0",
+      "status": "green",
+      "detail": "PyPI version: 0.5.0",
       "link": "https://pypi.org/project/le-loopctl/"
     },
     {
       "id": "pypi_loop_stack",
       "name": "le-loop-stack on PyPI (>= 0.1.0)",
-      "status": "yellow",
-      "detail": "PyPI version: 0.1.0",
+      "status": "green",
+      "detail": "PyPI version: 0.4.0",
       "link": "https://pypi.org/project/le-loop-stack/"
     },
     {
