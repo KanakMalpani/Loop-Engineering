@@ -45,7 +45,7 @@ Closed feedback loops — observe, act, evaluate, update, repeat — made struct
 Ship one flat spec to your agent instead of dragging multiple YAML files into context. Measured with `le-loopforge` 0.5.0 on the research → code → debug library trio.
 
 <div align="center">
-  <img src="assets/token-efficiency.svg" alt="Token use vs separate library specs" width="92%" />
+  <img src="assets/token-efficiency.png" alt="Token use vs separate library specs" width="92%" />
   <p><sub>Baseline = 3 separate library specs (3,255 est. tokens). Lower is leaner.</sub></p>
 </div>
 
