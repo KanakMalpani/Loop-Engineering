@@ -30,4 +30,4 @@ python scripts/track_adoption_signals.py
 python scripts/daily_checkin.py --output docs/checkins/latest.md
 ```
 
-_Generated at 2026-06-30T10:34:02.453727+00:00_
+_Generated at 2026-06-30T10:40:25.298592+00:00_

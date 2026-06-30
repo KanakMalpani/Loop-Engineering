@@ -1,6 +1,6 @@
 # Daily check-in — 2026-06-30 UTC
 
-**Status:** RED (29/36 checks passed)
+**Status:** RED (33/36 checks passed)
 **Loop library:** 9 atomic + 8 composed specs
 
 ## Checks
@@ -8,7 +8,7 @@
 | Check | Result | Detail |
 |-------|--------|--------|
 | validate_loop_library | pass | `OK: 9 atomic + 8 composed specs valid` |
-| validate_level_warnings | pass | `WARN: level recommender: install datasets (`pip install datasets`) OK: 9 atomic + 8 composed specs valid` |
+| validate_level_warnings | pass | `WARN: autonomous-debugger.yaml: metadata.taxonomy_level=3 vs recommender=2 (pattern=verification-loop) WARN: coding-agen` |
 | reflection_loop_smoke | pass | `Loop: runtime-minimal-loop Success: True \| Iterations: 1 Quality: 0.84 \| Reason: quality_threshold (0.84 >= 0.8)  Outp` |
 | composed_nested_smoke | pass | `Composition: nested Success: True \| Reason: outer succeeded without inner   [outer] build (coding-agent): success=True ` |
 | composition_validator | pass | `OK: code-debug-repair.yaml (nested) OK: research-code-nest.yaml (nested) OK: research-to-writing.yaml (sequential) OK: s` |
@@ -20,15 +20,15 @@
 | adoption_links | pass | `OK: adoption links present in 10 files` |
 | pypi_naming_guard | pass | `OK: PyPI naming guard passed (7 files)` |
 | evaluator_composition | pass | `Wrote /home/runner/work/Loop-Engineering/Loop-Engineering/benchmarks/evaluator-composition/results-v0.2.json   naive_and` |
-| loopforge_scaffold | pass | `Validated 7+ scaffolded specs in /tmp/loopforge-demo-_gaare1_` |
+| loopforge_scaffold | pass | `Validated 7+ scaffolded specs in /tmp/loopforge-demo-y5fdmvk3` |
 | loopctl_validate | pass | `Valid LSS spec: loop-library/research-agent.yaml` |
 | loop_trace_validate | pass | `Valid loop trace: standards/examples/minimal-trace.json` |
 | intent_benchmark | pass | `Pattern accuracy: 100.0% Validation pass:  100.0% Composition intents: 10 Wrote /home/runner/work/Loop-Engineering/Loop-` |
 | export_smoke | pass | `OK: export generic OK: export langgraph OK: export crewai OK: export openai_agents OK: 4 export target(s)` |
 | pipeline_smoke | pass | `OK: loopctl pipeline with score` |
-| integrate_langgraph_smoke | **FAIL** | `+ /opt/hostedtoolcache/Python/3.12.13/x64/bin/python -m loopforge intent Parallel research and coding branches then synt` |
-| integrate_crewai_smoke | **FAIL** | `+ /opt/hostedtoolcache/Python/3.12.13/x64/bin/python -m loopforge intent Sequential pipeline of stages from research to ` |
-| level_recommender_v02 | pass | `SKIP: datasets not installed (offline CI)` |
+| integrate_langgraph_smoke | **FAIL** | `Level hint: L3 (pattern=multi-agent-coordination, workers=1, confidence=loopnet-v0.2) Wrote /tmp/integrate-lg-mcdxk7h4/l` |
+| integrate_crewai_smoke | **FAIL** | `Level hint: L3 (pattern=multi-agent-coordination, workers=1, confidence=loopnet-v0.2) Wrote /tmp/integrate-crew-pcza_26v` |
+| level_recommender_v02 | pass | `misassignment_rate: 0.0% target<=15%: PASS Wrote /home/runner/work/Loop-Engineering/Loop-Engineering/benchmarks/results/` |
 | observed_les_smoke | pass | `{   "loop_name": "reflection-example",   "loop_id": "demo-reflection-001",   "observed_les": 78.6,   "observed_categorie` |
 | pip_only_score_smoke | pass | `OK: pip_only_score_smoke LES=78.3` |
 | pip_only_stack_smoke | pass | `OK: pip_only_stack_smoke` |
@@ -37,11 +37,11 @@
 | minjson_smoke | pass | `OK minjson_smoke tokens=1143 min_ratio=0.3` |
 | simenv_smoke | pass | `SKIP: loopbench/rag-retrieval-v1 not in installed loopgym (publish loopgym 0.1.3+) SKIP: loopbench/hitl-gate-v1 not in i` |
 | suite_scoring_logic | pass | `OK: suite recipes OK: suite_scoring_logic` |
-| integrate_claude_code_smoke | **FAIL** | `+ /opt/hostedtoolcache/Python/3.12.13/x64/bin/python -m loopforge intent Fix failing tests from CI with minimal diff -o ` |
-| integrate_codex_smoke | **FAIL** | `+ /opt/hostedtoolcache/Python/3.12.13/x64/bin/python -m loopforge intent Repair failing unit tests with minimal code cha` |
+| integrate_claude_code_smoke | pass | `+ /opt/hostedtoolcache/Python/3.12.13/x64/bin/python -m loopforge intent Fix failing tests from CI with minimal diff -o ` |
+| integrate_codex_smoke | pass | `+ /opt/hostedtoolcache/Python/3.12.13/x64/bin/python -m loopforge intent Repair failing unit tests with minimal code cha` |
 | integrate_openai_agents_smoke | **FAIL** | `+ /opt/hostedtoolcache/Python/3.12.13/x64/bin/python -m loopforge intent Research topic then reflect until quality thres` |
-| integrate_aider_smoke | **FAIL** | `+ /opt/hostedtoolcache/Python/3.12.13/x64/bin/python -m loopforge intent Implement feature from issue with tests passing` |
-| integrate_gemini_smoke | **FAIL** | `+ /opt/hostedtoolcache/Python/3.12.13/x64/bin/python -m loopforge intent Summarize codebase architecture with citations ` |
+| integrate_aider_smoke | pass | `+ /opt/hostedtoolcache/Python/3.12.13/x64/bin/python -m loopforge intent Implement feature from issue with tests passing` |
+| integrate_gemini_smoke | pass | `+ /opt/hostedtoolcache/Python/3.12.13/x64/bin/python -m loopforge intent Summarize codebase architecture with citations ` |
 | adoption_tracker | pass | `Wrote /home/runner/work/Loop-Engineering/Loop-Engineering/docs/adoption-tracker/latest.json Wrote /home/runner/work/Loop` |
 
 ## Adoption tracker
@@ -56,4 +56,4 @@ Full report: [docs/adoption-tracker/latest.md](docs/adoption-tracker/latest.md)
 python scripts/daily_checkin.py
 ```
 
-_Generated at 2026-06-30T10:34:05.824478+00:00_
+_Generated at 2026-06-30T10:40:26.959077+00:00_
