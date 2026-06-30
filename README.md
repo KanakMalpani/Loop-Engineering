@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="assets/ponytail-banner.png" alt="Ponytail Banner" width="100%" style="border-radius: 12px; margin-bottom: 20px;" />
+<img src="assets/logo.png" alt="Loop Engineering Logo" width="128" style="border-radius: 16px; margin-bottom: 20px;" />
 
 # Loop Engineering
 
@@ -40,27 +40,23 @@ Closed feedback loops — observe, act, evaluate, update, repeat — made struct
 
 ---
 
-## 📊 The "Ponytail" Efficiency Dividend
+## Token-efficient loop delivery
 
-By structuring your systems into formal closed loops with **LoopForge** and **LoopGym**, and applying optimal "ponytail" style compiler compression, you shed token bloat, latency, and costs while remaining 100% safe.
+Ship one flat spec to your agent instead of dragging multiple YAML files into context. Measured with `le-loopforge` 0.5.0 on the research → code → debug library trio.
 
 <div align="center">
-  <img src="assets/benchmark-graph.png" alt="Loop Engineering Performance Metrics" width="90%" style="border-radius: 8px; margin-bottom: 10px;" />
-  <p><i>Every metric vs the no-skill baseline (Claude Code, Haiku 4.5, 12 tasks)</i></p>
+  <img src="assets/token-efficiency.svg" alt="Token use vs separate library specs" width="92%" />
+  <p><sub>Baseline = 3 separate library specs (3,255 est. tokens). Lower is leaner.</sub></p>
 </div>
 
-### Metrics vs. No-Skill Baseline
+| Path | Command | Tokens | vs baseline |
+| :--- | :--- | ---: | ---: |
+| Separate library YAMLs | load 3 files into context | 3,255 | 100% |
+| Flat combine | `loop combine --library research-agent,coding-agent,autonomous-debugger` | 2,750 | **84%** |
+| LSS-min JSON | `loopctl spec minify combined.yaml` | 1,414 | **43%** |
+| Budgeted combine | `loop quick --max-tokens 1200 --library …` | 1,101 | **34%** |
 
-| Strategy | Lines of Code (LOC) | Token Usage | API Cost | Latency (Time) | Safety |
-| :--- | :---: | :---: | :---: | :---: | :---: |
-| **ponytail** (Optimal Loop) | **-54%** | **-22%** | **-20%** | **-27%** | **100%** |
-| **caveman** (Terse Prose) | -20% | +7% | +3% | +2% | 100% |
-| **YAGNI + One-Liners** | -33% | -14% | -21% | -30% | 95% |
-
-**Key Takeaways:**
-* **54% Less Code:** Build and maintain fewer lines of code with declarative Loop Specification Standards.
-* **22% Token Reduction:** Compress prompts dynamically using LSS-min JSON compiler exports.
-* **20% Cost & 27% Speed Gain:** Achieve massive efficiency improvements with zero degradation in system safety or task correctness.
+**Why it matters:** fewer tokens per agent turn → lower cost, faster context fit, same LSS structure and evaluators.
 
 ---
 

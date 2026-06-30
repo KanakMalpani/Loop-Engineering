@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 420" role="img" aria-label="Loop Engineering token efficiency vs separate library specs">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1c1c1e"/>
+      <stop offset="100%" stop-color="#111113"/>
+    </linearGradient>
+  </defs>
+  <rect width="880" height="420" rx="14" fill="url(#bg)"/>
+  <text x="32" y="38" fill="#f4f4f5" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="15" font-weight="700">Token use vs sending 3 separate library specs (baseline = 100%)</text>
+  <text x="32" y="58" fill="#a1a1aa" font-family="ui-monospace, monospace" font-size="11">research-agent + coding-agent + autonomous-debugger · le-loopforge 0.5.0 · lower is leaner</text>
+
+  <!-- legend -->
+  <rect x="32" y="74" width="10" height="10" rx="2" fill="#71717a"/>
+  <text x="48" y="83" fill="#d4d4d8" font-family="ui-monospace, monospace" font-size="10">baseline</text>
+  <rect x="120" y="74" width="10" height="10" rx="2" fill="#f97316"/>
+  <text x="136" y="83" fill="#d4d4d8" font-family="ui-monospace, monospace" font-size="10">flat combine</text>
+  <rect x="230" y="74" width="10" height="10" rx="2" fill="#22c55e"/>
+  <text x="246" y="83" fill="#d4d4d8" font-family="ui-monospace, monospace" font-size="10">LSS-min JSON</text>
+  <rect x="350" y="74" width="10" height="10" rx="2" fill="#a855f7"/>
+  <text x="366" y="83" fill="#d4d4d8" font-family="ui-monospace, monospace" font-size="10">combine + budget</text>
+
+  <!-- grid -->
+  <line x1="72" y1="320" x2="848" y2="320" stroke="#3f3f46" stroke-width="1"/>
+  <line x1="72" y1="120" x2="848" y2="120" stroke="#27272a" stroke-width="1" stroke-dasharray="4 4"/>
+  <text x="24" y="124" fill="#71717a" font-family="ui-monospace, monospace" font-size="10">100%</text>
+  <text x="36" y="324" fill="#71717a" font-family="ui-monospace, monospace" font-size="10">0%</text>
+
+  <!-- bars: scale max width 720, baseline = 100% -->
+  <!-- baseline 100% -->
+  <rect x="120" y="140" width="720" height="36" rx="6" fill="#52525b"/>
+  <text x="848" y="163" fill="#e4e4e7" font-family="ui-monospace, monospace" font-size="11" text-anchor="end">3,255 tok</text>
+  <text x="120" y="132" fill="#a1a1aa" font-family="ui-monospace, monospace" font-size="10">separate YAML files</text>
+
+  <!-- flat 84% -->
+  <rect x="120" y="196" width="605" height="36" rx="6" fill="#f97316"/>
+  <text x="848" y="219" fill="#fdba74" font-family="ui-monospace, monospace" font-size="11" text-anchor="end">2,750 tok · 84%</text>
+  <text x="120" y="188" fill="#a1a1aa" font-family="ui-monospace, monospace" font-size="10">loop combine (flat)</text>
+
+  <!-- minjson 43% -->
+  <rect x="120" y="252" width="310" height="36" rx="6" fill="#22c55e"/>
+  <text x="848" y="275" fill="#86efac" font-family="ui-monospace, monospace" font-size="11" text-anchor="end">1,414 tok · 43%</text>
+  <text x="120" y="244" fill="#a1a1aa" font-family="ui-monospace, monospace" font-size="10">loopctl spec minify</text>
+
+  <!-- budget 34% -->
+  <rect x="120" y="308" width="245" height="36" rx="6" fill="#a855f7"/>
+  <text x="848" y="331" fill="#d8b4fe" font-family="ui-monospace, monospace" font-size="11" text-anchor="end">1,101 tok · 34%</text>
+  <text x="120" y="300" fill="#a1a1aa" font-family="ui-monospace, monospace" font-size="10">loop quick --max-tokens 1200</text>
+
+  <!-- summary strip -->
+  <rect x="32" y="368" width="816" height="36" rx="8" fill="#27272a"/>
+  <text x="44" y="390" fill="#e4e4e7" font-family="ui-monospace, monospace" font-size="11">Best path for agent prompts: combine ’ minify ’ budget · up to 66% fewer tokens · LSS structure preserved</text>
+</svg>
