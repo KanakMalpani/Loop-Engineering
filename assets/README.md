@@ -1,28 +1,25 @@
-# Assets
+# README chart assets
 
-Brand and visual assets for Loop Engineering.
+PNG charts in this folder (and sibling repos) are **generated** — do not edit by hand.
 
----
+## Regenerate
 
-## Contents
+From the Loop-Engineering repo root:
 
-| File | Description |
-|------|-------------|
-| [logo.svg](logo.svg) | Loop Engineering mark — light background (closed orbit + τ) |
-| [logo-dark.svg](logo-dark.svg) | Dark background variant |
-| [logo.png](logo.png) | LoopBench LB monogram (used in README header) |
-| [logo-concept.md](logo-concept.md) | Design brief and palette |
+```bash
+pip install matplotlib
+python scripts/generate_readme_charts.py
+```
 
----
+This writes:
 
-## Usage
+| Output | Repo |
+| :--- | :--- |
+| `benefits-overview.png`, `token-efficiency.png` | Loop-Engineering |
+| `spec-layer.png` | Loop-Core-Engineering |
+| `corpus-overview.png` | loopnet |
+| `runtime-backends.png` | LoopGym |
+| `suite-coverage.png` | LoopBench |
+| `trace-footprint.png` | loop-observability |
 
-- Prefer SVG for docs and social preview
-- LoopBench site logo: `docs/ecosystem-sync/LoopBench/docs/assets/logos/loopbench-lb.png`
-- Mermaid sources: [DIAGRAMS/](../DIAGRAMS/)
-
----
-
-## Contributing Assets
-
-Submit PRs with MIT-licensed artwork, source files when possible, and light/dark variants.
+Commit PNGs together with any script or README changes so GitHub always renders charts that match reviewed source.

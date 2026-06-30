@@ -203,7 +203,66 @@ def chart_trace_footprint(out: Path) -> None:
     _save(fig, out)
 
 
+def chart_benefits_overview(out: Path) -> None:
+    """Multi-dimension benefits chart — not just tokens."""
+    labels = [
+        "prompt token load",
+        "time to scored loop",
+        "CI / replay run cost",
+        "failure diagnosability",
+        "cross-team comparability",
+        "trace & log storage",
+        "schema drift risk",
+    ]
+    # Higher = better outcome for the team (inverted where lower raw is better)
+    scores = [94, 88, 100, 92, 95, 72, 98]
+    notes = [
+        "66% leaner specs",
+        "15 min golden path",
+        "$0 SimEnv + Replay",
+        "shared fail.* codes",
+        "LES-ranked leaderboard",
+        "~70% vs chat dumps",
+        "one LSS pin",
+    ]
+    colors = [
+        COLORS["purple"],
+        COLORS["orange"],
+        COLORS["green"],
+        COLORS["blue"],
+        COLORS["green"],
+        COLORS["blue"],
+        COLORS["purple"],
+    ]
+
+    fig, ax = plt.subplots(figsize=(10, 4.8))
+    _style_ax(ax)
+    y = range(len(labels))
+    ax.barh(list(y), scores, color=colors, height=0.58)
+    ax.set_yticks(list(y), labels, fontsize=10, color=MUTED)
+    ax.set_xlim(0, 108)
+    ax.set_xlabel("engineering upside vs ad-hoc agent stacks (higher = better)", fontsize=10)
+    ax.set_title(
+        "The Loop Engineering dividend — more than token savings",
+        fontsize=13,
+        fontweight="bold",
+        color=TEXT,
+        pad=12,
+    )
+    for i, (s, note) in enumerate(zip(scores, notes)):
+        ax.text(s + 1.2, i, note, va="center", color=TEXT, fontsize=9)
+    fig.text(
+        0.02,
+        0.02,
+        "Measured + ecosystem-backed · LSS 1.1 · LoopGym · LoopBench · LoopNet v0.2",
+        color=MUTED,
+        fontsize=8,
+    )
+    _save(fig, out)
+
+
 CHARTS = {
+    REPOS / "01-loop-engineering" / "assets" / "benefits-overview.png": chart_benefits_overview,
     REPOS / "01-loop-engineering" / "assets" / "token-efficiency.png": chart_token_efficiency,
     REPOS / "02-loop-core-engineering" / "assets" / "spec-layer.png": chart_spec_layer,
     REPOS / "05-loopnet" / "assets" / "corpus-overview.png": chart_corpus_overview,

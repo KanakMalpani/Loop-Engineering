@@ -6,7 +6,7 @@
 
 ### *The engineering discipline of systems that self-improve through feedback.*
 
-Closed feedback loops — observe, act, evaluate, update, repeat — made structured, mathematical, token-efficient, and fully engineerable.
+Closed feedback loops — observe, act, evaluate, update, repeat — made structured, mathematical, **benchmarkable**, and fully engineerable.
 
 <br>
 
@@ -40,9 +40,30 @@ Closed feedback loops — observe, act, evaluate, update, repeat — made struct
 
 ---
 
-## Token-efficient loop delivery
+## The Loop Engineering dividend
 
-Ship one flat spec to your agent instead of dragging multiple YAML files into context. Measured with `le-loopforge` 0.5.0 on the research → code → debug library trio.
+Prompt engineering optimizes a turn. Agent engineering optimizes an actor. **Loop engineering optimizes the whole closed system** — cheaper to run, faster to ship, impossible to hand-wave, and built to get better every iteration.
+
+<div align="center">
+  <img src="assets/benefits-overview.png" alt="Loop Engineering benefits across tokens, speed, CI cost, diagnosability, comparability, traces, and schema drift" width="92%" />
+</div>
+
+| Benefit | What you get | Why teams care |
+| :--- | :--- | :--- |
+| **Lean context** | Combine + minify + budget specs down to **34%** of raw YAML | More room for actual work in the window — not boilerplate |
+| **Minutes, not weeks** | Golden path → valid LSS → scored loop in **~15 minutes** | Stop reinventing loop config every sprint |
+| **Zero-dollar CI** | SimEnv + ReplayEnv run **545** LoopNet trajectories with **$0** API spend | Catch regressions before they hit prod invoices |
+| **Shared failure language** | `fail.*` taxonomy across data, runtime, and bench | Post-mortems that actually transfer between teams |
+| **Public receipts** | LoopBench **19** tasks · **4** suites · LES-ranked leaderboard | "It worked in the demo" is no longer a career strategy |
+| **Production visibility** | LTF traces ~**70%** leaner than raw chat dumps | SREs see iteration quality, not megabytes of prompts |
+| **One spec layer** | Pin `lss@1.1.0` once — LoopGym, LoopBench, LoopNet agree | Zero schema drift across five repos |
+| **Harness freedom** | Claude Code, Cursor, LangGraph, CrewAI, Codex, Aider… | Keep your agent stack — add closure on top |
+
+> **The pitch in one line:** ship loops that **cost less per turn**, **score on a leaderboard**, **replay for free**, **fail with names**, and **compound improvement** — not another prompt doc lost in Notion.
+
+### Leaner specs (measured)
+
+Ship one flat spec instead of dragging multiple YAML files into context. Measured with `le-loopforge` 0.5.0 on the research → code → debug library trio.
 
 <div align="center">
   <img src="assets/token-efficiency.png" alt="Token use vs separate library specs" width="92%" />
@@ -56,7 +77,7 @@ Ship one flat spec to your agent instead of dragging multiple YAML files into co
 | LSS-min JSON | `loopctl spec minify combined.yaml` | 1,414 | **43%** |
 | Budgeted combine | `loop quick --max-tokens 1200 --library …` | 1,101 | **34%** |
 
-**Why it matters:** fewer tokens per agent turn → lower cost, faster context fit, same LSS structure and evaluators.
+Same LSS structure. Same evaluators. Same termination contracts. **Just less noise between your agent and the job.**
 
 ---
 

@@ -34,6 +34,8 @@ benchmarks/results/runs/*.json
 .env
 .env.*
 !.env.example
+recipes.local.yaml
+**/.loop/recipes.yaml
 
 # Generated diagrams (keep source in diagrams/)
 tools/output/
