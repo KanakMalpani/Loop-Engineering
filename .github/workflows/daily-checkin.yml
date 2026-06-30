@@ -22,7 +22,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install "loopgym>=0.1.2" pyyaml jsonschema datasets
+          pip install "loopgym>=0.1.4" pyyaml jsonschema datasets
           pip install -e ./loopforge
           pip install -e ./loopctl --no-deps
 

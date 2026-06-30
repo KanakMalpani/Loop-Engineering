@@ -22,7 +22,10 @@ def main() -> int:
         try:
             env = lg.make(env_id)
         except ValueError:
-            print(f"SKIP: {env_id} not in installed loopgym (publish loopgym 0.1.3+)")
+            print(f"SKIP: {env_id} not in installed loopgym (publish loopgym 0.1.4+)")
+            continue
+        except FileNotFoundError as exc:
+            print(f"SKIP: {env_id} bundled data missing ({exc})")
             continue
         result = env.run_episode(task_id=task_id, seed=42)
         if "success" not in result:
