@@ -1,6 +1,6 @@
-# Adoption tracker — 2026-07-07 UTC
+# Adoption tracker — 2026-07-08 UTC
 
-**Summary:** 9 green · 7 yellow · 0 red
+**Summary:** 7 green · 4 yellow · 5 red
 
 Automated by `scripts/track_adoption_signals.py` (daily with [daily-checkin.yml](../.github/workflows/daily-checkin.yml)).
 
@@ -16,12 +16,12 @@ Automated by `scripts/track_adoption_signals.py` (daily with [daily-checkin.yml]
 | le-loopctl on PyPI (>= 0.2.0) [pypi_loopctl](https://pypi.org/project/le-loopctl/) | **GREEN** | PyPI version: 0.5.0 |
 | le-loop-stack on PyPI (>= 0.1.0) [pypi_loop_stack](https://pypi.org/project/le-loop-stack/) | **GREEN** | PyPI version: 0.4.0 |
 | LSS 1.1 stable in Loop-Core [lss_11_stable](https://github.com/KanakMalpani/Loop-Core-Engineering/blob/main/specs/lss-1.1.md) | **GREEN** | specs/lss-1.1.md present |
-| Exam pilot reports (#12) [exam_pilot](https://github.com/KanakMalpani/Loop-Engineering/issues/12) | **YELLOW** | No external pilots yet (3 maintainer/bot comment(s)) |
-| Non-maintainer LoopBench row (LB-CR-1) [issue_4](https://github.com/KanakMalpani/Loop-Engineering/issues/4) | **YELLOW** | open: [Good first] Publish ALS-T1 Research Synthesis baseline |
-| External case study (new org) [issue_7](https://github.com/KanakMalpani/Loop-Engineering/issues/7) | **YELLOW** | open: [Good first] Map Cursor agent loop to LSS case study |
-| Cursor case study extension [issue_8](https://github.com/KanakMalpani/Loop-Engineering/issues/8) | **GREEN** | closed: [Good first] LE-OP-11 task-to-level recommender v0.1 |
-| LoopNet explore histograms [issue_9](https://github.com/KanakMalpani/Loop-Engineering/issues/9) | **GREEN** | closed: [Good first] LoopNet explore script histogram plots |
-| Practitioner exam v0.2 pilots [issue_12](https://github.com/KanakMalpani/Loop-Engineering/issues/12) | **YELLOW** | open: Practitioner exam v0.1 — pilot volunteers wanted |
+| Exam pilot reports (#12) [exam_pilot](https://github.com/KanakMalpani/Loop-Engineering/issues/12) | **YELLOW** | HTTP Error 403: rate limit exceeded |
+| Non-maintainer LoopBench row (LB-CR-1) [issue_4](https://github.com/KanakMalpani/Loop-Engineering/issues/4) | **RED** | HTTP 403 |
+| External case study (new org) [issue_7](https://github.com/KanakMalpani/Loop-Engineering/issues/7) | **RED** | HTTP 403 |
+| Cursor case study extension [issue_8](https://github.com/KanakMalpani/Loop-Engineering/issues/8) | **RED** | HTTP 403 |
+| LoopNet explore histograms [issue_9](https://github.com/KanakMalpani/Loop-Engineering/issues/9) | **RED** | HTTP 403 |
+| Practitioner exam v0.2 pilots [issue_12](https://github.com/KanakMalpani/Loop-Engineering/issues/12) | **RED** | HTTP 403 |
 
 ## Regenerate
 
@@ -30,4 +30,4 @@ python scripts/track_adoption_signals.py
 python scripts/daily_checkin.py --output docs/checkins/latest.md
 ```
 
-_Generated at 2026-07-07T16:35:20.729872+00:00_
+_Generated at 2026-07-08T16:04:34.978665+00:00_
