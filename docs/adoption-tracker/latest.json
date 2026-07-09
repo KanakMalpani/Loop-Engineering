@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-08T16:04:34.978665+00:00",
+  "generated_at": "2026-07-09T16:30:34.176738+00:00",
   "signals": [
     {
       "id": "external_loopbench",
@@ -75,42 +75,42 @@
       "id": "exam_pilot",
       "name": "Exam pilot reports (#12)",
       "status": "yellow",
-      "detail": "HTTP Error 403: rate limit exceeded",
+      "detail": "No external pilots yet (3 maintainer/bot comment(s))",
       "link": "https://github.com/KanakMalpani/Loop-Engineering/issues/12"
     },
     {
       "id": "issue_4",
       "name": "Non-maintainer LoopBench row (LB-CR-1)",
-      "status": "red",
-      "detail": "HTTP 403",
+      "status": "yellow",
+      "detail": "open: [Good first] Publish ALS-T1 Research Synthesis baseline",
       "link": "https://github.com/KanakMalpani/Loop-Engineering/issues/4"
     },
     {
       "id": "issue_7",
       "name": "External case study (new org)",
-      "status": "red",
-      "detail": "HTTP 403",
+      "status": "yellow",
+      "detail": "open: [Good first] Map Cursor agent loop to LSS case study",
       "link": "https://github.com/KanakMalpani/Loop-Engineering/issues/7"
     },
     {
       "id": "issue_8",
       "name": "Cursor case study extension",
-      "status": "red",
-      "detail": "HTTP 403",
+      "status": "green",
+      "detail": "closed: [Good first] LE-OP-11 task-to-level recommender v0.1",
       "link": "https://github.com/KanakMalpani/Loop-Engineering/issues/8"
     },
     {
       "id": "issue_9",
       "name": "LoopNet explore histograms",
-      "status": "red",
-      "detail": "HTTP 403",
+      "status": "green",
+      "detail": "closed: [Good first] LoopNet explore script histogram plots",
       "link": "https://github.com/KanakMalpani/Loop-Engineering/issues/9"
     },
     {
       "id": "issue_12",
       "name": "Practitioner exam v0.2 pilots",
-      "status": "red",
-      "detail": "HTTP 403",
+      "status": "yellow",
+      "detail": "open: Practitioner exam v0.1 \u2014 pilot volunteers wanted",
       "link": "https://github.com/KanakMalpani/Loop-Engineering/issues/12"
     }
   ]
