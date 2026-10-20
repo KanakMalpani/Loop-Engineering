@@ -27,3 +27,21 @@ The bad loop outscored the good one, so the criterion (every good > every bad) f
 3. Real model in `live`: provider from the spec's `model:` block, `LiveEnv.run_episode`, mock refusal in live mode. ~0.5 day.
 4. Re-run the committed 10-loop criterion. Total ~3–4 days.
 Fallback: if not funded, drop LoopBench scores from the demo and README and label the leaderboard experimental.
+
+## Deterministic stub run, all 10 loops (`run_stub.py`, fixed reply "score: 0.50", task LB-CR-1, seed 0)
+Evidence of runtime structure only; a stub, not a model run.
+
+| Loop | score |
+|---|---|
+| bad-1-no-feedback | 0.67 |
+| bad-2-no-tests | 0.79 |
+| bad-3-wrong-role | 0.79 |
+| bad-4-no-bug-input | 0.79 |
+| bad-5-starved-budget | 0.79 |
+| good-1-fast | 0.79 |
+| good-3-fast-5iter | 0.79 |
+| good-2-thorough | 0.91 |
+| good-4-thorough-t0 | 0.91 |
+| good-5-fast-strict | 0.91 |
+
+bad-2..5 tie good-1 and good-3 exactly: removing tests, the bug input, a sane role, or the budget changes nothing. Scores move only with iteration count and success threshold. Criterion fails by construction. Verdict: B FAIL, found with a deterministic stub plus a real-model smoke check; the committed 30-run test was skipped at Kanak's call.

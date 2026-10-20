@@ -1,0 +1,52 @@
+[
+  {
+    "loop": "bad-1-no-feedback",
+    "quality_score": 0.67,
+    "success": false
+  },
+  {
+    "loop": "bad-2-no-tests",
+    "quality_score": 0.79,
+    "success": true
+  },
+  {
+    "loop": "bad-3-wrong-role",
+    "quality_score": 0.79,
+    "success": true
+  },
+  {
+    "loop": "bad-4-no-bug-input",
+    "quality_score": 0.79,
+    "success": true
+  },
+  {
+    "loop": "bad-5-starved-budget",
+    "quality_score": 0.79,
+    "success": true
+  },
+  {
+    "loop": "good-1-fast",
+    "quality_score": 0.79,
+    "success": true
+  },
+  {
+    "loop": "good-2-thorough",
+    "quality_score": 0.91,
+    "success": true
+  },
+  {
+    "loop": "good-3-fast-5iter",
+    "quality_score": 0.79,
+    "success": true
+  },
+  {
+    "loop": "good-4-thorough-t0",
+    "quality_score": 0.91,
+    "success": true
+  },
+  {
+    "loop": "good-5-fast-strict",
+    "quality_score": 0.91,
+    "success": true
+  }
+]
