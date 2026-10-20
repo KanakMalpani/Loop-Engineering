@@ -1,0 +1,355 @@
+{
+  "loop": "bad-2-no-tests",
+  "run": 2,
+  "task": "LB-CR-1",
+  "seeds": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "model": "gpt-5.3-codex",
+  "llm_class": "CursorAgentLLM",
+  "mock_constructed": false,
+  "wall_seconds": 305.2,
+  "score": 0.0,
+  "n_ok": 5,
+  "n_infra_fail": 0,
+  "n_error": 0,
+  "by_seed": {
+    "0": {
+      "status": "OK",
+      "score": 0.0,
+      "success": false,
+      "termination_reason": "cr-001: no deterministic test evaluator: no real-outcome score (fail); cr-002: no deterministic test evaluator: no real-outcome score (fail); cr-003: no deterministic test evaluator: no real-outcome score (fail)",
+      "instance_scores": {
+        "cr-001": 0.0,
+        "cr-002": 0.0,
+        "cr-003": 0.0
+      },
+      "error": null
+    },
+    "1": {
+      "status": "OK",
+      "score": 0.0,
+      "success": false,
+      "termination_reason": "cr-001: no deterministic test evaluator: no real-outcome score (fail); cr-002: no deterministic test evaluator: no real-outcome score (fail); cr-003: no deterministic test evaluator: no real-outcome score (fail)",
+      "instance_scores": {
+        "cr-001": 0.0,
+        "cr-002": 0.0,
+        "cr-003": 0.0
+      },
+      "error": null
+    },
+    "2": {
+      "status": "OK",
+      "score": 0.0,
+      "success": false,
+      "termination_reason": "cr-001: no deterministic test evaluator: no real-outcome score (fail); cr-002: no deterministic test evaluator: no real-outcome score (fail); cr-003: no deterministic test evaluator: no real-outcome score (fail)",
+      "instance_scores": {
+        "cr-001": 0.0,
+        "cr-002": 0.0,
+        "cr-003": 0.0
+      },
+      "error": null
+    },
+    "3": {
+      "status": "OK",
+      "score": 0.0,
+      "success": false,
+      "termination_reason": "cr-001: no deterministic test evaluator: no real-outcome score (fail); cr-002: no deterministic test evaluator: no real-outcome score (fail); cr-003: no deterministic test evaluator: no real-outcome score (fail)",
+      "instance_scores": {
+        "cr-001": 0.0,
+        "cr-002": 0.0,
+        "cr-003": 0.0
+      },
+      "error": null
+    },
+    "4": {
+      "status": "OK",
+      "score": 0.0,
+      "success": false,
+      "termination_reason": "cr-001: no deterministic test evaluator: no real-outcome score (fail); cr-002: no deterministic test evaluator: no real-outcome score (fail); cr-003: no deterministic test evaluator: no real-outcome score (fail)",
+      "instance_scores": {
+        "cr-001": 0.0,
+        "cr-002": 0.0,
+        "cr-003": 0.0
+      },
+      "error": null
+    }
+  },
+  "calls": [
+    {
+      "role": "implementer",
+      "seconds": 24.9,
+      "usage": {
+        "inputTokens": 543,
+        "outputTokens": 267,
+        "cacheReadTokens": 18944,
+        "cacheWriteTokens": 0
+      },
+      "isolated": true,
+      "attempts": [
+        {
+          "n": 1,
+          "seconds": 24.9,
+          "outcome": "ok"
+        }
+      ]
+    },
+    {
+      "role": "implementer",
+      "seconds": 16.4,
+      "usage": {
+        "inputTokens": 531,
+        "outputTokens": 112,
+        "cacheReadTokens": 18944,
+        "cacheWriteTokens": 0
+      },
+      "isolated": true,
+      "attempts": [
+        {
+          "n": 1,
+          "seconds": 16.4,
+          "outcome": "ok"
+        }
+      ]
+    },
+    {
+      "role": "implementer",
+      "seconds": 17.4,
+      "usage": {
+        "inputTokens": 538,
+        "outputTokens": 123,
+        "cacheReadTokens": 18944,
+        "cacheWriteTokens": 0
+      },
+      "isolated": true,
+      "attempts": [
+        {
+          "n": 1,
+          "seconds": 17.4,
+          "outcome": "ok"
+        }
+      ]
+    },
+    {
+      "role": "implementer",
+      "seconds": 20.4,
+      "usage": {
+        "inputTokens": 543,
+        "outputTokens": 435,
+        "cacheReadTokens": 18944,
+        "cacheWriteTokens": 0
+      },
+      "isolated": true,
+      "attempts": [
+        {
+          "n": 1,
+          "seconds": 20.4,
+          "outcome": "ok"
+        }
+      ]
+    },
+    {
+      "role": "implementer",
+      "seconds": 19.8,
+      "usage": {
+        "inputTokens": 531,
+        "outputTokens": 263,
+        "cacheReadTokens": 18944,
+        "cacheWriteTokens": 0
+      },
+      "isolated": true,
+      "attempts": [
+        {
+          "n": 1,
+          "seconds": 19.8,
+          "outcome": "ok"
+        }
+      ]
+    },
+    {
+      "role": "implementer",
+      "seconds": 18.5,
+      "usage": {
+        "inputTokens": 538,
+        "outputTokens": 203,
+        "cacheReadTokens": 18944,
+        "cacheWriteTokens": 0
+      },
+      "isolated": true,
+      "attempts": [
+        {
+          "n": 1,
+          "seconds": 18.5,
+          "outcome": "ok"
+        }
+      ]
+    },
+    {
+      "role": "implementer",
+      "seconds": 17.5,
+      "usage": {
+        "inputTokens": 543,
+        "outputTokens": 256,
+        "cacheReadTokens": 18944,
+        "cacheWriteTokens": 0
+      },
+      "isolated": true,
+      "attempts": [
+        {
+          "n": 1,
+          "seconds": 17.5,
+          "outcome": "ok"
+        }
+      ]
+    },
+    {
+      "role": "implementer",
+      "seconds": 49.0,
+      "usage": {
+        "inputTokens": 1078,
+        "outputTokens": 180,
+        "cacheReadTokens": 16896,
+        "cacheWriteTokens": 0
+      },
+      "isolated": true,
+      "attempts": [
+        {
+          "n": 1,
+          "seconds": 49.0,
+          "outcome": "ok"
+        }
+      ]
+    },
+    {
+      "role": "implementer",
+      "seconds": 16.5,
+      "usage": {
+        "inputTokens": 1085,
+        "outputTokens": 136,
+        "cacheReadTokens": 16896,
+        "cacheWriteTokens": 0
+      },
+      "isolated": true,
+      "attempts": [
+        {
+          "n": 1,
+          "seconds": 16.5,
+          "outcome": "ok"
+        }
+      ]
+    },
+    {
+      "role": "implementer",
+      "seconds": 20.0,
+      "usage": {
+        "inputTokens": 543,
+        "outputTokens": 373,
+        "cacheReadTokens": 18944,
+        "cacheWriteTokens": 0
+      },
+      "isolated": true,
+      "attempts": [
+        {
+          "n": 1,
+          "seconds": 20.0,
+          "outcome": "ok"
+        }
+      ]
+    },
+    {
+      "role": "implementer",
+      "seconds": 18.2,
+      "usage": {
+        "inputTokens": 531,
+        "outputTokens": 130,
+        "cacheReadTokens": 18944,
+        "cacheWriteTokens": 0
+      },
+      "isolated": true,
+      "attempts": [
+        {
+          "n": 1,
+          "seconds": 18.2,
+          "outcome": "ok"
+        }
+      ]
+    },
+    {
+      "role": "implementer",
+      "seconds": 16.7,
+      "usage": {
+        "inputTokens": 538,
+        "outputTokens": 159,
+        "cacheReadTokens": 18944,
+        "cacheWriteTokens": 0
+      },
+      "isolated": true,
+      "attempts": [
+        {
+          "n": 1,
+          "seconds": 16.7,
+          "outcome": "ok"
+        }
+      ]
+    },
+    {
+      "role": "implementer",
+      "seconds": 17.3,
+      "usage": {
+        "inputTokens": 543,
+        "outputTokens": 265,
+        "cacheReadTokens": 18944,
+        "cacheWriteTokens": 0
+      },
+      "isolated": true,
+      "attempts": [
+        {
+          "n": 1,
+          "seconds": 17.3,
+          "outcome": "ok"
+        }
+      ]
+    },
+    {
+      "role": "implementer",
+      "seconds": 15.7,
+      "usage": {
+        "inputTokens": 1078,
+        "outputTokens": 88,
+        "cacheReadTokens": 16896,
+        "cacheWriteTokens": 0
+      },
+      "isolated": true,
+      "attempts": [
+        {
+          "n": 1,
+          "seconds": 15.7,
+          "outcome": "ok"
+        }
+      ]
+    },
+    {
+      "role": "implementer",
+      "seconds": 16.9,
+      "usage": {
+        "inputTokens": 538,
+        "outputTokens": 185,
+        "cacheReadTokens": 18944,
+        "cacheWriteTokens": 0
+      },
+      "isolated": true,
+      "attempts": [
+        {
+          "n": 1,
+          "seconds": 16.9,
+          "outcome": "ok"
+        }
+      ]
+    }
+  ],
+  "finished_at": "2026-10-20T21:28:19.954366+00:00"
+}

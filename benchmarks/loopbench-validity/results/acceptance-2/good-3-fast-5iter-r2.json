@@ -1,0 +1,355 @@
+{
+  "loop": "good-3-fast-5iter",
+  "run": 2,
+  "task": "LB-CR-1",
+  "seeds": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "model": "gpt-5.3-codex",
+  "llm_class": "CursorAgentLLM",
+  "mock_constructed": false,
+  "wall_seconds": 383.5,
+  "score": 1.0,
+  "n_ok": 5,
+  "n_infra_fail": 0,
+  "n_error": 0,
+  "by_seed": {
+    "0": {
+      "status": "OK",
+      "score": 1.0,
+      "success": true,
+      "termination_reason": "cr-001: success (1.00 >= 0.75 x1); cr-002: success (1.00 >= 0.75 x1); cr-003: success (1.00 >= 0.75 x1)",
+      "instance_scores": {
+        "cr-001": 1.0,
+        "cr-002": 1.0,
+        "cr-003": 1.0
+      },
+      "error": null
+    },
+    "1": {
+      "status": "OK",
+      "score": 1.0,
+      "success": true,
+      "termination_reason": "cr-001: success (1.00 >= 0.75 x1); cr-002: success (1.00 >= 0.75 x1); cr-003: success (1.00 >= 0.75 x1)",
+      "instance_scores": {
+        "cr-001": 1.0,
+        "cr-002": 1.0,
+        "cr-003": 1.0
+      },
+      "error": null
+    },
+    "2": {
+      "status": "OK",
+      "score": 1.0,
+      "success": true,
+      "termination_reason": "cr-001: success (1.00 >= 0.75 x1); cr-002: success (1.00 >= 0.75 x1); cr-003: success (1.00 >= 0.75 x1)",
+      "instance_scores": {
+        "cr-001": 1.0,
+        "cr-002": 1.0,
+        "cr-003": 1.0
+      },
+      "error": null
+    },
+    "3": {
+      "status": "OK",
+      "score": 1.0,
+      "success": true,
+      "termination_reason": "cr-001: success (1.00 >= 0.75 x1); cr-002: success (1.00 >= 0.75 x1); cr-003: success (1.00 >= 0.75 x1)",
+      "instance_scores": {
+        "cr-001": 1.0,
+        "cr-002": 1.0,
+        "cr-003": 1.0
+      },
+      "error": null
+    },
+    "4": {
+      "status": "OK",
+      "score": 1.0,
+      "success": true,
+      "termination_reason": "cr-001: success (1.00 >= 0.75 x1); cr-002: success (1.00 >= 0.75 x1); cr-003: success (1.00 >= 0.75 x1)",
+      "instance_scores": {
+        "cr-001": 1.0,
+        "cr-002": 1.0,
+        "cr-003": 1.0
+      },
+      "error": null
+    }
+  },
+  "calls": [
+    {
+      "role": "implementer",
+      "seconds": 18.6,
+      "usage": {
+        "inputTokens": 543,
+        "outputTokens": 341,
+        "cacheReadTokens": 18944,
+        "cacheWriteTokens": 0
+      },
+      "isolated": true,
+      "attempts": [
+        {
+          "n": 1,
+          "seconds": 18.6,
+          "outcome": "ok"
+        }
+      ]
+    },
+    {
+      "role": "implementer",
+      "seconds": 25.8,
+      "usage": {
+        "inputTokens": 531,
+        "outputTokens": 151,
+        "cacheReadTokens": 18944,
+        "cacheWriteTokens": 0
+      },
+      "isolated": true,
+      "attempts": [
+        {
+          "n": 1,
+          "seconds": 25.8,
+          "outcome": "ok"
+        }
+      ]
+    },
+    {
+      "role": "implementer",
+      "seconds": 17.4,
+      "usage": {
+        "inputTokens": 1085,
+        "outputTokens": 263,
+        "cacheReadTokens": 16896,
+        "cacheWriteTokens": 0
+      },
+      "isolated": true,
+      "attempts": [
+        {
+          "n": 1,
+          "seconds": 17.4,
+          "outcome": "ok"
+        }
+      ]
+    },
+    {
+      "role": "implementer",
+      "seconds": 19.3,
+      "usage": {
+        "inputTokens": 543,
+        "outputTokens": 458,
+        "cacheReadTokens": 18944,
+        "cacheWriteTokens": 0
+      },
+      "isolated": true,
+      "attempts": [
+        {
+          "n": 1,
+          "seconds": 19.3,
+          "outcome": "ok"
+        }
+      ]
+    },
+    {
+      "role": "implementer",
+      "seconds": 14.8,
+      "usage": {
+        "inputTokens": 531,
+        "outputTokens": 98,
+        "cacheReadTokens": 18944,
+        "cacheWriteTokens": 0
+      },
+      "isolated": true,
+      "attempts": [
+        {
+          "n": 1,
+          "seconds": 14.8,
+          "outcome": "ok"
+        }
+      ]
+    },
+    {
+      "role": "implementer",
+      "seconds": 16.6,
+      "usage": {
+        "inputTokens": 538,
+        "outputTokens": 184,
+        "cacheReadTokens": 18944,
+        "cacheWriteTokens": 0
+      },
+      "isolated": true,
+      "attempts": [
+        {
+          "n": 1,
+          "seconds": 16.6,
+          "outcome": "ok"
+        }
+      ]
+    },
+    {
+      "role": "implementer",
+      "seconds": 18.5,
+      "usage": {
+        "inputTokens": 543,
+        "outputTokens": 333,
+        "cacheReadTokens": 18944,
+        "cacheWriteTokens": 0
+      },
+      "isolated": true,
+      "attempts": [
+        {
+          "n": 1,
+          "seconds": 18.5,
+          "outcome": "ok"
+        }
+      ]
+    },
+    {
+      "role": "implementer",
+      "seconds": 15.8,
+      "usage": {
+        "inputTokens": 531,
+        "outputTokens": 81,
+        "cacheReadTokens": 18944,
+        "cacheWriteTokens": 0
+      },
+      "isolated": true,
+      "attempts": [
+        {
+          "n": 1,
+          "seconds": 15.8,
+          "outcome": "ok"
+        }
+      ]
+    },
+    {
+      "role": "implementer",
+      "seconds": 111.6,
+      "usage": {
+        "inputTokens": 538,
+        "outputTokens": 188,
+        "cacheReadTokens": 18944,
+        "cacheWriteTokens": 0
+      },
+      "isolated": true,
+      "attempts": [
+        {
+          "n": 1,
+          "seconds": 111.6,
+          "outcome": "ok"
+        }
+      ]
+    },
+    {
+      "role": "implementer",
+      "seconds": 18.4,
+      "usage": {
+        "inputTokens": 543,
+        "outputTokens": 266,
+        "cacheReadTokens": 18944,
+        "cacheWriteTokens": 0
+      },
+      "isolated": true,
+      "attempts": [
+        {
+          "n": 1,
+          "seconds": 18.4,
+          "outcome": "ok"
+        }
+      ]
+    },
+    {
+      "role": "implementer",
+      "seconds": 16.2,
+      "usage": {
+        "inputTokens": 531,
+        "outputTokens": 172,
+        "cacheReadTokens": 18944,
+        "cacheWriteTokens": 0
+      },
+      "isolated": true,
+      "attempts": [
+        {
+          "n": 1,
+          "seconds": 16.2,
+          "outcome": "ok"
+        }
+      ]
+    },
+    {
+      "role": "implementer",
+      "seconds": 17.0,
+      "usage": {
+        "inputTokens": 538,
+        "outputTokens": 253,
+        "cacheReadTokens": 18944,
+        "cacheWriteTokens": 0
+      },
+      "isolated": true,
+      "attempts": [
+        {
+          "n": 1,
+          "seconds": 17.0,
+          "outcome": "ok"
+        }
+      ]
+    },
+    {
+      "role": "implementer",
+      "seconds": 27.5,
+      "usage": {
+        "inputTokens": 543,
+        "outputTokens": 390,
+        "cacheReadTokens": 18944,
+        "cacheWriteTokens": 0
+      },
+      "isolated": true,
+      "attempts": [
+        {
+          "n": 1,
+          "seconds": 27.5,
+          "outcome": "ok"
+        }
+      ]
+    },
+    {
+      "role": "implementer",
+      "seconds": 24.8,
+      "usage": {
+        "inputTokens": 531,
+        "outputTokens": 171,
+        "cacheReadTokens": 18944,
+        "cacheWriteTokens": 0
+      },
+      "isolated": true,
+      "attempts": [
+        {
+          "n": 1,
+          "seconds": 24.8,
+          "outcome": "ok"
+        }
+      ]
+    },
+    {
+      "role": "implementer",
+      "seconds": 18.8,
+      "usage": {
+        "inputTokens": 538,
+        "outputTokens": 220,
+        "cacheReadTokens": 18944,
+        "cacheWriteTokens": 0
+      },
+      "isolated": true,
+      "attempts": [
+        {
+          "n": 1,
+          "seconds": 18.8,
+          "outcome": "ok"
+        }
+      ]
+    }
+  ],
+  "finished_at": "2026-10-20T21:49:54.599395+00:00"
+}
