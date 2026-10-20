@@ -19,6 +19,8 @@ CURSOR_BIN = os.environ.get("CURSOR_AGENT_BIN", str(Path.home() / ".local/bin/cu
 SANDBOX = Path(os.environ.get("CURSOR_LLM_SANDBOX", "/workspace/cursor-llm-sandbox"))
 DEFAULT_MODEL = os.environ.get("CURSOR_LLM_MODEL", "gpt-5.3-codex")
 ISOLATE = os.environ.get("CURSOR_LLM_ISOLATE", "1") != "0"
+# Extra attempts after the first. Infra failures only; model content is never retried.
+INFRA_RETRIES = int(os.environ.get("CURSOR_LLM_INFRA_RETRIES", "2"))
 
 
 class CursorAgentLLM:
@@ -27,13 +29,11 @@ class CursorAgentLLM:
         self.timeout = timeout
         self.tokens_used = 0
         self.calls: list[dict] = []
+        self.infra_failures = 0
         SANDBOX.mkdir(parents=True, exist_ok=True)
 
-    def complete(self, prompt: str, role: str = "default") -> str:
-        cmd = [CURSOR_BIN, "-p", "--trust", "--mode", "ask", "--output-format", "json"]
-        if self.model:
-            cmd += ["--model", self.model]
-        cmd.append(f"You are the {role} agent in a loop. Answer in plain text only.\n\n{prompt}")
+    def _run_once(self, cmd: list[str]) -> str:
+        """One sandboxed cursor-agent process. Fresh temp home. Raises TimeoutExpired on timeout."""
         run_cmd = cmd
         tmp_home: Path | None = None
         if ISOLATE:
@@ -50,10 +50,15 @@ class CursorAgentLLM:
                 "--ro-bind", f"{home}/.local/share/cursor-agent", f"{home}/.local/share/cursor-agent",
                 "--bind", f"{home}/.config/cursor", f"{home}/.config/cursor",
                 "--bind", str(cursor_dir), f"{home}/.cursor",
+                # Host public-plugin cache only; without it cursor-agent downloads plugins and hangs.
+                *(
+                    ["--ro-bind", f"{home}/.cursor/plugins", f"{home}/.cursor/plugins"]
+                    if (Path(home) / ".cursor" / "plugins").is_dir()
+                    else []
+                ),
                 "--bind", str(SANDBOX), str(SANDBOX), "--chdir", str(SANDBOX),
                 "--setenv", "HOME", home, "--die-with-parent",
             ] + cmd
-        t0 = time.monotonic()
         try:
             proc = subprocess.Popen(
                 run_cmd,
@@ -72,11 +77,60 @@ class CursorAgentLLM:
         finally:
             if tmp_home is not None:
                 shutil.rmtree(tmp_home, ignore_errors=True)
-        dt = time.monotonic() - t0
-        data = json.loads(stdout.strip().splitlines()[-1])
-        if data.get("is_error"):
-            raise RuntimeError(f"cursor-agent error: {data}")
-        u = data.get("usage") or {}
-        self.tokens_used += int(u.get("inputTokens", 0)) + int(u.get("outputTokens", 0))
-        self.calls.append({"role": role, "seconds": round(dt, 1), "usage": u, "isolated": ISOLATE})
-        return data.get("result", "")
+        return stdout
+
+    def _append_call(self, role: str, attempts: list[dict], usage: dict | None) -> None:
+        self.calls.append({
+            "role": role,
+            "seconds": round(sum(a["seconds"] for a in attempts), 1),
+            "usage": usage,
+            "isolated": ISOLATE,
+            "attempts": attempts,
+        })
+
+    def complete(self, prompt: str, role: str = "default") -> str:
+        cmd = [CURSOR_BIN, "-p", "--trust", "--mode", "ask", "--output-format", "json"]
+        if self.model:
+            cmd += ["--model", self.model]
+        cmd.append(f"You are the {role} agent in a loop. Answer in plain text only.\n\n{prompt}")
+        # Timeout, empty stdout, or a last line that is not JSON: retry.
+        # Any parsed model reply, including is_error, is final.
+        attempts: list[dict] = []
+        last_error: BaseException | None = None
+        for n in range(1, INFRA_RETRIES + 2):
+            t0 = time.monotonic()
+            try:
+                stdout = self._run_once(cmd)
+            except subprocess.TimeoutExpired as exc:
+                seconds = round(time.monotonic() - t0, 1)
+                attempts.append({"n": n, "seconds": seconds, "outcome": "timeout"})
+                self.infra_failures += 1
+                last_error = exc
+                continue
+            seconds = round(time.monotonic() - t0, 1)
+            text = (stdout or "").strip()
+            if not text:
+                attempts.append({"n": n, "seconds": seconds, "outcome": "no_output"})
+                self.infra_failures += 1
+                last_error = RuntimeError("cursor-agent returned no output")
+                continue
+            try:
+                data = json.loads(text.splitlines()[-1])
+            except json.JSONDecodeError as exc:
+                attempts.append({"n": n, "seconds": seconds, "outcome": "bad_json"})
+                self.infra_failures += 1
+                last_error = exc
+                continue
+            if data.get("is_error"):
+                if attempts:
+                    self._append_call(role, attempts, None)
+                raise RuntimeError(f"cursor-agent error: {data}")
+            u = data.get("usage") or {}
+            self.tokens_used += int(u.get("inputTokens", 0)) + int(u.get("outputTokens", 0))
+            attempts.append({"n": n, "seconds": seconds, "outcome": "ok"})
+            self._append_call(role, attempts, u)
+            return data.get("result", "")
+        if last_error is None:
+            raise RuntimeError("cursor-agent infra retry produced no result")
+        self._append_call(role, attempts, None)
+        raise last_error
