@@ -17,6 +17,7 @@ import loopgym.runtime.loop_runtime as rt
 
 here = Path(__file__).parent
 sys.path.insert(0, str(here))
+import cursor_llm  # noqa: E402
 from cursor_llm import CursorAgentLLM  # noqa: E402
 
 MOCK_HITS = []
@@ -26,8 +27,8 @@ class _NoMock:
 rt.MockLLM = sim.MockLLM = _NoMock
 
 
-def one_run(loop: str, k: int, model: str, task: str, outdir: Path) -> dict:
-    llm = CursorAgentLLM(model=model)
+def one_run(loop: str, k: int, model: str, task: str, outdir: Path, timeout: int) -> dict:
+    llm = CursorAgentLLM(model=model, timeout=timeout)
     env = lg.make("loopbench/code-repair-v1", spec_path=str(here / "loops" / f"{loop}.yaml"),
                   backend="live", llm=llm)
     t0 = time.monotonic(); err = None; res = {}
@@ -44,13 +45,13 @@ def one_run(loop: str, k: int, model: str, task: str, outdir: Path) -> dict:
     return out
 
 
-def probe(n: int, model: str) -> dict:
+def probe(n: int, model: str, timeout: int) -> dict:
     from loopgym.evaluators.sandbox_tests import get_fixture
     fx = get_fixture("cr-001")
     prompt = (f"Bug description:\n{fx.bug_description}\n\nModule ({fx.module_name}):\n```python\n{fx.source}```"
               f"\n\nReply with the full corrected module in a single ```python code block.")
     def call(i):
-        llm = CursorAgentLLM(model=model); t = time.monotonic()
+        llm = CursorAgentLLM(model=model, timeout=timeout); t = time.monotonic()
         try:
             txt = llm.complete(prompt, role="implementer"); e = None
         except Exception as ex:
@@ -66,7 +67,8 @@ def probe(n: int, model: str) -> dict:
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--model", default="gpt-5.3-codex-low-fast")
+    ap.add_argument("--model", default=cursor_llm.DEFAULT_MODEL)
+    ap.add_argument("--timeout", type=int, default=180)
     ap.add_argument("--task", default="LB-CR-1")
     ap.add_argument("--runs", type=int, default=3)
     ap.add_argument("--loops", nargs="*")
@@ -75,7 +77,7 @@ def main():
     a = ap.parse_args()
     (here / "results").mkdir(exist_ok=True)
     if a.probe:
-        r = probe(a.probe, a.model)
+        r = probe(a.probe, a.model, a.timeout)
         (here / "results" / f"probe-{a.probe}.json").write_text(json.dumps(r, indent=2))
         print(json.dumps({k: r[k] for k in ("n", "model", "wall_seconds")} | {"errors": len(r["errors"])}))
         return
@@ -86,7 +88,7 @@ def main():
     jobs = [(l, k) for k in range(a.runs) for l in loops]
     t0 = time.monotonic()
     with ThreadPoolExecutor(max_workers=len(jobs)) as ex:
-        rows = [f.result() for f in as_completed([ex.submit(one_run, l, k, a.model, a.task, outdir) for l, k in jobs])]
+        rows = [f.result() for f in as_completed([ex.submit(one_run, l, k, a.model, a.task, outdir, a.timeout) for l, k in jobs])]
     wall = round(time.monotonic() - t0, 1)
     summary = {"model": a.model, "task": a.task, "jobs": len(jobs), "wall_seconds": wall,
                "mock_constructed": bool(MOCK_HITS), "errors": [r for r in rows if r["error"]],

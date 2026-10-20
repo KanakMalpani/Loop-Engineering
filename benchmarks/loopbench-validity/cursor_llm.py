@@ -8,17 +8,19 @@ from __future__ import annotations
 
 import json
 import os
+import signal
 import subprocess
 import time
 from pathlib import Path
 
 CURSOR_BIN = os.environ.get("CURSOR_AGENT_BIN", str(Path.home() / ".local/bin/cursor-agent"))
 SANDBOX = Path(os.environ.get("CURSOR_LLM_SANDBOX", "/workspace/cursor-llm-sandbox"))
+DEFAULT_MODEL = os.environ.get("CURSOR_LLM_MODEL", "gpt-5.3-codex")
 
 
 class CursorAgentLLM:
     def __init__(self, model: str | None = None, timeout: int = 180) -> None:
-        self.model = model
+        self.model = model if model is not None else DEFAULT_MODEL
         self.timeout = timeout
         self.tokens_used = 0
         self.calls: list[dict] = []
@@ -30,9 +32,22 @@ class CursorAgentLLM:
             cmd += ["--model", self.model]
         cmd.append(f"You are the {role} agent in a loop. Answer in plain text only.\n\n{prompt}")
         t0 = time.monotonic()
-        out = subprocess.run(cmd, cwd=SANDBOX, capture_output=True, text=True, timeout=self.timeout)
+        proc = subprocess.Popen(
+            cmd,
+            cwd=SANDBOX,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            start_new_session=True,
+        )
+        try:
+            stdout, _stderr = proc.communicate(timeout=self.timeout)
+        except subprocess.TimeoutExpired:
+            os.killpg(proc.pid, signal.SIGKILL)
+            proc.communicate()
+            raise
         dt = time.monotonic() - t0
-        data = json.loads(out.stdout.strip().splitlines()[-1])
+        data = json.loads(stdout.strip().splitlines()[-1])
         if data.get("is_error"):
             raise RuntimeError(f"cursor-agent error: {data}")
         u = data.get("usage") or {}
