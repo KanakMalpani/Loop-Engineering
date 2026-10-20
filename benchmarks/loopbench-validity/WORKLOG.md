@@ -143,3 +143,20 @@ Attempt 2 runs at `--max-concurrency 4` with no coding sessions. Infra-only retr
 - Diagnosis: bad-1, bad-3, good-1, good-3, and good-5 used exactly 15 model calls per run (15 episodes × 1 iteration), so the model fixed each bug in one shot and feedback channels never came into play. good-2 and good-4 used 30 (2 iterations only because their success rule needs 2 consecutive passes).
 - bad-3's role (rewrite in another language) was ignored; the model still returned Python that passed. Temperature 1.8 is only stated in the prompt; cursor-agent cannot set it. good-1 run 1 seed 4 stopped at 0.75 on cr-001 because 0.75 meets its success threshold.
 - The fixtures are too easy for this model to separate feedback/role defects. Model replies are not stored in the run files, so bad-3's actual code cannot be inspected from logs.
+
+## 2026-10-21 03:50 IST: QA follow-ups on attempt 2 (results untouched)
+
+- **Retries:** all 6 are logged in each run file's `calls[i].attempts` lists, not in `run.log`. Every one is a first-attempt timeout at 150 s followed by an ok second attempt:
+  - `bad-1-no-feedback-r0` call 0
+  - `bad-2-no-tests-r0` call 0
+  - `bad-3-wrong-role-r0` call 0
+  - `bad-4-no-bug-input-r0` call 0
+  - `bad-4-no-bug-input-r2` call 15
+  - `good-4-thorough-t0-r0` call 8
+  - The first four were the first calls at startup.
+  - `run.log` doesn't print retries; this is a gap to fix in the next attempt.
+- **Wall time:** the two figures disagree.
+  - `summary.json` gives `wall_seconds` = 4652 s, about 77.5 min.
+  - The START and finish timestamps, 01:28:44 to 03:34:44 IST, span about 126 min.
+  - `wall_seconds` is likely measured with a monotonic clock that doesn't advance while the box is suspended or paused, while the timestamps use wall-clock time. That cause hasn't been verified, and the criterion doesn't depend on time.
+- **Next attempt:** store every model reply in the run files, so bad-3's code can be inspected, and log each retry attempt in `run.log`.
