@@ -55,15 +55,17 @@ def test_quickstart_episode_completes():
     result = env.run_episode(task_id="cr-001", seed=42)
     assert result["steps"] > 0
     assert result["trajectory"]
-    assert result["quality_score"] > 0
+    # Real-outcome scoring: MockLLM emits no code, so hidden tests give 0 (no free points).
+    assert result["quality_score"] == 0.0
+    assert result["success"] is False
 
 
 def test_reproducible_trajectories_three_seeds():
-    env = lg.make("loopbench/code-repair-v1")
+    env = lg.make("loopbench/research-synthesis-v1")
     hashes = []
     for seed in (0, 1, 2):
-        r1 = env.run_episode(task_id="cr-001", seed=seed)
-        r2 = env.run_episode(task_id="cr-001", seed=seed)
+        r1 = env.run_episode(task_id="rs-001", seed=seed)
+        r2 = env.run_episode(task_id="rs-001", seed=seed)
         traj = tuple((s["iteration"], s["quality_score"], s["output"][:40]) for s in r1["trajectory"])
         traj2 = tuple((s["iteration"], s["quality_score"], s["output"][:40]) for s in r2["trajectory"])
         assert traj == traj2
