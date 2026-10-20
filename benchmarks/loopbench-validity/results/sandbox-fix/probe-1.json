@@ -1,0 +1,21 @@
+{
+  "n": 1,
+  "max_concurrency": 5,
+  "model": "gpt-5.3-codex",
+  "wall_seconds": 18.2,
+  "errors": [],
+  "calls": [
+    {
+      "i": 0,
+      "seconds": 18.2,
+      "error": null,
+      "chars": 262,
+      "usage": {
+        "inputTokens": 490,
+        "outputTokens": 318,
+        "cacheReadTokens": 18944,
+        "cacheWriteTokens": 0
+      }
+    }
+  ]
+}

@@ -1,0 +1,57 @@
+{
+  "n": 4,
+  "max_concurrency": 4,
+  "model": "gpt-5.3-codex",
+  "wall_seconds": 23.4,
+  "errors": [],
+  "calls": [
+    {
+      "i": 0,
+      "seconds": 18.7,
+      "error": null,
+      "chars": 215,
+      "usage": {
+        "inputTokens": 490,
+        "outputTokens": 245,
+        "cacheReadTokens": 18944,
+        "cacheWriteTokens": 0
+      }
+    },
+    {
+      "i": 1,
+      "seconds": 23.4,
+      "error": null,
+      "chars": 299,
+      "usage": {
+        "inputTokens": 490,
+        "outputTokens": 357,
+        "cacheReadTokens": 18944,
+        "cacheWriteTokens": 0
+      }
+    },
+    {
+      "i": 2,
+      "seconds": 17.9,
+      "error": null,
+      "chars": 265,
+      "usage": {
+        "inputTokens": 490,
+        "outputTokens": 231,
+        "cacheReadTokens": 18944,
+        "cacheWriteTokens": 0
+      }
+    },
+    {
+      "i": 3,
+      "seconds": 22.8,
+      "error": null,
+      "chars": 341,
+      "usage": {
+        "inputTokens": 490,
+        "outputTokens": 392,
+        "cacheReadTokens": 18944,
+        "cacheWriteTokens": 0
+      }
+    }
+  ]
+}
