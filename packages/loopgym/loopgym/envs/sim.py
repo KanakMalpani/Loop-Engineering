@@ -10,6 +10,8 @@ from loopgym.envs.base import LoopEnv, Observation
 from loopgym.runtime.compiler import compile_lss
 from loopgym.runtime.loop_runtime import LoopRuntime, LoopState, MockLLM, load_lss_spec
 
+REAL_OUTCOME_ENVS = {"loopbench/code-repair-v1"}
+
 
 def _task_input(spec: dict[str, Any], task_id: str, tasks_path: Path | None) -> str:
     """Resolve task input from tasks.json or spec examples."""
@@ -82,7 +84,16 @@ class SimEnv(LoopEnv):
         llm_seed = _mock_llm_seed(self.seed, self._task_id, self._graph.loop_name)
         override = getattr(self, "llm_override", None)
         llm = override if override is not None else MockLLM(seed=llm_seed)
-        self._runtime = LoopRuntime(self.spec, llm=llm)
+        fixtures = self._fixtures_for(self._task_id)
+        if fixtures:
+            from loopgym.runtime.outcome_runtime import CodeRepairRuntime
+
+            self._fixture = fixtures[0]
+            self._user_input = f"fixture:{self._fixture.fixture_id}"
+            self._runtime = CodeRepairRuntime(self.spec, llm=llm, fixture=self._fixture)
+        else:
+            self._fixture = None
+            self._runtime = LoopRuntime(self.spec, llm=llm)
         self._state = LoopState()
         self._done = False
 
@@ -134,7 +145,10 @@ class SimEnv(LoopEnv):
             self._state = self._runtime.step_once(self._state, self._user_input)
 
         self._done = self._state.terminated
-        success = self._state.quality_score >= self._runtime.quality_threshold
+        if hasattr(self._runtime, "is_success"):
+            success = self._runtime.is_success(self._state)
+        else:
+            success = self._state.quality_score >= self._runtime.quality_threshold
         reward = self._reward(self._state.quality_score, success)
 
         info = {
@@ -167,6 +181,10 @@ class SimEnv(LoopEnv):
         """Run full episode until done (convenience for benchmarks)."""
         import time
 
+        family = self._fixtures_for(task_id)
+        if len(family) > 1:
+            return self._run_family(task_id, seed, family, trace_path=trace_path)
+
         from loopgym.trace import build_loop_trace, utc_now, write_loop_trace
 
         started_at = utc_now()
@@ -187,6 +205,8 @@ class SimEnv(LoopEnv):
             self._state.termination_reason if self._state else last_info.get("termination_reason", "")
         )
         total_cost = tokens_used * 0.000002
+        if self._state and "cost_usd" in self._state.metadata:
+            total_cost = self._state.metadata["cost_usd"]
         loop_id = f"{self.env_id}:{self._task_id}:{self.seed}"
 
         result = {
@@ -200,6 +220,8 @@ class SimEnv(LoopEnv):
             "termination_reason": termination,
             "elapsed_seconds": round(elapsed, 3),
             "tokens_used": tokens_used,
+            "cost_usd": round(total_cost, 6),
+            "fixture": self._fixture.fixture_id if getattr(self, "_fixture", None) else None,
             "trajectory": [
                 {
                     "iteration": h["iteration"],
@@ -224,4 +246,38 @@ class SimEnv(LoopEnv):
         result["loop_trace"] = trace
         if trace_path is not None:
             result["trace_path"] = str(write_loop_trace(trace, trace_path))
+        return result
+
+    # ---- real-outcome helpers ------------------------------------------------------------
+    def _fixtures_for(self, task_id: str) -> list[Any]:
+        if self.env_id not in REAL_OUTCOME_ENVS:
+            return []
+        from loopgym.evaluators.sandbox_tests import resolve_fixtures
+
+        return resolve_fixtures(task_id or "")
+
+    def _run_family(self, task_id, seed, fixtures, *, trace_path=None) -> dict[str, Any]:
+        """Run every instance of a task family (e.g. LB-CR-1 -> cr-001..003); score = mean pass rate."""
+        subs = [self.run_episode(task_id=f.fixture_id, seed=seed) for f in fixtures]
+        n = len(subs)
+        result = {
+            "task_id": task_id,
+            "seed": seed if seed is not None else self.seed,
+            "env_id": self.env_id,
+            "instances": subs,
+            "steps": sum(r["steps"] for r in subs),
+            "total_reward": sum(r["total_reward"] for r in subs),
+            "quality_score": round(sum(r["quality_score"] for r in subs) / n, 4),
+            "success": all(r["success"] for r in subs),
+            "elapsed_seconds": round(sum(r["elapsed_seconds"] for r in subs), 3),
+            "tokens_used": subs[-1]["tokens_used"],
+            "cost_usd": round(sum(r.get("cost_usd", 0.0) for r in subs), 6),
+            "termination_reason": "; ".join(f"{r['fixture']}: {r['termination_reason']}" for r in subs),
+            "trajectory": [dict(t, fixture=r["fixture"]) for r in subs for t in r["trajectory"]],
+            "loop_trace": subs[-1]["loop_trace"],
+        }
+        if trace_path is not None:
+            from loopgym.trace import write_loop_trace
+
+            result["trace_path"] = str(write_loop_trace(result["loop_trace"], trace_path))
         return result
