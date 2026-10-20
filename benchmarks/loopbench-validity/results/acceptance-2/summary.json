@@ -1,0 +1,407 @@
+{
+  "model": "gpt-5.3-codex",
+  "task": "LB-CR-1",
+  "seeds": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "start": "2026-10-20T19:58:44.563053+00:00",
+  "end": "2026-10-20T22:04:44.730595+00:00",
+  "started_at": "2026-10-20T19:58:44.563053+00:00",
+  "finished_at": "2026-10-20T22:04:44.730595+00:00",
+  "jobs": 30,
+  "max_concurrency": 4,
+  "wall_seconds": 4652.2,
+  "mock_constructed": false,
+  "provisional": true,
+  "deviation": "see DEVIATION.md",
+  "criterion_complete": true,
+  "infra_fail": [],
+  "errors": [],
+  "scores": [
+    [
+      "bad-1-no-feedback",
+      0,
+      1.0
+    ],
+    [
+      "bad-1-no-feedback",
+      1,
+      1.0
+    ],
+    [
+      "bad-1-no-feedback",
+      2,
+      1.0
+    ],
+    [
+      "bad-2-no-tests",
+      0,
+      0.0
+    ],
+    [
+      "bad-2-no-tests",
+      1,
+      0.0
+    ],
+    [
+      "bad-2-no-tests",
+      2,
+      0.0
+    ],
+    [
+      "bad-3-wrong-role",
+      0,
+      1.0
+    ],
+    [
+      "bad-3-wrong-role",
+      1,
+      1.0
+    ],
+    [
+      "bad-3-wrong-role",
+      2,
+      1.0
+    ],
+    [
+      "bad-4-no-bug-input",
+      0,
+      0.33331999999999995
+    ],
+    [
+      "bad-4-no-bug-input",
+      1,
+      0.19998
+    ],
+    [
+      "bad-4-no-bug-input",
+      2,
+      0.3333
+    ],
+    [
+      "bad-5-starved-budget",
+      0,
+      0.0
+    ],
+    [
+      "bad-5-starved-budget",
+      1,
+      0.0
+    ],
+    [
+      "bad-5-starved-budget",
+      2,
+      0.0
+    ],
+    [
+      "good-1-fast",
+      0,
+      1.0
+    ],
+    [
+      "good-1-fast",
+      1,
+      0.9833399999999999
+    ],
+    [
+      "good-1-fast",
+      2,
+      1.0
+    ],
+    [
+      "good-2-thorough",
+      0,
+      1.0
+    ],
+    [
+      "good-2-thorough",
+      1,
+      1.0
+    ],
+    [
+      "good-2-thorough",
+      2,
+      1.0
+    ],
+    [
+      "good-3-fast-5iter",
+      0,
+      1.0
+    ],
+    [
+      "good-3-fast-5iter",
+      1,
+      1.0
+    ],
+    [
+      "good-3-fast-5iter",
+      2,
+      1.0
+    ],
+    [
+      "good-4-thorough-t0",
+      0,
+      1.0
+    ],
+    [
+      "good-4-thorough-t0",
+      1,
+      1.0
+    ],
+    [
+      "good-4-thorough-t0",
+      2,
+      1.0
+    ],
+    [
+      "good-5-fast-strict",
+      0,
+      1.0
+    ],
+    [
+      "good-5-fast-strict",
+      1,
+      1.0
+    ],
+    [
+      "good-5-fast-strict",
+      2,
+      1.0
+    ]
+  ],
+  "per_loop": {
+    "bad-1-no-feedback": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "bad-2-no-tests": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "bad-3-wrong-role": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "bad-4-no-bug-input": [
+      0.33331999999999995,
+      0.19998,
+      0.3333
+    ],
+    "bad-5-starved-budget": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "good-1-fast": [
+      1.0,
+      0.9833399999999999,
+      1.0
+    ],
+    "good-2-thorough": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "good-3-fast-5iter": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "good-4-thorough-t0": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "good-5-fast-strict": [
+      1.0,
+      1.0,
+      1.0
+    ]
+  },
+  "criterion": {
+    "pass": false,
+    "runs": [
+      {
+        "run": 0,
+        "good": {
+          "good-1-fast": 1.0,
+          "good-2-thorough": 1.0,
+          "good-3-fast-5iter": 1.0,
+          "good-4-thorough-t0": 1.0,
+          "good-5-fast-strict": 1.0
+        },
+        "bad": {
+          "bad-1-no-feedback": 1.0,
+          "bad-2-no-tests": 0.0,
+          "bad-3-wrong-role": 1.0,
+          "bad-4-no-bug-input": 0.33331999999999995,
+          "bad-5-starved-budget": 0.0
+        },
+        "min_good": 1.0,
+        "max_bad": 1.0,
+        "tie": true,
+        "pass": false
+      },
+      {
+        "run": 1,
+        "good": {
+          "good-1-fast": 0.9833399999999999,
+          "good-2-thorough": 1.0,
+          "good-3-fast-5iter": 1.0,
+          "good-4-thorough-t0": 1.0,
+          "good-5-fast-strict": 1.0
+        },
+        "bad": {
+          "bad-1-no-feedback": 1.0,
+          "bad-2-no-tests": 0.0,
+          "bad-3-wrong-role": 1.0,
+          "bad-4-no-bug-input": 0.19998,
+          "bad-5-starved-budget": 0.0
+        },
+        "min_good": 0.9833399999999999,
+        "max_bad": 1.0,
+        "tie": false,
+        "pass": false
+      },
+      {
+        "run": 2,
+        "good": {
+          "good-1-fast": 1.0,
+          "good-2-thorough": 1.0,
+          "good-3-fast-5iter": 1.0,
+          "good-4-thorough-t0": 1.0,
+          "good-5-fast-strict": 1.0
+        },
+        "bad": {
+          "bad-1-no-feedback": 1.0,
+          "bad-2-no-tests": 0.0,
+          "bad-3-wrong-role": 1.0,
+          "bad-4-no-bug-input": 0.3333,
+          "bad-5-starved-budget": 0.0
+        },
+        "min_good": 1.0,
+        "max_bad": 1.0,
+        "tie": true,
+        "pass": false
+      }
+    ],
+    "incomplete": false
+  },
+  "bad3_vs_good": [
+    {
+      "run": 0,
+      "bad-3-wrong-role": 1.0,
+      "versus": [
+        {
+          "loop": "good-1-fast",
+          "score": 1.0,
+          "ties": true,
+          "beats": false
+        },
+        {
+          "loop": "good-2-thorough",
+          "score": 1.0,
+          "ties": true,
+          "beats": false
+        },
+        {
+          "loop": "good-3-fast-5iter",
+          "score": 1.0,
+          "ties": true,
+          "beats": false
+        },
+        {
+          "loop": "good-4-thorough-t0",
+          "score": 1.0,
+          "ties": true,
+          "beats": false
+        },
+        {
+          "loop": "good-5-fast-strict",
+          "score": 1.0,
+          "ties": true,
+          "beats": false
+        }
+      ]
+    },
+    {
+      "run": 1,
+      "bad-3-wrong-role": 1.0,
+      "versus": [
+        {
+          "loop": "good-1-fast",
+          "score": 0.9833399999999999,
+          "ties": false,
+          "beats": true
+        },
+        {
+          "loop": "good-2-thorough",
+          "score": 1.0,
+          "ties": true,
+          "beats": false
+        },
+        {
+          "loop": "good-3-fast-5iter",
+          "score": 1.0,
+          "ties": true,
+          "beats": false
+        },
+        {
+          "loop": "good-4-thorough-t0",
+          "score": 1.0,
+          "ties": true,
+          "beats": false
+        },
+        {
+          "loop": "good-5-fast-strict",
+          "score": 1.0,
+          "ties": true,
+          "beats": false
+        }
+      ]
+    },
+    {
+      "run": 2,
+      "bad-3-wrong-role": 1.0,
+      "versus": [
+        {
+          "loop": "good-1-fast",
+          "score": 1.0,
+          "ties": true,
+          "beats": false
+        },
+        {
+          "loop": "good-2-thorough",
+          "score": 1.0,
+          "ties": true,
+          "beats": false
+        },
+        {
+          "loop": "good-3-fast-5iter",
+          "score": 1.0,
+          "ties": true,
+          "beats": false
+        },
+        {
+          "loop": "good-4-thorough-t0",
+          "score": 1.0,
+          "ties": true,
+          "beats": false
+        },
+        {
+          "loop": "good-5-fast-strict",
+          "score": 1.0,
+          "ties": true,
+          "beats": false
+        }
+      ]
+    }
+  ]
+}
