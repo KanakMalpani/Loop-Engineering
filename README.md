@@ -18,7 +18,7 @@ Closed feedback loops — observe, act, evaluate, update, repeat — made struct
 
 <br>
 
-[**Read the Manifesto**](manifesto/MANIFESTO.md) · [**Explore Patterns**](patterns/README.md) · [**Run the Stack**](#the-published-stack) · [**Onboarding Paths**](#where-to-start)
+[**Read the Manifesto**](manifesto/MANIFESTO.md) · [**Explore Patterns**](patterns/README.md) · [**Run the Stack**](#the-published-stack) · [**Onboarding Paths**](#where-to-start) · [**5-minute demo**](demo/README.md)
 
 </div>
 

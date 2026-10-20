@@ -39,3 +39,7 @@ recipes.local.yaml
 
 # Generated diagrams (keep source in diagrams/)
 tools/output/
+
+# Offline demo artifacts
+demo/out/
+.venv-demo/
