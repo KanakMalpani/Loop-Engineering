@@ -134,4 +134,12 @@ Attempt 2 runs at `--max-concurrency 4` with no coding sessions. Infra-only retr
 
 ## Acceptance attempt 2
 
-Not started yet.
+- Started Wed 21 Oct 01:28:44 IST, finished 03:34 IST (about 126 min by timestamps). `summary.json` `wall_seconds` 4652 disagrees: monotonic clock, likely host suspension during box connection drops.
+- 30/30 runs complete, committed at `ef3c5c8`. Model `gpt-5.3-codex` pinned for all runs, `CursorAgentLLM`, sandboxed, MockLLM never constructed. Concurrency 4, timeout 150 s.
+- 0 INFRA-FAIL, 0 errors. 627 call attempts, 621 ok, 6 timeouts, all recovered by the infra-only retry.
+- Per-loop scores (3 runs): bad-1 1.0/1.0/1.0, bad-2 0/0/0, bad-3 1.0/1.0/1.0, bad-4 0.333/0.200/0.333, bad-5 0/0/0, good-1 1.0/0.983/1.0, good-2..good-5 1.0 in all runs.
+- Verdict FAIL as written (provisional per `DEVIATION.md`): runs 0 and 2 tie at 1.0; run 1 min good 0.983 < max bad 1.0. bad-3 ties every good loop in every run and beats good-1 in run 1.
+- `DEVIATION.md` and `FROZEN.sha256` byte-identical to `5d02f63` after the run. No Cursor CLI sessions during the run, so this log was not edited until after it.
+- Diagnosis: bad-1, bad-3, good-1, good-3, and good-5 used exactly 15 model calls per run (15 episodes × 1 iteration), so the model fixed each bug in one shot and feedback channels never came into play. good-2 and good-4 used 30 (2 iterations only because their success rule needs 2 consecutive passes).
+- bad-3's role (rewrite in another language) was ignored; the model still returned Python that passed. Temperature 1.8 is only stated in the prompt; cursor-agent cannot set it. good-1 run 1 seed 4 stopped at 0.75 on cr-001 because 0.75 meets its success threshold.
+- The fixtures are too easy for this model to separate feedback/role defects. Model replies are not stored in the run files, so bad-3's actual code cannot be inspected from logs.
