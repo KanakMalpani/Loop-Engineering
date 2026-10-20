@@ -82,7 +82,7 @@ def test_live_never_builds_mock(monkeypatch):
     monkeypatch.setattr(sim_mod, "MockLLM", Boom)
     monkeypatch.setattr(rt_mod, "MockLLM", Boom)
     stub = RecordingStub(always_fix=True)
-    res, env = _run("good-1-fast", stub)
+    res, _env = _run("good-1-fast", stub)
     assert res["llm_class"] == "RecordingStub"
     assert res["quality_score"] == 1.0
     with pytest.raises(ValueError):
@@ -109,6 +109,7 @@ def test_no_hidden_content_in_prompts():
 
 def test_working_copy_contains_only_src(monkeypatch):
     import shutil as _sh
+
     import loopgym.evaluators.sandbox_tests as sb
 
     seen = {}

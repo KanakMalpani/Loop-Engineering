@@ -122,7 +122,7 @@ def test_pass_rate(fixture: Fixture, output: str, timeout: int = 30) -> dict[str
                f"--junitxml={junit}", "--rootdir", str(hidden_p / "tests"), str(hidden_p / "tests")]
         try:
             proc = subprocess.run(cmd, cwd=hidden_p, env=env, capture_output=True, text=True,
-                                  timeout=timeout)
+                                  timeout=timeout, check=False)
         except subprocess.TimeoutExpired:
             return {**base, "failure_codes": ["fail.test_timeout"],
                     "remediation_hints": ["Tests timed out; avoid infinite loops."]}
