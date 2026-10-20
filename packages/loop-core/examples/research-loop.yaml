@@ -1,0 +1,359 @@
+loop_name: research-brief-loop
+version: 1.2.0
+
+objective: >
+  Produce an 800-1200 word research brief answering inputs.query with at least
+  three primary sources, weighted rubric score >= 0.85, valid citations,
+  zero safety constraint violations, readable by a technical product manager,
+  terminating within cost_limits.
+
+inputs:
+  schema:
+    query:
+      type: string
+      description: "Research question to investigate"
+      required: true
+      max_length: 2000
+    depth:
+      type: enum
+      description: "Research thoroughness level"
+      values: [quick, standard, deep]
+      default: standard
+    locale:
+      type: string
+      description: "Output language locale code"
+      pattern: "^[a-z]{2}(-[A-Z]{2})?$"
+      default: en
+    exclude_domains:
+      type: array
+      description: "Domains to avoid in source retrieval"
+      default: []
+  examples:
+    - query: "What are the commercialization timelines for solid-state batteries?"
+      depth: standard
+      locale: en
+    - query: "Compare retrieval-augmented generation vs fine-tuning for enterprise QA"
+      depth: deep
+      locale: en
+
+memory:
+  type: session
+  backend: composite
+  retention:
+    unit: iteration
+    value: 20
+  write_policy:
+    allowed_writers: [researcher, outliner]
+    schema: ResearchMemoryEntry
+    max_entries: 50
+  read_policy:
+    researcher: [prior_sources, rejected_claims]
+    outliner: [notes, prior_sources]
+    writer: [notes, outline]
+    citation_validator: [notes, sources]
+
+workers:
+  - id: researcher
+    role: "Discover primary sources, extract verifiable claims, and identify knowledge gaps"
+    model:
+      provider: openai
+      name: gpt-4.1
+      temperature: 0.3
+    depends_on: []
+    inputs:
+      - from: inputs.query
+      - from: inputs.depth
+      - from: memory.prior_sources
+    outputs:
+      name: ResearchNotes
+      format: json
+      schema_ref: schemas/research-notes.json
+    tools:
+      - web_search
+      - fetch_url
+    timeout_seconds: 180
+    retries: 1
+    cost_budget_usd: 0.80
+
+  - id: outliner
+    role: "Structure research notes into a logical brief outline addressing all query aspects"
+    model:
+      provider: openai
+      name: gpt-4.1
+      temperature: 0.2
+    depends_on: [researcher]
+    inputs:
+      - from: inputs.query
+      - from: workers.researcher
+      - from: memory.notes
+    outputs:
+      name: BriefOutline
+      format: json
+      schema_ref: schemas/brief-outline.json
+    timeout_seconds: 90
+    retries: 1
+    cost_budget_usd: 0.30
+
+  - id: writer
+    role: "Draft the research brief from outline and notes with inline citations"
+    model:
+      provider: openai
+      name: gpt-4.1
+      temperature: 0.4
+    depends_on: [outliner]
+    inputs:
+      - from: inputs.query
+      - from: inputs.locale
+      - from: workers.outliner
+      - from: memory.notes
+    outputs:
+      name: ResearchBrief
+      format: markdown
+    timeout_seconds: 120
+    retries: 1
+    cost_budget_usd: 0.50
+
+  - id: citation_validator
+    role: "Verify each citation URL resolves and quoted text appears in source"
+    model:
+      provider: openai
+      name: gpt-4.1-mini
+      temperature: 0
+    depends_on: [writer]
+    inputs:
+      - from: workers.writer
+      - from: memory.sources
+    outputs:
+      name: CitationReport
+      format: json
+      schema_ref: schemas/citation-report.json
+    tools:
+      - fetch_url
+    timeout_seconds: 120
+    retries: 0
+    cost_budget_usd: 0.25
+
+evaluators:
+  - id: notes_schema
+    type: deterministic
+    runs_after: [researcher]
+    implementation: evaluators.schema_validate
+  - id: outline_coverage
+    type: llm_rubric
+    runs_after: [outliner]
+    rubric:
+      dimensions:
+        - name: query_coverage
+          weight: 1.0
+          scale: [0, 1]
+          criteria: "Outline sections address all aspects of inputs.query"
+      pass_threshold: 0.75
+    model:
+      provider: openai
+      name: gpt-4.1-mini
+      temperature: 0
+  - id: citation_check
+    type: deterministic
+    runs_after: [citation_validator]
+    implementation: evaluators.citation_integrity
+  - id: brief_quality
+    type: llm_rubric
+    runs_after: [writer, citation_validator]
+    rubric:
+      dimensions:
+        - name: factual_accuracy
+          weight: 0.35
+          scale: [0, 1]
+          criteria: "Claims supported by cited sources; no internal contradictions"
+        - name: coverage
+          weight: 0.25
+          scale: [0, 1]
+          criteria: "All major aspects of query addressed with appropriate depth"
+        - name: citation_validity
+          weight: 0.25
+          scale: [0, 1]
+          criteria: "At least three primary sources; citations match CitationReport"
+        - name: clarity
+          weight: 0.15
+          scale: [0, 1]
+          criteria: "Readable by technical PM; 800-1200 words"
+      pass_threshold: 0.85
+    model:
+      provider: openai
+      name: gpt-4.1
+      temperature: 0
+    aggregation: weighted_avg
+
+feedback_channels:
+  - id: research_gaps_to_researcher
+    source: evaluators.notes_schema
+    destination: workers.researcher
+    format: structured
+    fields: [failure_codes, remediation_hints]
+    max_tokens: 400
+    when: "passed == false"
+  - id: outline_to_outliner
+    source: evaluators.outline_coverage
+    destination: workers.outliner
+    format: structured
+    fields: [failure_codes, dimension_scores, remediation_hints]
+    max_tokens: 400
+  - id: citations_to_writer
+    source: evaluators.citation_check
+    destination: workers.writer
+    format: structured
+    fields: [failure_codes, remediation_hints]
+    max_tokens: 500
+  - id: quality_to_writer
+    source: evaluators.brief_quality
+    destination: workers.writer
+    format: structured
+    fields: [failure_codes, dimension_scores, remediation_hints]
+    max_tokens: 600
+    when: "score < pass_threshold"
+  - id: quality_to_optimizer
+    source: evaluators.brief_quality
+    destination: optimization_strategy
+    format: structured
+    fields: [failure_codes, dimension_scores]
+    max_tokens: 300
+
+optimization_strategy:
+  type: prompt_refinement
+  max_steps: 12
+  config:
+    refinement_target: workers.writer
+    secondary_targets: [workers.researcher]
+    preserve_sections: [safety_rules, citation_format, output_length]
+  rollback:
+    on_metric_drop: 0.03
+    on_safety_failure: true
+
+termination_conditions:
+  success:
+    - metric: primary_quality
+      operator: gte
+      value: 0.85
+      consecutive: 2
+    - metric: citation_validity
+      operator: gte
+      value: 0.95
+      consecutive: 1
+  failure:
+    - type: safety_violation
+      action: halt
+    - type: max_iterations
+      value: 20
+      action: halt
+    - type: evaluator_error
+      consecutive: 3
+      action: halt
+    - type: cost_exceeded
+      action: halt
+  stall:
+    - metric: primary_quality
+      window_iterations: 5
+      min_improvement: 0.02
+      action: halt
+
+metrics:
+  - name: primary_quality
+    primary: true
+    definition: "Weighted mean of brief_quality rubric dimensions"
+    source: evaluators.brief_quality
+    unit: ratio
+    target: 0.85
+    regression_threshold: 0.03
+  - name: citation_validity
+    definition: "Fraction of citations passing integrity check"
+    source: evaluators.citation_check
+    unit: ratio
+    target: 0.95
+    regression_threshold: 0.05
+  - name: source_count
+    definition: "Count of distinct primary sources in ResearchNotes"
+    source: workers.researcher
+    unit: count
+    target: 3
+  - name: iteration_latency
+    definition: "Wall-clock seconds per full iteration"
+    source: telemetry.latency
+    unit: seconds
+    target: 300
+  - name: cost_usd
+    definition: "Sum of worker and evaluator API cost per loop run"
+    source: telemetry.cost
+    unit: usd
+    target: 4.00
+    regression_threshold: 0.50
+
+safety_constraints:
+  - id: injection-guard
+    type: injection_detect
+    scope: pre_worker
+    applies_to: ["*"]
+    action: quarantine
+    severity: S0
+    on_error: halt
+    config:
+      ml_classifier: true
+      max_risk_score: 0.7
+  - id: egress-control
+    type: egress_monitor
+    scope: pre_worker
+    applies_to: [researcher, citation_validator]
+    action: halt
+    severity: S0
+    on_error: halt
+    config:
+      allowed_domains: ["*.edu", "*.gov", "*.org", "arxiv.org", "scholar.google.com"]
+      block_private_ip: true
+      block_metadata_endpoints: true
+  - id: tool-gate
+    type: tool_allowlist
+    scope: pre_worker
+    applies_to: ["*"]
+    action: halt
+    severity: S0
+    on_error: halt
+    config:
+      enforce_at_runtime: true
+  - id: pii-output
+    type: pii_detect
+    scope: post_worker
+    applies_to: [writer]
+    action: halt
+    severity: S0
+    on_error: halt
+    config:
+      categories: [email, phone, ssn, credit_card]
+      min_confidence: 0.85
+  - id: secret-scan
+    type: secret_scan
+    scope: post_worker
+    applies_to: ["*"]
+    action: halt
+    severity: S0
+    on_error: halt
+    config:
+      entropy_threshold: 4.5
+  - id: brief-schema
+    type: schema_enforce
+    scope: post_worker
+    applies_to: [researcher, outliner, citation_validator]
+    action: quarantine
+    severity: S1
+    on_error: halt
+    config:
+      reject_unknown_fields: true
+
+cost_limits:
+  per_iteration_usd: 1.50
+  cumulative_usd: 8.00
+  token_soft_cap: 120000
+  on_approach:
+    threshold_percent: 85
+    action: warn
+  on_exceed:
+    action: halt
+  price_table_ref: standards/price-tables/openai-2026-06.json
