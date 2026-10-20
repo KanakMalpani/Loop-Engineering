@@ -54,11 +54,15 @@ class LiveEnv(LoopEnv):
         **sim_kwargs: Any,
     ) -> None:
         super().__init__(env_id)
+        if llm is None:
+            raise ValueError(
+                "LiveEnv requires an injected LLM (llm=...); it never falls back to MockLLM. "
+                "Use SimEnv for keyless testing, or LiveEnv.with_openai(...)."
+            )
         self._sim = SimEnv(env_id, spec, **sim_kwargs)
         self._llm = llm
-        if llm is not None:
-            self._sim._runtime = None  # will be set on reset with custom llm
-            self._sim.llm_override = llm  # reset() uses it instead of building MockLLM
+        self._sim._runtime = None
+        self._sim.llm_override = llm  # reset() uses it instead of building MockLLM
 
     def reset(self, task_id: str = "", seed: int | None = None, **kwargs: Any) -> Observation:
         obs = self._sim.reset(task_id=task_id, seed=seed, **kwargs)
@@ -68,6 +72,24 @@ class LiveEnv(LoopEnv):
 
     def step(self, action: Any = None) -> tuple[Observation, float, bool, dict[str, Any]]:
         return self._sim.step(action)
+
+    @property
+    def done(self) -> bool:
+        return self._sim.done
+
+    @property
+    def llm(self) -> LLMClient:
+        return self._llm
+
+    def run_episode(self, task_id: str = "", seed: int | None = None, **kwargs: Any) -> dict[str, Any]:
+        """Full episode with the injected LLM. Asserts the runtime really uses it."""
+        result = self._sim.run_episode(task_id=task_id, seed=seed, **kwargs)
+        rt = self._sim._runtime
+        if rt is None or rt.llm is not self._llm:
+            raise RuntimeError("LiveEnv runtime is not using the injected LLM")
+        result["backend"] = "live"
+        result["llm_class"] = type(self._llm).__name__
+        return result
 
     @classmethod
     def with_openai(
