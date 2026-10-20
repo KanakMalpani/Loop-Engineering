@@ -109,11 +109,15 @@ def test_pass_rate(fixture: Fixture, output: str, timeout: int = 30) -> dict[str
     if code is None:
         return {**base, "failure_codes": ["fail.unparseable_output"],
                 "remediation_hints": ["Return the full corrected module in one ```python code block."]}
-    with tempfile.TemporaryDirectory(prefix="lb-work-") as work, \
-            tempfile.TemporaryDirectory(prefix="lb-hidden-") as hidden:
+    tmp_dir = os.environ.get("LOOPBENCH_EVAL_TMP")
+    with tempfile.TemporaryDirectory(prefix="lb-work-", dir=tmp_dir) as work, \
+            tempfile.TemporaryDirectory(prefix="lb-hidden-", dir=tmp_dir) as hidden:
+        os.chmod(work, 0o700)
+        os.chmod(hidden, 0o700)
         work_p, hidden_p = Path(work), Path(hidden)
         shutil.copytree(fixture.root / "src", work_p, dirs_exist_ok=True)
         (work_p / fixture.module_name).write_text(code, encoding="utf-8")
+        # Hidden tests are copied only here, after the model call has already returned.
         shutil.copytree(fixture.hidden_tests_dir, hidden_p / "tests")
         junit = hidden_p / "junit.xml"
         env = {"PATH": os.environ.get("PATH", ""), "PYTHONPATH": str(work_p),
@@ -121,8 +125,8 @@ def test_pass_rate(fixture: Fixture, output: str, timeout: int = 30) -> dict[str
         cmd = [sys.executable, "-m", "pytest", "-q", "-p", "no:cacheprovider", "--tb=no", "-rfE",
                f"--junitxml={junit}", "--rootdir", str(hidden_p / "tests"), str(hidden_p / "tests")]
         try:
-            proc = subprocess.run(cmd, cwd=hidden_p, env=env, capture_output=True, text=True,
-                                  timeout=timeout, check=False)
+            subprocess.run(cmd, cwd=hidden_p, env=env, capture_output=True, text=True,
+                           timeout=timeout, check=False)
         except subprocess.TimeoutExpired:
             return {**base, "failure_codes": ["fail.test_timeout"],
                     "remediation_hints": ["Tests timed out; avoid infinite loops."]}
@@ -132,17 +136,15 @@ def test_pass_rate(fixture: Fixture, output: str, timeout: int = 30) -> dict[str
             for case in ET.parse(junit).getroot().iter("testcase"):
                 bad = [c for c in case if c.tag in ("failure", "error", "skipped")]
                 if bad:
-                    msg = (bad[0].get("message") or bad[0].tag).splitlines()[0][:200]
-                    failures.append(f"{case.get('name')}: {msg}")
+                    failures.append(case.get("name") or "collection_error")
                 else:
                     passed += 1
         if not failures and passed == 0:
-            # collection error (e.g. import failure) - report only the error line, never test source
-            err = [ln for ln in proc.stdout.splitlines() if ln.startswith("ERROR")]
-            failures = err[:3] or ["collection failed"]
+            failures = ["collection_error"]
     total = max(total, 1)
     rate = min(1.0, passed / total)
+    failing = ", ".join(failures) if failures else "none"
     return {**base, "test_pass_rate": rate, "score": rate, "passed": rate >= 1.0,
             "tests_passed": passed, "failures": failures,
             "failure_codes": [] if rate >= 1.0 else ["fail.tests_failing"],
-            "remediation_hints": [f"Failing: {f}" for f in failures]}
+            "remediation_hints": [f"{passed}/{total} hidden tests passed", f"Failing tests: {failing}"]}

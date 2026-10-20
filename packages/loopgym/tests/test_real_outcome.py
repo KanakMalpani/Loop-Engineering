@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import ast
+import json
 import re
 from pathlib import Path
 
@@ -151,3 +153,35 @@ def test_cost_cap_halts_as_fail():
     assert "cost_limit" in res["termination_reason"]
     res, _ = _run("good-1-fast", Pricey(always_fix=True), task="cr-001")
     assert res["success"] is True
+
+
+@pytest.mark.parametrize("fid", IDS)
+def test_feedback_has_no_expected_literals(fid):
+    fx = get_fixture(fid)
+    result = tpr(fx, _block(fx.source))
+    hints = list(result.get("remediation_hints") or [])
+    count_idx = next(
+        i for i, hint in enumerate(hints) if isinstance(hint, str) and hint.endswith(" hidden tests passed")
+    )
+    count_hint = hints[count_idx]
+    other_hints = [hint for i, hint in enumerate(hints) if i != count_idx]
+    payload = json.dumps(
+        {"failures": result.get("failures", []), "remediation_hints": other_hints}
+    )
+    strings: set[str] = set()
+    numbers: set[str] = set()
+    for test_file in sorted(fx.hidden_tests_dir.glob("*.py")):
+        tree = ast.parse(test_file.read_text(encoding="utf-8"))
+        for node in ast.walk(tree):
+            if isinstance(node, ast.Constant) and isinstance(node.value, str):
+                if len(node.value) >= 2:
+                    strings.add(node.value)
+            elif isinstance(node, ast.Constant) and isinstance(node.value, (int, float, complex)) and not isinstance(node.value, bool):
+                numbers.add(str(node.value))
+    for value in strings:
+        assert value not in payload
+    for value in numbers:
+        assert not re.search(rf"(?<!\w){re.escape(value)}(?!\w)", payload)
+    assert "assert" not in payload
+    assert "Error" not in payload
+    assert count_hint == f"{result['tests_passed']}/{result['tests_total']} hidden tests passed"

@@ -45,7 +45,7 @@ def one_run(loop: str, k: int, model: str, task: str, outdir: Path, timeout: int
     return out
 
 
-def probe(n: int, model: str, timeout: int) -> dict:
+def probe(n: int, model: str, timeout: int, cap: int) -> dict:
     from loopgym.evaluators.sandbox_tests import get_fixture
     fx = get_fixture("cr-001")
     prompt = (f"Bug description:\n{fx.bug_description}\n\nModule ({fx.module_name}):\n```python\n{fx.source}```"
@@ -59,9 +59,9 @@ def probe(n: int, model: str, timeout: int) -> dict:
         return {"i": i, "seconds": round(time.monotonic() - t, 1), "error": e, "chars": len(txt),
                 "usage": llm.calls[-1]["usage"] if llm.calls else None}
     t0 = time.monotonic()
-    with ThreadPoolExecutor(max_workers=n) as ex:
+    with ThreadPoolExecutor(max_workers=min(n, cap)) as ex:
         calls = sorted((f.result() for f in [ex.submit(call, i) for i in range(n)]), key=lambda c: c["i"])
-    return {"n": n, "model": model, "wall_seconds": round(time.monotonic() - t0, 1),
+    return {"n": n, "max_concurrency": cap, "model": model, "wall_seconds": round(time.monotonic() - t0, 1),
             "errors": [c for c in calls if c["error"]], "calls": calls}
 
 
@@ -73,13 +73,14 @@ def main():
     ap.add_argument("--runs", type=int, default=3)
     ap.add_argument("--loops", nargs="*")
     ap.add_argument("--probe", type=int)
+    ap.add_argument("--max-concurrency", type=int, default=5)
     ap.add_argument("--confirm-acceptance", action="store_true")
     a = ap.parse_args()
     (here / "results").mkdir(exist_ok=True)
     if a.probe:
-        r = probe(a.probe, a.model, a.timeout)
+        r = probe(a.probe, a.model, a.timeout, a.max_concurrency)
         (here / "results" / f"probe-{a.probe}.json").write_text(json.dumps(r, indent=2))
-        print(json.dumps({k: r[k] for k in ("n", "model", "wall_seconds")} | {"errors": len(r["errors"])}))
+        print(json.dumps({k: r[k] for k in ("n", "max_concurrency", "model", "wall_seconds")} | {"errors": len(r["errors"])}))
         return
     loops = a.loops or sorted(p.stem for p in (here / "loops").glob("*.yaml"))
     if not a.loops and a.runs == 3 and not a.confirm_acceptance:
@@ -87,10 +88,10 @@ def main():
     outdir = here / "results" / "full"; outdir.mkdir(parents=True, exist_ok=True)
     jobs = [(l, k) for k in range(a.runs) for l in loops]
     t0 = time.monotonic()
-    with ThreadPoolExecutor(max_workers=len(jobs)) as ex:
+    with ThreadPoolExecutor(max_workers=a.max_concurrency) as ex:
         rows = [f.result() for f in as_completed([ex.submit(one_run, l, k, a.model, a.task, outdir, a.timeout) for l, k in jobs])]
     wall = round(time.monotonic() - t0, 1)
-    summary = {"model": a.model, "task": a.task, "jobs": len(jobs), "wall_seconds": wall,
+    summary = {"model": a.model, "task": a.task, "jobs": len(jobs), "max_concurrency": a.max_concurrency, "wall_seconds": wall,
                "mock_constructed": bool(MOCK_HITS), "errors": [r for r in rows if r["error"]],
                "scores": sorted([(r["loop"], r["run"], r["score"]) for r in rows])}
     (outdir / "summary.json").write_text(json.dumps(summary, indent=2, default=str))
