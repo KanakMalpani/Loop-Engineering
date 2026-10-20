@@ -83,7 +83,7 @@ def suggest_level(spec: dict, source_name: str | None = None) -> dict[str, Any]:
             model.fit(records[: int(len(records) * 0.8)])
             level = model.predict(pattern, iter_len, workers)
             confidence = "loopnet-v0.2"
-    except Exception:
+    except (Exception, SystemExit):
         pass
 
     return {
