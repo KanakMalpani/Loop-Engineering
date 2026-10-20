@@ -1,4 +1,12 @@
 {
+  "seeds": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "task": "LB-CR-1",
   "fixture_checks": [
     {
       "fixture": "cr-001",
@@ -25,6 +33,13 @@
       "loop": "bad-1-no-feedback",
       "fixed_reply": {
         "score": 0.0,
+        "by_seed": {
+          "0": 0.0,
+          "1": 0.0,
+          "2": 0.0,
+          "3": 0.0,
+          "4": 0.0
+        },
         "success": false,
         "llm_class": "FixedReply",
         "per_fixture": {
@@ -45,6 +60,13 @@
       },
       "feedback_stub": {
         "score": 0.1667,
+        "by_seed": {
+          "0": 0.1667,
+          "1": 0.1667,
+          "2": 0.1667,
+          "3": 0.1667,
+          "4": 0.1667
+        },
         "success": false,
         "llm_class": "FeedbackStub",
         "per_fixture": {
@@ -68,6 +90,13 @@
       "loop": "bad-2-no-tests",
       "fixed_reply": {
         "score": 0.0,
+        "by_seed": {
+          "0": 0.0,
+          "1": 0.0,
+          "2": 0.0,
+          "3": 0.0,
+          "4": 0.0
+        },
         "success": false,
         "llm_class": "FixedReply",
         "per_fixture": {
@@ -88,6 +117,13 @@
       },
       "feedback_stub": {
         "score": 0.0,
+        "by_seed": {
+          "0": 0.0,
+          "1": 0.0,
+          "2": 0.0,
+          "3": 0.0,
+          "4": 0.0
+        },
         "success": false,
         "llm_class": "FeedbackStub",
         "per_fixture": {
@@ -111,6 +147,13 @@
       "loop": "bad-3-wrong-role",
       "fixed_reply": {
         "score": 0.0,
+        "by_seed": {
+          "0": 0.0,
+          "1": 0.0,
+          "2": 0.0,
+          "3": 0.0,
+          "4": 0.0
+        },
         "success": false,
         "llm_class": "FixedReply",
         "per_fixture": {
@@ -131,6 +174,13 @@
       },
       "feedback_stub": {
         "score": 1.0,
+        "by_seed": {
+          "0": 1.0,
+          "1": 1.0,
+          "2": 1.0,
+          "3": 1.0,
+          "4": 1.0
+        },
         "success": true,
         "llm_class": "FeedbackStub",
         "per_fixture": {
@@ -147,13 +197,20 @@
             "success (1.00 >= 0.75 x1)"
           ]
         },
-        "cost_usd": 0.003118
+        "cost_usd": 0.002988
       }
     },
     {
       "loop": "bad-4-no-bug-input",
       "fixed_reply": {
         "score": 0.0,
+        "by_seed": {
+          "0": 0.0,
+          "1": 0.0,
+          "2": 0.0,
+          "3": 0.0,
+          "4": 0.0
+        },
         "success": false,
         "llm_class": "FixedReply",
         "per_fixture": {
@@ -174,6 +231,13 @@
       },
       "feedback_stub": {
         "score": 0.0,
+        "by_seed": {
+          "0": 0.0,
+          "1": 0.0,
+          "2": 0.0,
+          "3": 0.0,
+          "4": 0.0
+        },
         "success": false,
         "llm_class": "FeedbackStub",
         "per_fixture": {
@@ -197,6 +261,13 @@
       "loop": "bad-5-starved-budget",
       "fixed_reply": {
         "score": 0.0,
+        "by_seed": {
+          "0": 0.0,
+          "1": 0.0,
+          "2": 0.0,
+          "3": 0.0,
+          "4": 0.0
+        },
         "success": false,
         "llm_class": "FixedReply",
         "per_fixture": {
@@ -217,29 +288,43 @@
       },
       "feedback_stub": {
         "score": 0.0,
+        "by_seed": {
+          "0": 0.0,
+          "1": 0.0,
+          "2": 0.0,
+          "3": 0.0,
+          "4": 0.0
+        },
         "success": false,
         "llm_class": "FeedbackStub",
         "per_fixture": {
           "cr-001": [
             0.0,
-            "cost_limit per_iteration_usd (0.00068 > 0.0005): fail"
+            "cost_limit per_iteration_usd (0.00065 > 0.0005): fail"
           ],
           "cr-002": [
             0.0,
-            "cost_limit per_iteration_usd (0.00058 > 0.0005): fail"
+            "cost_limit per_iteration_usd (0.00055 > 0.0005): fail"
           ],
           "cr-003": [
             0.0,
-            "cost_limit per_iteration_usd (0.00068 > 0.0005): fail"
+            "cost_limit per_iteration_usd (0.00060 > 0.0005): fail"
           ]
         },
-        "cost_usd": 0.003062
+        "cost_usd": 0.002934
       }
     },
     {
       "loop": "good-1-fast",
       "fixed_reply": {
         "score": 0.0,
+        "by_seed": {
+          "0": 0.0,
+          "1": 0.0,
+          "2": 0.0,
+          "3": 0.0,
+          "4": 0.0
+        },
         "success": false,
         "llm_class": "FixedReply",
         "per_fixture": {
@@ -260,6 +345,13 @@
       },
       "feedback_stub": {
         "score": 1.0,
+        "by_seed": {
+          "0": 1.0,
+          "1": 1.0,
+          "2": 1.0,
+          "3": 1.0,
+          "4": 1.0
+        },
         "success": true,
         "llm_class": "FeedbackStub",
         "per_fixture": {
@@ -276,13 +368,20 @@
             "success (1.00 >= 0.75 x1)"
           ]
         },
-        "cost_usd": 0.003062
+        "cost_usd": 0.002934
       }
     },
     {
       "loop": "good-2-thorough",
       "fixed_reply": {
         "score": 0.0,
+        "by_seed": {
+          "0": 0.0,
+          "1": 0.0,
+          "2": 0.0,
+          "3": 0.0,
+          "4": 0.0
+        },
         "success": false,
         "llm_class": "FixedReply",
         "per_fixture": {
@@ -303,6 +402,13 @@
       },
       "feedback_stub": {
         "score": 1.0,
+        "by_seed": {
+          "0": 1.0,
+          "1": 1.0,
+          "2": 1.0,
+          "3": 1.0,
+          "4": 1.0
+        },
         "success": true,
         "llm_class": "FeedbackStub",
         "per_fixture": {
@@ -319,13 +425,20 @@
             "success (1.00 >= 0.9 x2)"
           ]
         },
-        "cost_usd": 0.004902
+        "cost_usd": 0.004862
       }
     },
     {
       "loop": "good-3-fast-5iter",
       "fixed_reply": {
         "score": 0.0,
+        "by_seed": {
+          "0": 0.0,
+          "1": 0.0,
+          "2": 0.0,
+          "3": 0.0,
+          "4": 0.0
+        },
         "success": false,
         "llm_class": "FixedReply",
         "per_fixture": {
@@ -346,6 +459,13 @@
       },
       "feedback_stub": {
         "score": 1.0,
+        "by_seed": {
+          "0": 1.0,
+          "1": 1.0,
+          "2": 1.0,
+          "3": 1.0,
+          "4": 1.0
+        },
         "success": true,
         "llm_class": "FeedbackStub",
         "per_fixture": {
@@ -362,13 +482,20 @@
             "success (1.00 >= 0.75 x1)"
           ]
         },
-        "cost_usd": 0.003062
+        "cost_usd": 0.002934
       }
     },
     {
       "loop": "good-4-thorough-t0",
       "fixed_reply": {
         "score": 0.0,
+        "by_seed": {
+          "0": 0.0,
+          "1": 0.0,
+          "2": 0.0,
+          "3": 0.0,
+          "4": 0.0
+        },
         "success": false,
         "llm_class": "FixedReply",
         "per_fixture": {
@@ -389,6 +516,13 @@
       },
       "feedback_stub": {
         "score": 1.0,
+        "by_seed": {
+          "0": 1.0,
+          "1": 1.0,
+          "2": 1.0,
+          "3": 1.0,
+          "4": 1.0
+        },
         "success": true,
         "llm_class": "FeedbackStub",
         "per_fixture": {
@@ -405,13 +539,20 @@
             "success (1.00 >= 0.9 x2)"
           ]
         },
-        "cost_usd": 0.00489
+        "cost_usd": 0.004852
       }
     },
     {
       "loop": "good-5-fast-strict",
       "fixed_reply": {
         "score": 0.0,
+        "by_seed": {
+          "0": 0.0,
+          "1": 0.0,
+          "2": 0.0,
+          "3": 0.0,
+          "4": 0.0
+        },
         "success": false,
         "llm_class": "FixedReply",
         "per_fixture": {
@@ -432,6 +573,13 @@
       },
       "feedback_stub": {
         "score": 1.0,
+        "by_seed": {
+          "0": 1.0,
+          "1": 1.0,
+          "2": 1.0,
+          "3": 1.0,
+          "4": 1.0
+        },
         "success": true,
         "llm_class": "FeedbackStub",
         "per_fixture": {
@@ -448,11 +596,11 @@
             "success (1.00 >= 0.85 x1)"
           ]
         },
-        "cost_usd": 0.003062
+        "cost_usd": 0.002934
       }
     }
   ],
   "mock_constructed": false,
-  "seconds": 7.44,
+  "seconds": 35.42,
   "note": "stub run: evidence of runtime behaviour, not a model run; does not count toward check 5"
 }
