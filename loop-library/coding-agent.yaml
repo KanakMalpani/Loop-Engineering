@@ -10,8 +10,21 @@ inputs:
       type: string
       description: Primary task description or domain context
       required: true
+    repo_path:
+      type: string
+      description: Path to the target repository root (local checkout or relative path)
+      required: false
+    branch:
+      type: string
+      description: Git branch to work on; created from the default branch if missing
+      required: false
   examples:
   - task: Complete the declared objective for this loop profile.
+    repo_path: ./my-service
+    branch: feat/add-retry-logic
+  - task: Fix failing unit tests in the payments module.
+    repo_path: /workspace/payments-api
+    branch: fix/payments-tests
 memory:
   type: ephemeral
 workers:

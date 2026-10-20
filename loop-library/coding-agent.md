@@ -29,6 +29,20 @@ Four evaluators operate as hard gates: test suite (functional oracle), linter (s
 
 Semantic memory indexes the codebase symbol graph so the architect avoids proposing changes to non-existent modules. Procedural memory stores repo-specific conventions learned from prior successful loops.
 
+## Inputs
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| task | string | true | Primary task description or domain context |
+| repo_path | string | false | Path to the target repository root (local checkout or relative path) |
+| branch | string | false | Git branch to work on; created from the default branch if missing |
+
+```yaml
+task: Fix failing unit tests in the payments module.
+repo_path: /workspace/payments-api
+branch: fix/payments-tests
+```
+
 ## LES Score Breakdown
 
 | Category | Score | Rationale |
