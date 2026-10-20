@@ -1,0 +1,5 @@
+# Local install (sibling clone)
+-e ../LoopGym
+
+# Or from GitHub (no sibling required)
+# pip install git+https://github.com/KanakMalpani/LoopGym.git

@@ -1,0 +1,96 @@
+name: Deploy GitHub Pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - docs/**
+      - leaderboard/entries.json
+      - leaderboard/LIVE.md
+      - scripts/render_leaderboard.py
+      - scripts/leaderboard_common.py
+  workflow_run:
+    # GITHUB_TOKEN pushes from Leaderboard render do not fire push workflows.
+    workflows: ["Leaderboard render"]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    if: >-
+      github.event_name != 'workflow_run' ||
+      github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Regenerate site data
+        run: |
+          python scripts/render_leaderboard.py \
+            --entries leaderboard/entries.json \
+            --site-out docs/data/leaderboard.json \
+            --top-n 20
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs
+
+  deploy:
+    needs: build
+    if: >-
+      github.event_name != 'workflow_run' ||
+      github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Wait for prior Pages deployment to finish
+        if: github.event_name == 'workflow_run'
+        run: sleep 45
+
+      - id: deployment
+        uses: actions/deploy-pages@v4
+        continue-on-error: true
+
+      - name: Retry Pages deploy (attempt 2)
+        if: steps.deployment.outcome == 'failure'
+        run: sleep 45
+
+      - id: deployment2
+        if: steps.deployment.outcome == 'failure'
+        uses: actions/deploy-pages@v4
+        continue-on-error: true
+
+      - name: Retry Pages deploy (attempt 3)
+        if: steps.deployment.outcome == 'failure' && steps.deployment2.outcome == 'failure'
+        run: sleep 45
+
+      - id: deployment3
+        if: steps.deployment.outcome == 'failure' && steps.deployment2.outcome == 'failure'
+        uses: actions/deploy-pages@v4
+        continue-on-error: true
+
+      - name: Fail if Pages deploy exhausted retries
+        if: >-
+          steps.deployment.outcome == 'failure' &&
+          (steps.deployment2.outcome == 'failure' || steps.deployment2.outcome == 'skipped') &&
+          (steps.deployment3.outcome == 'failure' || steps.deployment3.outcome == 'skipped')
+        run: |
+          echo "GitHub Pages deploy failed after 3 attempts (transient platform error)."
+          exit 1

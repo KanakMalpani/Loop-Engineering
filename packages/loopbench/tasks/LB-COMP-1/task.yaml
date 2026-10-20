@@ -1,0 +1,86 @@
+# LoopBench task spec — Composed Swarm Rehearsal (ALS v2 preview)
+id: LB-COMP-1
+slug: lb/composed-swarm-rehearsal-1
+name: Composed Swarm Rehearsal
+version: 1.0.0
+status: preview
+
+loopgym_env: loopbench/composed-swarm-v1
+pattern_slugs:
+  - scenario-swarm-rehearsal
+  - multi-agent-coordination
+  - parallel-composition
+
+goal:
+  g_target: 0.85
+  scalar: "0.50 × branch_pass_rate + 0.50 × merge_quality"
+  primary_metric: composite_quality
+
+budget:
+  iteration_budget: 6
+  wall_clock_minutes: 90
+  cost_cap_usd: 1.50
+
+evaluation:
+  seeds: [0, 1, 2, 3, 4]
+  min_runs_per_instance: 1
+  success_at_k: 1
+  primary_instances:
+    - comp-001
+    - comp-002
+    - comp-003
+
+oracle:
+  type: llm_rubric
+  checks:
+    - evaluators.composite_gate
+
+perturbations:
+  - id: P1
+    name: context_truncation
+  - id: P2
+    name: branch_timeout
+  - id: P3
+    name: api_latency
+  - id: P4
+    name: model_downgrade
+  - id: P5
+    name: budget_minus_one
+
+les_stress:
+  - effectiveness
+  - autonomy
+  - scalability
+
+speed_baselines:
+  b_floor_iter_per_s: 0.0003
+  b_ceiling_iter_per_s: 0.015
+
+cost_baselines:
+  b_floor_efficiency: 0.04
+  b_ceiling_efficiency: 1.8
+
+safety:
+  auto_zero_on:
+    - orchestration_deadlock
+    - safety_bypass
+
+theory_ref:
+  - doc: "03-loop-math/docs/loop-algebra/loop-algebra.md"
+    theorems:
+      - id: thm:assoc-sequential
+        name: "Theorem 1 — Associativity of sequential composition (structural)"
+      - id: lem:budget
+        name: "Lemma — Budget additivity under sequential compose"
+  - doc: "03-loop-math/docs/complexity-classes/complexity-classes.md"
+    theorems:
+      - id: thm:loop-p-closure
+        name: "Loop-P closure under sequential compose"
+  - package: "loopmath>=0.1.0"
+    functions: ["compose_specs", "estimate_iterations"]
+
+notes: >
+  Uses loopbench/composed-swarm-v1 SimEnv (parallel branch + orchestrator merge).
+  Submit LSS spec loop-library/compositions/scenario-swarm-rehearsal.yaml.
+  Parallel compose cites loop-math Theorem 1 + budget lemma (LB-COMP-1 preview).
+  Reproduction challenge: https://github.com/KanakMalpani/Loop-Engineering/discussions/10

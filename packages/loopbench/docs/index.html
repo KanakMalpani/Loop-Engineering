@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>LoopBench — Public Loop Engineering Leaderboard</title>
+  <meta name="description" content="Fixed tasks. Fixed seeds. Observed LES. The public scoreboard for self-improving agent loops." />
+  <meta property="og:title" content="LoopBench — Public Loop Engineering Leaderboard" />
+  <meta property="og:description" content="Fixed tasks. Fixed seeds. Observed LES. Compare self-improving agent loops." />
+  <meta property="og:url" content="https://kanakmalpani.github.io/LoopBench/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="https://kanakmalpani.github.io/LoopBench/assets/logos/loopbench-lb.png" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="LoopBench — Public Loop Engineering Leaderboard" />
+  <meta name="twitter:image" content="https://kanakmalpani.github.io/LoopBench/assets/logos/loopbench-lb.png" />
+  <link rel="icon" href="assets/logos/loopbench-lb.png" type="image/png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/site.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
+  <script src="js/site.js" defer></script>
+</head>
+<body>
+  <nav class="topnav" aria-label="Site">
+    <a class="nav-brand" href="./">
+      <img src="assets/logos/loopbench-lb.png" alt="" width="24" height="24" class="brand-logo" />
+      <span>LoopBench</span>
+    </a>
+    <div class="nav-links">
+      <a href="https://github.com/KanakMalpani/Loop-Engineering/blob/main/contributions/LOOP_PLAYGROUND.md" target="_blank" rel="noopener">Playground</a>
+      <a href="#run">Run</a>
+      <a href="https://github.com/KanakMalpani/LoopBench/blob/main/SUITE-OVERVIEW.md" target="_blank" rel="noopener">Suite</a>
+      <a href="https://github.com/KanakMalpani/LoopBench" target="_blank" rel="noopener" class="nav-github">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+        GitHub
+      </a>
+    </div>
+  </nav>
+
+  <div class="page">
+    <header class="hero">
+      <div class="hero-brand">
+        <img src="assets/logos/loopbench-lb.png" alt="" width="56" height="56" class="brand-logo brand-logo-lg" />
+        <div>
+          <h1>LoopBench</h1>
+          <p class="hero-byline">Loop Engineering</p>
+        </div>
+      </div>
+      <dl class="hero-stats" id="hero-stats">
+        <div><dt>tasks</dt><dd id="stat-tasks">4</dd></div>
+        <div><dt>submissions</dt><dd id="stat-subs">—</dd></div>
+        <div><dt>seeds</dt><dd>5</dd></div>
+        <div><dt>updated</dt><dd id="stat-updated">—</dd></div>
+      </dl>
+    </header>
+
+    <main>
+      <section class="panel leaderboard-section" aria-labelledby="lb-title">
+        <div class="panel-header">
+          <h2 id="lb-title">Leaderboard</h2>
+          <p class="panel-desc" id="task-tagline">Select a task to compare loops.</p>
+        </div>
+
+        <div class="controls-block">
+          <div class="control-row">
+            <span class="control-label">Task</span>
+            <div class="task-tabs" role="tablist" id="task-tabs" aria-label="Benchmark task"></div>
+          </div>
+          <div class="control-row">
+            <span class="control-label">Chart</span>
+            <div class="metric-tabs" role="group" aria-label="Chart metric">
+              <button type="button" class="metric-btn active" data-metric="les" title="Loop Effectiveness Score">LES</button>
+              <button type="button" class="metric-btn" data-metric="success" title="Success@k">Success@k</button>
+              <button type="button" class="metric-btn" data-metric="cost" title="Avg cost">Cost</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="chart-section">
+          <div class="chart-wrap">
+            <canvas id="efficiency-chart" aria-label="Loop efficiency chart"></canvas>
+          </div>
+          <p class="chart-caption" id="chart-caption"></p>
+        </div>
+
+        <div class="table-wrap">
+          <table class="rank-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Loop</th>
+                <th>Submitter</th>
+                <th data-sort="les_display" title="Loop Effectiveness Score">LES ↕</th>
+                <th data-sort="success_at_k" title="Success@k">Success@k ↕</th>
+                <th data-sort="cost_usd_mean" title="Cost">Cost ↕</th>
+                <th title="Harness">Harness</th>
+                <th>Spec</th>
+              </tr>
+            </thead>
+            <tbody id="rank-body"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="panel panel-compact tasks-section">
+        <h2 class="section-title-sm">Tasks</h2>
+        <div class="task-cards" id="task-cards"></div>
+      </section>
+
+      <section class="panel panel-compact glossary-section">
+        <h2 class="section-title-sm">Metrics</h2>
+        <dl class="glossary glossary-compact" id="glossary"></dl>
+      </section>
+
+      <section class="panel panel-compact about-section">
+        <h2 class="section-title-sm">What LoopBench measures</h2>
+        <div class="feature-grid feature-grid-compact">
+          <article class="feature">
+            <h3>Closed loops, not prompts</h3>
+            <p>LSS YAML → LoopGym SimEnv → Success@k and observed LES.</p>
+          </article>
+          <article class="feature">
+            <h3>Reproducible</h3>
+            <p>Five seeds, no API keys on v0.1, auditable specs.</p>
+          </article>
+          <article class="feature">
+            <h3>Community scoreboard</h3>
+            <p>External rows credited; human review on merge.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="panel panel-compact cta-section" id="run">
+        <h2 class="section-title-sm">Run your first score</h2>
+        <pre class="code-block"><code>pip install "le-loop-stack>=0.1.0" loopbench loopgym
+loopbench run --task LB-CR-1 --spec your-loop.yaml --seeds 0,1,2,3,4 -o results.json
+loopbench validate results.json</code></pre>
+        <p><a href="https://github.com/KanakMalpani/Loop-Engineering/blob/main/contributions/BEAT_LB-CR-1.md">Beat LB-CR-1 guide →</a></p>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <p>MIT · <a href="https://github.com/KanakMalpani/LoopBench">LoopBench</a> · <a href="https://github.com/KanakMalpani/Loop-Engineering">Loop Engineering</a></p>
+    </footer>
+  </div>
+</body>
+</html>
