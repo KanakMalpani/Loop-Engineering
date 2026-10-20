@@ -116,3 +116,22 @@ The model under test is `gpt-5.3-codex`, pinned via `--model`, through the sandb
 - 3 cold runs (fresh clone of the branch + fresh venv, pip cache warm) took 13s each end to end. Demo itself: 8.18s / 8.00s / 8.04s.
 - `gen_ai.*` spans, `loop.cost_usd` on the trace path, and `fail.*` trace events are marked PLANNED.
 - Benchmark scores labelled "pending fixed benchmark acceptance".
+
+## Sandbox hang: cause and fix
+
+The per-call sandbox `~/.cursor` had no plugins cache, so cursor-agent tried to download Cursor's public plugins and blocked after "Cursor plugin load did not finish within the rules wait budget" (seen in its session log). It worked 23:45–23:57 IST because the download succeeded then.
+
+Fix: read-only bind of `~/.cursor/plugins` (public plugin cache only) into the sandbox.
+
+After the fix:
+
+- Leak probe re-run: not leaked (`results/sandbox-fix/leak-probe-after-fix.json`).
+- 1 call: 18.2 s.
+- 4 concurrent: 46.2 s, and again 23.4 s, with 0 errors.
+- 5 concurrent: all 5 timed out at 150 s (box load average ~108; other agents share it).
+
+Attempt 2 runs at `--max-concurrency 4` with no coding sessions. Infra-only retry policy added (see `results/acceptance-2/RETRY-POLICY.md`).
+
+## Acceptance attempt 2
+
+Not started yet.
