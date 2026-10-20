@@ -23,6 +23,44 @@ ISOLATE = os.environ.get("CURSOR_LLM_ISOLATE", "1") != "0"
 INFRA_RETRIES = int(os.environ.get("CURSOR_LLM_INFRA_RETRIES", "2"))
 
 
+class InfraError(RuntimeError):
+    """No model result after the infra retries are exhausted."""
+
+
+def _classify_attempt(
+    stdout: str, returncode: int,
+) -> tuple[str, dict | None, BaseException | None]:
+    """Classify one cursor-agent process. 'ok' is a model reply and is never retried."""
+    text = (stdout or "").strip()
+    data: dict | None = None
+    parse_error: json.JSONDecodeError | None = None
+    if text:
+        try:
+            parsed = json.loads(text.splitlines()[-1])
+        except json.JSONDecodeError as exc:
+            parse_error = exc
+        else:
+            if isinstance(parsed, dict):
+                data = parsed
+    if data is not None and data.get("is_error"):
+        return "process_error", None, RuntimeError(f"cursor-agent error: {data}")
+    if data is not None:
+        return "ok", data, None
+    if returncode != 0:
+        if parse_error is not None:
+            err: BaseException = parse_error
+        elif not text:
+            err = RuntimeError(f"cursor-agent exited {returncode} with no output")
+        else:
+            err = RuntimeError(f"cursor-agent exited {returncode} with no JSON")
+        return "process_error", None, err
+    if not text:
+        return "no_output", None, RuntimeError("cursor-agent returned no output")
+    if parse_error is not None:
+        return "bad_json", None, parse_error
+    return "bad_json", None, RuntimeError("cursor-agent returned no JSON object")
+
+
 class CursorAgentLLM:
     def __init__(self, model: str | None = None, timeout: int = 180) -> None:
         self.model = model if model is not None else DEFAULT_MODEL
@@ -32,7 +70,7 @@ class CursorAgentLLM:
         self.infra_failures = 0
         SANDBOX.mkdir(parents=True, exist_ok=True)
 
-    def _run_once(self, cmd: list[str]) -> str:
+    def _run_once(self, cmd: list[str]) -> tuple[str, int]:
         """One sandboxed cursor-agent process. Fresh temp home. Raises TimeoutExpired on timeout."""
         run_cmd = cmd
         tmp_home: Path | None = None
@@ -77,7 +115,8 @@ class CursorAgentLLM:
         finally:
             if tmp_home is not None:
                 shutil.rmtree(tmp_home, ignore_errors=True)
-        return stdout
+        code = proc.returncode
+        return stdout or "", 1 if code is None else code
 
     def _append_call(self, role: str, attempts: list[dict], usage: dict | None) -> None:
         self.calls.append({
@@ -93,14 +132,15 @@ class CursorAgentLLM:
         if self.model:
             cmd += ["--model", self.model]
         cmd.append(f"You are the {role} agent in a loop. Answer in plain text only.\n\n{prompt}")
-        # Timeout, empty stdout, or a last line that is not JSON: retry.
-        # Any parsed model reply, including is_error, is final.
+        # No result: timeout, no output, unparsable output, or process error. Retry those.
+        # A parsed model reply with content is final, including a non-zero exit that still
+        # returned JSON without is_error.
         attempts: list[dict] = []
         last_error: BaseException | None = None
         for n in range(1, INFRA_RETRIES + 2):
             t0 = time.monotonic()
             try:
-                stdout = self._run_once(cmd)
+                stdout, returncode = self._run_once(cmd)
             except subprocess.TimeoutExpired as exc:
                 seconds = round(time.monotonic() - t0, 1)
                 attempts.append({"n": n, "seconds": seconds, "outcome": "timeout"})
@@ -108,29 +148,18 @@ class CursorAgentLLM:
                 last_error = exc
                 continue
             seconds = round(time.monotonic() - t0, 1)
-            text = (stdout or "").strip()
-            if not text:
-                attempts.append({"n": n, "seconds": seconds, "outcome": "no_output"})
+            outcome, data, err = _classify_attempt(stdout, returncode)
+            if outcome != "ok" or data is None:
+                attempts.append({"n": n, "seconds": seconds, "outcome": outcome})
                 self.infra_failures += 1
-                last_error = RuntimeError("cursor-agent returned no output")
+                last_error = err or RuntimeError(f"cursor-agent infra failure ({outcome})")
                 continue
-            try:
-                data = json.loads(text.splitlines()[-1])
-            except json.JSONDecodeError as exc:
-                attempts.append({"n": n, "seconds": seconds, "outcome": "bad_json"})
-                self.infra_failures += 1
-                last_error = exc
-                continue
-            if data.get("is_error"):
-                if attempts:
-                    self._append_call(role, attempts, None)
-                raise RuntimeError(f"cursor-agent error: {data}")
             u = data.get("usage") or {}
             self.tokens_used += int(u.get("inputTokens", 0)) + int(u.get("outputTokens", 0))
             attempts.append({"n": n, "seconds": seconds, "outcome": "ok"})
             self._append_call(role, attempts, u)
             return data.get("result", "")
         if last_error is None:
-            raise RuntimeError("cursor-agent infra retry produced no result")
+            last_error = RuntimeError("cursor-agent infra retry produced no result")
         self._append_call(role, attempts, None)
-        raise last_error
+        raise InfraError(str(last_error)) from last_error

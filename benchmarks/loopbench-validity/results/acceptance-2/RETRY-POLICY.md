@@ -1,26 +1,27 @@
 # Retry policy
 
-Infra-only retries inside `CursorAgentLLM.complete`. This policy applies to acceptance attempt 2 from its start. Attempt 1 is unchanged.
+Infra-only retries inside `CursorAgentLLM.complete`. This policy applies to acceptance attempt 2 from its start. Committed before the first call of attempt 2. Attempt 1 is unchanged.
 
 ## Rule
 
-An attempt is an infra failure only when it:
+Retry only when the call produced no result:
 
-- raises `subprocess.TimeoutExpired`, or
-- returns empty stdout (`no_output`), or
-- returns stdout whose last line is not valid JSON (`bad_json`).
+- timeout (`subprocess.TimeoutExpired`, outcome `timeout`)
+- no output (outcome `no_output`)
+- unparsable output (outcome `bad_json`)
+- connection lost / process error, including JSON with `is_error` true and a non-zero exit with no JSON (outcome `process_error`)
 
-On an infra failure the call is retried up to `INFRA_RETRIES` more times. `INFRA_RETRIES = int(os.environ.get("CURSOR_LLM_INFRA_RETRIES", "2"))`, so the default is 2 retries and 3 attempts. Each attempt uses a fresh per-call temp home. Each attempt's timeout is `self.timeout`. Attempt 2 passes that as `run_full.py --timeout 150`, so 150 s per attempt.
+Never retry on score or patch content. Model replies with content are never retried.
 
-Model replies of any content are not retried. JSON with `is_error` true is not an infra failure and is not retried; it still raises `RuntimeError` as before. That exception is the seed error. Infra attempts already made on that call stay in the `calls` entry; `is_error` is not an `attempts` outcome.
+Fixed max 2 retries (3 attempts) per call. `INFRA_RETRIES` defaults to 2 (`CURSOR_LLM_INFRA_RETRIES`). 150 s timeout per attempt (`run_full.py --timeout 150`). Each attempt uses a fresh per-call temp home.
 
-After the last infra failure, the last error is re-raised.
+After the last failed attempt, `complete` raises `InfraError` chained from the last error.
 
 ## Logging
 
-Every attempt is logged in the run files. Each `calls` entry includes `attempts`: `{"n": 1, "seconds": ..., "outcome": "ok" | "timeout" | "no_output" | "bad_json"}`, one object per attempt. The shim also keeps `self.infra_failures`, incremented once per infra failure.
+Every attempt is logged. Each `calls` entry includes `attempts`: `{"n": 1, "seconds": ..., "outcome": "ok" | "timeout" | "no_output" | "bad_json" | "process_error"}`, one object per attempt. The shim also keeps `self.infra_failures`, incremented once per infra failure.
 
-If every attempt fails, that `calls` entry is still written, the error is re-raised, and the seed is recorded as an error scoring 0. Nothing is dropped.
+An episode seed with no result after the last retry is recorded `INFRA-FAIL` (not 0, not dropped) and reported separately in `summary.json` (`infra_fail`, distinct from `errors`).
 
 ## Why
 

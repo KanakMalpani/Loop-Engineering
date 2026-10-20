@@ -11,6 +11,7 @@ Each run writes <outdir>/<loop>-r<k>.json as soon as it finishes, plus <outdir>/
 """
 import argparse
 import json
+import subprocess
 import sys
 import threading
 import time
@@ -26,7 +27,7 @@ from loopgym.envs import sim
 here = Path(__file__).parent
 sys.path.insert(0, str(here))
 import cursor_llm
-from cursor_llm import CursorAgentLLM
+from cursor_llm import CursorAgentLLM, InfraError
 
 MOCK_HITS = []
 class _NoMock:
@@ -86,25 +87,50 @@ def _instance_scores(res: dict) -> dict:
     return {}
 
 
-def _seed_result(res: dict, err: str | None) -> tuple[dict, float]:
-    """Per-seed record. An errored seed contributes 0.0 to the run mean."""
-    if err:
+def _seed_result(res: dict, status: str, err: str | None) -> dict:
+    """Per-seed record. INFRA-FAIL and ERROR score None and stay out of the run mean."""
+    if status != "OK":
         return {
-            "score": 0.0,
+            "status": status,
+            "score": None,
             "success": None,
             "termination_reason": None,
             "instance_scores": {},
             "error": err,
-        }, 0.0
+        }
     raw = res.get("quality_score")
     score = 0.0 if raw is None else float(raw)
     return {
+        "status": "OK",
         "score": score,
         "success": res.get("success"),
         "termination_reason": res.get("termination_reason"),
         "instance_scores": _instance_scores(res),
         "error": None,
-    }, score
+    }
+
+
+def _failure_status(exc: BaseException) -> str:
+    if isinstance(exc, (InfraError, subprocess.TimeoutExpired)):
+        return "INFRA-FAIL"
+    return "ERROR"
+
+
+def _record_failure(by_seed: dict[str, dict], seed: int, exc: BaseException) -> None:
+    _seed = _seed_result({}, _failure_status(exc), f"{type(exc).__name__}: {exc}")
+    by_seed[str(seed)] = _seed
+
+
+def _tally(by_seed: dict[str, dict]) -> tuple[int, int, int, float | None]:
+    n_ok = sum(rec["status"] == "OK" for rec in by_seed.values())
+    n_infra_fail = sum(rec["status"] == "INFRA-FAIL" for rec in by_seed.values())
+    n_error = sum(rec["status"] == "ERROR" for rec in by_seed.values())
+    ok_scores = [
+        rec["score"] for rec in by_seed.values()
+        if rec["status"] == "OK" and rec["score"] is not None
+    ]
+    score = (sum(ok_scores) / len(ok_scores)) if ok_scores else None
+    return n_ok, n_infra_fail, n_error, score
 
 
 def _call_log(llm) -> list[dict]:
@@ -120,39 +146,33 @@ def _call_log(llm) -> list[dict]:
 
 def one_run(loop: str, k: int, model: str, task: str, outdir: Path, timeout: int,
             seeds: list[int]) -> dict:
-    """One independent run: every seed, sequentially, no retries. File written on finish."""
+    """One independent run: every seed, sequentially. File written on finish.
+
+    Call retries stay inside CursorAgentLLM. A seed that still has no result is
+    INFRA-FAIL with score None. Any other exception is ERROR with score None.
+    """
     t0 = time.monotonic()
     llm = None
     by_seed: dict[str, dict] = {}
-    errors: list[dict] = []
-    contributions: list[float] = []
     try:
         llm = CursorAgentLLM(model=model, timeout=timeout)
         env = lg.make("loopbench/code-repair-v1", spec_path=str(here / "loops" / f"{loop}.yaml"),
                       backend="live", llm=llm)
         for s in seeds:
-            err = None
-            res: dict = {}
             try:
                 res = env.run_episode(task_id=task, seed=s)
-            except Exception as e:  # noqa: BLE001  # record and continue; never retried
-                err = f"{type(e).__name__}: {e}"
+            except Exception as exc:  # noqa: BLE001  # record and continue; seed is not retried
                 traceback.print_exc()
-            record, contribution = _seed_result(res, err)
-            by_seed[str(s)] = record
-            contributions.append(contribution)
-            if err:
-                errors.append({"seed": s, "error": err})
-    except Exception as e:  # noqa: BLE001  # setup failure: record every seed not yet run
-        err = f"{type(e).__name__}: {e}"
+                _record_failure(by_seed, s, exc)
+            else:
+                by_seed[str(s)] = _seed_result(res, "OK", None)
+    except Exception as exc:  # noqa: BLE001  # setup failure: record every seed not yet run
         traceback.print_exc()
         for s in seeds:
             if str(s) in by_seed:
                 continue
-            record, contribution = _seed_result({}, err)
-            by_seed[str(s)] = record
-            contributions.append(contribution)
-            errors.append({"seed": s, "error": err})
+            _record_failure(by_seed, s, exc)
+    n_ok, n_infra_fail, n_error, score = _tally(by_seed)
     out = {
         "loop": loop,
         "run": k,
@@ -162,8 +182,10 @@ def one_run(loop: str, k: int, model: str, task: str, outdir: Path, timeout: int
         "llm_class": type(llm).__name__ if llm is not None else None,
         "mock_constructed": bool(MOCK_HITS),
         "wall_seconds": round(time.monotonic() - t0, 1),
-        "score": (sum(contributions) / len(seeds)) if seeds else 0.0,
-        "errors": errors,
+        "score": score,
+        "n_ok": n_ok,
+        "n_infra_fail": n_infra_fail,
+        "n_error": n_error,
         "by_seed": by_seed,
         "calls": _call_log(llm),
         "finished_at": datetime.now(UTC).isoformat(),
@@ -176,7 +198,7 @@ def one_run(loop: str, k: int, model: str, task: str, outdir: Path, timeout: int
     return out
 
 
-def _grouped(rows: list[dict], k: int, prefix: str) -> dict[str, float]:
+def _grouped(rows: list[dict], k: int, prefix: str) -> dict[str, float | None]:
     grouped = {
         r["loop"]: r["score"]
         for r in rows
@@ -191,8 +213,10 @@ def criterion_block(rows: list[dict], n_runs: int) -> dict:
     for k in range(n_runs):
         good = _grouped(rows, k, "good-")
         bad = _grouped(rows, k, "bad-")
-        min_good = min(good.values()) if good else None
-        max_bad = max(bad.values()) if bad else None
+        good_scores = [score for score in good.values() if score is not None]
+        bad_scores = [score for score in bad.values() if score is not None]
+        min_good = min(good_scores) if good_scores else None
+        max_bad = max(bad_scores) if bad_scores else None
         if min_good is None or max_bad is None:
             tie, passed = None, False
         else:
@@ -236,6 +260,33 @@ def bad3_vs_good(rows: list[dict], n_runs: int) -> list[dict]:
             })
         report.append({"run": k, BAD3: bad_score, "versus": versus})
     return report
+
+
+def _issue_list(rows: list[dict], status: str) -> list[dict]:
+    """Flat summary rows for one seed status: loop, run, seed, error."""
+    items = []
+    for row in rows:
+        for seed, rec in row.get("by_seed", {}).items():
+            if rec.get("status") != status:
+                continue
+            items.append({
+                "loop": row["loop"],
+                "run": row["run"],
+                "seed": int(seed),
+                "error": rec.get("error"),
+            })
+    return items
+
+
+def _criterion_complete(rows: list[dict]) -> bool:
+    """False when any seed is missing or not OK."""
+    for row in rows:
+        by_seed = row.get("by_seed") or {}
+        if len(by_seed) != len(row.get("seeds") or []):
+            return False
+        if any(rec.get("status") != "OK" for rec in by_seed.values()):
+            return False
+    return True
 
 
 def per_loop_scores(rows: list[dict], n_runs: int) -> dict[str, list]:
@@ -304,7 +355,9 @@ def main():
     wall = round(time.monotonic() - t0, 1)
     finished_at = datetime.now(UTC).isoformat()
     rows.sort(key=lambda r: (r["run"], r["loop"]))
-    any_error = any(r["errors"] for r in rows)
+    criterion_complete = _criterion_complete(rows)
+    criterion = criterion_block(rows, a.runs)
+    criterion["incomplete"] = not criterion_complete
     summary = {
         "model": a.model,
         "task": a.task,
@@ -319,19 +372,18 @@ def main():
         "mock_constructed": bool(MOCK_HITS),
         "provisional": True,
         "deviation": "see DEVIATION.md",
-        "criterion_complete": not any_error,
-        "errors": [
-            {"loop": r["loop"], "run": r["run"], "errors": r["errors"]}
-            for r in rows if r["errors"]
-        ],
+        "criterion_complete": criterion_complete,
+        "infra_fail": _issue_list(rows, "INFRA-FAIL"),
+        "errors": _issue_list(rows, "ERROR"),
         "scores": sorted((r["loop"], r["run"], r["score"]) for r in rows),
         "per_loop": per_loop_scores(rows, a.runs),
-        "criterion": criterion_block(rows, a.runs),
+        "criterion": criterion,
         "bad3_vs_good": bad3_vs_good(rows, a.runs),
     }
     (outdir / "summary.json").write_text(json.dumps(summary, indent=2, default=str))
     brief = ("model", "jobs", "wall_seconds", "mock_constructed", "provisional", "criterion_complete")
     shown = {key: summary[key] for key in brief}
+    shown["n_infra_fail"] = len(summary["infra_fail"])
     shown["criterion_pass"] = summary["criterion"]["pass"]
     print(json.dumps(shown))
     for score in summary["scores"]:
