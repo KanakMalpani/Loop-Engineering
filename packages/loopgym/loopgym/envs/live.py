@@ -58,6 +58,7 @@ class LiveEnv(LoopEnv):
         self._llm = llm
         if llm is not None:
             self._sim._runtime = None  # will be set on reset with custom llm
+            self._sim.llm_override = llm  # reset() uses it instead of building MockLLM
 
     def reset(self, task_id: str = "", seed: int | None = None, **kwargs: Any) -> Observation:
         obs = self._sim.reset(task_id=task_id, seed=seed, **kwargs)

@@ -80,7 +80,8 @@ class SimEnv(LoopEnv):
         self._task_id = task_id or "default"
         self._user_input = _task_input(self.spec, self._task_id, self.tasks_path)
         llm_seed = _mock_llm_seed(self.seed, self._task_id, self._graph.loop_name)
-        llm = MockLLM(seed=llm_seed)
+        override = getattr(self, "llm_override", None)
+        llm = override if override is not None else MockLLM(seed=llm_seed)
         self._runtime = LoopRuntime(self.spec, llm=llm)
         self._state = LoopState()
         self._done = False
