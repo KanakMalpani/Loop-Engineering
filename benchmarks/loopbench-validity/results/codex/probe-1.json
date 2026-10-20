@@ -1,0 +1,20 @@
+{
+  "n": 1,
+  "model": "gpt-5.3-codex",
+  "wall_seconds": 16.0,
+  "errors": [],
+  "calls": [
+    {
+      "i": 0,
+      "seconds": 16.0,
+      "error": null,
+      "chars": 265,
+      "usage": {
+        "inputTokens": 13803,
+        "outputTokens": 257,
+        "cacheReadTokens": 5632,
+        "cacheWriteTokens": 0
+      }
+    }
+  ]
+}
