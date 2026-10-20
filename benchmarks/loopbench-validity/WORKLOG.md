@@ -104,4 +104,15 @@ The model under test is `gpt-5.3-codex`, pinned via `--model`, through the sandb
 
 ## Acceptance run progress
 
-Not started yet.
+- Attempt 1 started Wed 21 Oct 00:23 IST: `run_full.py --confirm-acceptance`, `LB-CR-1`, seeds 0-4, 10 loops × 3 runs, model `gpt-5.3-codex` pinned, sandboxed shim, `--max-concurrency 4` (a Cursor CLI coding session for the demo was running alongside). Fixtures verified against `FROZEN.sha256` before start.
+- Aborted 00:35 IST by SWE: 0/30 runs complete. 8 `cursor-agent` calls hit the 180s timeout; Cursor backend logged "Connection lost" at the same time.
+- Logs kept in `results/acceptance/` (commit `bbfb3df`); nothing dropped.
+- Diagnosis afterwards: a non-sandboxed single call still worked (35s), but sandboxed (bwrap) single calls hung with no output even at concurrency 1, also with the identity socket bound back in. Earlier, 23:45–23:57 IST, sandboxed calls worked (23s; leak probe 144s).
+- Root cause unknown. Acceptance is BLOCKED until the sandboxed shim works again. Not restarted without isolation; that would break the leak rule.
+
+## Deliverable A
+
+- `demo/` committed at `b8e3459` (offline, stub only, spec → trace → benchmark).
+- 3 cold runs (fresh clone of the branch + fresh venv, pip cache warm) took 13s each end to end. Demo itself: 8.18s / 8.00s / 8.04s.
+- `gen_ai.*` spans, `loop.cost_usd` on the trace path, and `fail.*` trace events are marked PLANNED.
+- Benchmark scores labelled "pending fixed benchmark acceptance".
