@@ -1,0 +1,57 @@
+name: Upload to Hugging Face
+
+on:
+  workflow_dispatch:
+    inputs:
+      repo_id:
+        description: HuggingFace dataset repo id
+        required: true
+        default: KanakMalpani/loopnet-v0.2
+      jsonl_path:
+        description: Path to records JSONL (repo-relative)
+        required: true
+        default: data/v0.2/records.jsonl
+      require_count:
+        description: Expected record count (0 = skip check)
+        required: true
+        default: "545"
+      private:
+        description: Private dataset
+        type: boolean
+        default: false
+
+jobs:
+  upload:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install jsonschema pandas pyarrow huggingface_hub
+
+      - name: Validate corpus
+        run: |
+          if [ "${{ github.event.inputs.require_count }}" != "0" ]; then
+            python scripts/validate_record.py "${{ github.event.inputs.jsonl_path }}" \
+              --require-count "${{ github.event.inputs.require_count }}"
+          else
+            python scripts/validate_record.py "${{ github.event.inputs.jsonl_path }}"
+          fi
+
+      - name: Upload to Hugging Face Hub
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: |
+          if [ -z "$HF_TOKEN" ]; then
+            echo "::error::Add HF_TOKEN to repository secrets (see PUBLISHING.md)"
+            exit 1
+          fi
+          python scripts/upload_hf.py \
+            --jsonl "${{ github.event.inputs.jsonl_path }}" \
+            --export-parquet --upload \
+            --repo-id "${{ github.event.inputs.repo_id }}" \
+            ${{ github.event.inputs.private == 'true' && '--private' || '' }}

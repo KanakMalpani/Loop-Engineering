@@ -1,0 +1,14 @@
+{
+  "metadata.loop_id": "e1722a83-88db-4904-9d65-781f967aefdd",
+  "metadata.loop_name": "runtime-minimal-loop",
+  "metadata.pattern": "reflection-loop",
+  "metadata.worker_count": 1,
+  "metadata.iteration_count": 2,
+  "metadata.success": true,
+  "metadata.total_cost_usd": 0.0005,
+  "metadata.termination_reason": "quality_threshold (0.99 >= 0.8)",
+  "metadata.schema_version": "0.3-draft",
+  "metadata.source": "loop-trace-1.0",
+  "trajectory.final_quality": 0.99,
+  "trajectory.trace_path": "examples/specs/runtime-minimal.yaml"
+}

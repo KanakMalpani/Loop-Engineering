@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://loop-engineering.dev/schemas/loopnet/record-v0.3.json",
+  "title": "LoopNet record v0.3 (Loop Trace 1.0 export)",
+  "description": "Flat row format produced by Loop-Engineering scripts/loopnet_export_trace.py",
+  "type": "object",
+  "required": [
+    "metadata.loop_id",
+    "metadata.loop_name",
+    "metadata.pattern",
+    "metadata.iteration_count",
+    "metadata.success",
+    "metadata.schema_version",
+    "metadata.source"
+  ],
+  "properties": {
+    "metadata.loop_id": { "type": "string", "format": "uuid" },
+    "metadata.loop_name": { "type": "string", "minLength": 1 },
+    "metadata.pattern": { "type": "string" },
+    "metadata.worker_count": { "type": "integer", "minimum": 0 },
+    "metadata.iteration_count": { "type": "integer", "minimum": 0 },
+    "metadata.success": { "type": "boolean" },
+    "metadata.total_cost_usd": { "type": ["number", "null"], "minimum": 0 },
+    "metadata.termination_reason": { "type": ["string", "null"] },
+    "metadata.schema_version": { "const": "0.3-draft" },
+    "metadata.source": { "const": "loop-trace-1.0" },
+    "trajectory.final_quality": { "type": ["number", "null"], "minimum": 0, "maximum": 1 },
+    "trajectory.trace_path": { "type": ["string", "null"] }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,35 @@
+name: Validate community submissions
+
+on:
+  pull_request:
+    paths:
+      - "submissions/community/**"
+      - "scripts/validate_community.py"
+  push:
+    branches: [main]
+    paths:
+      - "submissions/community/**"
+      - "scripts/validate_community.py"
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install jsonschema
+
+      - name: Validate community JSONL
+        run: |
+          shopt -s nullglob
+          files=(submissions/community/*.jsonl)
+          if [ ${#files[@]} -eq 0 ]; then
+            echo "No community submissions yet — skipping."
+            exit 0
+          fi
+          python scripts/validate_community.py submissions/community/
