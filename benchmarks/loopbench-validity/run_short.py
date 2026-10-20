@@ -16,7 +16,8 @@ here = Path(__file__).parent
 llm = CursorAgentLLM(model=model)
 env = lg.make("loopbench/code-repair-v1", spec_path=str(here / "loops" / f"{loop}.yaml"), backend="live", llm=llm)
 t0 = time.monotonic()
-res = env.run_episode(task_id=task, seed=seed)
+res = env._sim.run_episode(  # LiveEnv has no run_episode (finding); its SimEnv carries the injected LLM
+    task_id=task, seed=seed)
 out = {"loop": loop, "model": model, "task": task, "seed": seed, "seconds": round(time.monotonic() - t0, 1),
        "mock_constructed": False, "llm_class": type(env._sim._runtime.llm).__name__,
        "result": res if isinstance(res, dict) else getattr(res, "__dict__", str(res)), "calls": llm.calls}
