@@ -9,12 +9,18 @@
    Per stub, score is the minimum across seeds.
 Stub-only: the reference fixes are read here by the STUB, never by the runtime or a prompt.
 """
-import argparse, json, re, sys, time
+import argparse
+import json
+import re
+import sys
+import time
 from pathlib import Path
+
 import loopgym as lg
-import loopgym.envs.sim as sim
 import loopgym.runtime.loop_runtime as rt
+from loopgym.envs import sim
 from loopgym.evaluators.sandbox_tests import FIXTURES_ROOT, get_fixture, test_pass_rate
+
 
 class _NoMock:
     def __init__(self, *a, **k): raise RuntimeError("MockLLM was constructed - run void")

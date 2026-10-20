@@ -23,7 +23,7 @@ class _OpenAILiveLLM:
                 "Use SimEnv for keyless testing."
             )
         try:
-            import openai  # noqa: PLC0415
+            import openai
         except ImportError as exc:
             raise ImportError("Install openai: pip install openai") from exc
         self._client = openai.OpenAI(api_key=self.api_key)

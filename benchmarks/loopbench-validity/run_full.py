@@ -7,18 +7,23 @@
 Loops and CRITERION.md are read as-is (frozen at 49809bc). MockLLM is made to raise.
 Each run writes results/full/<loop>-r<k>.json with model, llm_class, mock_constructed, wall clock.
 """
-import argparse, json, sys, time, traceback
+import argparse
+import json
+import sys
+import time
+import traceback
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
+
 import loopgym as lg
-import loopgym.envs.sim as sim
 import loopgym.runtime.loop_runtime as rt
+from loopgym.envs import sim
 
 here = Path(__file__).parent
 sys.path.insert(0, str(here))
-import cursor_llm  # noqa: E402
-from cursor_llm import CursorAgentLLM  # noqa: E402
+import cursor_llm
+from cursor_llm import CursorAgentLLM
 
 MOCK_HITS = []
 class _NoMock:
@@ -34,13 +39,13 @@ def one_run(loop: str, k: int, model: str, task: str, outdir: Path, timeout: int
     t0 = time.monotonic(); err = None; res = {}
     try:
         res = env.run_episode(task_id=task, seed=k)
-    except Exception as e:  # recorded, never retried silently
+    except Exception as e:  # noqa: BLE001  # records errors deliberately; never retried silently
         err = f"{type(e).__name__}: {e}"; traceback.print_exc()
     out = {"loop": loop, "run": k, "task": task, "model": model, "llm_class": type(llm).__name__,
            "mock_constructed": bool(MOCK_HITS), "wall_seconds": round(time.monotonic() - t0, 1),
            "error": err, "score": res.get("quality_score"), "success": res.get("success"),
            "result": res, "calls": llm.calls,
-           "finished_at": datetime.now(timezone.utc).isoformat()}
+           "finished_at": datetime.now(UTC).isoformat()}
     (outdir / f"{loop}-r{k}.json").write_text(json.dumps(out, indent=2, default=str))
     return out
 
@@ -54,7 +59,7 @@ def probe(n: int, model: str, timeout: int, cap: int) -> dict:
         llm = CursorAgentLLM(model=model, timeout=timeout); t = time.monotonic()
         try:
             txt = llm.complete(prompt, role="implementer"); e = None
-        except Exception as ex:
+        except Exception as ex:  # noqa: BLE001  # probe records call errors deliberately
             txt, e = "", f"{type(ex).__name__}: {ex}"
         return {"i": i, "seconds": round(time.monotonic() - t, 1), "error": e, "chars": len(txt),
                 "usage": llm.calls[-1]["usage"] if llm.calls else None}
