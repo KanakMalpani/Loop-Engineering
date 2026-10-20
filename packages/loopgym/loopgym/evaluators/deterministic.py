@@ -20,13 +20,19 @@ def run_deterministic(implementation: str, output: str, context: dict[str, Any] 
             "failure_codes": [] if passed else ["fail.false_fail"],
         }
     if implementation == "evaluators.test_pass_rate":
-        rate = float(ctx.get("mock_pass_rate", 0.0))
+        from loopgym.evaluators.sandbox_tests import test_pass_rate as _real_tpr
+
+        fixture = ctx.get("fixture")
+        if fixture is None:
+            # No real fixture -> no real outcome. Never fall back to an unset mock rate.
+            return {"passed": False, "score": 0.0, "test_pass_rate": 0.0,
+                    "failure_codes": ["fail.no_fixture"]}
+        res = _real_tpr(fixture, output, timeout=int(ctx.get("timeout", 30)))
+        rate = res["test_pass_rate"]
         passed = rate >= float(ctx.get("threshold", 1.0))
         return {
+            **res,
             "passed": passed,
-            "score": rate,
-            "test_pass_rate": rate,
-            "failure_codes": [] if passed else ["fail.false_fail"],
         }
     if implementation == "evaluators.citation_count_min":
         citations = len(re.findall(r"\[[\d]+\]|\(\d{4}\)", output))
