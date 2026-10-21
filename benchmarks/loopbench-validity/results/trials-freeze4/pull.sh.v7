@@ -1,0 +1,24 @@
+#!/bin/bash
+# usage: pull.sh  (reads parts.tsv: url size records). 3 parallel, 15MB/s each (~45MB/s total); v7.
+cd /workspace/oa/pull
+work() {
+  url="$1"; size="$2"; recs="$3"; id=$(echo "$url" | sed 's#.*/works/##; s#/#_#; s#updated_date=##')
+  [ -f done/$id ] && [ -f out/$id.jsonl.gz ] && exit 0
+  http="https://openalex.s3.amazonaws.com/${url#s3://openalex/}"
+  log(){ echo "$(TZ=Asia/Kolkata date '+%F %T IST') $id $*" >> pull.log; }
+  for t in 1 2 3; do
+    curl -sf --limit-rate 15M --speed-limit 1048576 --speed-time 60 --connect-timeout 30 --max-time 900 -o raw/$id "$http" && break; log "curl_fail attempt=$t"; sleep $((t*5))
+  done
+  [ -f raw/$id ] || { log "INFRA-FAIL download"; echo "$id download" >> infra_fail.txt; exit 0; }
+  got=$(stat -c %s raw/$id)
+  sha=$(sha256sum raw/$id | cut -d' ' -f1)
+  if [ "$got" != "$size" ]; then log "INFRA-FAIL size got=$got manifest=$size"; echo "$id size $got $size" >> infra_fail.txt; rm -f raw/$id; exit 0; fi
+  res=$(/workspace/oa/venv/bin/python filter_part.py raw/$id out/$id.jsonl.gz hist/$id.json) || { log "INFRA-FAIL filter"; echo "$id filter" >> infra_fail.txt; rm -f raw/$id; exit 0; }
+  n=$(echo $res | cut -d' ' -f1)
+  [ "$n" != "$recs" ] && { log "INFRA-FAIL records got=$n manifest=$recs"; echo "$id records $n $recs" >> infra_fail.txt; }
+  echo "$sha  works/$id" >> raw.sha256
+  rm -f raw/$id; touch done/$id; log "ok bytes=$got records=$n kept=$(echo $res|cut -d' ' -f2) sha=$sha"
+}
+export -f work
+cut -f1-3 parts.tsv | nice -n 19 ionice -c3 xargs -P3 -L1 bash -c 'work "$0" "$1" "$2"'
+echo "$(TZ=Asia/Kolkata date '+%F %T IST') PULL_FINISHED" >> pull.log

@@ -1,0 +1,17 @@
+2026-10-21T22:36:13+05:30 decoy untagged sleep pid=613389
+2026-10-21T22:36:13+05:30 pull pid=608189 workers=3 pull.sh sha=6aaab5ab027ed5372fb69c036ad2fe62c0cbeecb324f8afc127da3495c6150ca
+2026-10-21T22:36:14+05:30 before snapshot: tagged=0 worker_servers=0 availMB=6287 load=2.74 3.70 4.82
+2026-10-21T22:36:14+05:30 start N=8
+{"dir": "call-2", "seconds": 24.5, "error": null}
+{"dir": "call-7", "seconds": 25.1, "error": null}
+{"dir": "call-5", "seconds": 25.2, "error": null}
+{"dir": "call-3", "seconds": 26.8, "error": null}
+{"dir": "call-4", "seconds": 26.8, "error": null}
+{"dir": "call-6", "seconds": 27.8, "error": null}
+{"dir": "call-1", "seconds": 32.0, "error": null}
+{"dir": "call-8", "seconds": 35.2, "error": null}
+2026-10-21T22:36:54+05:30 all calls returned
+2026-10-21T22:37:00+05:30 after snapshot: tagged=0 worker_servers=0 availMB=6154 load=6.61 4.68 5.10
+2026-10-21T22:37:00+05:30 pull workers at after-snapshot=3 pull.sh sha=6aaab5ab027ed5372fb69c036ad2fe62c0cbeecb324f8afc127da3495c6150ca
+2026-10-21T22:37:00+05:30 decoy pid=613389 alive=yes
+2026-10-21T22:37:00+05:30 DONE

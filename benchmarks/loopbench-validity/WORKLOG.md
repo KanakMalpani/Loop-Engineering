@@ -314,3 +314,10 @@ These times are from git and from `results/acceptance-3/run.log`.
 - Resources: availMB min 4318, 1-min load max 5.40; guard never tripped.
 - Gap: the frozen record has no per-attempt exit code field (outcome=ok only).
 - Logs: `results/trials-freeze4/c8-pull-1/`. Pull left at 2 workers pending report; other 2 counted trials not run.
+
+## 2026-10-21 22:38 IST: counted trials 2 and 3 of 3 (c8-2, c8-3), frozen path at 99cc307
+- AE pull switch: `pull.sh` v6 -> v7 (3 workers) at 22:35:55 IST, sha256 6aaab5ab027ed5372fb69c036ad2fe62c0cbeecb324f8afc127da3495c6150ca (`switch_v7.sh`, same procedure). In flight and re-pulled from scratch: 2026-09-27 parts 0016, 0017. New pull PID 608189 (was 590112). 3 workers and same sha at every before/after snapshot; no worker change until c8-3 after-snapshot.
+- Setup identical to c8-pull-1 (`results/trials-freeze4/{run_trial.sh,fcall.py}`): frozen cursor_llm.py from /workspace/le-trial-99cc307, no shim/CURSOR_TRIAL_BIN/pinned env vars, grok-4.7-high, 150 s, 8 concurrent, cr-004 prompt.
+- c8-2: started 22:36:14 IST, calls returned 22:36:54, after-snapshot 22:37:00. 8/8 ok on attempt 1, 24.5-35.2 s; 0 timeouts, 0 retries, 0 errors; 8 stderr files, 0 bytes each. Reap: 8 START, 32 KILL (reason=reap), 0 KILLPG, 8 DONE; per-call leftovers 0/0. Snapshots before tagged=0 ws=0, after tagged=0 ws=0. Decoy pid 613389 survived. availMB min 3050, load max 6.42.
+- c8-3: started 22:37:01 IST, calls returned 22:37:42, after-snapshot 22:37:48. 8/8 ok on attempt 1, 24.7-31.0 s; 0 timeouts, 0 retries, 0 errors; 8 stderr files, 0 bytes each. Reap: 8 START, 32 KILL, 0 KILLPG, 8 DONE; leftovers 0/0. Snapshots before 0/0, after 0/0. Decoy pid 619680 survived. availMB min 2808, load max 6.75.
+- Same gap as c8-pull-1: no per-attempt exit-code field in the frozen record (outcome=ok only). Logs: `results/trials-freeze4/c8-2/`, `c8-3/`. Awaiting QA grading; attempt 5 on hold.

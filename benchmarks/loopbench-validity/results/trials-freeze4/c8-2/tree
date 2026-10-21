@@ -1,0 +1,98 @@
+## 2026-10-21T17:06:14+00:00 load=2.74 3.70 4.82 availMB=6285 ws=0 pull=gone
+    352     342     342     342   23304 Sl   /exec-daemon/node /exec-daemon/index.js serve --port 1337 --pty-websocket-port 1338 --auth-token local --rg-path /exec-daemon/rg --pty-auth-token local-pty
+ 484519      53  484519  484519    7458 Ssl  /exec-daemon/node /exec-daemon/index.js serve --port 14004 --pty-websocket-port 13604 --auth-token local --rg-path /exec-daemon/rg --computer-use-enabled -
+ 486051      53  486051  486051    7418 Ssl  /exec-daemon/node /exec-daemon/index.js serve --port 14006 --pty-websocket-port 13606 --auth-token local --rg-path /exec-daemon/rg --computer-use-enabled -
+ 489011      53  489011  489011    7279 Ssl  /exec-daemon/node /exec-daemon/index.js serve --port 14002 --pty-websocket-port 13602 --auth-token local --rg-path /exec-daemon/rg --computer-use-enabled -
+ 506459      53  506459  506459    6084 Ssl  /exec-daemon/node /exec-daemon/index.js serve --port 14005 --pty-websocket-port 13605 --auth-token local --rg-path /exec-daemon/rg --computer-use-enabled -
+ 526848      53  526848  526848    4570 Ssl  /exec-daemon/node /exec-daemon/index.js serve --port 14003 --pty-websocket-port 13603 --auth-token local --rg-path /exec-daemon/rg --computer-use-enabled -
+ 538009      53  538009  538009    3756 Ssl  /exec-daemon/node /exec-daemon/index.js serve --port 14010 --pty-websocket-port 13610 --auth-token local --rg-path /exec-daemon/rg --computer-use-enabled -
+ 615255  615239  615255  615255       0 Ss   bwrap --dev-bind / / --tmpfs /workspace --tmpfs /tmp --tmpfs /home/box --ro-bind /home/box/.local/bin /home/box/.local/bin --ro-bind /home/box/.local/share
+ 615256  615240  615256  615256       0 Ss   bwrap --dev-bind / / --tmpfs /workspace --tmpfs /tmp --tmpfs /home/box --ro-bind /home/box/.local/bin /home/box/.local/bin --ro-bind /home/box/.local/share
+ 615257  615238  615257  615257       0 Ss   bwrap --dev-bind / / --tmpfs /workspace --tmpfs /tmp --tmpfs /home/box --ro-bind /home/box/.local/bin /home/box/.local/bin --ro-bind /home/box/.local/share
+ 615258  615257  615257  615257       0 R    bash /home/box/.local/bin/cursor-agent -p --trust --mode ask --output-format json --model grok-4.7-high Objective: repair the module so its hidden tests pa
+ 615259  615256  615256  615256       0 R    bwrap --dev-bind / / --tmpfs /workspace --tmpfs /tmp --tmpfs /home/box --ro-bind /home/box/.local/bin /home/box/.local/bin --ro-bind /home/box/.local/share
+ 615263  615255  615255  615255       0 S    bash /home/box/.local/bin/cursor-agent -p --trust --mode ask --output-format json --model grok-4.7-high Objective: repair the module so its hidden tests pa
+ 615265  615241  615265  615265       0 Ss   bwrap --dev-bind / / --tmpfs /workspace --tmpfs /tmp --tmpfs /home/box --ro-bind /home/box/.local/bin /home/box/.local/bin --ro-bind /home/box/.local/share
+ 615266  615243  615266  615266       0 Ss   bwrap --dev-bind / / --tmpfs /workspace --tmpfs /tmp --tmpfs /home/box --ro-bind /home/box/.local/bin /home/box/.local/bin --ro-bind /home/box/.local/share
+ 615267  615244  615267  615267       0 Ss   bwrap --dev-bind / / --tmpfs /workspace --tmpfs /tmp --tmpfs /home/box --ro-bind /home/box/.local/bin /home/box/.local/bin --ro-bind /home/box/.local/share
+## 2026-10-21T17:06:24+00:00 load=3.80 3.90 4.88 availMB=4558 ws=3 pull=gone
+    352     342     342     342   23314 Sl   /exec-daemon/node /exec-daemon/index.js serve --port 1337 --pty-websocket-port 1338 --auth-token local --rg-path /exec-daemon/rg --pty-auth-token local-pty
+ 484519      53  484519  484519    7468 Ssl  /exec-daemon/node /exec-daemon/index.js serve --port 14004 --pty-websocket-port 13604 --auth-token local --rg-path /exec-daemon/rg --computer-use-enabled -
+ 486051      53  486051  486051    7429 Ssl  /exec-daemon/node /exec-daemon/index.js serve --port 14006 --pty-websocket-port 13606 --auth-token local --rg-path /exec-daemon/rg --computer-use-enabled -
+ 489011      53  489011  489011    7289 Ssl  /exec-daemon/node /exec-daemon/index.js serve --port 14002 --pty-websocket-port 13602 --auth-token local --rg-path /exec-daemon/rg --computer-use-enabled -
+ 506459      53  506459  506459    6094 Ssl  /exec-daemon/node /exec-daemon/index.js serve --port 14005 --pty-websocket-port 13605 --auth-token local --rg-path /exec-daemon/rg --computer-use-enabled -
+ 526848      53  526848  526848    4580 Ssl  /exec-daemon/node /exec-daemon/index.js serve --port 14003 --pty-websocket-port 13603 --auth-token local --rg-path /exec-daemon/rg --computer-use-enabled -
+ 538009      53  538009  538009    3766 Ssl  /exec-daemon/node /exec-daemon/index.js serve --port 14010 --pty-websocket-port 13610 --auth-token local --rg-path /exec-daemon/rg --computer-use-enabled -
+ 615255  615239  615255  615255      10 Ss   bwrap --dev-bind / / --tmpfs /workspace --tmpfs /tmp --tmpfs /home/box --ro-bind /home/box/.local/bin /home/box/.local/bin --ro-bind /home/box/.local/share
+ 615256  615240  615256  615256      10 Ss   bwrap --dev-bind / / --tmpfs /workspace --tmpfs /tmp --tmpfs /home/box --ro-bind /home/box/.local/bin /home/box/.local/bin --ro-bind /home/box/.local/share
+ 615257  615238  615257  615257      10 Ss   bwrap --dev-bind / / --tmpfs /workspace --tmpfs /tmp --tmpfs /home/box --ro-bind /home/box/.local/bin /home/box/.local/bin --ro-bind /home/box/.local/share
+ 615258  615257  615257  615257      10 Rl   /home/box/.local/bin/cursor-agent --use-system-ca /home/box/.local/share/cursor-agent/versions/2026.10.19-6bbf2c4/index.js -p --trust --mode ask --output-f
+ 615259  615256  615256  615256      10 Sl   /home/box/.local/bin/cursor-agent --use-system-ca /home/box/.local/share/cursor-agent/versions/2026.10.19-6bbf2c4/index.js -p --trust --mode ask --output-f
+ 615263  615255  615255  615255      10 Rl   /home/box/.local/bin/cursor-agent --use-system-ca /home/box/.local/share/cursor-agent/versions/2026.10.19-6bbf2c4/index.js -p --trust --mode ask --output-f
+ 615265  615241  615265  615265      10 Ss   bwrap --dev-bind / / --tmpfs /workspace --tmpfs /tmp --tmpfs /home/box --ro-bind /home/box/.local/bin /home/box/.local/bin --ro-bind /home/box/.local/share
+ 615266  615243  615266  615266      10 Ss   bwrap --dev-bind / / --tmpfs /workspace --tmpfs /tmp --tmpfs /home/box --ro-bind /home/box/.local/bin /home/box/.local/bin --ro-bind /home/box/.local/share
+ 615267  615244  615267  615267      10 Ss   bwrap --dev-bind / / --tmpfs /workspace --tmpfs /tmp --tmpfs /home/box --ro-bind /home/box/.local/bin /home/box/.local/bin --ro-bind /home/box/.local/share
+ 615268  615267  615267  615267      10 Rl   /home/box/.local/bin/cursor-agent --use-system-ca /home/box/.local/share/cursor-agent/versions/2026.10.19-6bbf2c4/index.js -p --trust --mode ask --output-f
+ 615270  615265  615265  615265      10 Rl   /home/box/.local/bin/cursor-agent --use-system-ca /home/box/.local/share/cursor-agent/versions/2026.10.19-6bbf2c4/index.js -p --trust --mode ask --output-f
+ 615271  615266  615266  615266      10 Sl   /home/box/.local/bin/cursor-agent --use-system-ca /home/box/.local/share/cursor-agent/versions/2026.10.19-6bbf2c4/index.js -p --trust --mode ask --output-f
+ 615274  615242  615274  615274      10 Ss   bwrap --dev-bind / / --tmpfs /workspace --tmpfs /tmp --tmpfs /home/box --ro-bind /home/box/.local/bin /home/box/.local/bin --ro-bind /home/box/.local/share
+ 615277  615274  615274  615274      10 Rl   /home/box/.local/bin/cursor-agent --use-system-ca /home/box/.local/share/cursor-agent/versions/2026.10.19-6bbf2c4/index.js -p --trust --mode ask --output-f
+ 615302  615245  615302  615302      10 Ss   bwrap --dev-bind / / --tmpfs /workspace --tmpfs /tmp --tmpfs /home/box --ro-bind /home/box/.local/bin /home/box/.local/bin --ro-bind /home/box/.local/share
+ 615305  615302  615302  615302      10 Rl   /home/box/.local/bin/cursor-agent --use-system-ca /home/box/.local/share/cursor-agent/versions/2026.10.19-6bbf2c4/index.js -p --trust --mode ask --output-f
+ 615725  615277  615274  615274       0 Rl   /home/box/.local/share/cursor-agent/versions/2026.10.19-6bbf2c4/node /home/box/.local/share/cursor-agent/versions/2026.10.19-6bbf2c4/index.js worker-server
+ 615805  615270  615265  615265       0 Rl   /home/box/.local/share/cursor-agent/versions/2026.10.19-6bbf2c4/node /home/box/.local/share/cursor-agent/versions/2026.10.19-6bbf2c4/index.js worker-server
+ 615939  615268  615267  615267       0 Rl   /home/box/.local/share/cursor-agent/versions/2026.10.19-6bbf2c4/node /home/box/.local/share/cursor-agent/versions/2026.10.19-6bbf2c4/index.js worker-server
+## 2026-10-21T17:06:34+00:00 load=5.74 4.33 5.01 availMB=3033 ws=8 pull=gone
+    352     342     342     342   23324 Sl   /exec-daemon/node /exec-daemon/index.js serve --port 1337 --pty-websocket-port 1338 --auth-token local --rg-path /exec-daemon/rg --pty-auth-token local-pty
+ 484519      53  484519  484519    7479 Ssl  /exec-daemon/node /exec-daemon/index.js serve --port 14004 --pty-websocket-port 13604 --auth-token local --rg-path /exec-daemon/rg --computer-use-enabled -
+ 486051      53  486051  486051    7439 Ssl  /exec-daemon/node /exec-daemon/index.js serve --port 14006 --pty-websocket-port 13606 --auth-token local --rg-path /exec-daemon/rg --computer-use-enabled -
+ 489011      53  489011  489011    7299 Ssl  /exec-daemon/node /exec-daemon/index.js serve --port 14002 --pty-websocket-port 13602 --auth-token local --rg-path /exec-daemon/rg --computer-use-enabled -
+ 506459      53  506459  506459    6104 Ssl  /exec-daemon/node /exec-daemon/index.js serve --port 14005 --pty-websocket-port 13605 --auth-token local --rg-path /exec-daemon/rg --computer-use-enabled -
+ 526848      53  526848  526848    4590 Ssl  /exec-daemon/node /exec-daemon/index.js serve --port 14003 --pty-websocket-port 13603 --auth-token local --rg-path /exec-daemon/rg --computer-use-enabled -
+ 538009      53  538009  538009    3776 Ssl  /exec-daemon/node /exec-daemon/index.js serve --port 14010 --pty-websocket-port 13610 --auth-token local --rg-path /exec-daemon/rg --computer-use-enabled -
+ 615255  615239  615255  615255      20 Ss   bwrap --dev-bind / / --tmpfs /workspace --tmpfs /tmp --tmpfs /home/box --ro-bind /home/box/.local/bin /home/box/.local/bin --ro-bind /home/box/.local/share
+ 615256  615240  615256  615256      20 Ss   bwrap --dev-bind / / --tmpfs /workspace --tmpfs /tmp --tmpfs /home/box --ro-bind /home/box/.local/bin /home/box/.local/bin --ro-bind /home/box/.local/share
+ 615257  615238  615257  615257      20 Ss   bwrap --dev-bind / / --tmpfs /workspace --tmpfs /tmp --tmpfs /home/box --ro-bind /home/box/.local/bin /home/box/.local/bin --ro-bind /home/box/.local/share
+ 615258  615257  615257  615257      20 Sl   /home/box/.local/bin/cursor-agent --use-system-ca /home/box/.local/share/cursor-agent/versions/2026.10.19-6bbf2c4/index.js -p --trust --mode ask --output-f
+ 615259  615256  615256  615256      20 Sl   /home/box/.local/bin/cursor-agent --use-system-ca /home/box/.local/share/cursor-agent/versions/2026.10.19-6bbf2c4/index.js -p --trust --mode ask --output-f
+ 615263  615255  615255  615255      20 Sl   /home/box/.local/bin/cursor-agent --use-system-ca /home/box/.local/share/cursor-agent/versions/2026.10.19-6bbf2c4/index.js -p --trust --mode ask --output-f
+ 615265  615241  615265  615265      20 Ss   bwrap --dev-bind / / --tmpfs /workspace --tmpfs /tmp --tmpfs /home/box --ro-bind /home/box/.local/bin /home/box/.local/bin --ro-bind /home/box/.local/share
+ 615266  615243  615266  615266      20 Ss   bwrap --dev-bind / / --tmpfs /workspace --tmpfs /tmp --tmpfs /home/box --ro-bind /home/box/.local/bin /home/box/.local/bin --ro-bind /home/box/.local/share
+ 615267  615244  615267  615267      20 Ss   bwrap --dev-bind / / --tmpfs /workspace --tmpfs /tmp --tmpfs /home/box --ro-bind /home/box/.local/bin /home/box/.local/bin --ro-bind /home/box/.local/share
+ 615268  615267  615267  615267      20 Sl   /home/box/.local/bin/cursor-agent --use-system-ca /home/box/.local/share/cursor-agent/versions/2026.10.19-6bbf2c4/index.js -p --trust --mode ask --output-f
+ 615270  615265  615265  615265      20 Sl   /home/box/.local/bin/cursor-agent --use-system-ca /home/box/.local/share/cursor-agent/versions/2026.10.19-6bbf2c4/index.js -p --trust --mode ask --output-f
+ 615271  615266  615266  615266      20 Sl   /home/box/.local/bin/cursor-agent --use-system-ca /home/box/.local/share/cursor-agent/versions/2026.10.19-6bbf2c4/index.js -p --trust --mode ask --output-f
+ 615274  615242  615274  615274      20 Ss   bwrap --dev-bind / / --tmpfs /workspace --tmpfs /tmp --tmpfs /home/box --ro-bind /home/box/.local/bin /home/box/.local/bin --ro-bind /home/box/.local/share
+ 615277  615274  615274  615274      20 Sl   /home/box/.local/bin/cursor-agent --use-system-ca /home/box/.local/share/cursor-agent/versions/2026.10.19-6bbf2c4/index.js -p --trust --mode ask --output-f
+ 615302  615245  615302  615302      20 Ss   bwrap --dev-bind / / --tmpfs /workspace --tmpfs /tmp --tmpfs /home/box --ro-bind /home/box/.local/bin /home/box/.local/bin --ro-bind /home/box/.local/share
+ 615305  615302  615302  615302      20 Sl   /home/box/.local/bin/cursor-agent --use-system-ca /home/box/.local/share/cursor-agent/versions/2026.10.19-6bbf2c4/index.js -p --trust --mode ask --output-f
+ 615725  615277  615274  615274      10 Sl   /home/box/.local/share/cursor-agent/versions/2026.10.19-6bbf2c4/node /home/box/.local/share/cursor-agent/versions/2026.10.19-6bbf2c4/index.js worker-server
+ 615805  615270  615265  615265      10 Sl   /home/box/.local/share/cursor-agent/versions/2026.10.19-6bbf2c4/node /home/box/.local/share/cursor-agent/versions/2026.10.19-6bbf2c4/index.js worker-server
+ 615939  615268  615267  615267      10 Rl   /home/box/.local/share/cursor-agent/versions/2026.10.19-6bbf2c4/node /home/box/.local/share/cursor-agent/versions/2026.10.19-6bbf2c4/index.js worker-server
+ 616006  615263  615255  615255      10 Sl   /home/box/.local/share/cursor-agent/versions/2026.10.19-6bbf2c4/node /home/box/.local/share/cursor-agent/versions/2026.10.19-6bbf2c4/index.js worker-server
+ 616302  615271  615266  615266       9 Sl   /home/box/.local/share/cursor-agent/versions/2026.10.19-6bbf2c4/node /home/box/.local/share/cursor-agent/versions/2026.10.19-6bbf2c4/index.js worker-server
+ 616331  615259  615256  615256       9 Sl   /home/box/.local/share/cursor-agent/versions/2026.10.19-6bbf2c4/node /home/box/.local/share/cursor-agent/versions/2026.10.19-6bbf2c4/index.js worker-server
+ 616333  615258  615257  615257       9 Sl   /home/box/.local/share/cursor-agent/versions/2026.10.19-6bbf2c4/node /home/box/.local/share/cursor-agent/versions/2026.10.19-6bbf2c4/index.js worker-server
+ 616959  615305  615302  615302       3 Sl   /home/box/.local/share/cursor-agent/versions/2026.10.19-6bbf2c4/node /home/box/.local/share/cursor-agent/versions/2026.10.19-6bbf2c4/index.js worker-server
+## 2026-10-21T17:06:44+00:00 load=6.42 4.52 5.06 availMB=5520 ws=2 pull=gone
+    352     342     342     342   23334 Sl   /exec-daemon/node /exec-daemon/index.js serve --port 1337 --pty-websocket-port 1338 --auth-token local --rg-path /exec-daemon/rg --pty-auth-token local-pty
+ 484519      53  484519  484519    7489 Ssl  /exec-daemon/node /exec-daemon/index.js serve --port 14004 --pty-websocket-port 13604 --auth-token local --rg-path /exec-daemon/rg --computer-use-enabled -
+ 486051      53  486051  486051    7449 Ssl  /exec-daemon/node /exec-daemon/index.js serve --port 14006 --pty-websocket-port 13606 --auth-token local --rg-path /exec-daemon/rg --computer-use-enabled -
+ 489011      53  489011  489011    7310 Ssl  /exec-daemon/node /exec-daemon/index.js serve --port 14002 --pty-websocket-port 13602 --auth-token local --rg-path /exec-daemon/rg --computer-use-enabled -
+ 506459      53  506459  506459    6114 Ssl  /exec-daemon/node /exec-daemon/index.js serve --port 14005 --pty-websocket-port 13605 --auth-token local --rg-path /exec-daemon/rg --computer-use-enabled -
+ 526848      53  526848  526848    4600 Ssl  /exec-daemon/node /exec-daemon/index.js serve --port 14003 --pty-websocket-port 13603 --auth-token local --rg-path /exec-daemon/rg --computer-use-enabled -
+ 538009      53  538009  538009    3786 Ssl  /exec-daemon/node /exec-daemon/index.js serve --port 14010 --pty-websocket-port 13610 --auth-token local --rg-path /exec-daemon/rg --computer-use-enabled -
+ 615257  615238  615257  615257      30 Ss   bwrap --dev-bind / / --tmpfs /workspace --tmpfs /tmp --tmpfs /home/box --ro-bind /home/box/.local/bin /home/box/.local/bin --ro-bind /home/box/.local/share
+ 615258  615257  615257  615257      30 Sl   /home/box/.local/bin/cursor-agent --use-system-ca /home/box/.local/share/cursor-agent/versions/2026.10.19-6bbf2c4/index.js -p --trust --mode ask --output-f
+ 615302  615245  615302  615302      30 Ss   bwrap --dev-bind / / --tmpfs /workspace --tmpfs /tmp --tmpfs /home/box --ro-bind /home/box/.local/bin /home/box/.local/bin --ro-bind /home/box/.local/share
+ 615305  615302  615302  615302      30 Sl   /home/box/.local/bin/cursor-agent --use-system-ca /home/box/.local/share/cursor-agent/versions/2026.10.19-6bbf2c4/index.js -p --trust --mode ask --output-f
+ 616333  615258  615257  615257      19 Sl   /home/box/.local/share/cursor-agent/versions/2026.10.19-6bbf2c4/node /home/box/.local/share/cursor-agent/versions/2026.10.19-6bbf2c4/index.js worker-server
+ 616959  615305  615302  615302      14 Sl   /home/box/.local/share/cursor-agent/versions/2026.10.19-6bbf2c4/node /home/box/.local/share/cursor-agent/versions/2026.10.19-6bbf2c4/index.js worker-server
+## 2026-10-21T17:06:54+00:00 load=6.53 4.60 5.08 availMB=6194 ws=0 pull=gone
+    352     342     342     342   23344 Sl   /exec-daemon/node /exec-daemon/index.js serve --port 1337 --pty-websocket-port 1338 --auth-token local --rg-path /exec-daemon/rg --pty-auth-token local-pty
+ 484519      53  484519  484519    7499 Ssl  /exec-daemon/node /exec-daemon/index.js serve --port 14004 --pty-websocket-port 13604 --auth-token local --rg-path /exec-daemon/rg --computer-use-enabled -
+ 486051      53  486051  486051    7459 Ssl  /exec-daemon/node /exec-daemon/index.js serve --port 14006 --pty-websocket-port 13606 --auth-token local --rg-path /exec-daemon/rg --computer-use-enabled -
+ 489011      53  489011  489011    7320 Ssl  /exec-daemon/node /exec-daemon/index.js serve --port 14002 --pty-websocket-port 13602 --auth-token local --rg-path /exec-daemon/rg --computer-use-enabled -
+ 506459      53  506459  506459    6124 Ssl  /exec-daemon/node /exec-daemon/index.js serve --port 14005 --pty-websocket-port 13605 --auth-token local --rg-path /exec-daemon/rg --computer-use-enabled -
+ 526848      53  526848  526848    4610 Ssl  /exec-daemon/node /exec-daemon/index.js serve --port 14003 --pty-websocket-port 13603 --auth-token local --rg-path /exec-daemon/rg --computer-use-enabled -
+ 538009      53  538009  538009    3796 Ssl  /exec-daemon/node /exec-daemon/index.js serve --port 14010 --pty-websocket-port 13610 --auth-token local --rg-path /exec-daemon/rg --computer-use-enabled -
