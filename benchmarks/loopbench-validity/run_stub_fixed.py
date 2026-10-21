@@ -28,7 +28,15 @@ rt.MockLLM = sim.MockLLM = _NoMock
 
 here = Path(__file__).parent
 REF = FIXTURES_ROOT / "_reference"
-MOD2ID = {"calc": "cr-001", "stats": "cr-002", "text": "cr-003"}
+MOD2ID = {
+    "calc": "cr-001",
+    "stats": "cr-002",
+    "text": "cr-003",
+    "durations": "cr-004",
+    "intervals": "cr-005",
+    "slugs": "cr-006",
+    "money": "cr-007",
+}
 blk = lambda c: f"```python\n{c}```"
 
 class FixedReply:

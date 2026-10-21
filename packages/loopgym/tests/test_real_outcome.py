@@ -18,8 +18,16 @@ from loopgym.evaluators.sandbox_tests import test_pass_rate as tpr
 
 LOOPS = Path(__file__).resolve().parents[3] / "benchmarks" / "loopbench-validity" / "loops"
 REF = FIXTURES_ROOT / "_reference"
-IDS = ["cr-001", "cr-002", "cr-003"]
-MOD2ID = {"calc": "cr-001", "stats": "cr-002", "text": "cr-003"}
+IDS = ["cr-001", "cr-002", "cr-003", "cr-004", "cr-005", "cr-006", "cr-007"]
+MOD2ID = {
+    "calc": "cr-001",
+    "stats": "cr-002",
+    "text": "cr-003",
+    "durations": "cr-004",
+    "intervals": "cr-005",
+    "slugs": "cr-006",
+    "money": "cr-007",
+}
 
 
 def _block(code: str) -> str:

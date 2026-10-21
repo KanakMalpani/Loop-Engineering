@@ -26,7 +26,7 @@ FIXTURES_ROOT = Path(
         str(Path(__file__).resolve().parents[3] / "loopbench" / "fixtures"),
     )
 )
-TASK_FAMILIES = {"LB-CR-1": ["cr-001", "cr-002", "cr-003"]}
+TASK_FAMILIES = {"LB-CR-1": ["cr-001", "cr-002", "cr-003", "cr-004", "cr-005", "cr-006", "cr-007"]}
 
 _CODE_BLOCK = re.compile(r"```(?:python|py)[ \t]*\n(.*?)```", re.DOTALL | re.IGNORECASE)
 
