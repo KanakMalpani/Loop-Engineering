@@ -192,3 +192,15 @@ These times are from git and from `results/acceptance-3/run.log`.
   - Role rules-file pickup probe: picked up ("ROLE-PICKUP-7731 Hello!").
 - Attempt 4 launched at 2026-10-21T14:14:08+05:30 (08:44:08Z), runner PID 47998, under setsid/nohup. The command is the same as attempt 3's, with `--outdir results/acceptance-4`.
 - The pusher (`/workspace/acc4/pusher.sh`) pushes `results/acceptance-4` every 3 completed runs or every 25 minutes, and once more at the end.
+
+## Attempt 4 abandoned (infrastructure), not graded (Wed 21 Oct 2026, IST)
+
+- Stopped at 17:07:35 IST by Engineering Lead's decision. The runner's process group (PID 47998) and the pusher (49226) were stopped. Nothing else was killed.
+- A process_error surge began at 16:34:40 IST.
+- `run.log` outcome counts:
+  - at stop: 435 ok, 161 process_error, 10 timeout;
+  - at `add524f`: 435 ok, 118 process_error, 8 timeout;
+  - the relayed figures were 435 / 136 / 10.
+- INFRA-FAIL seeds were in 8 of 14 run files at `add524f` (QA bot), and in 10 of 16 at stop.
+- 16 of 30 run files were written. All files are kept, and there is no verdict.
+- Details are in `results/acceptance-4/README.md`. The cause is under read-only investigation.
