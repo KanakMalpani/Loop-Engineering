@@ -31,6 +31,8 @@ sys.path.insert(0, str(here))
 import cursor_llm
 from cursor_llm import CursorAgentLLM, InfraError
 
+PINNED_MODEL = cursor_llm.DEFAULT_MODEL
+
 MOCK_HITS = []
 class _NoMock:
     def __init__(self, *a, **k):
@@ -335,6 +337,17 @@ def _criterion_complete(rows: list[dict]) -> bool:
     return True
 
 
+def model_check(rows: list[dict]) -> dict:
+    """Calls whose requested model is not the pinned acceptance model."""
+    violations = []
+    for row in rows:
+        for index, call in enumerate(row.get("calls") or []):
+            requested = call.get("model_requested") if isinstance(call, dict) else None
+            if requested != PINNED_MODEL:
+                violations.append({"loop": row.get("loop"), "run": row.get("run"), "call": index})
+    return {"pinned": PINNED_MODEL, "valid": not violations, "violations": violations}
+
+
 def per_loop_scores(rows: list[dict], n_runs: int) -> dict[str, list]:
     by_key = {(r["loop"], r["run"]): r["score"] for r in rows}
     loops = sorted({r["loop"] for r in rows})
@@ -378,6 +391,9 @@ def main():
     ap.add_argument("--max-concurrency", type=int, default=5)
     ap.add_argument("--confirm-acceptance", action="store_true")
     a = ap.parse_args()
+    cursor_llm.assert_no_unpinned_env()
+    if a.confirm_acceptance and a.model != PINNED_MODEL:
+        sys.exit(f"acceptance run requires pinned model {PINNED_MODEL}")
     (here / "results").mkdir(exist_ok=True)
     if a.probe:
         r = probe(a.probe, a.model, a.timeout, a.max_concurrency)
@@ -406,6 +422,9 @@ def main():
     criterion_complete = _criterion_complete(rows)
     criterion = criterion_block(rows, a.runs)
     criterion["incomplete"] = not criterion_complete
+    checked = model_check(rows)
+    if not checked["valid"]:
+        criterion["pass"] = False
     summary = {
         "model": a.model,
         "task": a.task,
@@ -419,8 +438,9 @@ def main():
         "wall_seconds": wall,
         "mock_constructed": bool(MOCK_HITS),
         "provisional": True,
-        "deviation": "see DEVIATION.md",
+        "deviation": "see DEVIATION.md, DEVIATION-2.md, DEVIATION-3.md",
         "criterion_complete": criterion_complete,
+        "model_check": checked,
         "infra_fail": _issue_list(rows, "INFRA-FAIL"),
         "errors": _issue_list(rows, "ERROR"),
         "scores": sorted((r["loop"], r["run"], r["score"]) for r in rows),
@@ -428,6 +448,8 @@ def main():
         "criterion": criterion,
         "bad3_vs_good": bad3_vs_good(rows, a.runs),
     }
+    if not checked["valid"]:
+        summary["invalid"] = True
     (outdir / "summary.json").write_text(json.dumps(summary, indent=2, default=str))
     brief = ("model", "jobs", "wall_seconds", "mock_constructed", "provisional", "criterion_complete")
     shown = {key: summary[key] for key in brief}

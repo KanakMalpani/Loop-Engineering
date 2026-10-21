@@ -10,7 +10,9 @@ Kanak's standing rule, relayed by Engineering Lead on Wed 21 Oct 2026: all engin
 
 ## Model and runtime pin
 
-- **Model:** `grok-4.7-high`, exactly. It is passed explicitly as `--model grok-4.7-high` on every call. `cursor_llm.DEFAULT_MODEL` is hard-pinned to `grok-4.7-high` with no environment override; there is no fallback to any default model (the `cursor-agent` default or otherwise). A call record whose `model` is not exactly `grok-4.7-high` invalidates the run.
+- **Model:** `grok-4.7-high`, exactly. It is passed explicitly as `--model grok-4.7-high` on every call. `cursor_llm.DEFAULT_MODEL` is hard-pinned to `grok-4.7-high` with no environment override; there is no fallback to any default model (the `cursor-agent` default or otherwise). Every call record carries `model_requested` and `model_reported` (the model cursor-agent reports, or null if it reports none). `run_full.py` refuses to launch an acceptance run with `--model` other than `grok-4.7-high`, and its summary `model_check` invalidates the run (criterion pass forced false) if any call's `model_requested` is not exactly `grok-4.7-high`. An empty model name raises an error instead of falling back to the cursor-agent default.
+- **cursor-agent ignores the frozen loop specs' `model` field** (e.g. `gpt-4.1-mini` in `loops/*.yaml`); the requested model is always `grok-4.7-high`, enforced by a test. The loop specs are left untouched.
+- **Other runtime pins:** `CURSOR_LLM_INFRA_RETRIES` (2) and `CURSOR_LLM_ISOLATE` (on) are pinned in `cursor_llm.py` like the model. Any of `CURSOR_LLM_MODEL`, `CURSOR_LLM_INFRA_RETRIES` or `CURSOR_LLM_ISOLATE` set in the environment makes the shim and the runner abort, so a stale override can never take effect or be silently ignored.
 - **cursor-agent version:** `2026.10.19-6bbf2c4` (output of `cursor-agent --version` on the box, 21 Oct 2026). The version is recorded again at launch; if it differs, the run does not start until a deviation entry covers it.
 - **Why grok-4.7-high and not Composer:** it matches AE's already-pinned LLM baseline (one model across both projects) and it is the model the concurrency-recipe probe trials already run on, so the recipe is verified on the same model the run uses.
 
@@ -24,12 +26,12 @@ The pass criterion (PASS only if, in every one of the 3 runs, min(GOOD) > max(BA
 
 ## Per-call stderr
 
-- Every `cursor-agent` call saves its own stderr to its own per-call file, including each retry and each probe call.
+- Every `cursor-agent` call saves its own stderr to its own per-attempt file (`<outdir>/stderr/<run>-call<i>-attempt<n>.stderr`), including each retry and each probe call; the path is stored in the call record as `stderr_path`.
 - A failed call (process_error, timeout, INFRA-FAIL) with no saved stderr file, or an empty one, counts as an **unexplained failure**. The run report lists every unexplained failure; the run cannot be signed off with one unexplained.
 
 ## Concurrency
 
-Any concurrency recipe used (cap above 4, reaper, or other worker-server handling) must first be verified by QA bot from the docs, and is named here by commit before the re-freeze. Without a verified recipe, the cap stays at 4.
+**No launch without a QA-verified concurrency recipe.** The recipe (concurrency cap and worker-server handling) must be verified by QA bot from the docs and is named here by commit before the re-freeze. There is no fallback configuration: without a verified recipe, attempt 5 does not launch.
 
 ## Before launch (in order)
 

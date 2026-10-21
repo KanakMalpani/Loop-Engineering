@@ -225,3 +225,24 @@ These times are from git and from `results/acceptance-3/run.log`.
   - `evidence/cursor-agent-help.txt`: captured CLI help.
   - Artificial-Emotions repo: not touched (PREREG-pinned).
 - Tests (/workspace/le-venv): packages/loopbench 16 passed, 2 skipped; packages/loopgym 56 passed, 1 failed (`test_working_copy_contains_only_src`, fails identically without this change, pre-existing). ruff: cursor_llm.py clean; benchmarks/loopbench-validity has the same pre-existing findings before and after.
+
+## 2026-10-21 19:10 IST: DEVIATION-3 fixes after QA bot rejection at 79b4bfc (not frozen, nothing run)
+- Code changed via cursor-agent (`--model grok-4.7-high`, prompt and output in /workspace/dev3-fix/); reviewed and re-tested by SWE.
+- `cursor_llm.py`:
+  - `INFRA_RETRIES`: `int(os.environ.get("CURSOR_LLM_INFRA_RETRIES", "2"))` -> `2` (pinned constant).
+  - `ISOLATE`: `os.environ.get("CURSOR_LLM_ISOLATE", "1") != "0"` -> `True` (pinned constant).
+  - New `assert_no_unpinned_env()`: raises if `CURSOR_LLM_MODEL`, `CURSOR_LLM_INFRA_RETRIES` or `CURSOR_LLM_ISOLATE` is set; called in `CursorAgentLLM.__init__`. Chosen option: pin + abort on any stale override (never silently ignored).
+  - Empty or whitespace model -> `ValueError`; `--model` is now always passed (was only when non-empty).
+  - `_run_once` returns stderr (also after a timeout kill); each attempt's stderr goes to its own file `<log dir>/stderr/<run>-call<i>-attempt<n>.stderr` (or `SANDBOX/stderr/` with no log path); attempt records gain `stderr_path`, `stderr_bytes` (and `stderr_missing` for legacy 2-tuple stubs).
+  - Call records gain `model_requested` and `model_reported` (null when cursor-agent reports none).
+- `run_full.py`: `PINNED_MODEL`; `assert_no_unpinned_env()` at startup; `--confirm-acceptance` with `--model` != grok-4.7-high exits before launch; `model_check(rows)` in summary, any violation sets `invalid: true` and criterion `pass: false`; summary `deviation` "see DEVIATION.md" -> "see DEVIATION.md, DEVIATION-2.md, DEVIATION-3.md".
+- New `packages/loopgym/tests/test_deviation3_pins.py` (stubbed, no real calls): per-attempt stderr files incl. timeout-then-ok retry; empty-model guard; each env override raises; model_requested/model_reported; model_check; `one_run` on `loops/good-1-fast.yaml` (spec model gpt-4.1-mini) always requests grok-4.7-high.
+- `DEVIATION-3.md`: "cap stays at 4" fallback replaced by "no launch without a QA-verified concurrency recipe, named by commit"; added model_requested/model_reported/model_check, empty-model guard, env pins, per-attempt stderr path, and "cursor-agent ignores the frozen loop specs' model field" (specs untouched). sha256 fcdad40b13893934e01bf25136d65485b195aca5f034e08e39f5ba118d7e203d.
+- Correction to the 18:42 entry, `test_working_copy_contains_only_src`: it does NOT fail at the code level. In clean worktrees it passes at base `41f77ac` (22/22) and at `79b4bfc` (22/22). It fails only in this checkout, which has ignored `__pycache__/` dirs under `packages/loopbench/fixtures/cr-*/hidden_tests/`, likely created by SWE's earlier root-level pytest run. The test then sees 2 hidden dirs instead of 1. It is a known environment-only failure that predates this change. The cache dirs were left in place; removing them is untracked cleanup awaiting approval.
+- Tests (/workspace/le-venv, `-p no:cacheprovider`, run serially): packages/loopgym 67 passed, 1 failed (the environment-only failure above); packages/loopbench 16 passed, 2 skipped. ruff on cursor_llm.py, run_full.py and test_deviation3_pins.py: all checks passed.
+
+## Attempt 4 surge cause: STRONG INFERENCE, NOT PROVEN
+- Attempt 4's process_error surge from 16:34 IST was most likely the gpt-5.3-codex Cursor usage limit.
+- Evidence: a bare gpt-5.3-codex call now exits 1 after about 12 s with "You've hit your usage limit… resets 11/5/2026". The last ok call was at 16:34:50 IST. 106 of the 161 process_errors took 10-15 s. The shim discarded stderr, so nothing was logged (fixed above).
+- The leftover worker-servers were likely a side effect: each outlives its call by about 5 min and stays in the call's process group (see /workspace/concurrency-investigation/02-lifecycle.md).
+- Low box memory: avoid heavy parallel test runs.

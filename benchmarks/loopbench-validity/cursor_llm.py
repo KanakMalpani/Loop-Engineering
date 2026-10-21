@@ -21,14 +21,59 @@ CURSOR_BIN = os.environ.get("CURSOR_AGENT_BIN", str(Path.home() / ".local/bin/cu
 SANDBOX = Path(os.environ.get("CURSOR_LLM_SANDBOX", "/workspace/cursor-llm-sandbox"))
 # Pinned (DEVIATION-3): no env override, no fallback to the cursor-agent default model.
 DEFAULT_MODEL = "grok-4.7-high"
-ISOLATE = os.environ.get("CURSOR_LLM_ISOLATE", "1") != "0"
+ISOLATE = True
 # Extra attempts after the first. Infra failures only; model content is never retried.
-INFRA_RETRIES = int(os.environ.get("CURSOR_LLM_INFRA_RETRIES", "2"))
+INFRA_RETRIES = 2
 _LOG_LOCK = threading.Lock()
+_PINNED_ENV = ("CURSOR_LLM_INFRA_RETRIES", "CURSOR_LLM_ISOLATE", "CURSOR_LLM_MODEL")
 
 
 class InfraError(RuntimeError):
     """No model result after the infra retries are exhausted."""
+
+
+def assert_no_unpinned_env() -> None:
+    """Pinned (DEVIATION-3): a stale override must not be silently ignored."""
+    found = [name for name in _PINNED_ENV if name in os.environ]
+    if found:
+        listed = ", ".join(found)
+        raise RuntimeError(f"pinned cursor_llm settings reject env overrides: {listed}")
+
+
+def _coerce_stderr(value: object) -> str | None:
+    if value is None:
+        return None
+    if isinstance(value, bytes):
+        return value.decode("utf-8", errors="replace")
+    if isinstance(value, str):
+        return value
+    return str(value)
+
+
+def _unpack_run(result: tuple) -> tuple[str, int, str | None]:
+    """2-tuple (stdout, code) leaves stderr missing; a 3-tuple carries it."""
+    if not isinstance(result, tuple) or len(result) < 2:
+        raise TypeError("cursor-agent result must be a 2- or 3-tuple")
+    raw_out = result[0]
+    stdout = raw_out if isinstance(raw_out, str) else ("" if raw_out is None else str(raw_out))
+    if len(result) < 3:
+        return stdout, int(result[1]), None
+    return stdout, int(result[1]), _coerce_stderr(result[2])
+
+
+def _model_reported(data: dict | None) -> str | None:
+    if not isinstance(data, dict):
+        return None
+    direct = data.get("model")
+    if isinstance(direct, str) and direct.strip():
+        return direct
+    info = data.get("modelInfo")
+    if isinstance(info, dict):
+        for key in ("model", "modelName"):
+            value = info.get(key)
+            if isinstance(value, str) and value.strip():
+                return value
+    return None
 
 
 def _classify_attempt(
@@ -74,7 +119,10 @@ class CursorAgentLLM:
         log_path: Path | str | None = None,
         run_id: str | None = None,
     ) -> None:
+        assert_no_unpinned_env()
         self.model = model if model is not None else DEFAULT_MODEL
+        if not isinstance(self.model, str) or not self.model.strip():
+            raise ValueError("model must be a non-empty string")
         self.timeout = timeout
         self.tokens_used = 0
         self.calls: list[dict] = []
@@ -97,7 +145,7 @@ class CursorAgentLLM:
         )
         return work
 
-    def _run_once(self, cmd: list[str], cwd: Path | None = None) -> tuple[str, int]:
+    def _run_once(self, cmd: list[str], cwd: Path | None = None) -> tuple[str, int, str]:
         """One sandboxed cursor-agent process. Fresh temp home. Raises TimeoutExpired on timeout."""
         work = cwd or SANDBOX
         run_cmd = cmd
@@ -138,16 +186,17 @@ class CursorAgentLLM:
                 start_new_session=True,
             )
             try:
-                stdout, _stderr = proc.communicate(timeout=self.timeout)
-            except subprocess.TimeoutExpired:
+                stdout, stderr = proc.communicate(timeout=self.timeout)
+            except subprocess.TimeoutExpired as exc:
                 os.killpg(proc.pid, signal.SIGKILL)
-                proc.communicate()
+                _out, err = proc.communicate()
+                exc.stderr = "" if err is None else err
                 raise
         finally:
             if tmp_home is not None:
                 shutil.rmtree(tmp_home, ignore_errors=True)
         code = proc.returncode
-        return stdout or "", 1 if code is None else code
+        return stdout or "", 1 if code is None else code, stderr or ""
 
     def _log_attempt(self, call_index: int, n: int, outcome: str, seconds: float) -> None:
         if self.log_path is None:
@@ -162,6 +211,42 @@ class CursorAgentLLM:
             with self.log_path.open("a", encoding="utf-8") as handle:
                 handle.write(line)
 
+    def _stderr_file(self, call_index: int, n: int) -> Path:
+        safe_run_id = self.run_id.replace("/", "_") if self.run_id else "norun"
+        name = f"{safe_run_id}-call{call_index}-attempt{n}.stderr"
+        if self.log_path is not None:
+            directory = self.log_path.parent / "stderr"
+        else:
+            directory = SANDBOX / "stderr"
+        return directory / name
+
+    def _store_stderr(self, call_index: int, n: int, stderr: str | None) -> dict:
+        path = self._stderr_file(call_index, n)
+        path.parent.mkdir(parents=True, exist_ok=True)
+        text = "" if stderr is None else stderr
+        path.write_text(text, encoding="utf-8")
+        record = {"stderr_path": str(path), "stderr_bytes": len(text.encode("utf-8"))}
+        if stderr is None:
+            record["stderr_missing"] = True
+        return record
+
+    def _note_attempt(
+        self,
+        call_index: int,
+        n: int,
+        seconds: float,
+        outcome: str,
+        stderr: str | None,
+        attempts: list[dict],
+    ) -> None:
+        attempts.append({
+            "n": n,
+            "seconds": seconds,
+            "outcome": outcome,
+            **self._store_stderr(call_index, n, stderr),
+        })
+        self._log_attempt(call_index, n, outcome, seconds)
+
     def _append_call(
         self,
         role: str,
@@ -169,6 +254,7 @@ class CursorAgentLLM:
         usage: dict | None,
         reply: str,
         temperature: float | None,
+        model_reported: str | None,
     ) -> None:
         self.calls.append({
             "role": role,
@@ -179,6 +265,8 @@ class CursorAgentLLM:
             "attempts": attempts,
             "temperature_requested": temperature,
             "temperature_applied": False,
+            "model_requested": self.model,
+            "model_reported": model_reported,
         })
 
     def complete(
@@ -190,8 +278,7 @@ class CursorAgentLLM:
         call_index = len(self.calls)
         work = self._prepare_workspace(role)
         cmd = [CURSOR_BIN, "-p", "--trust", "--mode", "ask", "--output-format", "json"]
-        if self.model:
-            cmd += ["--model", self.model]
+        cmd += ["--model", self.model]
         cmd.append(prompt)
         # No result: timeout, no output, unparsable output, or process error. Retry those.
         # A parsed model reply with content is final, including a non-zero exit that still
@@ -202,19 +289,19 @@ class CursorAgentLLM:
             for n in range(1, INFRA_RETRIES + 2):
                 t0 = time.monotonic()
                 try:
-                    stdout, returncode = self._run_once(cmd, work)
+                    raw = self._run_once(cmd, work)
                 except subprocess.TimeoutExpired as exc:
                     seconds = round(time.monotonic() - t0, 1)
-                    attempts.append({"n": n, "seconds": seconds, "outcome": "timeout"})
-                    self._log_attempt(call_index, n, "timeout", seconds)
+                    stderr = _coerce_stderr(getattr(exc, "stderr", None))
+                    self._note_attempt(call_index, n, seconds, "timeout", stderr, attempts)
                     self.infra_failures += 1
                     last_error = exc
                     continue
                 seconds = round(time.monotonic() - t0, 1)
+                stdout, returncode, stderr = _unpack_run(raw)
                 outcome, data, err = _classify_attempt(stdout, returncode)
                 if outcome != "ok" or data is None:
-                    attempts.append({"n": n, "seconds": seconds, "outcome": outcome})
-                    self._log_attempt(call_index, n, outcome, seconds)
+                    self._note_attempt(call_index, n, seconds, outcome, stderr, attempts)
                     self.infra_failures += 1
                     last_error = err or RuntimeError(f"cursor-agent infra failure ({outcome})")
                     continue
@@ -225,13 +312,14 @@ class CursorAgentLLM:
                     reply = ""
                 elif not isinstance(reply, str):
                     reply = str(reply)
-                attempts.append({"n": n, "seconds": seconds, "outcome": "ok"})
-                self._log_attempt(call_index, n, "ok", seconds)
-                self._append_call(role, attempts, u, reply, temperature)
+                self._note_attempt(call_index, n, seconds, "ok", stderr, attempts)
+                self._append_call(
+                    role, attempts, u, reply, temperature, _model_reported(data),
+                )
                 return reply
             if last_error is None:
                 last_error = RuntimeError("cursor-agent infra retry produced no result")
-            self._append_call(role, attempts, None, "", temperature)
+            self._append_call(role, attempts, None, "", temperature, None)
             raise InfraError(str(last_error)) from last_error
         finally:
             shutil.rmtree(work, ignore_errors=True)
