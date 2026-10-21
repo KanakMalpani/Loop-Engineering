@@ -1,0 +1,10 @@
+About Cursor CLI
+
+CLI Version         2026.10.19-6bbf2c4
+Latest              2026.10.19-6bbf2c4 (up to date)
+Model               Grok 4.7 256K High
+Subscription Tier   Pro+
+OS                  linux (x64)
+Terminal            unknown
+Shell               unknown
+User Email          [redacted]

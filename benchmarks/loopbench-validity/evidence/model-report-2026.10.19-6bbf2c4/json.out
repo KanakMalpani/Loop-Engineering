@@ -1,0 +1,1 @@
+{"type":"result","subtype":"success","is_error":false,"duration_ms":6147,"duration_api_ms":6147,"result":"Hi. What do you want to work on?","session_id":"a8ab509d-b941-4fd1-880a-8652e7fcbc7e","request_id":"94955a02-9e0d-44c0-b8be-f24266fcd997","usage":{"inputTokens":14351,"outputTokens":135,"cacheReadTokens":6016,"cacheWriteTokens":0}}

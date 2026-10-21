@@ -321,3 +321,11 @@ These times are from git and from `results/acceptance-3/run.log`.
 - c8-2: started 22:36:14 IST, calls returned 22:36:54, after-snapshot 22:37:00. 8/8 ok on attempt 1, 24.5-35.2 s; 0 timeouts, 0 retries, 0 errors; 8 stderr files, 0 bytes each. Reap: 8 START, 32 KILL (reason=reap), 0 KILLPG, 8 DONE; per-call leftovers 0/0. Snapshots before tagged=0 ws=0, after tagged=0 ws=0. Decoy pid 613389 survived. availMB min 3050, load max 6.42.
 - c8-3: started 22:37:01 IST, calls returned 22:37:42, after-snapshot 22:37:48. 8/8 ok on attempt 1, 24.7-31.0 s; 0 timeouts, 0 retries, 0 errors; 8 stderr files, 0 bytes each. Reap: 8 START, 32 KILL, 0 KILLPG, 8 DONE; leftovers 0/0. Snapshots before 0/0, after 0/0. Decoy pid 619680 survived. availMB min 2808, load max 6.75.
 - Same gap as c8-pull-1: no per-attempt exit-code field in the frozen record (outcome=ok only). Logs: `results/trials-freeze4/c8-2/`, `c8-3/`. Awaiting QA grading; attempt 5 on hold.
+
+## 2026-10-21 22:55 IST: FROZEN-5 prep (NOT FROZEN), worktree /workspace/le-f5-work off ec644c0
+- `cursor_llm.py`: per-attempt `returncode`, `rc_nonzero`, `clean`; call-level `returncode`/`rc_nonzero`; log line ` rc=`. Non-zero exit with valid JSON stays outcome ok (no retry) but is flagged not clean.
+- `leak_probe.py`: log_path/run_id like role_probe -> per-call stderr file, reap.log, leftover counts in output; `--out`.
+- New tests `packages/loopgym/tests/test_returncode_records.py`, `test_leak_probe_records.py`. loopgym 105 passed; loopbench 16 passed, 2 skipped; ruff clean on frozen .py files + new tests.
+- Model report investigation: `notes-model-report.md` + `evidence/model-report-2026.10.19-6bbf2c4/`. json output has no model field; stream-json `system/init.model` = "Grok 4.7 256K High" (client echo).
+- `DEVIATION-5.md` draft. Code by cursor-agent `--model grok-4.7-high` (/workspace/f5-agent/prompt1.txt, agent1.out), reviewed by SWE.
+- FROZEN-4 no longer matches `cursor_llm.py`/`leak_probe.py` at branch HEAD from this commit; the trial worktree /workspace/le-trial-99cc307 is untouched.

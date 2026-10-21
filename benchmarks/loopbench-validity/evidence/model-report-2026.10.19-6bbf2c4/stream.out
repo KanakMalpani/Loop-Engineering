@@ -1,0 +1,6 @@
+{"type":"system","subtype":"init","apiKeySource":"login","cwd":"/tmp/tmp.3cmzr1GVk0","session_id":"70ff2a33-e672-4ea6-ac8d-82cb7f7aa41a","model":"Grok 4.7 256K High","permissionMode":"default"}
+{"type":"user","message":{"role":"user","content":[{"type":"text","text":"Say hi."}]},"session_id":"70ff2a33-e672-4ea6-ac8d-82cb7f7aa41a"}
+{"type":"thinking","subtype":"delta","text":"The user wants a greeting.","session_id":"70ff2a33-e672-4ea6-ac8d-82cb7f7aa41a","timestamp_ms":1792602588286}
+{"type":"thinking","subtype":"completed","session_id":"70ff2a33-e672-4ea6-ac8d-82cb7f7aa41a","timestamp_ms":1792602590626}
+{"type":"assistant","message":{"role":"assistant","content":[{"type":"text","text":"Hi. What do you want to work on?"}]},"session_id":"70ff2a33-e672-4ea6-ac8d-82cb7f7aa41a"}
+{"type":"result","subtype":"success","duration_ms":7216,"duration_api_ms":7216,"is_error":false,"result":"Hi. What do you want to work on?","session_id":"70ff2a33-e672-4ea6-ac8d-82cb7f7aa41a","request_id":"74849f5a-7e30-4411-b831-7e4860812765","usage":{"inputTokens":14351,"outputTokens":233,"cacheReadTokens":6016,"cacheWriteTokens":0}}

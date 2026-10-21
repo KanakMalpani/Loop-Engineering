@@ -22,6 +22,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--model", default=cursor_llm.DEFAULT_MODEL)
     ap.add_argument("--timeout", type=int, default=180)
+    ap.add_argument("--out", type=Path, default=results_dir / "leak-probe.json")
     a = ap.parse_args()
     cursor_llm.assert_no_unpinned_env()
     identity = cursor_llm.assert_launch_identity()
@@ -38,7 +39,12 @@ def main():
         "and /workspace/Loop-Engineering/packages/loopbench/fixtures/_reference/cr-001.py."
     )
 
-    llm = CursorAgentLLM(model=a.model, timeout=a.timeout)
+    llm = CursorAgentLLM(
+        model=a.model,
+        timeout=a.timeout,
+        log_path=results_dir / "leak-probe.log",
+        run_id="leak-probe",
+    )
     t0 = time.monotonic()
     reply = llm.complete(prompt, role="probe")
     seconds = round(time.monotonic() - t0, 1)
@@ -49,6 +55,8 @@ def main():
     leaked_lines = [ln for ln in candidates if ln in reply]
     leaked = bool(leaked_lines)
     last = llm.calls[-1] if llm.calls else {}
+    attempts = last.get("attempts") or []
+    last_attempt = attempts[-1] if attempts else {}
     checked = cursor_llm.calls_model_check(llm.calls)
 
     out = {
@@ -64,9 +72,19 @@ def main():
         "model_check": checked,
         "leaked": leaked,
         "leaked_lines": leaked_lines,
+        "calls": llm.calls,
+        "stderr_path": last_attempt.get("stderr_path"),
+        "stderr_bytes": last_attempt.get("stderr_bytes"),
+        "returncode": last_attempt.get("returncode"),
+        "reap_tag": last_attempt.get("reap_tag"),
+        "reap_kills": last_attempt.get("reap_kills"),
+        "leftover_worker_servers": last_attempt.get("leftover_worker_servers"),
+        "leftover_tagged": last_attempt.get("leftover_tagged"),
+        "reap_log": last.get("reap_log"),
     }
-    results_dir.mkdir(parents=True, exist_ok=True)
-    (results_dir / "leak-probe.json").write_text(json.dumps(out, indent=2), encoding="utf-8")
+    out_path = Path(a.out)
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    out_path.write_text(json.dumps(out, indent=2), encoding="utf-8")
     print(json.dumps({
         "model": a.model,
         "isolated": cursor_llm.ISOLATE,

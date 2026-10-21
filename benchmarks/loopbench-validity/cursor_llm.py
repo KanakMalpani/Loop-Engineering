@@ -507,13 +507,20 @@ class CursorAgentLLM:
         code = None if proc is None else proc.returncode
         return stdout_text or "", 1 if code is None else code, stderr_text or ""
 
-    def _log_attempt(self, call_index: int, n: int, outcome: str, seconds: float) -> None:
+    def _log_attempt(
+        self,
+        call_index: int,
+        n: int,
+        outcome: str,
+        seconds: float,
+        returncode: int | None,
+    ) -> None:
         if self.log_path is None:
             return
         ident = self.run_id if self.run_id else "-"
         line = (
             f"{datetime.now(UTC).isoformat()} {ident} call={call_index} "
-            f"attempt={n} outcome={outcome} seconds={seconds}\n"
+            f"attempt={n} outcome={outcome} seconds={seconds} rc={returncode}\n"
         )
         with _LOG_LOCK:
             self.log_path.parent.mkdir(parents=True, exist_ok=True)
@@ -547,16 +554,21 @@ class CursorAgentLLM:
         seconds: float,
         outcome: str,
         stderr: str | None,
+        returncode: int | None,
         attempts: list[dict],
     ) -> None:
+        rc_nonzero = returncode not in (0, None)
         attempts.append({
             "n": n,
             "seconds": seconds,
             "outcome": outcome,
+            "returncode": returncode,
+            "rc_nonzero": rc_nonzero,
+            "clean": outcome == "ok" and returncode == 0,
             **self._store_stderr(call_index, n, stderr),
             **self._reap_fields(),
         })
-        self._log_attempt(call_index, n, outcome, seconds)
+        self._log_attempt(call_index, n, outcome, seconds, returncode)
 
     def _reap_fields(self) -> dict:
         info = self._last_reap if isinstance(self._last_reap, dict) else {}
@@ -579,6 +591,7 @@ class CursorAgentLLM:
         temperature: float | None,
         model_reported: str | None,
     ) -> None:
+        final = attempts[-1] if attempts else {}
         self.calls.append({
             "role": role,
             "reply": reply,
@@ -586,6 +599,8 @@ class CursorAgentLLM:
             "usage": usage,
             "isolated": ISOLATE,
             "attempts": attempts,
+            "returncode": final.get("returncode"),
+            "rc_nonzero": any(bool(a.get("rc_nonzero")) for a in attempts),
             "temperature_requested": temperature,
             "temperature_applied": False,
             "model_requested": self.model,
@@ -626,7 +641,9 @@ class CursorAgentLLM:
                 except subprocess.TimeoutExpired as exc:
                     seconds = round(time.monotonic() - t0, 1)
                     stderr = _coerce_stderr(getattr(exc, "stderr", None))
-                    self._note_attempt(call_index, n, seconds, "timeout", stderr, attempts)
+                    self._note_attempt(
+                        call_index, n, seconds, "timeout", stderr, None, attempts,
+                    )
                     self.infra_failures += 1
                     last_error = exc
                     continue
@@ -634,7 +651,9 @@ class CursorAgentLLM:
                 stdout, returncode, stderr = _unpack_run(raw)
                 outcome, data, err = _classify_attempt(stdout, returncode)
                 if outcome != "ok" or data is None:
-                    self._note_attempt(call_index, n, seconds, outcome, stderr, attempts)
+                    self._note_attempt(
+                        call_index, n, seconds, outcome, stderr, returncode, attempts,
+                    )
                     self.infra_failures += 1
                     last_error = err or RuntimeError(f"cursor-agent infra failure ({outcome})")
                     continue
@@ -645,7 +664,9 @@ class CursorAgentLLM:
                     reply = ""
                 elif not isinstance(reply, str):
                     reply = str(reply)
-                self._note_attempt(call_index, n, seconds, "ok", stderr, attempts)
+                self._note_attempt(
+                    call_index, n, seconds, "ok", stderr, returncode, attempts,
+                )
                 self._append_call(
                     role, attempts, u, reply, temperature, _model_reported(data),
                 )
