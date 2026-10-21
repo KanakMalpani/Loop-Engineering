@@ -1,0 +1,53 @@
+{
+  "model": "grok-4.7-high",
+  "model_requested": "grok-4.7-high",
+  "model_reported": null,
+  "calls": [
+    {
+      "role": "Every reply you give must begin with the exact token ROLE-PICKUP-7731 followed by a space.",
+      "reply": "ROLE-PICKUP-7731 Hello.",
+      "seconds": 18.6,
+      "usage": {
+        "inputTokens": 11995,
+        "outputTokens": 262,
+        "cacheReadTokens": 6016,
+        "cacheWriteTokens": 0
+      },
+      "isolated": true,
+      "attempts": [
+        {
+          "n": 1,
+          "seconds": 18.6,
+          "outcome": "ok",
+          "stderr_path": "/workspace/le-gate-f3755e3-b/benchmarks/loopbench-validity/results/stderr/role-probe-call0-attempt1.stderr",
+          "stderr_bytes": 0,
+          "reap_tag": "lbreap-d12c905a4d9c41528c2449e1c9764389",
+          "reap_kills": 4,
+          "leftover_worker_servers": 0,
+          "leftover_tagged": 0
+        }
+      ],
+      "temperature_requested": null,
+      "temperature_applied": false,
+      "model_requested": "grok-4.7-high",
+      "model_reported": null,
+      "reap_kills": 4,
+      "leftover_worker_servers": 0,
+      "reap_log": "/workspace/le-gate-f3755e3-b/benchmarks/loopbench-validity/results/reap.log"
+    }
+  ],
+  "model_check": {
+    "pinned": "grok-4.7-high",
+    "valid": true,
+    "violations": []
+  },
+  "launch_identity": {
+    "cursor_agent_bin": "/home/box/.local/bin/cursor-agent",
+    "cursor_agent_resolved": "/home/box/.local/share/cursor-agent/versions/2026.10.19-6bbf2c4/cursor-agent",
+    "cursor_agent_version": "2026.10.19-6bbf2c4"
+  },
+  "picked_up": true,
+  "reply": "ROLE-PICKUP-7731 Hello.",
+  "seconds": 18.6,
+  "error": null
+}
