@@ -204,3 +204,9 @@ These times are from git and from `results/acceptance-3/run.log`.
 - INFRA-FAIL seeds were in 8 of 14 run files at `add524f` (QA bot), and in 10 of 16 at stop.
 - 16 of 30 run files were written. All files are kept, and there is no verdict.
 - Details are in `results/acceptance-4/README.md`. The cause is under read-only investigation.
+
+## 2026-10-21 18:40 IST: probe model switch (exploration only)
+- Concurrency-recipe probe trials now use grok-4.7-high (switched from gpt-5.3-codex), per Engineering Lead.
+- Recipe trials on grok-4.7-high count as exploration only for LoopBench until Kanak decides the model; they do not count toward the frozen run's sign-off.
+- AE is unaffected: its LLM baseline was already pinned to grok-4.7-high.
+- Quota check on attempt 4: 0 matches for "usage limit" or ActionRequiredError in results/acceptance-4 (run files + run.log) or /workspace/acc4 logs. Caveat: stderr was not captured; 43 INFRA-FAIL seeds read "cursor-agent exited 1 with no output", so quota can't be ruled out from these files.
