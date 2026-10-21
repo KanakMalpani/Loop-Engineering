@@ -176,3 +176,19 @@ These times are from git and from `results/acceptance-3/run.log`.
 - Clean restart: 09:52:25 IST.
 - First `run.log` line: 04:24:55.33Z (09:54:55 IST). It is `bad-1-no-feedback/r0 call=0 attempt=1 outcome=timeout seconds=150.1`, and lines are written when an attempt ends. So the first call of attempt 3 started at about 04:22:25Z (09:52:25 IST). That attempt was retried and returned ok after 23.8 s.
 - The "10:00 AM" start time I posted in Eng Pod was wrong. The correct start is 09:52:25 IST.
+
+## Attempt 3 abandoned; acceptance attempt 4 started (Wed 21 Oct 2026, times IST)
+
+- Attempt 3's last call finished at 12:31:09 IST.
+- The box restarted at about 13:18 IST. The restart killed the runner and the pusher and changed the box timezone to UTC.
+- Attempt 3 is abandoned at 8/30. Its partial state is committed at `4aca065` and the run was not resumed. It has no criterion verdict.
+- Also lost in the restart: `/workspace/oa/pull/out` (77 AE parts). This is unrelated to the benchmark.
+- After the restart, cursor-agent was still logged in. Engineering Lead approved attempt 4.
+- Attempt 4 preflight, logged in `results/acceptance-4/preflight/`:
+  - Fresh sandbox `/workspace/cursor-llm-sandbox-acc4-20261021T084236Z` and fresh eval tmp `/workspace/lb-eval-tmp-acc4-20261021T084236Z`, with nothing reused from attempt 3.
+  - HEAD at launch was `4aca065`.
+  - The FROZEN and FROZEN-2 tests passed both before the probes and at launch.
+  - Read-only leak probe on cr-004: 0 leaked lines.
+  - Role rules-file pickup probe: picked up ("ROLE-PICKUP-7731 Hello!").
+- Attempt 4 launched at 2026-10-21T14:14:08+05:30 (08:44:08Z), runner PID 47998, under setsid/nohup. The command is the same as attempt 3's, with `--outdir results/acceptance-4`.
+- The pusher (`/workspace/acc4/pusher.sh`) pushes `results/acceptance-4` every 3 completed runs or every 25 minutes, and once more at the end.
