@@ -1,0 +1,18 @@
+== 20261022-043132-IST (box UTC 23:01:32)
+PASS: no PULL_FINISHED -> exit 5
+PASS: fake bash pull.sh -> exit 6
+PASS: low memory -> exit 4
+PASS: all good -> exit 0 and required log lines
+PASS: 5000 MB < default 6144 -> exit 4
+PASS: 7000 MB >= default 6144 -> exit 0
+ALL PASS
+harness rc=0
+......                                                                   [100%]
+6 passed in 0.05s
+pytest drafts rc=0
+........................................................................ [ 64%]
+.......................................                                  [100%]
+111 passed in 26.94s
+pytest loopgym rc=0
+[1;32mAll checks passed![0m
+ruff rc=0
