@@ -167,3 +167,12 @@ Attempt 2 runs at `--max-concurrency 4` with no coding sessions. Infra-only retr
 - First launch at 09:52:09 IST was killed about 5 s later, when the shell tool that launched it was interrupted. That was before any episode completed: progress 0/30, no run files, no run.log. Its leftovers were moved out of the repo to `/workspace/acc3-aborted-0922/`. Nothing in the frozen set or the runtime changed.
 - Attempt 3 restarted from zero at 09:52:25 IST, detached with setsid/nohup: `run_full.py --confirm-acceptance --model gpt-5.3-codex --task LB-CR-1 --seeds 0,1,2,3,4 --runs 3 --max-concurrency 4 --timeout 150 --outdir results/acceptance-3`.
 - **Not directly comparable to attempt 2.** Attempt 3's scored-patch rule differs: untagged ``` fences are now accepted as the patch (DEVIATION-2.md, "What is scored"). Attempt 2 accepted only python/py-tagged fences. Attempt 3 also adds cr-004..cr-007, enforces the role via the rules file, and drops role and temperature text from the prompt. So attempt 2 and attempt 3 scores are not directly comparable.
+
+### Attempt 3 timestamp correction
+
+These times are from git and from `results/acceptance-3/run.log`.
+- Freeze commit `8b1bfc1`: 09:49:18 IST (04:19:18Z).
+- First launch: 09:52:09 IST. It was killed about 5 s later, with 0 results.
+- Clean restart: 09:52:25 IST.
+- First `run.log` line: 04:24:55.33Z (09:54:55 IST). It is `bad-1-no-feedback/r0 call=0 attempt=1 outcome=timeout seconds=150.1`, and lines are written when an attempt ends. So the first call of attempt 3 started at about 04:22:25Z (09:52:25 IST). That attempt was retried and returned ok after 23.8 s.
+- The "10:00 AM" start time I posted in Eng Pod was wrong. The correct start is 09:52:25 IST.
