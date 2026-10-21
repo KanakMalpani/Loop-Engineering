@@ -278,3 +278,15 @@ These times are from git and from `results/acceptance-3/run.log`.
 - Excluded: everything under `tools/reaper/`, until QA bot signs off the trial results.
 - The freeze commit is the one that adds this entry and FROZEN-3.sha256. Gate: run from a clean `git worktree` at the freeze commit: `sha256sum -c`, then the loopgym and loopbench tests each from their own folder with `-p no:cacheprovider` (never from the repo root), then ruff. The output is kept under `benchmarks/loopbench-validity/logs/`.
 - Attempt 5 is not launched and no probes have run.
+
+## 2026-10-21 20:13 IST: NOT FROZEN: tag-based reaper wired into cursor_llm.py; DEVIATION-4 draft
+- Code by cursor-agent `--model grok-4.7-high` (/workspace/dev3-fix/prompt5.txt, agent5.out), reviewed by SWE. QA bot reviews before FROZEN-4. No re-freeze, no launch, no real calls.
+- Port of `tools/reaper/` (`3d7bca4`, `060b0c7`) into the shim, always on, no env override:
+  - per-attempt `CURSOR_REAP_TAG=lbreap-<uuid>` (Popen env + bwrap `--setenv`);
+  - after every attempt (ok, error, timeout, exception) SIGKILL only exact-tag processes, re-checked before each kill; untagged or unreadable processes are never touched;
+  - per-run `reap.log` with START/KILL(pid, tag, call)/DONE lines;
+  - record fields `reap_tag`, `reap_kills`, `leftover_tagged`, `leftover_worker_servers` (per attempt) and `reap_kills`, `leftover_worker_servers`, `reap_log` (per call).
+- Pipe-hang fix (trial/aborted-tee): stdout/stderr go to files, not pipes; stdin DEVNULL; `wait(timeout)` instead of `communicate()`.
+- Files: `benchmarks/loopbench-validity/cursor_llm.py` (changed), `benchmarks/loopbench-validity/DEVIATION-4.md` (new, sha256 969a21a46b7986e2ef318994e63945b27c1af0579358a8584d0f111e354b675a), `packages/loopgym/tests/test_reaper_wiring.py` (new), `packages/loopgym/tests/test_deviation3_pins.py`, `packages/loopgym/tests/test_role_probe.py`, `packages/loopgym/tests/test_role_rules.py` (stubs accept the new kwargs).
+- FROZEN-3 no longer matches `cursor_llm.py` from this commit on. FROZEN-4 plus a probe rerun are needed before the counted trials and attempt 5 (DEVIATION-4).
+- Known gaps: SIGKILL of the shim process itself skips the in-process reap; the stdout temp file sits in the call workspace (visible to the agent, read-only ask mode).

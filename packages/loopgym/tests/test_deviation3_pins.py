@@ -45,7 +45,7 @@ def _body(result: str, **extra: object) -> str:
 def test_stderr_file_per_attempt_including_retry(sandbox, monkeypatch):
     state = {"n": 0}
 
-    def fake(self, cmd, cwd):
+    def fake(self, cmd, cwd, **_extra):
         state["n"] += 1
         if state["n"] == 1:
             exc = subprocess.TimeoutExpired(cmd, 1)
@@ -70,7 +70,7 @@ def test_stderr_file_per_attempt_including_retry(sandbox, monkeypatch):
 
 
 def test_missing_stderr_writes_empty_file(sandbox, monkeypatch):
-    def fake(self, cmd, cwd):
+    def fake(self, cmd, cwd, **_extra):
         return _body("plain"), 0
 
     monkeypatch.setattr(cursor_llm.CursorAgentLLM, "_run_once", fake)
@@ -85,7 +85,7 @@ def test_missing_stderr_writes_empty_file(sandbox, monkeypatch):
 
 
 def test_empty_stderr_is_stored(sandbox, monkeypatch):
-    def fake(self, cmd, cwd):
+    def fake(self, cmd, cwd, **_extra):
         return _body("plain"), 0, ""
 
     monkeypatch.setattr(cursor_llm.CursorAgentLLM, "_run_once", fake)
@@ -143,7 +143,7 @@ def test_model_requested_and_reported(sandbox, monkeypatch):
     ]
     state = {"n": 0}
 
-    def fake(self, cmd, cwd):
+    def fake(self, cmd, cwd, **_extra):
         body = replies[state["n"]]
         state["n"] += 1
         return json.dumps(body), 0, ""
@@ -175,7 +175,7 @@ def test_one_run_requests_pinned_model_not_spec_model(sandbox, monkeypatch, tmp_
     assert "gpt-4.1-mini" in spec
     cmds: list[list[str]] = []
 
-    def fake(self, cmd, cwd):
+    def fake(self, cmd, cwd, **_extra):
         cmds.append(list(cmd))
         return _body("no code", model=PINNED), 0, ""
 
@@ -204,7 +204,7 @@ def _stub_version(monkeypatch, version: str | None = None) -> None:
 def _forbid_run_once(monkeypatch) -> dict:
     state = {"n": 0}
 
-    def fake(self, cmd, cwd):
+    def fake(self, cmd, cwd, **_extra):
         state["n"] += 1
         raise AssertionError("model call is not allowed")
 
@@ -275,7 +275,7 @@ def test_leak_probe_output_records_models(sandbox, monkeypatch, tmp_path):
     monkeypatch.setattr(sys, "argv", ["leak_probe.py", "--model", PINNED])
     monkeypatch.setattr(leak_probe, "results_dir", tmp_path)
 
-    def fake(self, cmd, cwd):
+    def fake(self, cmd, cwd, **_extra):
         return _body("probe-stub-reply", model=PINNED), 0, ""
 
     monkeypatch.setattr(cursor_llm.CursorAgentLLM, "_run_once", fake)
@@ -293,7 +293,7 @@ def test_probe_main_invalid_model_check_exits(sandbox, monkeypatch, tmp_path):
     monkeypatch.setattr(sys, "argv", ["run_full.py", "--probe", "1", "--model", PINNED])
     monkeypatch.setattr(run_full, "here", tmp_path)
 
-    def fake(self, cmd, cwd):
+    def fake(self, cmd, cwd, **_extra):
         return _body("corrected", model="other-model"), 0, ""
 
     monkeypatch.setattr(cursor_llm.CursorAgentLLM, "_run_once", fake)

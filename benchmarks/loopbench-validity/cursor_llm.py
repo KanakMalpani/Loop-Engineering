@@ -16,6 +16,7 @@ import threading
 import time
 from datetime import UTC, datetime
 from pathlib import Path
+from uuid import uuid4
 
 # Pinned (DEVIATION-3): no CURSOR_AGENT_BIN override. A set variable aborts via assert_no_unpinned_env.
 CURSOR_BIN = str(Path.home() / ".local/bin/cursor-agent")
@@ -27,6 +28,10 @@ ISOLATE = True
 # Extra attempts after the first. Infra failures only; model content is never retried.
 INFRA_RETRIES = 2
 _LOG_LOCK = threading.Lock()
+# Always-on tag reaper. The tag is generated per attempt; nothing reads an override.
+REAP_TAG_VAR = "CURSOR_REAP_TAG"
+REAP_SETTLE_S = 1.0
+_kill = os.kill
 _PINNED_ENV = (
     "CURSOR_LLM_INFRA_RETRIES",
     "CURSOR_LLM_ISOLATE",
@@ -89,6 +94,117 @@ def assert_launch_identity() -> dict:
             f"cursor-agent version {version!r} != pinned {PINNED_CURSOR_AGENT_VERSION}"
         )
     return identity
+
+
+def _iso_utc() -> str:
+    return datetime.now(UTC).isoformat()
+
+
+def _reap_log_file(log_path: Path | str | None) -> Path:
+    if log_path is not None:
+        return Path(log_path).parent / "reap.log"
+    return SANDBOX / "reap.log"
+
+
+def _append_reap_line(path: Path, line: str) -> None:
+    text = line if line.endswith("\n") else f"{line}\n"
+    with _LOG_LOCK:
+        path.parent.mkdir(parents=True, exist_ok=True)
+        with path.open("a", encoding="utf-8") as handle:
+            handle.write(text)
+
+
+def _read_text(path: Path) -> str:
+    try:
+        return path.read_bytes().decode("utf-8", errors="replace")
+    except OSError:
+        return ""
+
+
+def _environ_has_tag(proc_dir: Path, needle: bytes) -> bool:
+    """True only for an exact env entry. Unreadable or vanished processes are not a match."""
+    try:
+        data = (proc_dir / "environ").read_bytes()
+    except OSError:
+        return False
+    return needle in data.split(b"\0")
+
+
+def _read_cmdline(proc_dir: Path) -> str:
+    try:
+        raw = (proc_dir / "cmdline").read_bytes()
+    except OSError:
+        return ""
+    text = raw.replace(b"\0", b" ").decode("utf-8", errors="replace")
+    return text.replace("\n", " ").replace("\r", " ")
+
+
+def reap_tag(
+    tag: str,
+    call_id: str,
+    log_path: Path | str | None,
+    proc_root: Path = Path("/proc"),
+    kill=None,
+) -> dict:
+    """SIGKILL processes whose environ has this exact tag. Untagged pids are never touched."""
+    killer = _kill if kill is None else kill
+    time.sleep(REAP_SETTLE_S)
+    needle = f"{REAP_TAG_VAR}={tag}".encode()
+    log_file = _reap_log_file(log_path)
+    killed: list[int] = []
+    try:
+        proc_dirs = list(proc_root.iterdir())
+    except OSError:
+        proc_dirs = []
+    for proc_dir in proc_dirs:
+        if not proc_dir.name.isdigit():
+            continue
+        pid = int(proc_dir.name)
+        if pid == os.getpid():
+            continue
+        if not _environ_has_tag(proc_dir, needle):
+            continue
+        cmdline = _read_cmdline(proc_dir)
+        # Re-read immediately before the kill so a recycled pid is not signalled.
+        if not _environ_has_tag(proc_dir, needle):
+            continue
+        try:
+            killer(pid, signal.SIGKILL)
+        except (ProcessLookupError, PermissionError):
+            continue
+        killed.append(pid)
+        _append_reap_line(
+            log_file,
+            f"{_iso_utc()} KILL pid={pid} tag={tag} call={call_id} cmd={cmdline[:120]}",
+        )
+    _append_reap_line(
+        log_file,
+        f"{_iso_utc()} DONE tag={tag} call={call_id} reaped={len(killed)}",
+    )
+    leftover_tagged = 0
+    leftover_worker_servers = 0
+    try:
+        proc_dirs = list(proc_root.iterdir())
+    except OSError:
+        proc_dirs = []
+    for proc_dir in proc_dirs:
+        if not proc_dir.name.isdigit():
+            continue
+        pid = int(proc_dir.name)
+        if pid == os.getpid():
+            continue
+        if not _environ_has_tag(proc_dir, needle):
+            continue
+        leftover_tagged += 1
+        if "worker-server" in _read_cmdline(proc_dir):
+            leftover_worker_servers += 1
+    return {
+        "tag": tag,
+        "killed": killed,
+        "leftover": leftover_worker_servers,
+        "leftover_tagged": leftover_tagged,
+        "leftover_worker_servers": leftover_worker_servers,
+    }
 
 
 def _coerce_stderr(value: object) -> str | None:
@@ -180,6 +296,7 @@ class CursorAgentLLM:
         self.infra_failures = 0
         self.log_path = Path(log_path) if log_path is not None else None
         self.run_id = run_id
+        self._last_reap: dict | None = None
         SANDBOX.mkdir(parents=True, exist_ok=True)
 
     def _prepare_workspace(self, role: str) -> Path:
@@ -196,58 +313,115 @@ class CursorAgentLLM:
         )
         return work
 
-    def _run_once(self, cmd: list[str], cwd: Path | None = None) -> tuple[str, int, str]:
+    def _run_once(
+        self,
+        cmd: list[str],
+        cwd: Path | None = None,
+        stderr_path: Path | str | None = None,
+        call_id: str | None = None,
+    ) -> tuple[str, int, str]:
         """One sandboxed cursor-agent process. Fresh temp home. Raises TimeoutExpired on timeout."""
-        work = cwd or SANDBOX
-        run_cmd = cmd
+        work = Path(cwd) if cwd is not None else SANDBOX
+        tag = f"lbreap-{uuid4().hex}"
+        if call_id is None:
+            call_id = f"{self.run_id or 'norun'}-call{len(self.calls)}-attempt1"
+        env = os.environ.copy()
+        env[REAP_TAG_VAR] = tag
+        run_cmd = list(cmd)
         tmp_home: Path | None = None
-        if ISOLATE:
-            home = str(Path.home())
-            tmp_home = Path(tempfile.mkdtemp(prefix=".home-", dir=SANDBOX))
-            cursor_dir = tmp_home / ".cursor"
-            cursor_dir.mkdir(parents=True, exist_ok=True)
-            cfg = Path(home) / ".cursor" / "cli-config.json"
-            if cfg.exists():
-                shutil.copy2(cfg, cursor_dir / "cli-config.json")
-            bind = ["--bind", str(SANDBOX), str(SANDBOX)]
-            if work.resolve() != SANDBOX.resolve():
-                bind += ["--bind", str(work), str(work)]
-            run_cmd = [
-                "bwrap", "--dev-bind", "/", "/", "--tmpfs", "/workspace", "--tmpfs", "/tmp",
-                "--tmpfs", home, "--ro-bind", f"{home}/.local/bin", f"{home}/.local/bin",
-                "--ro-bind", f"{home}/.local/share/cursor-agent", f"{home}/.local/share/cursor-agent",
-                "--bind", f"{home}/.config/cursor", f"{home}/.config/cursor",
-                "--bind", str(cursor_dir), f"{home}/.cursor",
-                # Host public-plugin cache only; without it cursor-agent downloads plugins and hangs.
-                *(
-                    ["--ro-bind", f"{home}/.cursor/plugins", f"{home}/.cursor/plugins"]
-                    if (Path(home) / ".cursor" / "plugins").is_dir()
-                    else []
-                ),
-                *bind, "--chdir", str(work),
-                "--setenv", "HOME", home, "--die-with-parent",
-            ] + cmd
+        stdout_path: Path | None = None
+        stderr_target = Path(stderr_path) if stderr_path is not None else None
+        stdout_handle = None
+        stderr_handle = None
+        proc: subprocess.Popen | None = None
+        timed_out: subprocess.TimeoutExpired | None = None
+        stdout_text = ""
+        stderr_text = ""
         try:
+            _append_reap_line(
+                _reap_log_file(self.log_path),
+                f"{_iso_utc()} START tag={tag} call={call_id}",
+            )
+            if ISOLATE:
+                home = str(Path.home())
+                tmp_home = Path(tempfile.mkdtemp(prefix=".home-", dir=SANDBOX))
+                cursor_dir = tmp_home / ".cursor"
+                cursor_dir.mkdir(parents=True, exist_ok=True)
+                cfg = Path(home) / ".cursor" / "cli-config.json"
+                if cfg.exists():
+                    shutil.copy2(cfg, cursor_dir / "cli-config.json")
+                bind = ["--bind", str(SANDBOX), str(SANDBOX)]
+                if work.resolve() != SANDBOX.resolve():
+                    bind += ["--bind", str(work), str(work)]
+                run_cmd = [
+                    "bwrap", "--dev-bind", "/", "/", "--tmpfs", "/workspace", "--tmpfs", "/tmp",
+                    "--tmpfs", home, "--ro-bind", f"{home}/.local/bin", f"{home}/.local/bin",
+                    "--ro-bind", f"{home}/.local/share/cursor-agent",
+                    f"{home}/.local/share/cursor-agent",
+                    "--bind", f"{home}/.config/cursor", f"{home}/.config/cursor",
+                    "--bind", str(cursor_dir), f"{home}/.cursor",
+                    # Host public-plugin cache only; without it cursor-agent downloads plugins and hangs.
+                    *(
+                        ["--ro-bind", f"{home}/.cursor/plugins", f"{home}/.cursor/plugins"]
+                        if (Path(home) / ".cursor" / "plugins").is_dir()
+                        else []
+                    ),
+                    *bind, "--chdir", str(work),
+                    "--setenv", "HOME", home,
+                    "--setenv", REAP_TAG_VAR, tag,
+                    "--die-with-parent",
+                ] + list(cmd)
+            fd, stdout_name = tempfile.mkstemp(prefix="stdout-", dir=work)
+            os.close(fd)
+            stdout_path = Path(stdout_name)
+            if stderr_target is None:
+                fd, stderr_name = tempfile.mkstemp(prefix="stderr-", dir=work)
+                os.close(fd)
+                stderr_target = Path(stderr_name)
+            else:
+                stderr_target.parent.mkdir(parents=True, exist_ok=True)
+            # Files, not pipes: a lingering worker-server kept the stderr pipe open and hung callers.
+            stdout_handle = stdout_path.open("wb", buffering=0)
+            stderr_handle = stderr_target.open("wb", buffering=0)
             proc = subprocess.Popen(
                 run_cmd,
                 cwd=work,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                text=True,
+                stdout=stdout_handle,
+                stderr=stderr_handle,
+                stdin=subprocess.DEVNULL,
                 start_new_session=True,
+                env=env,
             )
             try:
-                stdout, stderr = proc.communicate(timeout=self.timeout)
+                proc.wait(timeout=self.timeout)
             except subprocess.TimeoutExpired as exc:
-                os.killpg(proc.pid, signal.SIGKILL)
-                _out, err = proc.communicate()
-                exc.stderr = "" if err is None else err
-                raise
+                try:
+                    os.killpg(proc.pid, signal.SIGKILL)
+                except ProcessLookupError:
+                    pass
+                proc.wait()
+                timed_out = exc
         finally:
+            if stdout_handle is not None:
+                stdout_handle.close()
+            if stderr_handle is not None:
+                stderr_handle.close()
+            if stdout_path is not None:
+                stdout_text = _read_text(stdout_path)
+                try:
+                    stdout_path.unlink()
+                except OSError:
+                    pass
+            if stderr_target is not None:
+                stderr_text = _read_text(stderr_target)
+            self._last_reap = reap_tag(tag, call_id, self.log_path)
             if tmp_home is not None:
                 shutil.rmtree(tmp_home, ignore_errors=True)
-        code = proc.returncode
-        return stdout or "", 1 if code is None else code, stderr or ""
+        if timed_out is not None:
+            timed_out.stderr = stderr_text
+            raise timed_out
+        code = None if proc is None else proc.returncode
+        return stdout_text or "", 1 if code is None else code, stderr_text or ""
 
     def _log_attempt(self, call_index: int, n: int, outcome: str, seconds: float) -> None:
         if self.log_path is None:
@@ -295,8 +469,21 @@ class CursorAgentLLM:
             "seconds": seconds,
             "outcome": outcome,
             **self._store_stderr(call_index, n, stderr),
+            **self._reap_fields(),
         })
         self._log_attempt(call_index, n, outcome, seconds)
+
+    def _reap_fields(self) -> dict:
+        info = self._last_reap if isinstance(self._last_reap, dict) else {}
+        killed = info.get("killed") or []
+        if not isinstance(killed, list):
+            killed = []
+        return {
+            "reap_tag": info.get("tag"),
+            "reap_kills": len(killed),
+            "leftover_worker_servers": int(info.get("leftover_worker_servers") or 0),
+            "leftover_tagged": int(info.get("leftover_tagged") or 0),
+        }
 
     def _append_call(
         self,
@@ -318,6 +505,11 @@ class CursorAgentLLM:
             "temperature_applied": False,
             "model_requested": self.model,
             "model_reported": model_reported,
+            "reap_kills": sum(int(a.get("reap_kills") or 0) for a in attempts),
+            "leftover_worker_servers": sum(
+                int(a.get("leftover_worker_servers") or 0) for a in attempts
+            ),
+            "reap_log": str(_reap_log_file(self.log_path)),
         })
 
     def complete(
@@ -339,8 +531,13 @@ class CursorAgentLLM:
         try:
             for n in range(1, INFRA_RETRIES + 2):
                 t0 = time.monotonic()
+                stderr_path = self._stderr_file(call_index, n)
+                call_id = f"{self.run_id or 'norun'}-call{call_index}-attempt{n}"
+                self._last_reap = None
                 try:
-                    raw = self._run_once(cmd, work)
+                    raw = self._run_once(
+                        cmd, work, stderr_path=stderr_path, call_id=call_id,
+                    )
                 except subprocess.TimeoutExpired as exc:
                     seconds = round(time.monotonic() - t0, 1)
                     stderr = _coerce_stderr(getattr(exc, "stderr", None))

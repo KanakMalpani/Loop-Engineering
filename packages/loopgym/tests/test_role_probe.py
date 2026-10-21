@@ -48,7 +48,7 @@ def _stub_version(monkeypatch, version: str | None = None) -> None:
 def _forbid_run_once(monkeypatch) -> dict:
     state = {"n": 0}
 
-    def fake(self, cmd, cwd):
+    def fake(self, cmd, cwd, **_extra):
         state["n"] += 1
         raise AssertionError("model call is not allowed")
 
@@ -75,7 +75,7 @@ def test_role_pickup_success(sandbox, monkeypatch, tmp_path):
     monkeypatch.setattr(sys, "argv", _argv(out_path))
     seen = {}
 
-    def fake(self, cmd, cwd):
+    def fake(self, cmd, cwd, **_extra):
         seen["cmd"] = list(cmd)
         seen["role"] = (Path(cwd) / "AGENTS.md").read_text(encoding="utf-8")
         seen["rule"] = (Path(cwd) / ".cursor" / "rules" / "role.mdc").read_text(encoding="utf-8")
@@ -119,7 +119,7 @@ def test_role_not_picked_up_exits(sandbox, monkeypatch, tmp_path):
     out_path = tmp_path / "role-probe.json"
     monkeypatch.setattr(sys, "argv", _argv(out_path))
 
-    def fake(self, cmd, cwd):
+    def fake(self, cmd, cwd, **_extra):
         return _body("Hello!"), 0, "stderr"
 
     monkeypatch.setattr(cursor_llm.CursorAgentLLM, "_run_once", fake)
@@ -183,7 +183,7 @@ def test_model_check_mismatch_marks_invalid(sandbox, monkeypatch, tmp_path):
     out_path = tmp_path / "role-probe.json"
     monkeypatch.setattr(sys, "argv", _argv(out_path))
 
-    def fake(self, cmd, cwd):
+    def fake(self, cmd, cwd, **_extra):
         return _body("ROLE-PICKUP-7731 Hello!", model=PINNED), 0, "stderr"
 
     monkeypatch.setattr(cursor_llm.CursorAgentLLM, "_run_once", fake)
@@ -211,7 +211,7 @@ def test_infra_error_records_error(sandbox, monkeypatch, tmp_path):
     monkeypatch.setattr(sys, "argv", _argv(out_path))
     state = {"n": 0}
 
-    def fake(self, cmd, cwd):
+    def fake(self, cmd, cwd, **_extra):
         state["n"] += 1
         return "", 1, "boom-stderr"
 

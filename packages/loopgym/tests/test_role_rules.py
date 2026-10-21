@@ -42,7 +42,7 @@ def _ok_payload(text: str = REPLY) -> tuple[str, int]:
 def test_rules_hold_role_prompt_does_not_and_temperature_is_not_applied(sandbox, monkeypatch):
     seen: dict = {}
 
-    def fake(self, cmd, cwd):
+    def fake(self, cmd, cwd, **_extra):
         work = Path(cwd)
         seen["cmd"] = cmd
         seen["cwd"] = work
@@ -82,7 +82,7 @@ def test_rules_hold_role_prompt_does_not_and_temperature_is_not_applied(sandbox,
 def test_each_attempt_is_logged_and_ok_is_not_retried(sandbox, monkeypatch):
     calls = {"n": 0, "cwds": []}
 
-    def fake(self, cmd, cwd):
+    def fake(self, cmd, cwd, **_extra):
         calls["n"] += 1
         calls["cwds"].append(Path(cwd))
         if calls["n"] == 1:
@@ -106,7 +106,7 @@ def test_each_attempt_is_logged_and_ok_is_not_retried(sandbox, monkeypatch):
     assert "outcome=ok" in log
     assert "attempt=1" in log and "attempt=2" in log and "attempt=3" in log
 
-    def once(self, cmd, cwd):
+    def once(self, cmd, cwd, **_extra):
         calls["cwds"].append(Path(cwd))
         calls["n"] += 1
         return _ok_payload("only")
@@ -147,7 +147,7 @@ def test_spec_role_is_instruction_not_prompt(spec_path, sandbox, monkeypatch):
     temperature = worker_temperature(worker)
     prompts: list[str] = []
 
-    def fake(self, cmd, cwd):
+    def fake(self, cmd, cwd, **_extra):
         work = Path(cwd)
         prompts.append(cmd[-1])
         assert (work / "AGENTS.md").read_text(encoding="utf-8").strip() == role
@@ -190,7 +190,7 @@ def test_system_prompt_field_overrides_role_text(sandbox, monkeypatch):
     spec["workers"][0]["role"] = "UNIQUE_ROLE_NOT_USED"
     seen: dict = {}
 
-    def fake(self, cmd, cwd):
+    def fake(self, cmd, cwd, **_extra):
         seen["prompt"] = cmd[-1]
         seen["agents"] = (Path(cwd) / "AGENTS.md").read_text(encoding="utf-8")
         return _ok_payload("no code")
