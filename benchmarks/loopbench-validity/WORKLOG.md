@@ -305,3 +305,12 @@ These times are from git and from `results/acceptance-3/run.log`.
   - kill logging;
   - the shim-SIGKILL gap is accepted only with an outside before/after snapshot of tagged processes and worker-servers, which must be zero, for every counted trial.
 - Correction: `/workspace/le-venv/bin/pytest` imports the installed loopgym 0.1.4 and fails collection (2 errors). Gate tests must use `/workspace/le-venv/bin/python -m pytest` from each package folder. DEVIATION-3, which is frozen and unchanged, said QA bot could use the pytest script; DEVIATION-4 corrects that.
+
+## 2026-10-21 22:34 IST: during-pull counted trial 1 of 3 (c8-pull-1), frozen path at 99cc307
+- AE pull switch: `pull.sh` v5 -> v6 (2 workers) at 22:32:06 IST, sha256 cc65dfc51993520aa5680b164a65b50894a79243dae2398ad1d08b91e17151b1 (SWITCH line in /workspace/oa/pull/pull.log; script `switch_v6.sh`, same procedure as v4/v5). In flight and re-pulled from scratch: 2026-09-27 parts 0010, 0011, 0012. New pull PID 590112 (was 370638). Worker count 2 at before- and after-snapshot, sha unchanged.
+- Trial: started 22:33:04 IST, all calls returned 22:33:54, after-snapshot 22:34:00. 8 concurrent calls, each its own process, importing the frozen `cursor_llm.py` from clean worktree /workspace/le-trial-99cc307 (no shim, no CURSOR_TRIAL_BIN, none of the pinned env vars set), grok-4.7-high, timeout 150 s, cr-004 LoopBench prompt (504 chars + role). Driver `results/trials-freeze4/{run_trial.sh,fcall.py}`.
+- Result: 8/8 ok on attempt 1, 27.6-47.8 s; 0 timeouts, 0 retries, 0 errors. Each call has its own stderr file, 0 bytes (clean ok). Reaper: 32 KILL (4 per call, all reason=reap, own tag/call), 0 KILLPG, 8 DONE; per-call leftover worker-servers 0, tagged 0.
+- Outside snapshots (snap.sh): before tagged=0 worker_servers=0; after tagged=0 worker_servers=0. Untagged decoy sleep pid 598384 survived.
+- Resources: availMB min 4318, 1-min load max 5.40; guard never tripped.
+- Gap: the frozen record has no per-attempt exit code field (outcome=ok only).
+- Logs: `results/trials-freeze4/c8-pull-1/`. Pull left at 2 workers pending report; other 2 counted trials not run.
