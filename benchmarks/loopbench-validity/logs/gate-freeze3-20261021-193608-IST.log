@@ -1,0 +1,65 @@
+# FROZEN-3 gate, freeze commit f8e98e53cca4637a12023e05301f60cde1547068, clean worktree /workspace/le-gate-f8e98e5, 2026-10-21 19:36:08 IST
+## sha256sum -c benchmarks/loopbench-validity/FROZEN-3.sha256
+packages/loopbench/fixtures/_reference/cr-001.py: OK
+packages/loopbench/fixtures/_reference/cr-002.py: OK
+packages/loopbench/fixtures/_reference/cr-003.py: OK
+packages/loopbench/fixtures/_reference/cr-004.py: OK
+packages/loopbench/fixtures/_reference/cr-005.py: OK
+packages/loopbench/fixtures/_reference/cr-006.py: OK
+packages/loopbench/fixtures/_reference/cr-007.py: OK
+packages/loopbench/fixtures/cr-001/BUG.md: OK
+packages/loopbench/fixtures/cr-001/hidden_tests/test_calc.py: OK
+packages/loopbench/fixtures/cr-001/src/calc.py: OK
+packages/loopbench/fixtures/cr-002/BUG.md: OK
+packages/loopbench/fixtures/cr-002/hidden_tests/test_stats.py: OK
+packages/loopbench/fixtures/cr-002/src/stats.py: OK
+packages/loopbench/fixtures/cr-003/BUG.md: OK
+packages/loopbench/fixtures/cr-003/hidden_tests/test_text.py: OK
+packages/loopbench/fixtures/cr-003/src/text.py: OK
+packages/loopbench/fixtures/cr-004/BUG.md: OK
+packages/loopbench/fixtures/cr-004/hidden_tests/test_durations.py: OK
+packages/loopbench/fixtures/cr-004/src/durations.py: OK
+packages/loopbench/fixtures/cr-005/BUG.md: OK
+packages/loopbench/fixtures/cr-005/hidden_tests/test_intervals.py: OK
+packages/loopbench/fixtures/cr-005/src/intervals.py: OK
+packages/loopbench/fixtures/cr-006/BUG.md: OK
+packages/loopbench/fixtures/cr-006/hidden_tests/test_slugs.py: OK
+packages/loopbench/fixtures/cr-006/src/slugs.py: OK
+packages/loopbench/fixtures/cr-007/BUG.md: OK
+packages/loopbench/fixtures/cr-007/hidden_tests/test_money.py: OK
+packages/loopbench/fixtures/cr-007/src/money.py: OK
+packages/loopbench/fixtures/FROZEN.sha256: OK
+packages/loopbench/fixtures/FROZEN-2.sha256: OK
+benchmarks/loopbench-validity/CRITERION.md: OK
+benchmarks/loopbench-validity/DEVIATION.md: OK
+benchmarks/loopbench-validity/DEVIATION-2.md: OK
+benchmarks/loopbench-validity/DEVIATION-3.md: OK
+benchmarks/loopbench-validity/run_full.py: OK
+benchmarks/loopbench-validity/cursor_llm.py: OK
+benchmarks/loopbench-validity/leak_probe.py: OK
+benchmarks/loopbench-validity/role_probe.py: OK
+benchmarks/loopbench-validity/results/acceptance-2/RETRY-POLICY.md: OK
+benchmarks/loopbench-validity/loops/bad-1-no-feedback.yaml: OK
+benchmarks/loopbench-validity/loops/bad-2-no-tests.yaml: OK
+benchmarks/loopbench-validity/loops/bad-3-wrong-role.yaml: OK
+benchmarks/loopbench-validity/loops/bad-4-no-bug-input.yaml: OK
+benchmarks/loopbench-validity/loops/bad-5-starved-budget.yaml: OK
+benchmarks/loopbench-validity/loops/good-1-fast.yaml: OK
+benchmarks/loopbench-validity/loops/good-2-thorough.yaml: OK
+benchmarks/loopbench-validity/loops/good-3-fast-5iter.yaml: OK
+benchmarks/loopbench-validity/loops/good-4-thorough-t0.yaml: OK
+benchmarks/loopbench-validity/loops/good-5-fast-strict.yaml: OK
+exit=0
+## packages/loopgym: pytest -q -p no:cacheprovider
+........................................................................ [ 82%]
+...............                                                          [100%]
+87 passed in 28.67s
+exit=0
+## packages/loopbench: pytest -q -p no:cacheprovider
+........ss........                                                       [100%]
+16 passed, 2 skipped in 0.26s
+exit=0
+## ruff ruff 0.17.1
+[1;32mAll checks passed![0m
+exit=0
+## worktree status after gate
