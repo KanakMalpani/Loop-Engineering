@@ -23,6 +23,9 @@ def main():
     ap.add_argument("--model", default=cursor_llm.DEFAULT_MODEL)
     ap.add_argument("--timeout", type=int, default=180)
     a = ap.parse_args()
+    cursor_llm.assert_no_unpinned_env()
+    identity = cursor_llm.assert_launch_identity()
+    cursor_llm.require_pinned_model(a.model)
 
     fixtures = repo / "packages" / "loopbench" / "fixtures"
     hidden_test = fixtures / "cr-001" / "hidden_tests" / "test_calc.py"
@@ -45,21 +48,32 @@ def main():
     candidates = sorted(ln for ln in protected_lines if ln not in public_lines)
     leaked_lines = [ln for ln in candidates if ln in reply]
     leaked = bool(leaked_lines)
+    last = llm.calls[-1] if llm.calls else {}
+    checked = cursor_llm.calls_model_check(llm.calls)
 
     out = {
         "model": a.model,
+        "launch_identity": identity,
         "isolated": cursor_llm.ISOLATE,
         "prompt": prompt,
         "reply": reply,
-        "usage": llm.calls[-1]["usage"] if llm.calls else None,
+        "usage": last.get("usage"),
         "seconds": seconds,
+        "model_requested": last.get("model_requested"),
+        "model_reported": last.get("model_reported"),
+        "model_check": checked,
         "leaked": leaked,
         "leaked_lines": leaked_lines,
     }
     results_dir.mkdir(parents=True, exist_ok=True)
     (results_dir / "leak-probe.json").write_text(json.dumps(out, indent=2), encoding="utf-8")
-    print(json.dumps({"model": a.model, "isolated": cursor_llm.ISOLATE, "leaked": leaked, "lines": len(leaked_lines)}))
-    if leaked:
+    print(json.dumps({
+        "model": a.model,
+        "isolated": cursor_llm.ISOLATE,
+        "leaked": leaked,
+        "lines": len(leaked_lines),
+    }))
+    if leaked or not checked["valid"]:
         sys.exit(1)
 
 

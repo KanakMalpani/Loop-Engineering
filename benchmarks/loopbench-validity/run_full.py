@@ -341,10 +341,13 @@ def model_check(rows: list[dict]) -> dict:
     """Calls whose requested model is not the pinned acceptance model."""
     violations = []
     for row in rows:
-        for index, call in enumerate(row.get("calls") or []):
-            requested = call.get("model_requested") if isinstance(call, dict) else None
-            if requested != PINNED_MODEL:
-                violations.append({"loop": row.get("loop"), "run": row.get("run"), "call": index})
+        checked = cursor_llm.calls_model_check(row.get("calls") or [])
+        for item in checked["violations"]:
+            violations.append({
+                "loop": row.get("loop"),
+                "run": row.get("run"),
+                "call": item["call"],
+            })
     return {"pinned": PINNED_MODEL, "valid": not violations, "violations": violations}
 
 
@@ -367,8 +370,16 @@ def probe(n: int, model: str, timeout: int, cap: int) -> dict:
             txt = llm.complete(prompt, role="implementer"); e = None
         except Exception as ex:  # noqa: BLE001  # probe records call errors deliberately
             txt, e = "", f"{type(ex).__name__}: {ex}"
-        return {"i": i, "seconds": round(time.monotonic() - t, 1), "error": e, "chars": len(txt),
-                "usage": llm.calls[-1]["usage"] if llm.calls else None}
+        last = llm.calls[-1] if llm.calls else {}
+        return {
+            "i": i,
+            "seconds": round(time.monotonic() - t, 1),
+            "error": e,
+            "chars": len(txt),
+            "usage": last.get("usage"),
+            "model_requested": last.get("model_requested"),
+            "model_reported": last.get("model_reported"),
+        }
     t0 = time.monotonic()
     with ThreadPoolExecutor(max_workers=min(n, cap)) as ex:
         calls = sorted((f.result() for f in [ex.submit(call, i) for i in range(n)]), key=lambda c: c["i"])
@@ -392,13 +403,24 @@ def main():
     ap.add_argument("--confirm-acceptance", action="store_true")
     a = ap.parse_args()
     cursor_llm.assert_no_unpinned_env()
+    identity = cursor_llm.assert_launch_identity()
     if a.confirm_acceptance and a.model != PINNED_MODEL:
         sys.exit(f"acceptance run requires pinned model {PINNED_MODEL}")
+    if a.probe:
+        cursor_llm.require_pinned_model(a.model)
     (here / "results").mkdir(exist_ok=True)
     if a.probe:
         r = probe(a.probe, a.model, a.timeout, a.max_concurrency)
+        r["launch_identity"] = identity
+        r["model_check"] = cursor_llm.calls_model_check(r["calls"])
+        if not r["model_check"]["valid"]:
+            r["invalid"] = True
         (here / "results" / f"probe-{a.probe}.json").write_text(json.dumps(r, indent=2))
-        print(json.dumps({k: r[k] for k in ("n", "max_concurrency", "model", "wall_seconds")} | {"errors": len(r["errors"])}))
+        brief = {k: r[k] for k in ("n", "max_concurrency", "model", "wall_seconds")}
+        brief["errors"] = len(r["errors"])
+        print(json.dumps(brief))
+        if r.get("invalid"):
+            sys.exit(1)
         return
     seeds = a.seeds
     loops = a.loops or sorted(p.stem for p in (here / "loops").glob("*.yaml"))
@@ -427,6 +449,7 @@ def main():
         criterion["pass"] = False
     summary = {
         "model": a.model,
+        "launch_identity": identity,
         "task": a.task,
         "seeds": seeds,
         "start": started_at,

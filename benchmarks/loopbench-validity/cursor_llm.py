@@ -17,15 +17,22 @@ import time
 from datetime import UTC, datetime
 from pathlib import Path
 
-CURSOR_BIN = os.environ.get("CURSOR_AGENT_BIN", str(Path.home() / ".local/bin/cursor-agent"))
+# Pinned (DEVIATION-3): no CURSOR_AGENT_BIN override. A set variable aborts via assert_no_unpinned_env.
+CURSOR_BIN = str(Path.home() / ".local/bin/cursor-agent")
 SANDBOX = Path(os.environ.get("CURSOR_LLM_SANDBOX", "/workspace/cursor-llm-sandbox"))
 # Pinned (DEVIATION-3): no env override, no fallback to the cursor-agent default model.
 DEFAULT_MODEL = "grok-4.7-high"
+PINNED_CURSOR_AGENT_VERSION = "2026.10.19-6bbf2c4"
 ISOLATE = True
 # Extra attempts after the first. Infra failures only; model content is never retried.
 INFRA_RETRIES = 2
 _LOG_LOCK = threading.Lock()
-_PINNED_ENV = ("CURSOR_LLM_INFRA_RETRIES", "CURSOR_LLM_ISOLATE", "CURSOR_LLM_MODEL")
+_PINNED_ENV = (
+    "CURSOR_LLM_INFRA_RETRIES",
+    "CURSOR_LLM_ISOLATE",
+    "CURSOR_LLM_MODEL",
+    "CURSOR_AGENT_BIN",
+)
 
 
 class InfraError(RuntimeError):
@@ -38,6 +45,50 @@ def assert_no_unpinned_env() -> None:
     if found:
         listed = ", ".join(found)
         raise RuntimeError(f"pinned cursor_llm settings reject env overrides: {listed}")
+
+
+def require_pinned_model(model: object) -> None:
+    """Probes refuse any model other than the pinned default, before any model call."""
+    if model != DEFAULT_MODEL:
+        raise SystemExit(f"probe requires pinned model {DEFAULT_MODEL}")
+
+
+def calls_model_check(calls: list | None) -> dict:
+    """Flag call records whose model_requested is not the pinned model."""
+    violations = []
+    for index, call in enumerate(calls or []):
+        requested = call.get("model_requested") if isinstance(call, dict) else None
+        if requested != DEFAULT_MODEL:
+            violations.append({"call": index, "model_requested": requested})
+    return {"pinned": DEFAULT_MODEL, "valid": not violations, "violations": violations}
+
+
+def launch_identity() -> dict:
+    """Resolved cursor-agent binary and the stripped stdout of ``--version``."""
+    result = subprocess.run(
+        [CURSOR_BIN, "--version"],
+        capture_output=True,
+        text=True,
+        timeout=30,
+        check=False,
+    )
+    stdout = result.stdout if isinstance(result.stdout, str) else ""
+    return {
+        "cursor_agent_bin": CURSOR_BIN,
+        "cursor_agent_resolved": os.path.realpath(CURSOR_BIN),
+        "cursor_agent_version": stdout.strip(),
+    }
+
+
+def assert_launch_identity() -> dict:
+    """Return launch_identity(), or abort when the installed version is not pinned."""
+    identity = launch_identity()
+    version = identity["cursor_agent_version"]
+    if version != PINNED_CURSOR_AGENT_VERSION:
+        raise RuntimeError(
+            f"cursor-agent version {version!r} != pinned {PINNED_CURSOR_AGENT_VERSION}"
+        )
+    return identity
 
 
 def _coerce_stderr(value: object) -> str | None:
