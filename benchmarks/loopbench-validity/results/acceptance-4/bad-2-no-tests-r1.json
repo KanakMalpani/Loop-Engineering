@@ -1,0 +1,195 @@
+{
+  "loop": "bad-2-no-tests",
+  "run": 1,
+  "task": "LB-CR-1",
+  "seeds": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "model": "gpt-5.3-codex",
+  "llm_class": "CursorAgentLLM",
+  "mock_constructed": false,
+  "wall_seconds": 507.7,
+  "score": null,
+  "n_ok": 0,
+  "n_infra_fail": 5,
+  "n_error": 0,
+  "by_seed": {
+    "0": {
+      "status": "INFRA-FAIL",
+      "score": null,
+      "success": null,
+      "termination_reason": null,
+      "instance_scores": {},
+      "error": "InfraError: cursor-agent exited 1 with no output"
+    },
+    "1": {
+      "status": "INFRA-FAIL",
+      "score": null,
+      "success": null,
+      "termination_reason": null,
+      "instance_scores": {},
+      "error": "InfraError: cursor-agent exited 1 with no output"
+    },
+    "2": {
+      "status": "INFRA-FAIL",
+      "score": null,
+      "success": null,
+      "termination_reason": null,
+      "instance_scores": {},
+      "error": "InfraError: cursor-agent exited 1 with no output"
+    },
+    "3": {
+      "status": "INFRA-FAIL",
+      "score": null,
+      "success": null,
+      "termination_reason": null,
+      "instance_scores": {},
+      "error": "InfraError: cursor-agent exited 1 with no output"
+    },
+    "4": {
+      "status": "INFRA-FAIL",
+      "score": null,
+      "success": null,
+      "termination_reason": null,
+      "instance_scores": {},
+      "error": "InfraError: cursor-agent exited 1 with no output"
+    }
+  },
+  "calls": [
+    {
+      "role": "Produce a minimal code patch",
+      "reply": "",
+      "seconds": 50.5,
+      "usage": null,
+      "isolated": true,
+      "attempts": [
+        {
+          "n": 1,
+          "seconds": 15.0,
+          "outcome": "process_error"
+        },
+        {
+          "n": 2,
+          "seconds": 13.4,
+          "outcome": "process_error"
+        },
+        {
+          "n": 3,
+          "seconds": 22.1,
+          "outcome": "process_error"
+        }
+      ],
+      "temperature_requested": 0.2,
+      "temperature_applied": false
+    },
+    {
+      "role": "Produce a minimal code patch",
+      "reply": "",
+      "seconds": 47.0,
+      "usage": null,
+      "isolated": true,
+      "attempts": [
+        {
+          "n": 1,
+          "seconds": 18.4,
+          "outcome": "process_error"
+        },
+        {
+          "n": 2,
+          "seconds": 15.5,
+          "outcome": "process_error"
+        },
+        {
+          "n": 3,
+          "seconds": 13.1,
+          "outcome": "process_error"
+        }
+      ],
+      "temperature_requested": 0.2,
+      "temperature_applied": false
+    },
+    {
+      "role": "Produce a minimal code patch",
+      "reply": "",
+      "seconds": 189.0,
+      "usage": null,
+      "isolated": true,
+      "attempts": [
+        {
+          "n": 1,
+          "seconds": 150.3,
+          "outcome": "timeout"
+        },
+        {
+          "n": 2,
+          "seconds": 14.5,
+          "outcome": "process_error"
+        },
+        {
+          "n": 3,
+          "seconds": 24.2,
+          "outcome": "process_error"
+        }
+      ],
+      "temperature_requested": 0.2,
+      "temperature_applied": false
+    },
+    {
+      "role": "Produce a minimal code patch",
+      "reply": "",
+      "seconds": 180.4,
+      "usage": null,
+      "isolated": true,
+      "attempts": [
+        {
+          "n": 1,
+          "seconds": 147.2,
+          "outcome": "process_error"
+        },
+        {
+          "n": 2,
+          "seconds": 17.2,
+          "outcome": "process_error"
+        },
+        {
+          "n": 3,
+          "seconds": 16.0,
+          "outcome": "process_error"
+        }
+      ],
+      "temperature_requested": 0.2,
+      "temperature_applied": false
+    },
+    {
+      "role": "Produce a minimal code patch",
+      "reply": "",
+      "seconds": 40.6,
+      "usage": null,
+      "isolated": true,
+      "attempts": [
+        {
+          "n": 1,
+          "seconds": 13.2,
+          "outcome": "process_error"
+        },
+        {
+          "n": 2,
+          "seconds": 13.8,
+          "outcome": "process_error"
+        },
+        {
+          "n": 3,
+          "seconds": 13.6,
+          "outcome": "process_error"
+        }
+      ],
+      "temperature_requested": 0.2,
+      "temperature_applied": false
+    }
+  ],
+  "finished_at": "2026-10-21T11:20:00.119884+00:00"
+}

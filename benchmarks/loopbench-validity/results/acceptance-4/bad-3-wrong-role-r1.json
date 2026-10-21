@@ -1,0 +1,195 @@
+{
+  "loop": "bad-3-wrong-role",
+  "run": 1,
+  "task": "LB-CR-1",
+  "seeds": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "model": "gpt-5.3-codex",
+  "llm_class": "CursorAgentLLM",
+  "mock_constructed": false,
+  "wall_seconds": 368.7,
+  "score": null,
+  "n_ok": 0,
+  "n_infra_fail": 5,
+  "n_error": 0,
+  "by_seed": {
+    "0": {
+      "status": "INFRA-FAIL",
+      "score": null,
+      "success": null,
+      "termination_reason": null,
+      "instance_scores": {},
+      "error": "InfraError: cursor-agent exited 1 with no output"
+    },
+    "1": {
+      "status": "INFRA-FAIL",
+      "score": null,
+      "success": null,
+      "termination_reason": null,
+      "instance_scores": {},
+      "error": "InfraError: cursor-agent exited 1 with no output"
+    },
+    "2": {
+      "status": "INFRA-FAIL",
+      "score": null,
+      "success": null,
+      "termination_reason": null,
+      "instance_scores": {},
+      "error": "InfraError: cursor-agent exited 1 with no output"
+    },
+    "3": {
+      "status": "INFRA-FAIL",
+      "score": null,
+      "success": null,
+      "termination_reason": null,
+      "instance_scores": {},
+      "error": "InfraError: cursor-agent exited 1 with no output"
+    },
+    "4": {
+      "status": "INFRA-FAIL",
+      "score": null,
+      "success": null,
+      "termination_reason": null,
+      "instance_scores": {},
+      "error": "InfraError: cursor-agent exited 1 with no output"
+    }
+  },
+  "calls": [
+    {
+      "role": "Rewrite the whole file in a different language",
+      "reply": "",
+      "seconds": 56.5,
+      "usage": null,
+      "isolated": true,
+      "attempts": [
+        {
+          "n": 1,
+          "seconds": 16.5,
+          "outcome": "process_error"
+        },
+        {
+          "n": 2,
+          "seconds": 25.5,
+          "outcome": "process_error"
+        },
+        {
+          "n": 3,
+          "seconds": 14.5,
+          "outcome": "process_error"
+        }
+      ],
+      "temperature_requested": 1.8,
+      "temperature_applied": false
+    },
+    {
+      "role": "Rewrite the whole file in a different language",
+      "reply": "",
+      "seconds": 51.9,
+      "usage": null,
+      "isolated": true,
+      "attempts": [
+        {
+          "n": 1,
+          "seconds": 15.0,
+          "outcome": "process_error"
+        },
+        {
+          "n": 2,
+          "seconds": 13.8,
+          "outcome": "process_error"
+        },
+        {
+          "n": 3,
+          "seconds": 23.1,
+          "outcome": "process_error"
+        }
+      ],
+      "temperature_requested": 1.8,
+      "temperature_applied": false
+    },
+    {
+      "role": "Rewrite the whole file in a different language",
+      "reply": "",
+      "seconds": 178.9,
+      "usage": null,
+      "isolated": true,
+      "attempts": [
+        {
+          "n": 1,
+          "seconds": 150.2,
+          "outcome": "timeout"
+        },
+        {
+          "n": 2,
+          "seconds": 15.1,
+          "outcome": "process_error"
+        },
+        {
+          "n": 3,
+          "seconds": 13.6,
+          "outcome": "process_error"
+        }
+      ],
+      "temperature_requested": 1.8,
+      "temperature_applied": false
+    },
+    {
+      "role": "Rewrite the whole file in a different language",
+      "reply": "",
+      "seconds": 40.5,
+      "usage": null,
+      "isolated": true,
+      "attempts": [
+        {
+          "n": 1,
+          "seconds": 13.2,
+          "outcome": "process_error"
+        },
+        {
+          "n": 2,
+          "seconds": 13.5,
+          "outcome": "process_error"
+        },
+        {
+          "n": 3,
+          "seconds": 13.8,
+          "outcome": "process_error"
+        }
+      ],
+      "temperature_requested": 1.8,
+      "temperature_applied": false
+    },
+    {
+      "role": "Rewrite the whole file in a different language",
+      "reply": "",
+      "seconds": 40.8,
+      "usage": null,
+      "isolated": true,
+      "attempts": [
+        {
+          "n": 1,
+          "seconds": 13.8,
+          "outcome": "process_error"
+        },
+        {
+          "n": 2,
+          "seconds": 13.3,
+          "outcome": "process_error"
+        },
+        {
+          "n": 3,
+          "seconds": 13.7,
+          "outcome": "process_error"
+        }
+      ],
+      "temperature_requested": 1.8,
+      "temperature_applied": false
+    }
+  ],
+  "finished_at": "2026-10-21T11:20:39.874122+00:00"
+}
