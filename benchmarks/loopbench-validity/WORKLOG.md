@@ -210,3 +210,18 @@ These times are from git and from `results/acceptance-3/run.log`.
 - Recipe trials on grok-4.7-high count as exploration only for LoopBench until Kanak decides the model; they do not count toward the frozen run's sign-off.
 - AE is unaffected: its LLM baseline was already pinned to grok-4.7-high.
 - Quota check on attempt 4: 0 matches for "usage limit" or ActionRequiredError in results/acceptance-4 (run files + run.log) or /workspace/acc4 logs. Caveat: stderr was not captured; 43 INFRA-FAIL seeds read "cursor-agent exited 1 with no output", so quota can't be ruled out from these files.
+
+## 2026-10-21 19:05 IST: model sweep to grok-4.7-high; DEVIATION-3 draft
+- Kanak's standing rule (via Engineering Lead): Grok or Composer models only, never `*-fast`.
+- Drafted `DEVIATION-3.md` (attempt 5 on pinned `grok-4.7-high`, cursor-agent `2026.10.19-6bbf2c4`; not comparable with attempts 1-4; per-call stderr; QA-verified recipe; re-freeze + probes rerun before launch). Draft only: NOT frozen, nothing run. sha256 f49e70f4a0f55cd3effc4f714055eddcdfc6d52ff40c77cb0f82f5d152a8e900.
+- Changed: `benchmarks/loopbench-validity/cursor_llm.py` `DEFAULT_MODEL`: `os.environ.get("CURSOR_LLM_MODEL", "gpt-5.3-codex")` -> `"grok-4.7-high"` (hard pin, env override removed). This also changes the `--model` default of `run_full.py` and `leak_probe.py`, which read it.
+- Already grok-4.7-high, no change: `/workspace/concurrency-investigation/{call.py,lb_probes.py,ae_nonet_probe.py}`.
+- Left alone (historical / not engineering-model defaults):
+  - `/workspace/acc4/launch_acc4.sh` (`--model gpt-5.3-codex`) and `/workspace/acc4/probes.py` (gpt-5.3-codex x2): attempt-4 launch evidence; attempt 5 gets its own launcher.
+  - `/workspace/acc4/run.out`, `/workspace/concurrency-investigation/lifecycle/aborted-*/plain-none.json`, `results/acceptance-*`: old logs/results.
+  - `benchmarks/loopbench-validity/loops/*.yaml` (`name: gpt-4.1-mini`): frozen loop specs; loops unchanged per DEVIATION-3. The spec model is not used by cursor-agent calls.
+  - `loop-library/*.yaml`, `loopctl/schemas/minimal-loop.yaml`, `packages/loopgym/examples/minimal-loop.yaml`, `scripts/composition_templates.py`, `scripts/enrich_loop_library.py` (`gpt-4.1-mini`): product/example loop-spec content for end users, not the model our engineering work runs on.
+  - Codex mentions in docs, `examples/integrate-codex/`, `scripts/adoption_wave*.py`, `scripts/daily_checkin.py`: harness names, not model defaults.
+  - `evidence/cursor-agent-help.txt`: captured CLI help.
+  - Artificial-Emotions repo: not touched (PREREG-pinned).
+- Tests (/workspace/le-venv): packages/loopbench 16 passed, 2 skipped; packages/loopgym 56 passed, 1 failed (`test_working_copy_contains_only_src`, fails identically without this change, pre-existing). ruff: cursor_llm.py clean; benchmarks/loopbench-validity has the same pre-existing findings before and after.

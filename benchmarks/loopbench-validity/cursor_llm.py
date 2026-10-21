@@ -19,7 +19,8 @@ from pathlib import Path
 
 CURSOR_BIN = os.environ.get("CURSOR_AGENT_BIN", str(Path.home() / ".local/bin/cursor-agent"))
 SANDBOX = Path(os.environ.get("CURSOR_LLM_SANDBOX", "/workspace/cursor-llm-sandbox"))
-DEFAULT_MODEL = os.environ.get("CURSOR_LLM_MODEL", "gpt-5.3-codex")
+# Pinned (DEVIATION-3): no env override, no fallback to the cursor-agent default model.
+DEFAULT_MODEL = "grok-4.7-high"
 ISOLATE = os.environ.get("CURSOR_LLM_ISOLATE", "1") != "0"
 # Extra attempts after the first. Infra failures only; model content is never retried.
 INFRA_RETRIES = int(os.environ.get("CURSOR_LLM_INFRA_RETRIES", "2"))
