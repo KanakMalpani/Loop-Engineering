@@ -256,3 +256,14 @@ These times are from git and from `results/acceptance-3/run.log`.
 - Tests: new cases in `packages/loopgym/tests/test_deviation3_pins.py` (CURSOR_AGENT_BIN abort, version mismatch, identity dict, probes refuse gpt-5.3-codex before any call, calls_model_check, leak-probe output fields).
 - Reaper: `tools/reaper/{README.md,cursor-agent-errlog,cursor-agent-reap,snap.sh,verify.py}` came in via `3d7bca4` (18:52 IST, the concurrency-investigation prototype, "not wired into runner"), which landed on this branch between `79b4bfc` and `cd2ae98`. DEVIATION-3 now says no reaper is part of attempt 5 until QA bot signs off the trial results, and these files are unverified and not named by the freeze.
 - Freeze-gate tests run from a clean `git worktree` at the freeze commit (avoids the ignored fixture `__pycache__/` dirs in this checkout; nothing deleted). QA bot can use `/workspace/le-venv/bin/pytest`.
+
+## 2026-10-21 19:35 IST: attempt-5 role probe committed (QA bot's last pre-freeze condition); not frozen, nothing run
+- New `role_probe.py`, ported from the role-pickup half of /workspace/acc4/probes.py: the same prompt ("Say hello in one short sentence."), the same `ROLE-PICKUP-7731` role and the same pickup test. It uses the same guards as `leak_probe.py`:
+  - abort if `CURSOR_LLM_*` or `CURSOR_AGENT_BIN` is set;
+  - `assert_launch_identity()` (fixed binary path, version 2026.10.19-6bbf2c4);
+  - `require_pinned_model` (grok-4.7-high);
+  - per-call stderr files under `<out dir>/stderr/`;
+  - output with model_requested/model_reported, model_check and launch_identity;
+  - `invalid: true` and exit 1 on a model mismatch; exit 1 on no pickup or InfraError.
+- New stubbed tests in `packages/loopgym/tests/test_role_probe.py`. Code written by cursor-agent `--model grok-4.7-high` (/workspace/dev3-fix/prompt4.txt, agent4.out) and reviewed by SWE.
+- `DEVIATION-3.md`: names `role_probe.py` in the probe pin line and in pre-launch step 3. sha256 74af392 113082e8… -> 91ebf752f750cf8c69a94fd0611b95f632dc76359c98fb80e6a32ab4367efe9b.
