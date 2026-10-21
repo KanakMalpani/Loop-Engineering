@@ -20,6 +20,7 @@ import traceback
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import UTC, datetime
 from pathlib import Path
+from zoneinfo import ZoneInfo
 
 import loopgym as lg
 import loopgym.runtime.loop_runtime as rt
@@ -32,6 +33,7 @@ import cursor_llm
 from cursor_llm import CursorAgentLLM, InfraError
 
 PINNED_MODEL = cursor_llm.DEFAULT_MODEL
+MIN_AVAILABLE_MB = 4096
 
 MOCK_HITS = []
 class _NoMock:
@@ -351,6 +353,42 @@ def model_check(rows: list[dict]) -> dict:
     return {"pinned": PINNED_MODEL, "valid": not violations, "violations": violations}
 
 
+def mem_available_mb(meminfo_path: str = "/proc/meminfo") -> int:
+    """MemAvailable from a meminfo file, as integer megabytes (kB // 1024)."""
+    text = Path(meminfo_path).read_text(encoding="utf-8")
+    for line in text.splitlines():
+        if line.startswith("MemAvailable:"):
+            return int(line.split()[1]) // 1024
+    raise ValueError(f"MemAvailable missing from {meminfo_path}")
+
+
+def check_launch_memory(outdir_or_logdir) -> dict:
+    """Read MemAvailable once and append results/launch-memcheck.log.
+
+    main() passes `here`, so the file is `<here>/results/launch-memcheck.log`.
+    """
+    available_mb = mem_available_mb()
+    time_ist = datetime.now(ZoneInfo("Asia/Kolkata")).isoformat(timespec="seconds")
+    ok = available_mb >= MIN_AVAILABLE_MB
+    record = {
+        "available_mb": available_mb,
+        "required_mb": MIN_AVAILABLE_MB,
+        "ok": ok,
+        "time_ist": time_ist,
+    }
+    log_path = Path(outdir_or_logdir) / "results" / "launch-memcheck.log"
+    log_path.parent.mkdir(parents=True, exist_ok=True)
+    status = "PASS" if ok else "ABORT"
+    line = (
+        f"{time_ist} LAUNCH-MEMCHECK available_mb={available_mb} "
+        f"required_mb={MIN_AVAILABLE_MB} result={status}"
+    )
+    with log_path.open("a", encoding="utf-8") as handle:
+        handle.write(line + "\n")
+    print(line, file=sys.stderr)
+    return record
+
+
 def per_loop_scores(rows: list[dict], n_runs: int) -> dict[str, list]:
     by_key = {(r["loop"], r["run"]): r["score"] for r in rows}
     loops = sorted({r["loop"] for r in rows})
@@ -408,10 +446,20 @@ def main():
         sys.exit(f"acceptance run requires pinned model {PINNED_MODEL}")
     if a.probe:
         cursor_llm.require_pinned_model(a.model)
+    elif not a.loops and a.runs == 3 and not a.confirm_acceptance:
+        sys.exit("Full 30-run acceptance needs --confirm-acceptance")
+    launch_memcheck = check_launch_memory(here)
+    if not launch_memcheck["ok"]:
+        sys.exit(
+            "launch memory check failed: "
+            f"available_mb={launch_memcheck['available_mb']} "
+            f"required_mb={launch_memcheck['required_mb']}"
+        )
     (here / "results").mkdir(exist_ok=True)
     if a.probe:
         r = probe(a.probe, a.model, a.timeout, a.max_concurrency)
         r["launch_identity"] = identity
+        r["launch_memcheck"] = launch_memcheck
         r["model_check"] = cursor_llm.calls_model_check(r["calls"])
         if not r["model_check"]["valid"]:
             r["invalid"] = True
@@ -424,8 +472,6 @@ def main():
         return
     seeds = a.seeds
     loops = a.loops or sorted(p.stem for p in (here / "loops").glob("*.yaml"))
-    if not a.loops and a.runs == 3 and not a.confirm_acceptance:
-        sys.exit("Full 30-run acceptance needs --confirm-acceptance")
     outdir = _resolve_outdir(a.outdir)
     outdir.mkdir(parents=True, exist_ok=True)
     jobs = [(loop, k) for k in range(a.runs) for loop in loops]
@@ -450,6 +496,7 @@ def main():
     summary = {
         "model": a.model,
         "launch_identity": identity,
+        "launch_memcheck": launch_memcheck,
         "task": a.task,
         "seeds": seeds,
         "start": started_at,
