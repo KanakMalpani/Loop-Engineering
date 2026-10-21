@@ -1,0 +1,10 @@
+2026-10-21T23:56:23+05:30 decoy untagged sleep pid=685625
+2026-10-21T23:56:23+05:30 waiting availMB=3888 (need >=4096)
+2026-10-21T23:56:53+05:30 waiting availMB=4037 (need >=4096)
+2026-10-21T23:57:23+05:30 waiting availMB=4036 (need >=4096)
+2026-10-21T23:57:53+05:30 waiting availMB=4005 (need >=4096)
+2026-10-21T23:58:23+05:30 waiting availMB=4013 (need >=4096)
+2026-10-21T23:58:53+05:30 pull pid=608189 workers=3 pull.sh sha=6aaab5ab027ed5372fb69c036ad2fe62c0cbeecb324f8afc127da3495c6150ca
+2026-10-21T23:58:54+05:30 before snapshot: tagged=0 worker_servers=0 availMB=4094 load=5.99 5.45 5.09
+2026-10-21T23:58:54+05:30 start N=8
+2026-10-21T23:59:14+05:30 GUARD BREACH during trial - killing our trial calls
