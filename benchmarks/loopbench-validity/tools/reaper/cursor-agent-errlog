@@ -1,0 +1,6 @@
+#!/bin/bash
+# Saves this cursor-agent call's stderr to a per-call file (also passes it through). No sandbox change.
+D="${CURSOR_LLM_SANDBOX:-/tmp}/stderr"; mkdir -p "$D"
+F="$D/$(date +%Y%m%dT%H%M%S%N)-$$.stderr"; echo "argv-model: $(printf '%s\n' "$@" | grep -A1 -x -- --model | tail -1)" > "$F"
+"${CURSOR_ERRLOG_REAL:-$HOME/.local/bin/cursor-agent}" "$@" 2> >(tee -a "$F" >&2)
+rc=$?; echo "exit=$rc" >> "$F"; exit $rc

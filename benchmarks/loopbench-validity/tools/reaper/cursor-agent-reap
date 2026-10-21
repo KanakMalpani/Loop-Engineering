@@ -1,0 +1,28 @@
+#!/bin/bash
+# cursor-agent-reap: tag-based reaper for ONE cursor-agent call (prototype).
+# - Generates a unique tag, starts a detached (setsid) watcher that carries NO tag,
+#   then exports CURSOR_REAP_TAG and runs cursor-agent (via cursor-agent-errlog for per-call stderr).
+# - When this wrapper is gone (exit, SIGTERM, or SIGKILL of the call's process group), the watcher
+#   SIGKILLs only processes whose /proc/<pid>/environ contains CURSOR_REAP_TAG=<this tag>,
+#   re-checking the tag immediately before each kill, and logs every kill (pid, tag, call id, cmd).
+# - Changes no sandbox argument; it runs inside whatever sandbox invoked it.
+TAG="reap-$(date +%s%N)-$$"
+CALL_ID="$(basename "$PWD")"
+LOG="${CURSOR_REAP_LOG:-/dev/null}"
+REAL="${CURSOR_REAP_REAL:-$HOME/.local/bin/cursor-agent-errlog}"
+echo "$(date --iso-8601=ns) START tag=$TAG call=$CALL_ID wrapper_pid=$$" >> "$LOG" 2>/dev/null
+setsid env -u CURSOR_REAP_TAG bash -c '
+  W="$1"; TAG="$2"; LOG="$3"; CALL="$4"
+  while kill -0 "$W" 2>/dev/null; do sleep 0.5; done
+  sleep 1; n=0
+  for e in /proc/[0-9]*/environ; do p=${e#/proc/}; p=${p%/environ}
+    [ "$p" = "$$" ] && continue
+    if tr "\0" "\n" < "$e" 2>/dev/null | grep -qx "CURSOR_REAP_TAG=$TAG"; then
+      cmd=$(tr "\0" " " < /proc/$p/cmdline 2>/dev/null | cut -c1-120)
+      if kill -KILL "$p" 2>/dev/null; then n=$((n+1)); echo "$(date --iso-8601=ns) KILL pid=$p tag=$TAG call=$CALL cmd=$cmd" >> "$LOG"; fi
+    fi
+  done
+  echo "$(date --iso-8601=ns) DONE tag=$TAG call=$CALL reaped=$n" >> "$LOG"
+' _ "$$" "$TAG" "$LOG" "$CALL_ID" </dev/null >/dev/null 2>&1 &
+export CURSOR_REAP_TAG="$TAG"
+"$REAL" "$@"
