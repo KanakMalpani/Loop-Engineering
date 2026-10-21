@@ -78,7 +78,9 @@ def test_missing_stderr_writes_empty_file(sandbox, monkeypatch):
     assert llm.complete("prompt", role="role") == "plain"
     attempt = llm.calls[0]["attempts"][0]
     path = Path(attempt["stderr_path"])
-    assert path == sandbox / "stderr" / "norun-case-call0-attempt1.stderr"
+    host_stderr = llm._host_stdio_dir() / "stderr"
+    assert path == host_stderr / "norun-case-call0-attempt1.stderr"
+    assert not path.is_relative_to(sandbox)
     assert path.read_text(encoding="utf-8") == ""
     assert attempt["stderr_bytes"] == 0
     assert attempt["stderr_missing"] is True

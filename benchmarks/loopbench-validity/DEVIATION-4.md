@@ -17,7 +17,11 @@ QA bot signs off concurrency trials only if they run through the exact code path
   - Each attempt record holds `reap_tag`, `reap_kills`, `leftover_tagged` and `leftover_worker_servers`.
   - Each call record holds `reap_kills` and `leftover_worker_servers` (both summed over attempts) and `reap_log`.
 - **Pipe-hang fix** (`trial/aborted-tee`: a lingering worker-server kept the stderr pipe open, so callers hung until timeout). stdout and stderr now go to real files, not pipes: stderr straight to the per-attempt stderr file, stdout to a temp file in the call's workspace. stdin is `/dev/null`, the process gets a new session, and the shim uses `wait(timeout)`, not `communicate()`.
-- **Not covered:** if the shim process itself is SIGKILLed, the in-process reaper never runs; the tool's detached watcher handled that case. Trials must report leftover worker-servers from an outside snapshot as well.
+- **Gaps.**
+  - *Stdout exposure: fixed.* The stdout file and the fallback stderr file now live in a host-only directory (`<outdir>/stdio`, or a host `mkdtemp`), outside the call workspace, `SANDBOX`, and every bwrap bind. The shim refuses to start a call if either path is under one of them.
+  - *Host-only logs.* Without a run log path, per-attempt stderr and `reap.log` go to the per-instance host `cursor-llm-stdio-*` directory, never under `SANDBOX`.
+  - *Kill logging.* The timeout `killpg` is logged to `reap.log` as `KILLPG pid=… pgid=… tag=… call=… reason=timeout`. Reaper kills are logged as `KILL … reason=reap`.
+  - *SIGKILL of the shim itself: accepted, on one condition.* If the shim process is SIGKILLed, the in-process reap never runs. This gap is accepted only because every counted trial takes an outside snapshot of processes carrying an `lbreap-` tag, and of worker-servers, before and after the trial. Both counts must be zero, before and after, or the trial does not count.
 - The files under `tools/reaper/` remain an unverified prototype and are not used by the runner.
 
 ## Code changed
@@ -30,6 +34,6 @@ QA bot signs off concurrency trials only if they run through the exact code path
 
 1. QA bot reviews and accepts this file and the code.
 2. Re-freeze: commit `FROZEN-4.sha256`. It covers everything in FROZEN-3, plus this file, the updated `cursor_llm.py` and the new and changed tests.
-3. Run the gate from a clean `git worktree` at the FROZEN-4 commit: `sha256sum -c`, per-package tests from each package's own folder, and ruff. Keep the log under `logs/`.
+3. Run the gate from a clean `git worktree` at the FROZEN-4 commit: `sha256sum -c`, per-package tests from each package's own folder with `/workspace/le-venv/bin/python -m pytest -q -p no:cacheprovider`, and ruff. Do not use `/workspace/le-venv/bin/pytest`: it imports the installed `loopgym` 0.1.4 and fails collection. This corrects DEVIATION-3's note. Keep the log under `logs/`.
 4. Rerun the leak probe (`leak_probe.py`) and the role probe (`role_probe.py`) on `grok-4.7-high` through the new shim. Both must pass, with stderr and the reap log saved.
-5. Only then run the counted concurrency trials (QA bot's recipe criteria) and, after QA bot signs them off, attempt 5.
+5. Only then run the counted concurrency trials (QA bot's recipe criteria, each with the outside before/after snapshot of tagged processes and worker-servers, which must be zero) and, after QA bot signs them off, attempt 5.

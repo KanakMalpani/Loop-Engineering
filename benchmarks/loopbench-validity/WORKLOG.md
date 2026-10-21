@@ -290,3 +290,18 @@ These times are from git and from `results/acceptance-3/run.log`.
 - Files: `benchmarks/loopbench-validity/cursor_llm.py` (changed), `benchmarks/loopbench-validity/DEVIATION-4.md` (new, sha256 969a21a46b7986e2ef318994e63945b27c1af0579358a8584d0f111e354b675a), `packages/loopgym/tests/test_reaper_wiring.py` (new), `packages/loopgym/tests/test_deviation3_pins.py`, `packages/loopgym/tests/test_role_probe.py`, `packages/loopgym/tests/test_role_rules.py` (stubs accept the new kwargs).
 - FROZEN-3 no longer matches `cursor_llm.py` from this commit on. FROZEN-4 plus a probe rerun are needed before the counted trials and attempt 5 (DEVIATION-4).
 - Known gaps: SIGKILL of the shim process itself skips the in-process reap; the stdout temp file sits in the call workspace (visible to the agent, read-only ask mode).
+
+## 2026-10-21 20:39 IST: NOT FROZEN: reaper fixes after QA bot's review of f62709f
+- Code by cursor-agent `--model grok-4.7-high` (/workspace/dev3-fix/prompt6.txt, prompt7.txt; agent6.out, agent7.out), reviewed by SWE.
+- `cursor_llm.py`:
+  - The stdout temp file and the fallback stderr temp file moved from `work` to the host-only `_host_stdio_dir()`: `<outdir>/stdio`, or a per-instance `cursor-llm-stdio-*` mkdtemp.
+  - `_bind_paths` and `_assert_stdio_unbound` raise if either path is under `work`, `SANDBOX` or any bwrap bind.
+  - Without a log path, stderr goes to `<stdio>/stderr` (was SANDBOX/stderr, then the shared tmp/stderr) and the reap log to `<stdio>/reap.log` (was SANDBOX/reap.log).
+  - The timeout killpg is logged as `KILLPG pid= pgid= tag= call= reason=timeout`. Reaper kills now end with `reason=reap`. These are the only two kill sites.
+- Tests: `test_reaper_wiring.py` (host-only stdio for both log-path cases, KILLPG line, reason=reap, distinct per-instance stderr dirs, host-only reap log); `test_deviation3_pins.py` expectation updated.
+- DEVIATION-4 gaps updated:
+  - stdout exposure fixed;
+  - host-only logs;
+  - kill logging;
+  - the shim-SIGKILL gap is accepted only with an outside before/after snapshot of tagged processes and worker-servers, which must be zero, for every counted trial.
+- Correction: `/workspace/le-venv/bin/pytest` imports the installed loopgym 0.1.4 and fails collection (2 errors). Gate tests must use `/workspace/le-venv/bin/python -m pytest` from each package folder. DEVIATION-3, which is frozen and unchanged, said QA bot could use the pytest script; DEVIATION-4 corrects that.

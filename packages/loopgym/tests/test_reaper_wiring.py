@@ -43,7 +43,10 @@ def _empty_reap(tag: str) -> dict:
 
 @pytest.fixture
 def sandbox(tmp_path, monkeypatch):
-    monkeypatch.setattr(cursor_llm, "SANDBOX", tmp_path)
+    # Logs stay beside tmp_path; the sandbox directory is what bwrap binds.
+    box = tmp_path / "sandbox"
+    box.mkdir()
+    monkeypatch.setattr(cursor_llm, "SANDBOX", box)
     monkeypatch.setattr(cursor_llm, "REAP_SETTLE_S", 0)
     return tmp_path
 
@@ -94,6 +97,7 @@ def test_reap_tag_kills_only_exact_tag(tmp_path, monkeypatch):
             f"pid={pid}" in line and f"tag={tag}" in line and f"call={call_id}" in line
             for line in kills
         )
+    assert all("reason=reap" in line for line in kills)
     assert any("worker-server" in line and "pid=102" in line for line in kills)
     assert "pid=103" not in text
     assert "pid=104" not in text
@@ -279,8 +283,10 @@ def test_run_once_uses_files_not_pipes(sandbox, monkeypatch):
     llm = cursor_llm.CursorAgentLLM(timeout=5, log_path=sandbox / "run.log", run_id="pipe")
     stderr_path = sandbox / "stderr" / "pipe.stderr"
     call_id = "pipe-call0-attempt1"
+    work = cursor_llm.SANDBOX / "work"
+    work.mkdir()
     llm._run_once(
-        [cursor_llm.CURSOR_BIN, "-p"], sandbox, stderr_path=stderr_path, call_id=call_id,
+        [cursor_llm.CURSOR_BIN, "-p"], work, stderr_path=stderr_path, call_id=call_id,
     )
     kwargs = captured["kwargs"]
     args = captured["args"]
@@ -302,7 +308,7 @@ def test_run_once_uses_files_not_pipes(sandbox, monkeypatch):
     seq = ["--setenv", cursor_llm.REAP_TAG_VAR, tag]
     assert any(args[i:i + 3] == seq for i in range(len(args) - 2))
     assert Path(kwargs["stderr"].name) == stderr_path
-    assert Path(kwargs["stdout"].name).parent == sandbox
+    assert Path(kwargs["stdout"].name).parent == sandbox / "stdio"
 
 
 def test_reap_on_launch_exception(sandbox, monkeypatch):
@@ -323,7 +329,181 @@ def test_reap_on_launch_exception(sandbox, monkeypatch):
     assert seen == ["ex-call0-attempt1"]
 
 
+def test_unlogged_instances_get_distinct_host_stderr_dirs(sandbox):
+    first = cursor_llm.CursorAgentLLM(timeout=5, log_path=None, run_id="same")
+    second = cursor_llm.CursorAgentLLM(timeout=5, log_path=None, run_id="same")
+    path_a = first._stderr_file(0, 1)
+    path_b = second._stderr_file(0, 1)
+    assert path_a.name == path_b.name == "same-call0-attempt1.stderr"
+    assert path_a.parent != path_b.parent
+    assert path_a.parent == first._host_stdio_dir() / "stderr"
+    assert path_b.parent == second._host_stdio_dir() / "stderr"
+    for path in (path_a, path_b):
+        assert not _is_under(path, cursor_llm.SANDBOX)
+
+
+def test_reap_log_without_log_path_is_host_only(sandbox, monkeypatch):
+    seen: list[object] = []
+    works: list[Path] = []
+    prepare = cursor_llm.CursorAgentLLM._prepare_workspace
+
+    def fake_reap(tag, call_id, log_path, proc_root=Path("/proc"), kill=None):
+        seen.append(log_path)
+        return _empty_reap(tag)
+
+    def tracking_prepare(self, role):
+        work = prepare(self, role)
+        works.append(work)
+        return work
+
+    class Proc:
+        def __init__(self, args, kwargs):
+            self.pid = 9
+            self.returncode = 0
+            body = '{"result":"ok","usage":{"inputTokens":1,"outputTokens":1}}\n'
+            kwargs["stdout"].write(body.encode())
+
+        def wait(self, timeout=None):
+            self.returncode = 0
+            return 0
+
+    monkeypatch.setattr(cursor_llm, "reap_tag", fake_reap)
+    monkeypatch.setattr(cursor_llm.CursorAgentLLM, "_prepare_workspace", tracking_prepare)
+    monkeypatch.setattr(cursor_llm.subprocess, "Popen", lambda args, **kwargs: Proc(args, kwargs))
+    llm = cursor_llm.CursorAgentLLM(timeout=5, log_path=None, run_id="host")
+    assert llm.complete("prompt", role="role") == "ok"
+    reap_log = Path(llm.calls[0]["reap_log"])
+    assert reap_log == llm._host_stdio_dir() / "reap.log"
+    assert seen == [reap_log]
+    assert " START " in reap_log.read_text(encoding="utf-8")
+    assert not _is_under(reap_log, cursor_llm.SANDBOX)
+    assert works
+    for work in works:
+        assert not _is_under(reap_log, work)
+    assert not (cursor_llm.SANDBOX / "reap.log").exists()
+
+
 def test_source_does_not_read_reaper_env():
     text = Path(cursor_llm.__file__).read_text(encoding="utf-8")
     assert 'environ.get("CURSOR_REAP' not in text
     assert "environ.get('CURSOR_REAP" not in text
+
+
+def _is_under(path: Path, root: Path) -> bool:
+    try:
+        path.resolve().relative_to(root.resolve())
+    except ValueError:
+        return False
+    return True
+
+
+def _bwrap_bind_paths(args: list[str]) -> list[Path]:
+    flags = {"--bind", "--ro-bind", "--dev-bind"}
+    found: list[Path] = []
+    index = 0
+    while index < len(args):
+        if args[index] in flags and index + 2 < len(args):
+            for raw in (args[index + 1], args[index + 2]):
+                if raw != "/":
+                    found.append(Path(raw))
+            index += 3
+            continue
+        index += 1
+    return found
+
+
+class _HandleProc:
+    def __init__(self, args, kwargs):
+        self.args = args
+        self.pid = 5150
+        self.returncode = None
+        self.kwargs = kwargs
+
+    def wait(self, timeout=None):
+        self.returncode = 0
+        return 0
+
+
+@pytest.mark.parametrize("logged", [True, False])
+def test_stdio_handles_avoid_bound_paths(tmp_path, monkeypatch, logged):
+    box = tmp_path / "sandbox"
+    box.mkdir()
+    monkeypatch.setattr(cursor_llm, "SANDBOX", box)
+    monkeypatch.setattr(cursor_llm, "REAP_SETTLE_S", 0)
+    captured: dict = {}
+
+    def fake_reap(tag, call_id, log_path, proc_root=Path("/proc"), kill=None):
+        return _empty_reap(tag)
+
+    def fake_popen(args, **kwargs):
+        captured["args"] = args
+        captured["kwargs"] = kwargs
+        kwargs["stdout"].write(b"{}\n")
+        return _HandleProc(args, kwargs)
+
+    monkeypatch.setattr(cursor_llm, "reap_tag", fake_reap)
+    monkeypatch.setattr(cursor_llm.subprocess, "Popen", fake_popen)
+    log_path = tmp_path / "out" / "run.log" if logged else None
+    llm = cursor_llm.CursorAgentLLM(timeout=5, log_path=log_path, run_id="stdio")
+    assert cursor_llm.ISOLATE is True
+    work = llm._prepare_workspace("role")
+    stderr_path = llm._stderr_file(0, 1)
+    llm._run_once(
+        [cursor_llm.CURSOR_BIN, "-p"],
+        work,
+        stderr_path=stderr_path,
+        call_id="stdio-call0-attempt1",
+    )
+    kwargs = captured["kwargs"]
+    args = captured["args"]
+    assert args[0] == "bwrap"
+    stdout_path = Path(kwargs["stdout"].name)
+    stderr_file = Path(kwargs["stderr"].name)
+    banned = [work, box, *_bwrap_bind_paths(args)]
+    for path in (stdout_path, stderr_file):
+        for root in banned:
+            assert not _is_under(path, root), f"{path} is under {root}"
+
+
+def test_timeout_killpg_logged(tmp_path, monkeypatch):
+    box = tmp_path / "sandbox"
+    box.mkdir()
+    monkeypatch.setattr(cursor_llm, "SANDBOX", box)
+    monkeypatch.setattr(cursor_llm, "REAP_SETTLE_S", 0)
+    captured: dict = {}
+
+    class Proc:
+        def __init__(self, args, kwargs):
+            self.args = args
+            self.pid = 5150
+            self.returncode = None
+            captured["env"] = kwargs.get("env")
+
+        def wait(self, timeout=None):
+            if timeout is not None:
+                raise subprocess.TimeoutExpired(self.args, timeout)
+            self.returncode = -9
+            return -9
+
+    monkeypatch.setattr(cursor_llm, "reap_tag", lambda *args, **kwargs: _empty_reap(args[0]))
+    monkeypatch.setattr(cursor_llm.subprocess, "Popen", lambda args, **kwargs: Proc(args, kwargs))
+    monkeypatch.setattr(cursor_llm.os, "killpg", lambda pid, sig: None)
+    monkeypatch.setattr(cursor_llm.os, "getpgid", lambda pid: 9090)
+    log_path = tmp_path / "out" / "run.log"
+    llm = cursor_llm.CursorAgentLLM(timeout=5, log_path=log_path, run_id="rid")
+    work = box / "work"
+    work.mkdir()
+    with pytest.raises(subprocess.TimeoutExpired):
+        llm._run_once(
+            [cursor_llm.CURSOR_BIN, "-p"], work, call_id="rid-call0-attempt1",
+        )
+    text = (log_path.parent / "reap.log").read_text(encoding="utf-8")
+    lines = [line for line in text.splitlines() if " KILLPG " in line]
+    assert len(lines) == 1
+    line = lines[0]
+    tag = captured["env"][cursor_llm.REAP_TAG_VAR]
+    assert "pid=5150" in line
+    assert "pgid=9090" in line
+    assert f"tag={tag}" in line
+    assert "call=rid-call0-attempt1" in line
+    assert "reason=timeout" in line

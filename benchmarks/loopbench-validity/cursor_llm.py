@@ -101,9 +101,15 @@ def _iso_utc() -> str:
 
 
 def _reap_log_file(log_path: Path | str | None) -> Path:
-    if log_path is not None:
-        return Path(log_path).parent / "reap.log"
-    return SANDBOX / "reap.log"
+    """Sibling ``reap.log`` of a run log.
+
+    Callers with no run log pass the already-resolved host file
+    (``<host-stdio>/reap.log``). ``None`` is rejected so the log cannot land
+    under SANDBOX, which bwrap binds into the agent.
+    """
+    if log_path is None:
+        raise ValueError("reap log path must be resolved by the caller")
+    return Path(log_path).parent / "reap.log"
 
 
 def _append_reap_line(path: Path, line: str) -> None:
@@ -119,6 +125,46 @@ def _read_text(path: Path) -> str:
         return path.read_bytes().decode("utf-8", errors="replace")
     except OSError:
         return ""
+
+
+_BIND_FLAGS = ("--bind", "--ro-bind", "--dev-bind")
+
+
+def _bind_paths(run_cmd: list[str]) -> list[Path]:
+    """Src and dest of bwrap bind flags. The root dev-bind ("/") is excluded."""
+    paths: list[Path] = []
+    index = 0
+    while index < len(run_cmd):
+        if run_cmd[index] in _BIND_FLAGS and index + 2 < len(run_cmd):
+            for raw in (run_cmd[index + 1], run_cmd[index + 2]):
+                if raw != "/":
+                    paths.append(Path(raw))
+            index += 3
+            continue
+        index += 1
+    return paths
+
+
+def _path_is_under(path: Path, root: Path) -> bool:
+    try:
+        path.resolve().relative_to(root.resolve())
+    except ValueError:
+        return False
+    return True
+
+
+def _assert_stdio_unbound(
+    stdout_path: Path,
+    stderr_path: Path,
+    work: Path,
+    run_cmd: list[str],
+) -> None:
+    """Refuse a call whose stdout or stderr is visible inside the sandbox."""
+    banned = [work, SANDBOX, *_bind_paths(run_cmd)]
+    for label, path in (("stdout", stdout_path), ("stderr", stderr_path)):
+        for root in banned:
+            if _path_is_under(path, root):
+                raise RuntimeError(f"{label} path {path} is under {root}")
 
 
 def _environ_has_tag(proc_dir: Path, needle: bytes) -> bool:
@@ -175,7 +221,10 @@ def reap_tag(
         killed.append(pid)
         _append_reap_line(
             log_file,
-            f"{_iso_utc()} KILL pid={pid} tag={tag} call={call_id} cmd={cmdline[:120]}",
+            (
+                f"{_iso_utc()} KILL pid={pid} tag={tag} call={call_id} "
+                f"cmd={cmdline[:120]} reason=reap"
+            ),
         )
     _append_reap_line(
         log_file,
@@ -297,6 +346,7 @@ class CursorAgentLLM:
         self.log_path = Path(log_path) if log_path is not None else None
         self.run_id = run_id
         self._last_reap: dict | None = None
+        self._host_stdio_tmp: Path | None = None
         SANDBOX.mkdir(parents=True, exist_ok=True)
 
     def _prepare_workspace(self, role: str) -> Path:
@@ -312,6 +362,26 @@ class CursorAgentLLM:
             encoding="utf-8",
         )
         return work
+
+    def _host_stdio_dir(self) -> Path:
+        """Directory for stdout/stderr files that bwrap must not see.
+
+        With a log path this is ``<outdir>/stdio``. Otherwise it is a per-instance
+        directory in the default host temp dir (never ``work`` or ``SANDBOX``).
+        """
+        if self.log_path is not None:
+            directory = self.log_path.parent / "stdio"
+            directory.mkdir(parents=True, exist_ok=True)
+            return directory
+        if self._host_stdio_tmp is None:
+            self._host_stdio_tmp = Path(tempfile.mkdtemp(prefix="cursor-llm-stdio-"))
+        return self._host_stdio_tmp
+
+    def _reap_log_path(self) -> Path:
+        """``<outdir>/reap.log`` when logging, else a host-only file in the stdio dir."""
+        if self.log_path is None:
+            return self._host_stdio_dir() / "reap.log"
+        return _reap_log_file(self.log_path)
 
     def _run_once(
         self,
@@ -337,9 +407,10 @@ class CursorAgentLLM:
         timed_out: subprocess.TimeoutExpired | None = None
         stdout_text = ""
         stderr_text = ""
+        reap_log = self._reap_log_path()
         try:
             _append_reap_line(
-                _reap_log_file(self.log_path),
+                reap_log,
                 f"{_iso_utc()} START tag={tag} call={call_id}",
             )
             if ISOLATE:
@@ -371,15 +442,17 @@ class CursorAgentLLM:
                     "--setenv", REAP_TAG_VAR, tag,
                     "--die-with-parent",
                 ] + list(cmd)
-            fd, stdout_name = tempfile.mkstemp(prefix="stdout-", dir=work)
+            stdio_dir = self._host_stdio_dir()
+            fd, stdout_name = tempfile.mkstemp(prefix="stdout-", dir=stdio_dir)
             os.close(fd)
             stdout_path = Path(stdout_name)
             if stderr_target is None:
-                fd, stderr_name = tempfile.mkstemp(prefix="stderr-", dir=work)
+                fd, stderr_name = tempfile.mkstemp(prefix="stderr-", dir=stdio_dir)
                 os.close(fd)
                 stderr_target = Path(stderr_name)
             else:
                 stderr_target.parent.mkdir(parents=True, exist_ok=True)
+            _assert_stdio_unbound(stdout_path, stderr_target, work, run_cmd)
             # Files, not pipes: a lingering worker-server kept the stderr pipe open and hung callers.
             stdout_handle = stdout_path.open("wb", buffering=0)
             stderr_handle = stderr_target.open("wb", buffering=0)
@@ -396,9 +469,20 @@ class CursorAgentLLM:
                 proc.wait(timeout=self.timeout)
             except subprocess.TimeoutExpired as exc:
                 try:
+                    pgid = os.getpgid(proc.pid)
+                except OSError:
+                    pgid = proc.pid
+                try:
                     os.killpg(proc.pid, signal.SIGKILL)
                 except ProcessLookupError:
                     pass
+                _append_reap_line(
+                    reap_log,
+                    (
+                        f"{_iso_utc()} KILLPG pid={proc.pid} pgid={pgid} "
+                        f"tag={tag} call={call_id} reason=timeout"
+                    ),
+                )
                 proc.wait()
                 timed_out = exc
         finally:
@@ -414,7 +498,7 @@ class CursorAgentLLM:
                     pass
             if stderr_target is not None:
                 stderr_text = _read_text(stderr_target)
-            self._last_reap = reap_tag(tag, call_id, self.log_path)
+            self._last_reap = reap_tag(tag, call_id, reap_log)
             if tmp_home is not None:
                 shutil.rmtree(tmp_home, ignore_errors=True)
         if timed_out is not None:
@@ -439,10 +523,11 @@ class CursorAgentLLM:
     def _stderr_file(self, call_index: int, n: int) -> Path:
         safe_run_id = self.run_id.replace("/", "_") if self.run_id else "norun"
         name = f"{safe_run_id}-call{call_index}-attempt{n}.stderr"
-        if self.log_path is not None:
-            directory = self.log_path.parent / "stderr"
+        # log_path set: <outdir>/stderr. No log: inside the per-instance host stdio dir.
+        if self.log_path is None:
+            directory = self._host_stdio_dir() / "stderr"
         else:
-            directory = SANDBOX / "stderr"
+            directory = self.log_path.parent / "stderr"
         return directory / name
 
     def _store_stderr(self, call_index: int, n: int, stderr: str | None) -> dict:
@@ -509,7 +594,7 @@ class CursorAgentLLM:
             "leftover_worker_servers": sum(
                 int(a.get("leftover_worker_servers") or 0) for a in attempts
             ),
-            "reap_log": str(_reap_log_file(self.log_path)),
+            "reap_log": str(self._reap_log_path()),
         })
 
     def complete(
