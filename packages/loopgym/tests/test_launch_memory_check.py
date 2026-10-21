@@ -25,6 +25,9 @@ import run_full
 
 loop_rt.MockLLM, sim.MockLLM = _SAVED_MOCK
 
+if run_full.MIN_AVAILABLE_MB != 6144:
+    raise RuntimeError(f"floor is {run_full.MIN_AVAILABLE_MB}, expected 6144")
+
 PINNED = "grok-4.7-high"
 
 
@@ -63,15 +66,15 @@ def _meminfo(tmp_path: Path, kb: int) -> Path:
 
 
 def test_mem_available_mb_parses_meminfo_file(tmp_path):
-    path = _meminfo(tmp_path, 4194304)
-    assert run_full.mem_available_mb(meminfo_path=str(path)) == 4194304 // 1024
-    low = _meminfo(tmp_path, 4194303)
-    assert run_full.mem_available_mb(str(low)) == 4095
+    path = _meminfo(tmp_path, 6291456)
+    assert run_full.mem_available_mb(meminfo_path=str(path)) == 6291456 // 1024
+    low = _meminfo(tmp_path, 6291455)
+    assert run_full.mem_available_mb(str(low)) == 6143
 
 
 @pytest.mark.parametrize(
     ("mb", "ok", "status"),
-    [(4095, False, "ABORT"), (4096, True, "PASS"), (4097, True, "PASS")],
+    [(6143, False, "ABORT"), (6144, True, "PASS"), (6145, True, "PASS")],
 )
 def test_check_launch_memory_threshold(mb, ok, status, monkeypatch, tmp_path, capsys):
     monkeypatch.setattr(run_full, "here", tmp_path)
@@ -87,7 +90,7 @@ def test_check_launch_memory_threshold(mb, ok, status, monkeypatch, tmp_path, ca
     assert seen["n"] == 1
     assert result == {
         "available_mb": mb,
-        "required_mb": 4096,
+        "required_mb": 6144,
         "ok": ok,
         "time_ist": result["time_ist"],
     }
@@ -96,18 +99,18 @@ def test_check_launch_memory_threshold(mb, ok, status, monkeypatch, tmp_path, ca
     assert "." not in result["time_ist"]
     line = (
         f"{result['time_ist']} LAUNCH-MEMCHECK available_mb={mb} "
-        f"required_mb=4096 result={status}"
+        f"required_mb=6144 result={status}"
     )
     log_path = tmp_path / "results" / "launch-memcheck.log"
     assert log_path.read_text(encoding="utf-8").splitlines() == [line]
     assert capsys.readouterr().err.splitlines() == [line]
 
 
-def test_main_aborts_below_4096_before_any_llm(monkeypatch, tmp_path, capsys):
+def test_main_aborts_below_6144_before_any_llm(monkeypatch, tmp_path, capsys):
     _stub_version(monkeypatch)
     monkeypatch.setattr(run_full, "here", tmp_path)
     monkeypatch.setattr(sys, "argv", ["run_full.py", "--probe", "1", "--model", PINNED])
-    monkeypatch.setattr(run_full, "mem_available_mb", lambda meminfo_path="/proc/meminfo": 4095)
+    monkeypatch.setattr(run_full, "mem_available_mb", lambda meminfo_path="/proc/meminfo": 6143)
     constructed = {"n": 0}
 
     def init(self, *args, **kwargs):
@@ -120,24 +123,24 @@ def test_main_aborts_below_4096_before_any_llm(monkeypatch, tmp_path, capsys):
         run_full.main()
     assert caught.value.code not in (0, None)
     message = caught.value.code if isinstance(caught.value.code, str) else str(caught.value.code)
-    assert "4095" in message
-    assert "4096" in message
+    assert "6143" in message
+    assert "6144" in message
     assert constructed["n"] == 0
     assert calls["n"] == 0
     assert not (tmp_path / "results" / "probe-1.json").exists()
     log = (tmp_path / "results" / "launch-memcheck.log").read_text(encoding="utf-8")
-    assert "available_mb=4095" in log
-    assert "required_mb=4096" in log
+    assert "available_mb=6143" in log
+    assert "required_mb=6144" in log
     assert "result=ABORT" in log
     assert "+05:30" in log
-    assert "available_mb=4095" in capsys.readouterr().err
+    assert "available_mb=6143" in capsys.readouterr().err
 
 
 def test_probe_main_calls_launch_memory_check_once(monkeypatch, tmp_path):
     _stub_version(monkeypatch)
     monkeypatch.setattr(run_full, "here", tmp_path)
     monkeypatch.setattr(sys, "argv", ["run_full.py", "--probe", "1", "--model", PINNED])
-    monkeypatch.setattr(run_full, "mem_available_mb", lambda meminfo_path="/proc/meminfo": 4096)
+    monkeypatch.setattr(run_full, "mem_available_mb", lambda meminfo_path="/proc/meminfo": 6144)
     seen = {"n": 0}
     real = run_full.check_launch_memory
 
@@ -155,11 +158,11 @@ def test_probe_main_calls_launch_memory_check_once(monkeypatch, tmp_path):
     run_full.main()
     assert seen["n"] == 1
     written = json.loads((tmp_path / "results" / "probe-1.json").read_text(encoding="utf-8"))
-    assert written["launch_memcheck"]["available_mb"] == 4096
-    assert written["launch_memcheck"]["required_mb"] == 4096
+    assert written["launch_memcheck"]["available_mb"] == 6144
+    assert written["launch_memcheck"]["required_mb"] == 6144
     assert written["launch_memcheck"]["ok"] is True
     assert written["launch_memcheck"]["time_ist"].endswith("+05:30")
     log = (tmp_path / "results" / "launch-memcheck.log").read_text(encoding="utf-8")
-    assert "available_mb=4096" in log
+    assert "available_mb=6144" in log
     assert "result=PASS" in log
     assert "+05:30" in log

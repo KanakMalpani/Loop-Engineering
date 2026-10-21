@@ -33,7 +33,7 @@ import cursor_llm
 from cursor_llm import CursorAgentLLM, InfraError
 
 PINNED_MODEL = cursor_llm.DEFAULT_MODEL
-MIN_AVAILABLE_MB = 4096
+MIN_AVAILABLE_MB = 6144
 
 MOCK_HITS = []
 class _NoMock:
