@@ -1,0 +1,2 @@
+PASS case1 dry-run low mem logs PAUSE and leaves the group running
+PASS case2 pause then resume restarts pull from the fake dir
