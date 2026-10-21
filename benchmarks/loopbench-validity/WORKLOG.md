@@ -160,3 +160,10 @@ Attempt 2 runs at `--max-concurrency 4` with no coding sessions. Infra-only retr
   - The START and finish timestamps, 01:28:44 to 03:34:44 IST, span about 126 min.
   - `wall_seconds` is likely measured with a monotonic clock that doesn't advance while the box is suspended or paused, while the timestamps use wall-clock time. That cause hasn't been verified, and the criterion doesn't depend on time.
 - **Next attempt:** store every model reply in the run files, so bad-3's code can be inspected, and log each retry attempt in `run.log`.
+
+## Acceptance attempt 3 started (Wed 21 Oct 2026)
+
+- QA PASS on the freeze (`8b1bfc1`) and Engineering Lead go. `FROZEN.sha256` and `FROZEN-2.sha256` tests pass before start.
+- First launch at 09:52:09 IST was killed about 5 s later, when the shell tool that launched it was interrupted. That was before any episode completed: progress 0/30, no run files, no run.log. Its leftovers were moved out of the repo to `/workspace/acc3-aborted-0922/`. Nothing in the frozen set or the runtime changed.
+- Attempt 3 restarted from zero at 09:52:25 IST, detached with setsid/nohup: `run_full.py --confirm-acceptance --model gpt-5.3-codex --task LB-CR-1 --seeds 0,1,2,3,4 --runs 3 --max-concurrency 4 --timeout 150 --outdir results/acceptance-3`.
+- **Not directly comparable to attempt 2.** Attempt 3's scored-patch rule differs: untagged ``` fences are now accepted as the patch (DEVIATION-2.md, "What is scored"). Attempt 2 accepted only python/py-tagged fences. Attempt 3 also adds cr-004..cr-007, enforces the role via the rules file, and drops role and temperature text from the prompt. So attempt 2 and attempt 3 scores are not directly comparable.
