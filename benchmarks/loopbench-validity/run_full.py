@@ -1,7 +1,7 @@
 """Parallel acceptance runner for the FIXED benchmark: 10 loops x 3 runs, concurrently, real model.
 
   python run_full.py --confirm-acceptance            # the 30-run acceptance test (not run yet)
-  python run_full.py --loops good-1-fast --runs 1    # a subset (smoke)
+  python run_full.py --loops LOOP --runs 1           # a subset (smoke)
   python run_full.py --probe 10                      # concurrency probe: N parallel single calls
 
 Each run calls run_episode once per --seeds value (default 0,1,2,3,4), sequentially.
@@ -11,6 +11,7 @@ Each run writes <outdir>/<loop>-r<k>.json as soon as it finishes, plus <outdir>/
 """
 import argparse
 import json
+import re
 import subprocess
 import sys
 import threading
@@ -22,6 +23,7 @@ from pathlib import Path
 
 import loopgym as lg
 import loopgym.runtime.loop_runtime as rt
+import yaml
 from loopgym.envs import sim
 
 here = Path(__file__).parent
@@ -37,7 +39,6 @@ rt.MockLLM = sim.MockLLM = _NoMock
 
 _progress_lock = threading.Lock()
 _progress = {"completed": 0, "total": 0}
-BAD3 = "bad-3-wrong-role"
 
 
 def _parse_seeds(text: str) -> list[int]:
@@ -155,7 +156,12 @@ def one_run(loop: str, k: int, model: str, task: str, outdir: Path, timeout: int
     llm = None
     by_seed: dict[str, dict] = {}
     try:
-        llm = CursorAgentLLM(model=model, timeout=timeout)
+        llm = CursorAgentLLM(
+            model=model,
+            timeout=timeout,
+            log_path=outdir / "run.log",
+            run_id=f"{loop}/r{k}",
+        )
         env = lg.make("loopbench/code-repair-v1", spec_path=str(here / "loops" / f"{loop}.yaml"),
                       backend="live", llm=llm)
         for s in seeds:
@@ -198,67 +204,107 @@ def one_run(loop: str, k: int, model: str, task: str, outdir: Path, timeout: int
     return out
 
 
-def _grouped(rows: list[dict], k: int, prefix: str) -> dict[str, float | None]:
+def _cohort_of(stem: str) -> str:
+    """Cohort label is the first comment word of that loop's own spec file."""
+    path = here / "loops" / f"{stem}.yaml"
+    if not path.is_file():
+        return ""
+    for line in path.read_text(encoding="utf-8").splitlines():
+        stripped = line.strip()
+        if stripped.startswith("#"):
+            return stripped.lstrip("#").strip().split(":", 1)[0].strip()
+    return ""
+
+
+def _criterion_cohorts() -> tuple[str, str]:
+    """Higher-scoring cohort, then lower-scoring cohort, as stated in CRITERION.md."""
+    text = (here / "CRITERION.md").read_text(encoding="utf-8")
+    match = re.search(r"min\(score of (\w+) loops\) > max\(score of (\w+) loops\)", text)
+    if match is None:
+        raise RuntimeError("CRITERION.md does not state the cohort comparison")
+    return match.group(1), match.group(2)
+
+
+def _grouped_cohort(rows: list[dict], k: int, cohort: str) -> dict[str, float | None]:
     grouped = {
         r["loop"]: r["score"]
         for r in rows
-        if r["run"] == k and r["loop"].startswith(prefix)
+        if r["run"] == k and _cohort_of(str(r["loop"])) == cohort
     }
     return dict(sorted(grouped.items()))
 
 
 def criterion_block(rows: list[dict], n_runs: int) -> dict:
-    """CRITERION.md: each run passes only when min(GOOD) > max(BAD). A tie is a FAIL."""
+    """Each run passes only when the higher cohort's minimum beats the lower cohort's maximum."""
+    high_name, low_name = _criterion_cohorts()
     runs = []
     for k in range(n_runs):
-        good = _grouped(rows, k, "good-")
-        bad = _grouped(rows, k, "bad-")
-        good_scores = [score for score in good.values() if score is not None]
-        bad_scores = [score for score in bad.values() if score is not None]
-        min_good = min(good_scores) if good_scores else None
-        max_bad = max(bad_scores) if bad_scores else None
-        if min_good is None or max_bad is None:
+        high = _grouped_cohort(rows, k, high_name)
+        low = _grouped_cohort(rows, k, low_name)
+        high_scores = [score for score in high.values() if score is not None]
+        low_scores = [score for score in low.values() if score is not None]
+        min_high = min(high_scores) if high_scores else None
+        max_low = max(low_scores) if low_scores else None
+        if min_high is None or max_low is None:
             tie, passed = None, False
         else:
-            tie = min_good == max_bad
-            passed = min_good > max_bad
+            tie = min_high == max_low
+            passed = min_high > max_low
         runs.append({
             "run": k,
-            "good": good,
-            "bad": bad,
-            "min_good": min_good,
-            "max_bad": max_bad,
+            "good": high,
+            "bad": low,
+            "min_good": min_high,
+            "max_bad": max_low,
             "tie": tie,
             "pass": passed,
         })
     return {"pass": bool(runs) and all(item["pass"] for item in runs), "runs": runs}
 
 
+def _worker_role_text(stem: str) -> str:
+    spec = yaml.safe_load((here / "loops" / f"{stem}.yaml").read_text(encoding="utf-8")) or {}
+    workers = spec.get("workers") or []
+    worker = workers[0] if workers else {}
+    for key in ("system_prompt", "role"):
+        value = worker.get(key)
+        if isinstance(value, str) and value.strip():
+            return value.strip()
+    return str(worker.get("id") or "")
+
+
+def _unique_role_stems(stems: list[str]) -> list[str]:
+    groups: dict[str, list[str]] = {}
+    for stem in stems:
+        groups.setdefault(_worker_role_text(stem), []).append(stem)
+    return [group[0] for group in groups.values() if len(group) == 1]
+
+
 def bad3_vs_good(rows: list[dict], n_runs: int) -> list[dict]:
-    """Per run, bad-3-wrong-role against each good loop: tie, or bad-3 strictly beats it."""
+    """Per run, each uniquely-roled loop against each loop in the higher cohort."""
+    stems = sorted({str(r["loop"]) for r in rows})
+    subjects = _unique_role_stems(stems)
+    high_name, _low_name = _criterion_cohorts()
     report = []
     for k in range(n_runs):
-        bad_rows = [r for r in rows if r["run"] == k and r["loop"] == BAD3]
-        bad_score = bad_rows[0]["score"] if bad_rows else None
-        versus = []
-        goods = sorted(
-            (r for r in rows if r["run"] == k and str(r["loop"]).startswith("good-")),
-            key=lambda r: r["loop"],
-        )
-        for good in goods:
-            good_score = good["score"]
-            if bad_score is None or good_score is None:
-                ties, beats = None, None
-            else:
-                ties = bad_score == good_score
-                beats = bad_score > good_score
-            versus.append({
-                "loop": good["loop"],
-                "score": good_score,
-                "ties": ties,
-                "beats": beats,
-            })
-        report.append({"run": k, BAD3: bad_score, "versus": versus})
+        reference = _grouped_cohort(rows, k, high_name)
+        for subject in subjects:
+            matched = [r for r in rows if r["run"] == k and r["loop"] == subject]
+            subject_score = matched[0]["score"] if matched else None
+            versus = []
+            for loop_name, reference_score in reference.items():
+                if subject_score is None or reference_score is None:
+                    ties, beats = None, None
+                else:
+                    ties = subject_score == reference_score
+                    beats = subject_score > reference_score
+                versus.append({
+                    "loop": loop_name,
+                    "score": reference_score,
+                    "ties": ties,
+                    "beats": beats,
+                })
+            report.append({"run": k, subject: subject_score, "versus": versus})
     return report
 
 
@@ -298,8 +344,10 @@ def per_loop_scores(rows: list[dict], n_runs: int) -> dict[str, list]:
 def probe(n: int, model: str, timeout: int, cap: int) -> dict:
     from loopgym.evaluators.sandbox_tests import get_fixture
     fx = get_fixture("cr-001")
-    prompt = (f"Bug description:\n{fx.bug_description}\n\nModule ({fx.module_name}):\n```python\n{fx.source}```"
-              f"\n\nReply with the full corrected module in a single ```python code block.")
+    prompt = (
+        f"Bug description:\n{fx.bug_description}\n\nModule ({fx.module_name}):\n```\n{fx.source}```"
+        "\n\nReturn the full corrected module in one fenced code block."
+    )
     def call(i):
         llm = CursorAgentLLM(model=model, timeout=timeout); t = time.monotonic()
         try:

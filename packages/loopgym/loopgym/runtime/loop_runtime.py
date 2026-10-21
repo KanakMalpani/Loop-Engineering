@@ -7,10 +7,12 @@ Canonical runtime for LoopGym.
 from __future__ import annotations
 
 import hashlib
+import inspect
 import time
+from collections.abc import Callable, Mapping
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Callable, Protocol
+from typing import Any, Protocol
 
 import yaml
 
@@ -96,7 +98,7 @@ def load_lss_spec(path: str | Path) -> dict[str, Any]:
     with spec_path.open(encoding="utf-8") as fh:
         data = yaml.safe_load(fh)
     if not isinstance(data, dict):
-        raise ValueError(f"Invalid LSS spec (expected mapping): {spec_path}")
+        raise ValueError(f"Invalid LSS spec (expected mapping): {spec_path}")  # noqa: TRY004
     return data
 
 
@@ -151,6 +153,66 @@ def _default_input(spec: dict[str, Any]) -> str:
     if isinstance(inputs, list) and inputs:
         return str(inputs[0].get("description") or inputs[0].get("name", "task"))
     return "default task"
+
+
+def _primary_worker(spec: dict[str, Any]) -> dict[str, Any]:
+    workers = spec.get("workers") or []
+    if workers and isinstance(workers[0], dict):
+        return workers[0]
+    return {}
+
+
+def worker_instruction(worker: dict[str, Any] | None) -> str:
+    """Instruction text from the worker's own system_prompt or role field."""
+    if not worker:
+        return "implementer"
+    for key in ("system_prompt", "role"):
+        value = worker.get(key)
+        if isinstance(value, str) and value.strip():
+            return value.strip()
+    ident = worker.get("id")
+    return str(ident) if ident else "implementer"
+
+
+def worker_temperature(worker: dict[str, Any] | None) -> Any:
+    """Spec temperature. Callers log it; this runtime does not put it in the prompt."""
+    if not worker:
+        return None
+    model = worker.get("model") or {}
+    if isinstance(model, dict) and "temperature" in model:
+        return model.get("temperature")
+    return None
+
+
+def _complete_params(llm: Any) -> Mapping[str, inspect.Parameter] | None:
+    complete = getattr(llm, "complete", None)
+    if complete is None:
+        return None
+    try:
+        return inspect.signature(complete).parameters
+    except (TypeError, ValueError):
+        return None
+
+
+def _accepts(params: Mapping[str, inspect.Parameter], name: str) -> bool:
+    if name in params:
+        return True
+    return any(param.kind is inspect.Parameter.VAR_KEYWORD for param in params.values())
+
+
+def invoke_llm(llm: Any, prompt: str, role: str = "default", temperature: Any = None) -> str:
+    """Call complete(prompt, role). Pass temperature only when that client accepts it."""
+    params = _complete_params(llm)
+    if params is None:
+        return llm.complete(prompt, role)
+    kwargs: dict[str, Any] = {}
+    if _accepts(params, "role"):
+        kwargs["role"] = role
+    if _accepts(params, "temperature"):
+        kwargs["temperature"] = temperature
+    if not kwargs:
+        return llm.complete(prompt)
+    return llm.complete(prompt, **kwargs)
 
 
 def _worker_ids(spec: dict[str, Any]) -> list[str]:
@@ -208,8 +270,7 @@ class LoopRuntime:
         return score, feedback
 
     def _act(self, state: LoopState, user_input: str) -> str:
-        worker_ids = _worker_ids(self.spec)
-        role = worker_ids[0] if worker_ids else "implementer"
+        worker = _primary_worker(self.spec)
         if state.iteration == 0:
             prompt = f"Objective: {self.spec.get('objective')}\nInput: {user_input}"
         else:
@@ -218,7 +279,12 @@ class LoopRuntime:
                 f"Revise output based on feedback:\n{last.get('feedback', '')}\n"
                 f"Previous output:\n{state.output}"
             )
-        return self.llm.complete(prompt, role=role)
+        return invoke_llm(
+            self.llm,
+            prompt,
+            role=worker_instruction(worker),
+            temperature=worker_temperature(worker),
+        )
 
     def _check_termination(self, state: LoopState) -> bool:
         if state.quality_score >= self.quality_threshold:

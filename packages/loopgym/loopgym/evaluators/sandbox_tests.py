@@ -28,7 +28,7 @@ FIXTURES_ROOT = Path(
 )
 TASK_FAMILIES = {"LB-CR-1": ["cr-001", "cr-002", "cr-003", "cr-004", "cr-005", "cr-006", "cr-007"]}
 
-_CODE_BLOCK = re.compile(r"```(?:python|py)[ \t]*\n(.*?)```", re.DOTALL | re.IGNORECASE)
+_CODE_BLOCK = re.compile(r"```(?:python|py)?[ \t]*\n(.*?)```", re.DOTALL | re.IGNORECASE)
 
 
 @dataclass(frozen=True)
@@ -108,7 +108,7 @@ def test_pass_rate(fixture: Fixture, output: str, timeout: int = 30) -> dict[str
     code = extract_code(output)
     if code is None:
         return {**base, "failure_codes": ["fail.unparseable_output"],
-                "remediation_hints": ["Return the full corrected module in one ```python code block."]}
+                "remediation_hints": ["Return the full corrected module in one fenced code block."]}
     tmp_dir = os.environ.get("LOOPBENCH_EVAL_TMP")
     with tempfile.TemporaryDirectory(prefix="lb-work-", dir=tmp_dir) as work, \
             tempfile.TemporaryDirectory(prefix="lb-hidden-", dir=tmp_dir) as hidden:

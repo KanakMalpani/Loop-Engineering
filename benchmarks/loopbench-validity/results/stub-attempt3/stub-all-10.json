@@ -1,0 +1,1384 @@
+{
+  "seeds": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "task": "LB-CR-1",
+  "fixture_checks": [
+    {
+      "fixture": "cr-001",
+      "reference_patch": 1.0,
+      "empty_output": 0.0,
+      "buggy_source_unchanged": 0.5
+    },
+    {
+      "fixture": "cr-002",
+      "reference_patch": 1.0,
+      "empty_output": 0.0,
+      "buggy_source_unchanged": 0.0
+    },
+    {
+      "fixture": "cr-003",
+      "reference_patch": 1.0,
+      "empty_output": 0.0,
+      "buggy_source_unchanged": 0.0
+    },
+    {
+      "fixture": "cr-004",
+      "reference_patch": 1.0,
+      "empty_output": 0.0,
+      "buggy_source_unchanged": 0.08333333333333333,
+      "obvious_fix": 0.25
+    },
+    {
+      "fixture": "cr-005",
+      "reference_patch": 1.0,
+      "empty_output": 0.0,
+      "buggy_source_unchanged": 0.36363636363636365,
+      "obvious_fix": 0.6363636363636364
+    },
+    {
+      "fixture": "cr-006",
+      "reference_patch": 1.0,
+      "empty_output": 0.0,
+      "buggy_source_unchanged": 0.25,
+      "obvious_fix": 0.4166666666666667
+    },
+    {
+      "fixture": "cr-007",
+      "reference_patch": 1.0,
+      "empty_output": 0.0,
+      "buggy_source_unchanged": 0.3333333333333333,
+      "obvious_fix": 0.6666666666666666
+    }
+  ],
+  "fixture_checks_pass": true,
+  "loops": [
+    {
+      "loop": "bad-1-no-feedback",
+      "fixed_reply": {
+        "score": 0.0,
+        "by_seed": {
+          "0": 0.0,
+          "1": 0.0,
+          "2": 0.0,
+          "3": 0.0,
+          "4": 0.0
+        },
+        "success": false,
+        "llm_class": "FixedReply",
+        "per_fixture": {
+          "cr-001": [
+            0.0,
+            "max_iterations (1)"
+          ],
+          "cr-002": [
+            0.0,
+            "max_iterations (1)"
+          ],
+          "cr-003": [
+            0.0,
+            "max_iterations (1)"
+          ],
+          "cr-004": [
+            0.0,
+            "max_iterations (1)"
+          ],
+          "cr-005": [
+            0.0,
+            "max_iterations (1)"
+          ],
+          "cr-006": [
+            0.0,
+            "max_iterations (1)"
+          ],
+          "cr-007": [
+            0.0,
+            "max_iterations (1)"
+          ]
+        },
+        "cost_usd": 0.001684
+      },
+      "feedback_stub": {
+        "score": 0.2186,
+        "by_seed": {
+          "0": 0.2186,
+          "1": 0.2186,
+          "2": 0.2186,
+          "3": 0.2186,
+          "4": 0.2186
+        },
+        "success": false,
+        "llm_class": "FeedbackStub",
+        "per_fixture": {
+          "cr-001": [
+            0.5,
+            "max_iterations (1)"
+          ],
+          "cr-002": [
+            0.0,
+            "max_iterations (1)"
+          ],
+          "cr-003": [
+            0.0,
+            "max_iterations (1)"
+          ],
+          "cr-004": [
+            0.08333333333333333,
+            "max_iterations (1)"
+          ],
+          "cr-005": [
+            0.36363636363636365,
+            "max_iterations (1)"
+          ],
+          "cr-006": [
+            0.25,
+            "max_iterations (1)"
+          ],
+          "cr-007": [
+            0.3333333333333333,
+            "max_iterations (1)"
+          ]
+        },
+        "cost_usd": 0.002238
+      },
+      "iterative_stub": {
+        "score": 0.2186,
+        "by_seed": {
+          "0": 0.2186,
+          "1": 0.2186,
+          "2": 0.2186,
+          "3": 0.2186,
+          "4": 0.2186
+        },
+        "success": false,
+        "llm_class": "IterativeStub",
+        "per_fixture": {
+          "cr-001": [
+            0.5,
+            "max_iterations (1)"
+          ],
+          "cr-002": [
+            0.0,
+            "max_iterations (1)"
+          ],
+          "cr-003": [
+            0.0,
+            "max_iterations (1)"
+          ],
+          "cr-004": [
+            0.08333333333333333,
+            "max_iterations (1)"
+          ],
+          "cr-005": [
+            0.36363636363636365,
+            "max_iterations (1)"
+          ],
+          "cr-006": [
+            0.25,
+            "max_iterations (1)"
+          ],
+          "cr-007": [
+            0.3333333333333333,
+            "max_iterations (1)"
+          ]
+        },
+        "cost_usd": 0.002238
+      }
+    },
+    {
+      "loop": "bad-2-no-tests",
+      "fixed_reply": {
+        "score": 0.0,
+        "by_seed": {
+          "0": 0.0,
+          "1": 0.0,
+          "2": 0.0,
+          "3": 0.0,
+          "4": 0.0
+        },
+        "success": false,
+        "llm_class": "FixedReply",
+        "per_fixture": {
+          "cr-001": [
+            0.0,
+            "no deterministic test evaluator: no real-outcome score (fail)"
+          ],
+          "cr-002": [
+            0.0,
+            "no deterministic test evaluator: no real-outcome score (fail)"
+          ],
+          "cr-003": [
+            0.0,
+            "no deterministic test evaluator: no real-outcome score (fail)"
+          ],
+          "cr-004": [
+            0.0,
+            "no deterministic test evaluator: no real-outcome score (fail)"
+          ],
+          "cr-005": [
+            0.0,
+            "no deterministic test evaluator: no real-outcome score (fail)"
+          ],
+          "cr-006": [
+            0.0,
+            "no deterministic test evaluator: no real-outcome score (fail)"
+          ],
+          "cr-007": [
+            0.0,
+            "no deterministic test evaluator: no real-outcome score (fail)"
+          ]
+        },
+        "cost_usd": 0.001684
+      },
+      "feedback_stub": {
+        "score": 0.0,
+        "by_seed": {
+          "0": 0.0,
+          "1": 0.0,
+          "2": 0.0,
+          "3": 0.0,
+          "4": 0.0
+        },
+        "success": false,
+        "llm_class": "FeedbackStub",
+        "per_fixture": {
+          "cr-001": [
+            0.0,
+            "no deterministic test evaluator: no real-outcome score (fail)"
+          ],
+          "cr-002": [
+            0.0,
+            "no deterministic test evaluator: no real-outcome score (fail)"
+          ],
+          "cr-003": [
+            0.0,
+            "no deterministic test evaluator: no real-outcome score (fail)"
+          ],
+          "cr-004": [
+            0.0,
+            "no deterministic test evaluator: no real-outcome score (fail)"
+          ],
+          "cr-005": [
+            0.0,
+            "no deterministic test evaluator: no real-outcome score (fail)"
+          ],
+          "cr-006": [
+            0.0,
+            "no deterministic test evaluator: no real-outcome score (fail)"
+          ],
+          "cr-007": [
+            0.0,
+            "no deterministic test evaluator: no real-outcome score (fail)"
+          ]
+        },
+        "cost_usd": 0.002238
+      },
+      "iterative_stub": {
+        "score": 0.0,
+        "by_seed": {
+          "0": 0.0,
+          "1": 0.0,
+          "2": 0.0,
+          "3": 0.0,
+          "4": 0.0
+        },
+        "success": false,
+        "llm_class": "IterativeStub",
+        "per_fixture": {
+          "cr-001": [
+            0.0,
+            "no deterministic test evaluator: no real-outcome score (fail)"
+          ],
+          "cr-002": [
+            0.0,
+            "no deterministic test evaluator: no real-outcome score (fail)"
+          ],
+          "cr-003": [
+            0.0,
+            "no deterministic test evaluator: no real-outcome score (fail)"
+          ],
+          "cr-004": [
+            0.0,
+            "no deterministic test evaluator: no real-outcome score (fail)"
+          ],
+          "cr-005": [
+            0.0,
+            "no deterministic test evaluator: no real-outcome score (fail)"
+          ],
+          "cr-006": [
+            0.0,
+            "no deterministic test evaluator: no real-outcome score (fail)"
+          ],
+          "cr-007": [
+            0.0,
+            "no deterministic test evaluator: no real-outcome score (fail)"
+          ]
+        },
+        "cost_usd": 0.002238
+      }
+    },
+    {
+      "loop": "bad-3-wrong-role",
+      "fixed_reply": {
+        "score": 0.0,
+        "by_seed": {
+          "0": 0.0,
+          "1": 0.0,
+          "2": 0.0,
+          "3": 0.0,
+          "4": 0.0
+        },
+        "success": false,
+        "llm_class": "FixedReply",
+        "per_fixture": {
+          "cr-001": [
+            0.0,
+            "max_iterations (3)"
+          ],
+          "cr-002": [
+            0.0,
+            "max_iterations (3)"
+          ],
+          "cr-003": [
+            0.0,
+            "max_iterations (3)"
+          ],
+          "cr-004": [
+            0.0,
+            "max_iterations (3)"
+          ],
+          "cr-005": [
+            0.0,
+            "max_iterations (3)"
+          ],
+          "cr-006": [
+            0.0,
+            "max_iterations (3)"
+          ],
+          "cr-007": [
+            0.0,
+            "max_iterations (3)"
+          ]
+        },
+        "cost_usd": 0.0069
+      },
+      "feedback_stub": {
+        "score": 1.0,
+        "by_seed": {
+          "0": 1.0,
+          "1": 1.0,
+          "2": 1.0,
+          "3": 1.0,
+          "4": 1.0
+        },
+        "success": true,
+        "llm_class": "FeedbackStub",
+        "per_fixture": {
+          "cr-001": [
+            1.0,
+            "success (1.00 >= 0.75 x1)"
+          ],
+          "cr-002": [
+            1.0,
+            "success (1.00 >= 0.75 x1)"
+          ],
+          "cr-003": [
+            1.0,
+            "success (1.00 >= 0.75 x1)"
+          ],
+          "cr-004": [
+            1.0,
+            "success (1.00 >= 0.75 x1)"
+          ],
+          "cr-005": [
+            1.0,
+            "success (1.00 >= 0.75 x1)"
+          ],
+          "cr-006": [
+            1.0,
+            "success (1.00 >= 0.75 x1)"
+          ],
+          "cr-007": [
+            1.0,
+            "success (1.00 >= 0.75 x1)"
+          ]
+        },
+        "cost_usd": 0.007356
+      },
+      "iterative_stub": {
+        "score": 1.0,
+        "by_seed": {
+          "0": 1.0,
+          "1": 1.0,
+          "2": 1.0,
+          "3": 1.0,
+          "4": 1.0
+        },
+        "success": true,
+        "llm_class": "IterativeStub",
+        "per_fixture": {
+          "cr-001": [
+            1.0,
+            "success (1.00 >= 0.75 x1)"
+          ],
+          "cr-002": [
+            1.0,
+            "success (1.00 >= 0.75 x1)"
+          ],
+          "cr-003": [
+            1.0,
+            "success (1.00 >= 0.75 x1)"
+          ],
+          "cr-004": [
+            1.0,
+            "success (1.00 >= 0.75 x1)"
+          ],
+          "cr-005": [
+            1.0,
+            "success (1.00 >= 0.75 x1)"
+          ],
+          "cr-006": [
+            1.0,
+            "success (1.00 >= 0.75 x1)"
+          ],
+          "cr-007": [
+            1.0,
+            "success (1.00 >= 0.75 x1)"
+          ]
+        },
+        "cost_usd": 0.010214
+      }
+    },
+    {
+      "loop": "bad-4-no-bug-input",
+      "fixed_reply": {
+        "score": 0.0,
+        "by_seed": {
+          "0": 0.0,
+          "1": 0.0,
+          "2": 0.0,
+          "3": 0.0,
+          "4": 0.0
+        },
+        "success": false,
+        "llm_class": "FixedReply",
+        "per_fixture": {
+          "cr-001": [
+            0.0,
+            "max_iterations (3)"
+          ],
+          "cr-002": [
+            0.0,
+            "max_iterations (3)"
+          ],
+          "cr-003": [
+            0.0,
+            "max_iterations (3)"
+          ],
+          "cr-004": [
+            0.0,
+            "max_iterations (3)"
+          ],
+          "cr-005": [
+            0.0,
+            "max_iterations (3)"
+          ],
+          "cr-006": [
+            0.0,
+            "max_iterations (3)"
+          ],
+          "cr-007": [
+            0.0,
+            "max_iterations (3)"
+          ]
+        },
+        "cost_usd": 0.003696
+      },
+      "feedback_stub": {
+        "score": 0.0,
+        "by_seed": {
+          "0": 0.0,
+          "1": 0.0,
+          "2": 0.0,
+          "3": 0.0,
+          "4": 0.0
+        },
+        "success": false,
+        "llm_class": "FeedbackStub",
+        "per_fixture": {
+          "cr-001": [
+            0.0,
+            "max_iterations (3)"
+          ],
+          "cr-002": [
+            0.0,
+            "max_iterations (3)"
+          ],
+          "cr-003": [
+            0.0,
+            "max_iterations (3)"
+          ],
+          "cr-004": [
+            0.0,
+            "max_iterations (3)"
+          ],
+          "cr-005": [
+            0.0,
+            "max_iterations (3)"
+          ],
+          "cr-006": [
+            0.0,
+            "max_iterations (3)"
+          ],
+          "cr-007": [
+            0.0,
+            "max_iterations (3)"
+          ]
+        },
+        "cost_usd": 0.003766
+      },
+      "iterative_stub": {
+        "score": 0.0,
+        "by_seed": {
+          "0": 0.0,
+          "1": 0.0,
+          "2": 0.0,
+          "3": 0.0,
+          "4": 0.0
+        },
+        "success": false,
+        "llm_class": "IterativeStub",
+        "per_fixture": {
+          "cr-001": [
+            0.0,
+            "max_iterations (3)"
+          ],
+          "cr-002": [
+            0.0,
+            "max_iterations (3)"
+          ],
+          "cr-003": [
+            0.0,
+            "max_iterations (3)"
+          ],
+          "cr-004": [
+            0.0,
+            "max_iterations (3)"
+          ],
+          "cr-005": [
+            0.0,
+            "max_iterations (3)"
+          ],
+          "cr-006": [
+            0.0,
+            "max_iterations (3)"
+          ],
+          "cr-007": [
+            0.0,
+            "max_iterations (3)"
+          ]
+        },
+        "cost_usd": 0.003766
+      }
+    },
+    {
+      "loop": "bad-5-starved-budget",
+      "fixed_reply": {
+        "score": 0.0,
+        "by_seed": {
+          "0": 0.0,
+          "1": 0.0,
+          "2": 0.0,
+          "3": 0.0,
+          "4": 0.0
+        },
+        "success": false,
+        "llm_class": "FixedReply",
+        "per_fixture": {
+          "cr-001": [
+            0.0,
+            "cost_limit worker cost_budget_usd (0.00065 > 0.0005): fail"
+          ],
+          "cr-002": [
+            0.0,
+            "cost_limit worker cost_budget_usd (0.00056 > 0.0005): fail"
+          ],
+          "cr-003": [
+            0.0,
+            "cost_limit worker cost_budget_usd (0.00060 > 0.0005): fail"
+          ],
+          "cr-004": [
+            0.0,
+            "cost_limit worker cost_budget_usd (0.00070 > 0.0005): fail"
+          ],
+          "cr-005": [
+            0.0,
+            "cost_limit worker cost_budget_usd (0.00059 > 0.0005): fail"
+          ],
+          "cr-006": [
+            0.0,
+            "cost_limit worker cost_budget_usd (0.00065 > 0.0005): fail"
+          ],
+          "cr-007": [
+            0.0,
+            "cost_limit worker cost_budget_usd (0.00055 > 0.0005): fail"
+          ]
+        },
+        "cost_usd": 0.004292
+      },
+      "feedback_stub": {
+        "score": 0.0,
+        "by_seed": {
+          "0": 0.0,
+          "1": 0.0,
+          "2": 0.0,
+          "3": 0.0,
+          "4": 0.0
+        },
+        "success": false,
+        "llm_class": "FeedbackStub",
+        "per_fixture": {
+          "cr-001": [
+            0.0,
+            "cost_limit per_iteration_usd (0.00058 > 0.0005): fail"
+          ],
+          "cr-002": [
+            0.0,
+            "cost_limit worker cost_budget_usd (0.00074 > 0.0005): fail"
+          ],
+          "cr-003": [
+            0.0,
+            "cost_limit per_iteration_usd (0.00053 > 0.0005): fail"
+          ],
+          "cr-004": [
+            0.0,
+            "cost_limit per_iteration_usd (0.00110 > 0.0005): fail"
+          ],
+          "cr-005": [
+            0.0,
+            "cost_limit per_iteration_usd (0.00081 > 0.0005): fail"
+          ],
+          "cr-006": [
+            0.0,
+            "cost_limit per_iteration_usd (0.00084 > 0.0005): fail"
+          ],
+          "cr-007": [
+            0.0,
+            "cost_limit per_iteration_usd (0.00079 > 0.0005): fail"
+          ]
+        },
+        "cost_usd": 0.007356
+      },
+      "iterative_stub": {
+        "score": 0.0,
+        "by_seed": {
+          "0": 0.0,
+          "1": 0.0,
+          "2": 0.0,
+          "3": 0.0,
+          "4": 0.0
+        },
+        "success": false,
+        "llm_class": "IterativeStub",
+        "per_fixture": {
+          "cr-001": [
+            0.0,
+            "cost_limit per_iteration_usd (0.00058 > 0.0005): fail"
+          ],
+          "cr-002": [
+            0.0,
+            "cost_limit worker cost_budget_usd (0.00074 > 0.0005): fail"
+          ],
+          "cr-003": [
+            0.0,
+            "cost_limit per_iteration_usd (0.00053 > 0.0005): fail"
+          ],
+          "cr-004": [
+            0.0,
+            "cost_limit per_iteration_usd (0.00080 > 0.0005): fail"
+          ],
+          "cr-005": [
+            0.0,
+            "cost_limit per_iteration_usd (0.00069 > 0.0005): fail"
+          ],
+          "cr-006": [
+            0.0,
+            "cost_limit per_iteration_usd (0.00074 > 0.0005): fail"
+          ],
+          "cr-007": [
+            0.0,
+            "cost_limit per_iteration_usd (0.00063 > 0.0005): fail"
+          ]
+        },
+        "cost_usd": 0.006678
+      }
+    },
+    {
+      "loop": "good-1-fast",
+      "fixed_reply": {
+        "score": 0.0,
+        "by_seed": {
+          "0": 0.0,
+          "1": 0.0,
+          "2": 0.0,
+          "3": 0.0,
+          "4": 0.0
+        },
+        "success": false,
+        "llm_class": "FixedReply",
+        "per_fixture": {
+          "cr-001": [
+            0.0,
+            "max_iterations (3)"
+          ],
+          "cr-002": [
+            0.0,
+            "max_iterations (3)"
+          ],
+          "cr-003": [
+            0.0,
+            "max_iterations (3)"
+          ],
+          "cr-004": [
+            0.0,
+            "max_iterations (3)"
+          ],
+          "cr-005": [
+            0.0,
+            "max_iterations (3)"
+          ],
+          "cr-006": [
+            0.0,
+            "max_iterations (3)"
+          ],
+          "cr-007": [
+            0.0,
+            "max_iterations (3)"
+          ]
+        },
+        "cost_usd": 0.0069
+      },
+      "feedback_stub": {
+        "score": 1.0,
+        "by_seed": {
+          "0": 1.0,
+          "1": 1.0,
+          "2": 1.0,
+          "3": 1.0,
+          "4": 1.0
+        },
+        "success": true,
+        "llm_class": "FeedbackStub",
+        "per_fixture": {
+          "cr-001": [
+            1.0,
+            "success (1.00 >= 0.75 x1)"
+          ],
+          "cr-002": [
+            1.0,
+            "success (1.00 >= 0.75 x1)"
+          ],
+          "cr-003": [
+            1.0,
+            "success (1.00 >= 0.75 x1)"
+          ],
+          "cr-004": [
+            1.0,
+            "success (1.00 >= 0.75 x1)"
+          ],
+          "cr-005": [
+            1.0,
+            "success (1.00 >= 0.75 x1)"
+          ],
+          "cr-006": [
+            1.0,
+            "success (1.00 >= 0.75 x1)"
+          ],
+          "cr-007": [
+            1.0,
+            "success (1.00 >= 0.75 x1)"
+          ]
+        },
+        "cost_usd": 0.007356
+      },
+      "iterative_stub": {
+        "score": 1.0,
+        "by_seed": {
+          "0": 1.0,
+          "1": 1.0,
+          "2": 1.0,
+          "3": 1.0,
+          "4": 1.0
+        },
+        "success": true,
+        "llm_class": "IterativeStub",
+        "per_fixture": {
+          "cr-001": [
+            1.0,
+            "success (1.00 >= 0.75 x1)"
+          ],
+          "cr-002": [
+            1.0,
+            "success (1.00 >= 0.75 x1)"
+          ],
+          "cr-003": [
+            1.0,
+            "success (1.00 >= 0.75 x1)"
+          ],
+          "cr-004": [
+            1.0,
+            "success (1.00 >= 0.75 x1)"
+          ],
+          "cr-005": [
+            1.0,
+            "success (1.00 >= 0.75 x1)"
+          ],
+          "cr-006": [
+            1.0,
+            "success (1.00 >= 0.75 x1)"
+          ],
+          "cr-007": [
+            1.0,
+            "success (1.00 >= 0.75 x1)"
+          ]
+        },
+        "cost_usd": 0.010214
+      }
+    },
+    {
+      "loop": "good-2-thorough",
+      "fixed_reply": {
+        "score": 0.0,
+        "by_seed": {
+          "0": 0.0,
+          "1": 0.0,
+          "2": 0.0,
+          "3": 0.0,
+          "4": 0.0
+        },
+        "success": false,
+        "llm_class": "FixedReply",
+        "per_fixture": {
+          "cr-001": [
+            0.0,
+            "stall (3 iterations without improvement)"
+          ],
+          "cr-002": [
+            0.0,
+            "stall (3 iterations without improvement)"
+          ],
+          "cr-003": [
+            0.0,
+            "stall (3 iterations without improvement)"
+          ],
+          "cr-004": [
+            0.0,
+            "stall (3 iterations without improvement)"
+          ],
+          "cr-005": [
+            0.0,
+            "stall (3 iterations without improvement)"
+          ],
+          "cr-006": [
+            0.0,
+            "stall (3 iterations without improvement)"
+          ],
+          "cr-007": [
+            0.0,
+            "stall (3 iterations without improvement)"
+          ]
+        },
+        "cost_usd": 0.009676
+      },
+      "feedback_stub": {
+        "score": 1.0,
+        "by_seed": {
+          "0": 1.0,
+          "1": 1.0,
+          "2": 1.0,
+          "3": 1.0,
+          "4": 1.0
+        },
+        "success": true,
+        "llm_class": "FeedbackStub",
+        "per_fixture": {
+          "cr-001": [
+            1.0,
+            "success (1.00 >= 0.9 x2)"
+          ],
+          "cr-002": [
+            1.0,
+            "success (1.00 >= 0.9 x2)"
+          ],
+          "cr-003": [
+            1.0,
+            "success (1.00 >= 0.9 x2)"
+          ],
+          "cr-004": [
+            1.0,
+            "success (1.00 >= 0.9 x2)"
+          ],
+          "cr-005": [
+            1.0,
+            "success (1.00 >= 0.9 x2)"
+          ],
+          "cr-006": [
+            1.0,
+            "success (1.00 >= 0.9 x2)"
+          ],
+          "cr-007": [
+            1.0,
+            "success (1.00 >= 0.9 x2)"
+          ]
+        },
+        "cost_usd": 0.012844
+      },
+      "iterative_stub": {
+        "score": 1.0,
+        "by_seed": {
+          "0": 1.0,
+          "1": 1.0,
+          "2": 1.0,
+          "3": 1.0,
+          "4": 1.0
+        },
+        "success": true,
+        "llm_class": "IterativeStub",
+        "per_fixture": {
+          "cr-001": [
+            1.0,
+            "success (1.00 >= 0.9 x2)"
+          ],
+          "cr-002": [
+            1.0,
+            "success (1.00 >= 0.9 x2)"
+          ],
+          "cr-003": [
+            1.0,
+            "success (1.00 >= 0.9 x2)"
+          ],
+          "cr-004": [
+            1.0,
+            "success (1.00 >= 0.9 x2)"
+          ],
+          "cr-005": [
+            1.0,
+            "success (1.00 >= 0.9 x2)"
+          ],
+          "cr-006": [
+            1.0,
+            "success (1.00 >= 0.9 x2)"
+          ],
+          "cr-007": [
+            1.0,
+            "success (1.00 >= 0.9 x2)"
+          ]
+        },
+        "cost_usd": 0.015726
+      }
+    },
+    {
+      "loop": "good-3-fast-5iter",
+      "fixed_reply": {
+        "score": 0.0,
+        "by_seed": {
+          "0": 0.0,
+          "1": 0.0,
+          "2": 0.0,
+          "3": 0.0,
+          "4": 0.0
+        },
+        "success": false,
+        "llm_class": "FixedReply",
+        "per_fixture": {
+          "cr-001": [
+            0.0,
+            "max_iterations (5)"
+          ],
+          "cr-002": [
+            0.0,
+            "max_iterations (5)"
+          ],
+          "cr-003": [
+            0.0,
+            "max_iterations (5)"
+          ],
+          "cr-004": [
+            0.0,
+            "max_iterations (5)"
+          ],
+          "cr-005": [
+            0.0,
+            "max_iterations (5)"
+          ],
+          "cr-006": [
+            0.0,
+            "max_iterations (5)"
+          ],
+          "cr-007": [
+            0.0,
+            "max_iterations (5)"
+          ]
+        },
+        "cost_usd": 0.012116
+      },
+      "feedback_stub": {
+        "score": 1.0,
+        "by_seed": {
+          "0": 1.0,
+          "1": 1.0,
+          "2": 1.0,
+          "3": 1.0,
+          "4": 1.0
+        },
+        "success": true,
+        "llm_class": "FeedbackStub",
+        "per_fixture": {
+          "cr-001": [
+            1.0,
+            "success (1.00 >= 0.75 x1)"
+          ],
+          "cr-002": [
+            1.0,
+            "success (1.00 >= 0.75 x1)"
+          ],
+          "cr-003": [
+            1.0,
+            "success (1.00 >= 0.75 x1)"
+          ],
+          "cr-004": [
+            1.0,
+            "success (1.00 >= 0.75 x1)"
+          ],
+          "cr-005": [
+            1.0,
+            "success (1.00 >= 0.75 x1)"
+          ],
+          "cr-006": [
+            1.0,
+            "success (1.00 >= 0.75 x1)"
+          ],
+          "cr-007": [
+            1.0,
+            "success (1.00 >= 0.75 x1)"
+          ]
+        },
+        "cost_usd": 0.007356
+      },
+      "iterative_stub": {
+        "score": 1.0,
+        "by_seed": {
+          "0": 1.0,
+          "1": 1.0,
+          "2": 1.0,
+          "3": 1.0,
+          "4": 1.0
+        },
+        "success": true,
+        "llm_class": "IterativeStub",
+        "per_fixture": {
+          "cr-001": [
+            1.0,
+            "success (1.00 >= 0.75 x1)"
+          ],
+          "cr-002": [
+            1.0,
+            "success (1.00 >= 0.75 x1)"
+          ],
+          "cr-003": [
+            1.0,
+            "success (1.00 >= 0.75 x1)"
+          ],
+          "cr-004": [
+            1.0,
+            "success (1.00 >= 0.75 x1)"
+          ],
+          "cr-005": [
+            1.0,
+            "success (1.00 >= 0.75 x1)"
+          ],
+          "cr-006": [
+            1.0,
+            "success (1.00 >= 0.75 x1)"
+          ],
+          "cr-007": [
+            1.0,
+            "success (1.00 >= 0.75 x1)"
+          ]
+        },
+        "cost_usd": 0.010214
+      }
+    },
+    {
+      "loop": "good-4-thorough-t0",
+      "fixed_reply": {
+        "score": 0.0,
+        "by_seed": {
+          "0": 0.0,
+          "1": 0.0,
+          "2": 0.0,
+          "3": 0.0,
+          "4": 0.0
+        },
+        "success": false,
+        "llm_class": "FixedReply",
+        "per_fixture": {
+          "cr-001": [
+            0.0,
+            "stall (3 iterations without improvement)"
+          ],
+          "cr-002": [
+            0.0,
+            "stall (3 iterations without improvement)"
+          ],
+          "cr-003": [
+            0.0,
+            "stall (3 iterations without improvement)"
+          ],
+          "cr-004": [
+            0.0,
+            "stall (3 iterations without improvement)"
+          ],
+          "cr-005": [
+            0.0,
+            "stall (3 iterations without improvement)"
+          ],
+          "cr-006": [
+            0.0,
+            "stall (3 iterations without improvement)"
+          ],
+          "cr-007": [
+            0.0,
+            "stall (3 iterations without improvement)"
+          ]
+        },
+        "cost_usd": 0.009676
+      },
+      "feedback_stub": {
+        "score": 1.0,
+        "by_seed": {
+          "0": 1.0,
+          "1": 1.0,
+          "2": 1.0,
+          "3": 1.0,
+          "4": 1.0
+        },
+        "success": true,
+        "llm_class": "FeedbackStub",
+        "per_fixture": {
+          "cr-001": [
+            1.0,
+            "success (1.00 >= 0.9 x2)"
+          ],
+          "cr-002": [
+            1.0,
+            "success (1.00 >= 0.9 x2)"
+          ],
+          "cr-003": [
+            1.0,
+            "success (1.00 >= 0.9 x2)"
+          ],
+          "cr-004": [
+            1.0,
+            "success (1.00 >= 0.9 x2)"
+          ],
+          "cr-005": [
+            1.0,
+            "success (1.00 >= 0.9 x2)"
+          ],
+          "cr-006": [
+            1.0,
+            "success (1.00 >= 0.9 x2)"
+          ],
+          "cr-007": [
+            1.0,
+            "success (1.00 >= 0.9 x2)"
+          ]
+        },
+        "cost_usd": 0.012844
+      },
+      "iterative_stub": {
+        "score": 1.0,
+        "by_seed": {
+          "0": 1.0,
+          "1": 1.0,
+          "2": 1.0,
+          "3": 1.0,
+          "4": 1.0
+        },
+        "success": true,
+        "llm_class": "IterativeStub",
+        "per_fixture": {
+          "cr-001": [
+            1.0,
+            "success (1.00 >= 0.9 x2)"
+          ],
+          "cr-002": [
+            1.0,
+            "success (1.00 >= 0.9 x2)"
+          ],
+          "cr-003": [
+            1.0,
+            "success (1.00 >= 0.9 x2)"
+          ],
+          "cr-004": [
+            1.0,
+            "success (1.00 >= 0.9 x2)"
+          ],
+          "cr-005": [
+            1.0,
+            "success (1.00 >= 0.9 x2)"
+          ],
+          "cr-006": [
+            1.0,
+            "success (1.00 >= 0.9 x2)"
+          ],
+          "cr-007": [
+            1.0,
+            "success (1.00 >= 0.9 x2)"
+          ]
+        },
+        "cost_usd": 0.015726
+      }
+    },
+    {
+      "loop": "good-5-fast-strict",
+      "fixed_reply": {
+        "score": 0.0,
+        "by_seed": {
+          "0": 0.0,
+          "1": 0.0,
+          "2": 0.0,
+          "3": 0.0,
+          "4": 0.0
+        },
+        "success": false,
+        "llm_class": "FixedReply",
+        "per_fixture": {
+          "cr-001": [
+            0.0,
+            "max_iterations (3)"
+          ],
+          "cr-002": [
+            0.0,
+            "max_iterations (3)"
+          ],
+          "cr-003": [
+            0.0,
+            "max_iterations (3)"
+          ],
+          "cr-004": [
+            0.0,
+            "max_iterations (3)"
+          ],
+          "cr-005": [
+            0.0,
+            "max_iterations (3)"
+          ],
+          "cr-006": [
+            0.0,
+            "max_iterations (3)"
+          ],
+          "cr-007": [
+            0.0,
+            "max_iterations (3)"
+          ]
+        },
+        "cost_usd": 0.0069
+      },
+      "feedback_stub": {
+        "score": 1.0,
+        "by_seed": {
+          "0": 1.0,
+          "1": 1.0,
+          "2": 1.0,
+          "3": 1.0,
+          "4": 1.0
+        },
+        "success": true,
+        "llm_class": "FeedbackStub",
+        "per_fixture": {
+          "cr-001": [
+            1.0,
+            "success (1.00 >= 0.85 x1)"
+          ],
+          "cr-002": [
+            1.0,
+            "success (1.00 >= 0.85 x1)"
+          ],
+          "cr-003": [
+            1.0,
+            "success (1.00 >= 0.85 x1)"
+          ],
+          "cr-004": [
+            1.0,
+            "success (1.00 >= 0.85 x1)"
+          ],
+          "cr-005": [
+            1.0,
+            "success (1.00 >= 0.85 x1)"
+          ],
+          "cr-006": [
+            1.0,
+            "success (1.00 >= 0.85 x1)"
+          ],
+          "cr-007": [
+            1.0,
+            "success (1.00 >= 0.85 x1)"
+          ]
+        },
+        "cost_usd": 0.007356
+      },
+      "iterative_stub": {
+        "score": 1.0,
+        "by_seed": {
+          "0": 1.0,
+          "1": 1.0,
+          "2": 1.0,
+          "3": 1.0,
+          "4": 1.0
+        },
+        "success": true,
+        "llm_class": "IterativeStub",
+        "per_fixture": {
+          "cr-001": [
+            1.0,
+            "success (1.00 >= 0.85 x1)"
+          ],
+          "cr-002": [
+            1.0,
+            "success (1.00 >= 0.85 x1)"
+          ],
+          "cr-003": [
+            1.0,
+            "success (1.00 >= 0.85 x1)"
+          ],
+          "cr-004": [
+            1.0,
+            "success (1.00 >= 0.85 x1)"
+          ],
+          "cr-005": [
+            1.0,
+            "success (1.00 >= 0.85 x1)"
+          ],
+          "cr-006": [
+            1.0,
+            "success (1.00 >= 0.85 x1)"
+          ],
+          "cr-007": [
+            1.0,
+            "success (1.00 >= 0.85 x1)"
+          ]
+        },
+        "cost_usd": 0.010214
+      }
+    }
+  ],
+  "mock_constructed": false,
+  "seconds": 205.29,
+  "note": "stub run: evidence of runtime behaviour, not a model run; does not count toward check 5"
+}

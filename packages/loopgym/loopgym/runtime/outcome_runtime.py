@@ -2,7 +2,9 @@
 
 Score = hidden-test pass rate of the worker's patch (evaluators.test_pass_rate), nothing else:
 no self-reported critique score, no per-iteration bonus. Spec fields honoured:
-  workers[0].role / model.temperature / inputs  -> prompt contents
+  workers[0].role / system_prompt -> LLM instruction argument (not user-prompt text)
+  workers[0].model.temperature -> forwarded only if the client accepts it; never prompt text
+  inputs -> prompt contents
   feedback_channels (source evaluators.test_runner -> workers.<id>) -> next-iteration prompt
   evaluators (needs a deterministic evaluators.test_pass_rate; otherwise score 0 / fail)
   termination_conditions (success value + consecutive, max_iterations, stall)
@@ -16,7 +18,15 @@ import json
 from typing import Any
 
 from loopgym.evaluators.sandbox_tests import Fixture, test_pass_rate
-from loopgym.runtime.loop_runtime import LLMClient, LoopRuntime, LoopState, _get_quality_threshold
+from loopgym.runtime.loop_runtime import (
+    LLMClient,
+    LoopRuntime,
+    LoopState,
+    _get_quality_threshold,
+    invoke_llm,
+    worker_instruction,
+    worker_temperature,
+)
 
 USD_PER_TOKEN = 0.000002  # same blended rate SimEnv already uses for trace cost
 
@@ -99,21 +109,15 @@ class CodeRepairRuntime(LoopRuntime):
     # ---- prompt -------------------------------------------------------------------------
     def build_prompt(self, state: LoopState) -> str:
         refs = _input_refs(self.worker)
-        temp = (self.worker.get("model") or {}).get("temperature")
-        parts = [f"Objective: {self.spec.get('objective', '').strip()}",
-                 f"Your role (worker '{self.worker_id}'): {self.worker.get('role', '')}"]
-        if temp is not None:
-            parts.append(f"Sampling temperature set by the loop spec: {temp}")
+        parts = [f"Objective: {self.spec.get('objective', '').strip()}"]
         if refs:
             if "bug_description" in refs:
                 parts.append(f"Bug description:\n{self.fixture.bug_description}")
             # the module under repair is the subject of any task input (bug_description or repo_snapshot)
-            parts.append(f"Module under repair ({self.fixture.module_name}):\n```python\n"
-                         f"{self.fixture.source}```")
-            parts.append(f"Reply with the full corrected contents of {self.fixture.module_name} "
-                         "in a single ```python code block.")
-        else:
-            parts.append("Reply with the full corrected module in a single ```python code block.")
+            parts.append(
+                f"Module under repair ({self.fixture.module_name}):\n```\n{self.fixture.source}```"
+            )
+        parts.append("Return the full corrected module in one fenced code block.")
         if state.iteration > 1 and self.feedback_fields is not None and state.history:
             last = state.history[-1]
             ev = last.get("evaluation") or {}
@@ -145,7 +149,12 @@ class CodeRepairRuntime(LoopRuntime):
         prompt = self.build_prompt(state)
         self.prompts.append(prompt)
         before = int(getattr(self.llm, "tokens_used", 0) or 0)
-        output = self.llm.complete(prompt, role=self.worker_id)
+        output = invoke_llm(
+            self.llm,
+            prompt,
+            role=worker_instruction(self.worker),
+            temperature=worker_temperature(self.worker),
+        )
         cost, toks = self._cost(prompt, output, int(getattr(self.llm, "tokens_used", 0) or 0) - before)
         spent = state.metadata.get("cost_usd", 0.0) + cost
         state.metadata["cost_usd"] = spent
