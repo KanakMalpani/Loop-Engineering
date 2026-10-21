@@ -211,7 +211,7 @@ These times are from git and from `results/acceptance-3/run.log`.
 - AE is unaffected: its LLM baseline was already pinned to grok-4.7-high.
 - Quota check on attempt 4: 0 matches for "usage limit" or ActionRequiredError in results/acceptance-4 (run files + run.log) or /workspace/acc4 logs. Caveat: stderr was not captured; 43 INFRA-FAIL seeds read "cursor-agent exited 1 with no output", so quota can't be ruled out from these files.
 
-## 2026-10-21 19:05 IST: model sweep to grok-4.7-high; DEVIATION-3 draft
+## 2026-10-21 18:42 IST: model sweep to grok-4.7-high; DEVIATION-3 draft
 - Kanak's standing rule (via Engineering Lead): Grok or Composer models only, never `*-fast`.
 - Drafted `DEVIATION-3.md` (attempt 5 on pinned `grok-4.7-high`, cursor-agent `2026.10.19-6bbf2c4`; not comparable with attempts 1-4; per-call stderr; QA-verified recipe; re-freeze + probes rerun before launch). Draft only: NOT frozen, nothing run. sha256 f49e70f4a0f55cd3effc4f714055eddcdfc6d52ff40c77cb0f82f5d152a8e900.
 - Changed: `benchmarks/loopbench-validity/cursor_llm.py` `DEFAULT_MODEL`: `os.environ.get("CURSOR_LLM_MODEL", "gpt-5.3-codex")` -> `"grok-4.7-high"` (hard pin, env override removed). This also changes the `--model` default of `run_full.py` and `leak_probe.py`, which read it.
