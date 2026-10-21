@@ -1,0 +1,13 @@
+# c8-f5 rerun launch log (FROZEN-5 6edebdf), written 2026-10-22T04:04:08+05:30
+harness sha256: b0b3b12f4b96dbe6a6bab31cdc9c340704d75c4c81827ef02a6cfd0bcc92fe04  frozen-trial/run_trial5b.sh
+FROZEN-5.sha256 check: all 53 OK
+cursor-agent --version: 2026.10.19-6bbf2c4
+pull.log quote: 2026-10-22 03:58:06 IST PULL_FINISHED
+--- ps (pull.sh|curl|mem_watch):
+none (0 pull.sh, 0 curl, 0 mem_watch.sh)
+pgrep -f mem_watch.sh: none
+MemAvailable MB: 5460 (min 4096)
+               total        used        free      shared  buff/cache   available
+Mem:           16002       10542         353        2627        8064        5460
+Swap:              0           0           0
+2026-10-22T04:06:08+05:30 post-run note: run_trial5b.sh exit=3 (GUARD BREACH availMB=1130 load=11.17 at 04:05:34 IST); no pull running; all 8 attempts later recorded ok/clean rc=0; after-breach snapshot tagged=0 ws=0; decoy alive=yes

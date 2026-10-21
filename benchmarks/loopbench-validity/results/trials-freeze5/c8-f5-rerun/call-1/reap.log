@@ -1,0 +1,6 @@
+2026-10-21T22:35:14.068635+00:00 START tag=lbreap-38180df42d5e42cd83becff746e084a3 call=call-1-call0-attempt1
+2026-10-21T22:35:45.088900+00:00 KILL pid=820160 tag=lbreap-38180df42d5e42cd83becff746e084a3 call=call-1-call0-attempt1 cmd=/home/box/.local/share/cursor-agent/versions/2026.10.19-6bbf2c4/node /home/box/.local/share/cursor-agent/versions/2026.1 reason=reap
+2026-10-21T22:35:45.092680+00:00 KILL pid=821059 tag=lbreap-38180df42d5e42cd83becff746e084a3 call=call-1-call0-attempt1 cmd=npm exec typescript-language-server --stdio                    reason=reap
+2026-10-21T22:35:45.092965+00:00 KILL pid=821665 tag=lbreap-38180df42d5e42cd83becff746e084a3 call=call-1-call0-attempt1 cmd=sh -c 'typescript-language-server' --stdio  reason=reap
+2026-10-21T22:35:45.093096+00:00 KILL pid=821666 tag=lbreap-38180df42d5e42cd83becff746e084a3 call=call-1-call0-attempt1 cmd=node /home/box/.npm/_npx/94207acffe67148d/node_modules/.bin/typescript-language-server --stdio  reason=reap
+2026-10-21T22:35:45.093306+00:00 DONE tag=lbreap-38180df42d5e42cd83becff746e084a3 call=call-1-call0-attempt1 reaped=4

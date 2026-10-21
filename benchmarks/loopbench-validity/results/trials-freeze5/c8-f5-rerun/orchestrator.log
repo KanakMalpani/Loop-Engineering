@@ -1,0 +1,22 @@
+2026-10-22T04:04:12+05:30 decoy untagged sleep pid=808279
+2026-10-22T04:04:12+05:30 PULL_FINISHED at 2026-10-22 03:58:06 IST
+2026-10-22T04:04:12+05:30 no-pull-process check: PASS (0 pull.sh, 0 curl)
+2026-10-22T04:04:12+05:30 watcher-not-started: PASS
+2026-10-22T04:05:12+05:30 memory sustained >=4096 for 60 s
+2026-10-22T04:05:12+05:30 pull: finished, no process
+2026-10-22T04:05:13+05:30 before snapshot: tagged=0 worker_servers=0 availMB=4694 load=7.05 4.13 4.37
+2026-10-22T04:05:13+05:30 pre-launch recheck availMB=4692 PASS
+2026-10-22T04:05:13+05:30 start N=8
+2026-10-22T04:05:34+05:30 GUARD BREACH during trial - killing our trial calls
+2026-10-22T04:05:34+05:30 sending SIGINT to fcall5 drivers: 818979 818980 818981 818982 818983 818984 818985 818986 
+{"dir": "call-4", "seconds": 26.8, "error": null}
+{"dir": "call-3", "seconds": 27.3, "error": null}
+{"dir": "call-6", "seconds": 29.3, "error": null}
+{"dir": "call-2", "seconds": 30.2, "error": null}
+{"dir": "call-5", "seconds": 30.3, "error": null}
+{"dir": "call-8", "seconds": 30.4, "error": null}
+{"dir": "call-1", "seconds": 31.0, "error": null}
+{"dir": "call-7", "seconds": 31.3, "error": null}
+2026-10-22T04:05:45+05:30 fcall5 drivers exited within 12s after SIGINT
+2026-10-22T04:05:46+05:30 after-breach snapshot: tagged=0 worker_servers=0
+2026-10-22T04:05:46+05:30 decoy pid=808279 alive=yes
