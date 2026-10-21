@@ -96,7 +96,8 @@ run_trial() {
   export OUT_BASE="$OUT_BASE"
   export PULL_CURL_MATCH="$CURL_TOKEN"
   export WATCHER_NAME
-  timeout 40 bash "$SCRIPT" "$1" "$2"
+  # Drop MIN_MB so these cases see the script default, not a caller override.
+  env -u MIN_MB timeout 40 bash "$SCRIPT" "$1" "$2"
 }
 
 find_fake_pull() {
@@ -214,6 +215,58 @@ if [ "$ok" -eq 1 ]; then
   echo "PASS: all good -> exit 0 and required log lines"
 else
   echo "FAIL: all good -> exit 0 and required log lines ($missing)"
+  fail=1
+  cat "$logf" 2>/dev/null || true
+fi
+reap_leaked_decoys
+
+# --- case: 5000 MB is below the default 6144 floor ---
+write_finished
+write_mem 5120000
+set +e
+run_trial case_5000 1
+ec=$?
+set -e
+logf=$OUT_BASE/case_5000/orchestrator.log
+if [ "$ec" -eq 4 ] && grep -q -F "STOP memory not sustained" "$logf" \
+  && ! grep -q -F "memory sustained >=6144" "$logf" \
+  && ! grep -q -F "DRY-RUN would launch" "$logf"; then
+  echo "PASS: 5000 MB < default 6144 -> exit 4"
+else
+  echo "FAIL: 5000 MB < default 6144 -> exit 4 (got $ec)"
+  fail=1
+  cat "$logf" 2>/dev/null || true
+fi
+reap_leaked_decoys
+
+# --- case: 7000 MB clears the default 6144 floor ---
+write_finished
+write_mem 7168000
+set +e
+run_trial case_7000 1
+ec=$?
+set -e
+logf=$OUT_BASE/case_7000/orchestrator.log
+ok=1
+missing=""
+if [ "$ec" -ne 0 ]; then
+  ok=0
+  missing="exit=$ec"
+fi
+for s in \
+  "memory sustained >=6144 for 2 s" \
+  "pre-launch recheck availMB=7000 PASS" \
+  "DRY-RUN would launch"
+do
+  if ! grep -q -F "$s" "$logf" 2>/dev/null; then
+    ok=0
+    missing="$missing missing[$s]"
+  fi
+done
+if [ "$ok" -eq 1 ]; then
+  echo "PASS: 7000 MB >= default 6144 -> exit 0"
+else
+  echo "FAIL: 7000 MB >= default 6144 -> exit 0 ($missing)"
   fail=1
   cat "$logf" 2>/dev/null || true
 fi
