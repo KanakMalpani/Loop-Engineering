@@ -329,3 +329,4 @@ These times are from git and from `results/acceptance-3/run.log`.
 - Model report investigation: `notes-model-report.md` + `evidence/model-report-2026.10.19-6bbf2c4/`. json output has no model field; stream-json `system/init.model` = "Grok 4.7 256K High" (client echo).
 - `DEVIATION-5.md` draft. Code by cursor-agent `--model grok-4.7-high` (/workspace/f5-agent/prompt1.txt, agent1.out), reviewed by SWE.
 - FROZEN-4 no longer matches `cursor_llm.py`/`leak_probe.py` at branch HEAD from this commit; the trial worktree /workspace/le-trial-99cc307 is untouched.
+- 22:52 IST: DEVIATION-5 §4 added (launch check >=4 GB MemAvailable; pull stays 3 workers during attempt 5, SIGSTOP pgid <3 GB / SIGCONT >4 GB, logged in pull.log). Documented only, nothing paused, not implemented in code.
