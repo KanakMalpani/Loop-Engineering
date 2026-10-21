@@ -267,3 +267,14 @@ These times are from git and from `results/acceptance-3/run.log`.
   - `invalid: true` and exit 1 on a model mismatch; exit 1 on no pickup or InfraError.
 - New stubbed tests in `packages/loopgym/tests/test_role_probe.py`. Code written by cursor-agent `--model grok-4.7-high` (/workspace/dev3-fix/prompt4.txt, agent4.out) and reviewed by SWE.
 - `DEVIATION-3.md`: names `role_probe.py` in the probe pin line and in pre-launch step 3. sha256 74af392 113082e8… -> 91ebf752f750cf8c69a94fd0611b95f632dc76359c98fb80e6a32ab4367efe9b.
+
+## 2026-10-21 19:40 IST: re-freeze for attempt 5 (FROZEN-3), approved by QA bot after DEVIATION-3 sign-off at 057a236
+- Pre-check: `sha256sum -c packages/loopbench/fixtures/FROZEN-2.sha256` -> 28/28 OK; FROZEN.sha256 12/12 OK. FROZEN-2.sha256 unchanged.
+- New `benchmarks/loopbench-validity/FROZEN-3.sha256` (same `<sha256>  <path>` format; paths relative to repo root; check with `sha256sum -c benchmarks/loopbench-validity/FROZEN-3.sha256` from the repo root). 49 entries:
+  - all 28 FROZEN-2 fixture files (`packages/loopbench/fixtures/...`) plus `FROZEN.sha256` and `FROZEN-2.sha256` themselves;
+  - `CRITERION.md`, `DEVIATION.md`, `DEVIATION-2.md`, `DEVIATION-3.md`, `results/acceptance-2/RETRY-POLICY.md`;
+  - `run_full.py`, `cursor_llm.py`, `leak_probe.py`, `role_probe.py`;
+  - the 10 `loops/*.yaml`.
+- Excluded: everything under `tools/reaper/`, until QA bot signs off the trial results.
+- The freeze commit is the one that adds this entry and FROZEN-3.sha256. Gate: run from a clean `git worktree` at the freeze commit: `sha256sum -c`, then the loopgym and loopbench tests each from their own folder with `-p no:cacheprovider` (never from the repo root), then ruff. The output is kept under `benchmarks/loopbench-validity/logs/`.
+- Attempt 5 is not launched and no probes have run.
