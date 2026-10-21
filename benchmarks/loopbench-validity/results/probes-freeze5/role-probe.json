@@ -1,0 +1,58 @@
+{
+  "model": "grok-4.7-high",
+  "model_requested": "grok-4.7-high",
+  "model_reported": null,
+  "calls": [
+    {
+      "role": "Every reply you give must begin with the exact token ROLE-PICKUP-7731 followed by a space.",
+      "reply": "ROLE-PICKUP-7731 Hello.",
+      "seconds": 40.2,
+      "usage": {
+        "inputTokens": 12000,
+        "outputTokens": 1829,
+        "cacheReadTokens": 6016,
+        "cacheWriteTokens": 0
+      },
+      "isolated": true,
+      "attempts": [
+        {
+          "n": 1,
+          "seconds": 40.2,
+          "outcome": "ok",
+          "returncode": 0,
+          "rc_nonzero": false,
+          "clean": true,
+          "stderr_path": "/workspace/le-gate-6edebdf/benchmarks/loopbench-validity/results/stderr/role-probe-call0-attempt1.stderr",
+          "stderr_bytes": 0,
+          "reap_tag": "lbreap-e630ec6def0a4e8d894315597b6f8493",
+          "reap_kills": 4,
+          "leftover_worker_servers": 0,
+          "leftover_tagged": 0
+        }
+      ],
+      "returncode": 0,
+      "rc_nonzero": false,
+      "temperature_requested": null,
+      "temperature_applied": false,
+      "model_requested": "grok-4.7-high",
+      "model_reported": null,
+      "reap_kills": 4,
+      "leftover_worker_servers": 0,
+      "reap_log": "/workspace/le-gate-6edebdf/benchmarks/loopbench-validity/results/reap.log"
+    }
+  ],
+  "model_check": {
+    "pinned": "grok-4.7-high",
+    "valid": true,
+    "violations": []
+  },
+  "launch_identity": {
+    "cursor_agent_bin": "/home/box/.local/bin/cursor-agent",
+    "cursor_agent_resolved": "/home/box/.local/share/cursor-agent/versions/2026.10.19-6bbf2c4/cursor-agent",
+    "cursor_agent_version": "2026.10.19-6bbf2c4"
+  },
+  "picked_up": true,
+  "reply": "ROLE-PICKUP-7731 Hello.",
+  "seconds": 40.2,
+  "error": null
+}
