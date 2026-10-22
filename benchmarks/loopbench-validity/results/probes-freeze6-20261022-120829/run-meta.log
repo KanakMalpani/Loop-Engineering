@@ -1,0 +1,5 @@
+# FROZEN-6 probes, 2026-10-22T12:08:35+05:30 IST
+worktree /home/box/le-runs/frozen6-probes-20261022-120829/wt HEAD f1f5ef968715edf141f6995fd0b650fadd7eb216
+FROZEN-6.sha256 sha 81b977bd7a78132b3be72b1b8f32b633059bcb1ed8a007eadf8e2d9fd46e1661, check 56/56 OK
+BEFORE MemAvailable_MB=7219 worker-server count=0
+AFTER 2026-10-22T12:10:17+05:30 IST MemAvailable_MB=6991 worker-server count=0
