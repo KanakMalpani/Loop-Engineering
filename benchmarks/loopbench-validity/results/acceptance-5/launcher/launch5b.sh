@@ -6,6 +6,9 @@
 set -u
 MODE="${1:-}"; B="${2:-}"
 case "$MODE" in smoke|full) ;; *) echo "usage: $0 smoke|full <B>" >&2; exit 2;; esac
+for v in PKG_ROOT GUARD_ONLY HOLD_ONLY MEMINFO; do
+  [ -n "${!v+x}" ] && { echo "REFUSED: test-hook env var $v is set; the pinned wrapper has no test hooks" >&2; exit 12; }
+done
 [ -d "$B/wt" ] || { echo "no $B/wt" >&2; exit 2; }
 B=$(realpath "$B"); W=$B/wt/benchmarks/loopbench-validity; PY=/workspace/le-venv/bin/python
 SELF=$(readlink -f "$0"); ist() { TZ=Asia/Kolkata date '+%Y-%m-%d %H:%M:%S IST'; }
@@ -20,10 +23,17 @@ fail() { log "PRECHECK_FAIL: $2"; echo "PRECHECK_FAIL: $2" >&2; exit "$1"; }
 
 # 1. pinned env
 unset CURSOR_LLM_MODEL CURSOR_LLM_INFRA_RETRIES CURSOR_LLM_ISOLATE CURSOR_AGENT_BIN CURSOR_TRIAL_BIN MIN_MB
-# 2. PYTHONPATH from every package dir in the worktree (PKG_ROOT override exists only for dry tests of the guard)
-PKGS=$(realpath "$B/wt/packages"); SRC=${PKG_ROOT:-$PKGS}
-export PYTHONPATH=$(ls -d "$SRC"/*/ | sed 's:/$::' | sort | paste -sd:)
+# 2. PYTHONPATH from every package dir in the worktree 
+PKGS=$(realpath "$B/wt/packages")
+export PYTHONPATH=$(ls -d "$PKGS"/*/ | sed 's:/$::' | sort | paste -sd:)
 log "mode: $MODE"; log "launch IST: $(ist)"; log "PYTHONPATH: $PYTHONPATH"
+# 2b. exact FROZEN-6 identity
+FROZEN_HEAD=f1f5ef968715edf141f6995fd0b650fadd7eb216
+FROZEN_MANIFEST_SHA=81b977bd7a78132b3be72b1b8f32b633059bcb1ed8a007eadf8e2d9fd46e1661
+h=$(git -C "$B/wt" rev-parse HEAD 2>/dev/null); log "worktree HEAD: $h (required $FROZEN_HEAD)"
+[ "$h" = "$FROZEN_HEAD" ] || fail 5 "worktree HEAD $h != $FROZEN_HEAD"
+ms=$(sha256sum "$W/FROZEN-6.sha256" 2>/dev/null | cut -c1-64); log "FROZEN-6.sha256 sha256: $ms (required $FROZEN_MANIFEST_SHA)"
+[ "$ms" = "$FROZEN_MANIFEST_SHA" ] || fail 6 "FROZEN-6.sha256 sha256 $ms != $FROZEN_MANIFEST_SHA"
 # 3. first-party package guard: must resolve under $B/wt/packages/
 cd "$W" || fail 2 "cd $W"
 for m in loopgym loopbench loopotel loopnet; do
@@ -49,20 +59,18 @@ MDEOF
   src="importlib.metadata name==version @ location (pip freeze FAILED)"; fi
 [ -s "$PF" ] || fail 9 "could not list installed packages"
 log "pip freeze: $PF via $src $(sha256sum "$PF" | cut -c1-64) ($(wc -l < "$PF") lines)"
-[ "${GUARD_ONLY:-0}" = 1 ] && { log "GUARD_ONLY: guard passed, stopping before prechecks/run"; exit 0; }
 # 5. manifest
 ok=$(cd "$B/wt" && sha256sum -c benchmarks/loopbench-validity/FROZEN-6.sha256 2>/dev/null | grep -c ': OK$'); n=$(grep -c . FROZEN-6.sha256)
 log "manifest sha256: $(sha256sum FROZEN-6.sha256 | cut -c1-64)"; log "manifest check: $ok/$n OK"
 [ "$ok" = 56 ] && [ "$n" = 56 ] || fail 3 "manifest $ok/$n"
 # 6. memory floor
-MEMINFO=${MEMINFO:-/proc/meminfo}; [ "$MEMINFO" = /proc/meminfo ] || log "TEST HOOK: MEMINFO=$MEMINFO"
-avail_mb() { awk '/^MemAvailable:/{print int($2/1024); exit}' "$MEMINFO" 2>/dev/null || true; }
+avail_mb() { awk '/^MemAvailable:/{print int($2/1024); exit}' /proc/meminfo 2>/dev/null || true; }
 mem=$(avail_mb); floor=$(grep -oP '^MIN_AVAILABLE_MB = \K\d+' run_full.py)
 log "MemAvailable: $mem MB (MIN_MB unset; run_full MIN_AVAILABLE_MB=$floor)"
 [ "$floor" = 6144 ] || fail 4 "MIN_AVAILABLE_MB=$floor"; [ "$mem" -ge 6144 ] || fail 4 "MemAvailable $mem < 6144"
-# 6b. full only: 60 s sustained hold + pre-launch recheck, as run_trial5b.sh @ bce9f60
+# 6b. smoke and full: 60 s sustained hold + pre-launch recheck, as run_trial5b.sh @ bce9f60
 #     (MIN_MB 6144, SUSTAIN_S 60, SAMPLE_S 5, WAIT_MAX_S 1200; samples in $O/memwait.log)
-if [ "$MODE" = full ]; then
+{
   MIN_MB=6144; SUSTAIN_S=60; SAMPLE_S=5; WAIT_MAX_S=1200; start=$(date +%s); good_since=""
   while :; do
     now=$(date +%s); [ $((now - start)) -ge "$WAIT_MAX_S" ] && fail 4 "memory not sustained >=$MIN_MB for $SUSTAIN_S s within $WAIT_MAX_S s"
@@ -77,8 +85,7 @@ if [ "$MODE" = full ]; then
   m=$(avail_mb); case "$m" in ''|*[!0-9]*) m=0;; esac
   [ "$m" -ge "$MIN_MB" ] || fail 4 "pre-launch recheck availMB=$m < $MIN_MB"
   log "pre-launch recheck availMB=$m PASS $(ist)"
-  [ "${HOLD_ONLY:-0}" = 1 ] && { log "HOLD_ONLY: hold passed, stopping before run"; exit 0; }
-fi
+}
 # 7. identity
 log "repo head: $(git -C /workspace/Loop-Engineering rev-parse HEAD)"; log "worktree head: $(git rev-parse HEAD) (FROZEN-6 f1f5ef9)"
 log "cursor-agent: $(command -v cursor-agent) $(cursor-agent --version 2>&1)"
