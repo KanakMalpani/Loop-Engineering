@@ -1,0 +1,22 @@
+2026-10-22T12:16:20+05:30 decoy untagged sleep pid=30939
+2026-10-22T12:16:20+05:30 PULL_FINISHED at 2026-10-22 03:58:06 IST
+2026-10-22T12:16:20+05:30 no-pull-process check: PASS (0 pull.sh, 0 curl)
+2026-10-22T12:16:20+05:30 watcher-not-started: PASS
+2026-10-22T12:17:20+05:30 memory sustained >=6144 for 60 s
+2026-10-22T12:17:20+05:30 pull: finished, no process
+2026-10-22T12:17:21+05:30 before snapshot: tagged=0 worker_servers=1 availMB=6978 load=0.14 0.15 0.17
+2026-10-22T12:17:21+05:30 pre-launch recheck availMB=6978 PASS
+2026-10-22T12:17:21+05:30 start N=8
+{"dir": "call-3", "seconds": 27.4, "error": null}
+{"dir": "call-2", "seconds": 28.0, "error": null}
+{"dir": "call-4", "seconds": 28.4, "error": null}
+{"dir": "call-8", "seconds": 28.9, "error": null}
+{"dir": "call-7", "seconds": 30.3, "error": null}
+{"dir": "call-1", "seconds": 31.1, "error": null}
+{"dir": "call-5", "seconds": 33.1, "error": null}
+{"dir": "call-6", "seconds": 50.4, "error": null}
+2026-10-22T12:18:21+05:30 all calls returned
+2026-10-22T12:18:27+05:30 after snapshot: tagged=0 worker_servers=1 availMB=7073 load=1.68 0.81 0.41
+2026-10-22T12:18:27+05:30 pull: finished, no process
+2026-10-22T12:18:27+05:30 decoy pid=30939 alive=yes
+2026-10-22T12:18:27+05:30 DONE

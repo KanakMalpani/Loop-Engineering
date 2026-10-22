@@ -1,0 +1,77 @@
+# c8-f5 launch log (FROZEN-6 f1f5ef968715edf141f6995fd0b650fadd7eb216, worktree /workspace/le-trial-f1f5ef9), written 2026-10-22T12:16:20+05:30
+FROZEN-6 commit: f1f5ef968715edf141f6995fd0b650fadd7eb216
+harness: git show bce9f60:.../harness-5b/run_trial5b.sh sha256 a215b4d0f387b4dc565e41f43a47eabe4c5dd2d2442ab92f84609cbff3fcb0af
+fcall5.py sha256 7a01b40533cb39b206aa3386316c9c7acf9cdc502487b06e4cb8dd90bb34bdbb WT=WT = Path("/workspace/le-trial-f1f5ef9")
+FROZEN-6.sha256 check: 56 OK of 56, failures: 0
+cursor-agent --version: 2026.10.19-6bbf2c4
+pull.log: 2113 lines; PULL_FINISHED: 2026-10-22 03:58:06 IST PULL_FINISHED (informational; c8-f5 does not need out/)
+--- ps (pull.sh|curl|mem_watch):
+none
+pgrep -f mem_watch.sh: none
+MIN_MB: unset (harness default 6144: MIN_MB=${MIN_MB:-6144})
+WAIT_MAX_S=1800
+MemAvailable MB: 6977
+               total        used        free      shared  buff/cache   available
+Mem:           16002        9024        2831          61        4537        6977
+Swap:              0           0           0
+driver (run by harness): /workspace/concurrency-investigation/frozen-trial/fcall5.py sha256 7a01b40533cb39b206aa3386316c9c7acf9cdc502487b06e4cb8dd90bb34bdbb expected 7a01b40533cb39b206aa3386316c9c7acf9cdc502487b06e4cb8dd90bb34bdbb (committed 2bd5d6b results/c8-f5/driver/fcall5.py)
+driver diff vs tracked trials-freeze5/fcall5.py (2476c0c1...):
+--- /workspace/le-trial-f1f5ef9/benchmarks/loopbench-validity/results/trials-freeze5/fcall5.py	2026-10-22 06:12:42.662035608 +0000
++++ /workspace/concurrency-investigation/frozen-trial/fcall5.py	2026-10-22 06:12:42.174035608 +0000
+@@ -1,7 +1,7 @@
+-"""One call through the FROZEN cursor_llm (clean worktree at 6edebdf (FROZEN-5)). Usage: fcall.py OUTDIR"""
++"""One call through the FROZEN cursor_llm (clean worktree at f1f5ef9 (FROZEN-6)). Usage: fcall.py OUTDIR"""
+ import json, sys, time
+ from pathlib import Path
+-WT = Path("/workspace/le-trial-6edebdf")
++WT = Path("/workspace/le-trial-f1f5ef9")
+ sys.path.insert(0, str(WT / "benchmarks/loopbench-validity"))
+ import cursor_llm  # frozen file, no shim, no CURSOR_TRIAL_BIN
+ OUT = Path(sys.argv[1]); OUT.mkdir(parents=True, exist_ok=True)
+frozen cursor_llm import: /workspace/le-trial-f1f5ef9/benchmarks/loopbench-validity/cursor_llm.py sha256 0db298248deb6a4ab8d25baf0bce8c7e056118dc1b1e8fc87d610132e7caf8ce
+c8.sh sha256 1760702f00c3c48b390b5e338a1a7511adaa6b91e69be3d1e2e23936a3ef2658; c8-f5-home.sh sha256 55c453f2a598a67bcc5f68e384b394b45ca952b7da07764a390b7a81c07cd9fe
+--- /workspace/f6/c8.sh	2026-10-22 06:12:43.550035608 +0000
++++ /workspace/f6/c8-f5-home.sh	2026-10-22 06:44:49.438035608 +0000
+@@ -5,8 +5,9 @@
+ R=/workspace/Loop-Engineering/benchmarks/loopbench-validity
+ H=/workspace/f6/run_trial5b-bce9f60.sh
+ git -C /workspace/Loop-Engineering show bce9f60:benchmarks/loopbench-validity/results/trials-freeze5/harness-5b/run_trial5b.sh > $H; chmod +x $H
+-OUT=/workspace/concurrency-investigation/frozen-trial-f6; mkdir -p $OUT/c8-f5
++TSIST=$(TZ=Asia/Kolkata date +%Y%m%d-%H%M%S-IST); OUT=/home/box/le-runs/c8-f5-$TSIST; mkdir -p $OUT/c8-f5
+ LL=$OUT/c8-f5/launch.log
++DRV=/workspace/concurrency-investigation/frozen-trial/fcall5.py; DRV_SHA=7a01b40533cb39b206aa3386316c9c7acf9cdc502487b06e4cb8dd90bb34bdbb; LE=/workspace/le-trial-f1f5ef9/benchmarks/loopbench-validity
+ {
+ echo "# c8-f5 launch log (FROZEN-6 f1f5ef968715edf141f6995fd0b650fadd7eb216, worktree /workspace/le-trial-f1f5ef9), written $(TZ=Asia/Kolkata date --iso-8601=seconds)"
+ echo "FROZEN-6 commit: $(git -C /workspace/le-trial-f1f5ef9 rev-parse HEAD)"
+@@ -14,12 +15,24 @@
+ echo "fcall5.py sha256 $(sha256sum /workspace/concurrency-investigation/frozen-trial/fcall5.py | cut -c1-64) WT=$(grep '^WT' /workspace/concurrency-investigation/frozen-trial/fcall5.py)"
+ (cd /workspace/le-trial-f1f5ef9 && echo "FROZEN-6.sha256 check: $(sha256sum -c benchmarks/loopbench-validity/FROZEN-6.sha256 | grep -c ': OK$') OK of $(wc -l < benchmarks/loopbench-validity/FROZEN-6.sha256), failures: $(sha256sum -c --quiet benchmarks/loopbench-validity/FROZEN-6.sha256 2>&1 | wc -l)")
+ echo "cursor-agent --version: $(cursor-agent --version 2>&1)"
+-echo "pull.log PULL_FINISHED quote: $(grep -E ' PULL_FINISHED$' /workspace/oa/pull/pull.log | tail -1)"
++PL=/workspace/oa/pull/pull.log
++echo "pull.log: $( [ -r $PL ] && wc -l < $PL || echo missing ) lines; PULL_FINISHED: $(grep -E ' PULL_FINISHED$' $PL 2>/dev/null | tail -1 || true) (informational; c8-f5 does not need out/)"
+ echo "--- ps (pull.sh|curl|mem_watch):"; ps -eo pid=,args= | grep -E 'pull\.sh|(^| |/)curl |mem_watch\.sh' | grep -v grep || echo "none"
+ echo "pgrep -f mem_watch.sh: $(pgrep -f mem_watch.sh | grep -v $$ || echo none)"
+ echo "MIN_MB: ${MIN_MB-unset} (harness default 6144: $(grep -o 'MIN_MB=${MIN_MB:-[0-9]*}' $H))"
+ echo "WAIT_MAX_S=1800"
+ echo "MemAvailable MB: $(awk '/MemAvailable/{print int($2/1024)}' /proc/meminfo)"; free -m
++echo "driver (run by harness): $DRV sha256 $(sha256sum $DRV|cut -c1-64) expected $DRV_SHA (committed 2bd5d6b results/c8-f5/driver/fcall5.py)"
++echo "driver diff vs tracked trials-freeze5/fcall5.py (2476c0c1...):"
++diff -u $LE/results/trials-freeze5/fcall5.py $DRV || true
++echo "frozen cursor_llm import: $LE/cursor_llm.py sha256 $(sha256sum $LE/cursor_llm.py|cut -c1-64)"
++echo "c8.sh sha256 $(sha256sum /workspace/f6/c8.sh|cut -c1-64); c8-f5-home.sh sha256 $(sha256sum "$0"|cut -c1-64)"
++diff -u /workspace/f6/c8.sh "$0" || true
++echo "flag 1 resolved: probe run reap.log was overwritten, so leak-probe.json reap_kills:4 stands as its record; c8-f5 uses per-call append-only reap logs ($OUT/c8-f5/call-N/reap.log, frozen cursor_llm.py opens it in append mode)"
++echo "hold/recheck: harness run_trial5b.sh does the 60 s sustained-memory hold (SUSTAIN_S=60, MIN_MB 6144) and pre-launch recheck (ABORT exit 8 below floor); see $OUT/c8-f5/orchestrator.log and memwait.log"
++echo "calls: 8 concurrent"
+ } > $LL 2>&1
++if [ "$(sha256sum $DRV|cut -c1-64)" != "$DRV_SHA" ]; then echo "$(TZ=Asia/Kolkata date --iso-8601=seconds) ABORT driver sha mismatch, not launching" >> $LL; exit 9; fi
+ OUT_BASE=$OUT WAIT_MAX_S=1800 $H c8-f5 8; rc=$?
+ echo "$(TZ=Asia/Kolkata date --iso-8601=seconds) run_trial5b.sh exit=$rc" >> $LL
++P2=$(sha256sum $DRV|cut -c1-64); [ "$P2" = "$DRV_SHA" ] && S=MATCH || S="CHANGED (run VOID)"; echo "driver sha post-run: $P2 $S" >> $LL
+flag 1 resolved: probe run reap.log was overwritten, so leak-probe.json reap_kills:4 stands as its record; c8-f5 uses per-call append-only reap logs (/home/box/le-runs/c8-f5-20261022-121620-IST/c8-f5/call-N/reap.log, frozen cursor_llm.py opens it in append mode)
+hold/recheck: harness run_trial5b.sh does the 60 s sustained-memory hold (SUSTAIN_S=60, MIN_MB 6144) and pre-launch recheck (ABORT exit 8 below floor); see /home/box/le-runs/c8-f5-20261022-121620-IST/c8-f5/orchestrator.log and memwait.log
+calls: 8 concurrent
+2026-10-22T12:18:27+05:30 run_trial5b.sh exit=0
+driver sha post-run: 7a01b40533cb39b206aa3386316c9c7acf9cdc502487b06e4cb8dd90bb34bdbb MATCH
+harness rc: 0 (launcher exit 0; appended by post-run wrapper, launcher unchanged at 3df0961)
