@@ -117,7 +117,7 @@ All constants are hardcoded. Each guard is checked every 30 s while run_full run
 | guard | constant | fires when | log line | exit |
 |---|---|---|---|---|
 | wall-clock cap | `CAP_S=129600` (36 h) | 36 h since run_full start | `RUN_INCOMPLETE: wall-clock cap 36h` | 13 |
-| infra-fail stop | `INFRA_RUNS_ABORT=3` | 3 run files are INFRA-FAIL runs (definition below) | `RUN_ABORTED: 3 INFRA-FAIL runs` | 14 |
+| infra-fail stop | `INFRA_RUNS_ABORT=3` | 3 run files with `n_infra_fail > 0` (definition below) | `RUN_ABORTED: 3 INFRA-FAIL runs` | 14 |
 | memory | `MEM_ABORT_MB=2048`, every 30 s to `$O/memsample.log` | MemAvailable < 2048 MB | `RUN_ABORTED: mem <2048` | 15 |
 
 ### 8.1 Wall-clock cap rationale
@@ -127,8 +127,8 @@ All constants are hardcoded. Each guard is checked every 30 s while run_full run
 ### 8.2 INFRA-FAIL run definition (chosen) and the alternative
 
 - Frozen semantics: `run_full.one_run` writes `<loop>-r<k>.json` once the run finishes, with `seeds` (5), `n_ok`, `n_error`, `n_infra_fail`. A seed is INFRA-FAIL when a call still has no result after 3 attempts.
-- **Chosen ("systemic"):** a run is an INFRA-FAIL run when `n_infra_fail == len(seeds)`, i.e. every one of its 5 seeds is INFRA-FAIL. That matches acceptance-4's failure mode (several run files with seeds 0-4 all INFRA-FAIL) and Engineering Lead's "systemic" intent. One slow fixture doesn't stop the whole run.
-- **Alternative for QA:** a run is an INFRA-FAIL run when `n_infra_fail > 0`. That stops much sooner, after 3 runs with even one bad seed. The grade is the same either way (any INFRA-FAIL is a FAIL, section 0). The choice only changes how soon a doomed run stops.
+- **Chosen by Engineering Lead (2026-10-22 13:47 IST):** a run counts toward the stop rule when its run file has `n_infra_fail > 0`, i.e. at least one INFRA-FAIL seed. The abort fires once 3 such run files exist. Since any INFRA-FAIL already means a FAIL (section 0), this stops a doomed run as early as possible.
+- **Alternative (noted, not chosen):** count only runs whose every seed is INFRA-FAIL (`n_infra_fail == len(seeds)`, the "systemic" reading of acceptance-4's failure mode). It stops later and would let isolated slow fixtures continue. The grade is the same either way.
 - Limits: run files appear only when a run finishes, so the guard can't fire mid-run. At concurrency 5, up to 5 runs can be in flight when the third INFRA-FAIL file lands.
 
 ### 8.3 Memory abort rationale
@@ -138,22 +138,34 @@ All constants are hardcoded. Each guard is checked every 30 s while run_full run
 
 ### 8.4 Candidate
 
-- `drafts/launch5c.sh`, sha256 `74d95efc81ea1e49c37e28eccc7635105934c08336ac389ba0cd9ca435eca677`, written by hand (Engineering Lead accepted hand-writing). It is **not pinned** and must not be used before FROZEN-7. Its FROZEN-7 pins are placeholders (`__FROZEN7_HEAD__`, `__FROZEN7_MANIFEST_SHA__`, `__FROZEN7_MANIFEST_N__`), and any run refuses with `PRECHECK_FAIL: CANDIDATE_NOT_FROZEN` (exit 2). That is tested.
-- Diff vs the `84121cd` pin (`launch5b.sh`, `661d7479…`), 86 changed lines:
+- `drafts/launch5c.sh`, sha256 `757462820c11e300c694d103d224a89f59f90b886b5dd656872d99d49372238a`, written by hand (Engineering Lead accepted hand-writing). It is **not pinned** and must not be used before FROZEN-7. Its FROZEN-7 pins are placeholders (`__FROZEN7_HEAD__`, `__FROZEN7_MANIFEST_SHA__`, `__FROZEN7_MANIFEST_N__`), and any run refuses with `PRECHECK_FAIL: CANDIDATE_NOT_FROZEN` (exit 2). That is tested.
+- Diff vs the `84121cd` pin (`launch5b.sh`, `661d7479…`), 85 changed lines (`launch5b-dev/launch5c-vs-84121cd.diff`):
   - The header comment.
   - `--timeout 150` changes to `--timeout 900` in the smoke and full `ARGS`.
   - The identity pins change from the FROZEN-6 literals to FROZEN-7 placeholders, plus the `CANDIDATE_NOT_FROZEN` check. The manifest file and entry count are now variables (`FROZEN-7.sha256`, N).
-  - The run line is replaced by: the run tag and `reap_tagged()`; smoke runs in the foreground with the tag; full runs with `setsid`, plus the 30 s monitor loop (memory sample, INFRA-FAIL run count, cap) and a clean group stop.
+  - The run line is replaced by: the run tag and `reap_tagged()`; smoke runs in the foreground with the tag; full runs with `setsid`, plus the 30 s monitor loop (memory sample, count of run files with `n_infra_fail > 0`, cap) and a clean group stop.
   - The exit-code mapping for 13, 14 and 15 is inserted before the SMOKE/RUN_HAS_ERRORS block.
   - Everything else is byte-identical: env refusal (exit 12), package guard, pip list, manifest check, 6144 floor, 60 s hold, shas MATCH/CHANGED, results checks and SMOKE gate.
-- Dry tests (no model calls) on an unpinned test copy `launch5b-dev/launch5c-test.sh`, with a fake `stub_run_full.py`, shortened poll (2 s), hold (2 s) and cap (6 s), a fake meminfo, and FROZEN-6 values in place of the placeholders. The test-copy diff vs the candidate touches only those hooks (`launch5b-dev/launch5c-test-vs-candidate.diff`):
-  - cap fires: rc 13, `RUN_INCOMPLETE`, INCOMPLETE marker, outputs kept.
-  - 3 all-INFRA-FAIL run files: rc 14, `RUN_ABORTED: 3 INFRA-FAIL runs`.
-  - 2 all-INFRA-FAIL + 1 partial: no abort, rc 11 `RUN_HAS_ERRORS: n_infra_fail=11`.
-  - fake meminfo 1500 MB mid-run: rc 15, `RUN_ABORTED: mem <2048`.
-  - normal completion: rc 0 `RUN_CLEAN` (full), rc 0 `SMOKE_PASS` (smoke).
-  - Every run: tagged straggler (`setsid sleep 1000` from the stub) `reap tagged ... killed 1`, and 0 strays afterwards.
-  - Existing guards: wrong HEAD rc 5, wrong manifest sha rc 6, package outside wt rc 8, full without SMOKE_PASS rc 7, existing outdir rc 2, hook env var on the candidate rc 12, placeholders on the candidate rc 2 `CANDIDATE_NOT_FROZEN`.
+- Dry tests (no model calls), all rerun at 13:5x IST on this sha with `launch5b-dev/dry13.sh` (test copy `launch5c-test.sh`, fake `stub_run_full.py`, 2 s poll/hold, 6 s cap, fake meminfo, FROZEN-6 values in place of the placeholders; the test-copy diff touches only those hooks, `launch5c-test-vs-candidate.diff`):
+
+| # | test | expected | result |
+|---|---|---|---|
+| 1 | cap fires | 13 `RUN_INCOMPLETE: wall-clock cap 36h` | PASS |
+| 2 | 3 runs x 1 infra-fail seed | 14 `RUN_ABORTED: 3 INFRA-FAIL runs` | PASS |
+| 3 | 2 runs x 1 infra-fail seed (+1 clean) | 11 `RUN_HAS_ERRORS` | PASS |
+| 4 | 2 partial runs, then 1 more partial 5 s later | 14 | PASS |
+| 5 | fake meminfo 1500 MB mid-run | 15 `RUN_ABORTED: mem <2048` | PASS |
+| 6 | normal full | 0 `RUN_CLEAN` | PASS |
+| 7 | normal smoke | 0 `SMOKE_PASS` | PASS |
+| 8 | wrong worktree HEAD | 5 | PASS |
+| 9 | wrong manifest sha | 6 | PASS |
+| 10 | package outside wt/packages | 8 | PASS |
+| 11 | full without SMOKE_PASS | 7 | PASS |
+| 12 | existing outdir | 2 | PASS |
+| 13 | hook env var on candidate | 12 | PASS |
+| 14 | placeholders on candidate | 2 `CANDIDATE_NOT_FROZEN` | PASS |
+
+  Every full run logged `reap tagged (after run): killed 1` (6/6) for the stub's tagged `setsid sleep 1000`; 0 strays after.
 
 ## 9. FROZEN-7 re-freeze plan (only after Kanak approves and QA accepts this draft; not done)
 

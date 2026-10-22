@@ -117,7 +117,7 @@ else
   CAP_S=129600          # 36 h = 1.5 x 24 h planning upper end
   POLL_S=30             # sampler / monitor period
   MEM_ABORT_MB=2048     # wrapper abort floor while running (launch floor 6144 still applies above)
-  INFRA_RUNS_ABORT=3    # stop rule: runs whose every seed is INFRA-FAIL
+  INFRA_RUNS_ABORT=3    # stop rule: run files with n_infra_fail > 0
   LB5C_RUN_TAG=$RUN_TAG setsid "$PY" run_full.py $ARGS & RP=$!
   log "run_full pid=pgid=$RP start $(ist); cap ${CAP_S}s, mem abort <${MEM_ABORT_MB} MB, infra-run abort at $INFRA_RUNS_ABORT"
   t0=$(date +%s)
@@ -131,8 +131,7 @@ n=0
 for f in glob.glob(sys.argv[1]+"/*-r*.json"):
     try: d=json.load(open(f))
     except Exception: continue
-    seeds=len(d.get("seeds") or []) or len(d.get("by_seed") or {})
-    if seeds and d.get("n_infra_fail",0)==seeds: n+=1   # every seed INFRA-FAIL
+    if (d.get("n_infra_fail") or 0) > 0: n+=1   # any INFRA-FAIL seed (Engineering Lead's definition)
 print(n)
 PYEOF
 )
