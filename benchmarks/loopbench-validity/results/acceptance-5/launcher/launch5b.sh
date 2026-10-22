@@ -35,7 +35,18 @@ done
 PF=$B/pip-freeze.txt; [ -e "$PF" ] && PF=$B/pip-freeze-$MODE.txt
 if "$PY" -m pip freeze > "$PF" 2>>"$L" && [ -s "$PF" ]; then src="pip freeze"
 else # venv pip is broken (pip._internal.operations.build missing); list installed dists instead
-  "$PY" -c "import importlib.metadata as m; print('\n'.join(sorted(f'{d.metadata[\"Name\"]}=={d.version}' for d in m.distributions())))" > "$PF" 2>>"$L"; src="importlib.metadata (pip freeze FAILED)"; fi
+  "$PY" - > "$PF" 2>>"$L" <<'MDEOF' || fail 9 "importlib.metadata listing incomplete (missing name/version/location)"
+import importlib.metadata as m, sys
+rows, bad = [], 0
+for d in m.distributions():
+    n, v, loc = d.metadata["Name"], d.version, d.locate_file("")
+    if not n or not v or not str(loc):
+        bad += 1; print(f"MISSING name={n!r} version={v!r} location={loc!r}", file=sys.stderr); continue
+    rows.append(f"{n}=={v} @ {loc}")
+print("\n".join(sorted(rows)))
+sys.exit(1 if bad or not rows else 0)
+MDEOF
+  src="importlib.metadata name==version @ location (pip freeze FAILED)"; fi
 [ -s "$PF" ] || fail 9 "could not list installed packages"
 log "pip freeze: $PF via $src $(sha256sum "$PF" | cut -c1-64) ($(wc -l < "$PF") lines)"
 [ "${GUARD_ONLY:-0}" = 1 ] && { log "GUARD_ONLY: guard passed, stopping before prechecks/run"; exit 0; }
@@ -44,9 +55,30 @@ ok=$(cd "$B/wt" && sha256sum -c benchmarks/loopbench-validity/FROZEN-6.sha256 2>
 log "manifest sha256: $(sha256sum FROZEN-6.sha256 | cut -c1-64)"; log "manifest check: $ok/$n OK"
 [ "$ok" = 56 ] && [ "$n" = 56 ] || fail 3 "manifest $ok/$n"
 # 6. memory floor
-mem=$(awk '/MemAvailable/{print int($2/1024)}' /proc/meminfo); floor=$(grep -oP '^MIN_AVAILABLE_MB = \K\d+' run_full.py)
+MEMINFO=${MEMINFO:-/proc/meminfo}; [ "$MEMINFO" = /proc/meminfo ] || log "TEST HOOK: MEMINFO=$MEMINFO"
+avail_mb() { awk '/^MemAvailable:/{print int($2/1024); exit}' "$MEMINFO" 2>/dev/null || true; }
+mem=$(avail_mb); floor=$(grep -oP '^MIN_AVAILABLE_MB = \K\d+' run_full.py)
 log "MemAvailable: $mem MB (MIN_MB unset; run_full MIN_AVAILABLE_MB=$floor)"
 [ "$floor" = 6144 ] || fail 4 "MIN_AVAILABLE_MB=$floor"; [ "$mem" -ge 6144 ] || fail 4 "MemAvailable $mem < 6144"
+# 6b. full only: 60 s sustained hold + pre-launch recheck, as run_trial5b.sh @ bce9f60
+#     (MIN_MB 6144, SUSTAIN_S 60, SAMPLE_S 5, WAIT_MAX_S 1200; samples in $O/memwait.log)
+if [ "$MODE" = full ]; then
+  MIN_MB=6144; SUSTAIN_S=60; SAMPLE_S=5; WAIT_MAX_S=1200; start=$(date +%s); good_since=""
+  while :; do
+    now=$(date +%s); [ $((now - start)) -ge "$WAIT_MAX_S" ] && fail 4 "memory not sustained >=$MIN_MB for $SUSTAIN_S s within $WAIT_MAX_S s"
+    m=$(avail_mb); case "$m" in ''|*[!0-9]*) m=0;; esac
+    echo "$(ist) availMB=$m" >> "$O/memwait.log"
+    if [ "$m" -ge "$MIN_MB" ]; then
+      [ -z "$good_since" ] && { good_since=$now; log "hold start availMB=$m $(ist)"; }
+      [ $((now - good_since)) -ge "$SUSTAIN_S" ] && { log "memory sustained >=$MIN_MB for $SUSTAIN_S s (last availMB=$m $(ist))"; break; }
+    else good_since=""; fi
+    sleep "$SAMPLE_S"
+  done
+  m=$(avail_mb); case "$m" in ''|*[!0-9]*) m=0;; esac
+  [ "$m" -ge "$MIN_MB" ] || fail 4 "pre-launch recheck availMB=$m < $MIN_MB"
+  log "pre-launch recheck availMB=$m PASS $(ist)"
+  [ "${HOLD_ONLY:-0}" = 1 ] && { log "HOLD_ONLY: hold passed, stopping before run"; exit 0; }
+fi
 # 7. identity
 log "repo head: $(git -C /workspace/Loop-Engineering rev-parse HEAD)"; log "worktree head: $(git rev-parse HEAD) (FROZEN-6 f1f5ef9)"
 log "cursor-agent: $(command -v cursor-agent) $(cursor-agent --version 2>&1)"
