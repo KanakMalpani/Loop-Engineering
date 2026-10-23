@@ -10,8 +10,32 @@ inputs:
       type: string
       description: Primary task description or domain context
       required: true
+    target_role:
+      type: string
+      description: Role or title being interviewed for
+      required: false
+    interview_type:
+      type: string
+      description: Interview format (e.g. behavioral, technical, system-design, case)
+      required: false
+    seniority:
+      type: string
+      description: Seniority band (e.g. junior, mid, senior, staff)
+      required: false
+    job_description:
+      type: string
+      description: Optional JD text or summary used to tailor questions
+      required: false
   examples:
   - task: Complete the declared objective for this loop profile.
+    target_role: Senior Backend Engineer
+    interview_type: system-design
+    seniority: senior
+  - task: Rehearse STAR stories for a payments-platform backend loop.
+    target_role: Senior Software Engineer
+    interview_type: behavioral
+    seniority: senior
+    job_description: Backend role on a payments platform. Interviews emphasize incident ownership, cross-team conflict, and mentoring.
 memory:
   type: ephemeral
 workers:

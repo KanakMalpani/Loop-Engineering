@@ -27,6 +27,28 @@ Coach delivers feedback only after session completion, preserving realistic pres
 
 Termination requires two consecutive sessions above target_score—preventing lucky single-session passes.
 
+## Inputs
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| task | string | true | Primary task description or domain context |
+| target_role | string | false | Role or title being interviewed for |
+| interview_type | string | false | Interview format (e.g. behavioral, technical, system-design, case) |
+| seniority | string | false | Seniority band (e.g. junior, mid, senior, staff) |
+| job_description | string | false | Optional JD text or summary used to tailor questions |
+
+```yaml
+task: Rehearse STAR stories for a payments-platform backend loop.
+target_role: Senior Software Engineer
+interview_type: behavioral
+seniority: senior
+job_description: Backend role on a payments platform. Interviews emphasize incident ownership, cross-team conflict, and mentoring.
+```
+
+## Validation
+
+`loop-library/interview-coach.yaml` passes `python scripts/validate_loop_library.py` (LSS). Production-usage validation (real candidates/sessions) has NOT been performed and is still open.
+
 ## LES Score Breakdown
 
 | Category | Score | Rationale |
