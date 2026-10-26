@@ -12,6 +12,7 @@ This document defines recommended span names and attributes for instrumenting au
 | `loop.iteration` | `Internal` | One Observe → Evaluate → Decide → Act cycle |
 | `loop.worker` | `Internal` | Worker invocation (child of iteration) |
 | `loop.evaluator` | `Internal` | Evaluator invocation (child of iteration) |
+| `{operation} {model}` | `Internal` | GenAI model call (OTel GenAI semconv); LTF kind `worker` |
 
 ## Attributes — loop instance
 
@@ -47,6 +48,19 @@ This document defines recommended span names and attributes for instrumenting au
 | `loop.evaluator.id` | string | evaluator | LSS evaluator id |
 | `loop.evaluator.type` | string | no | `deterministic`, `llm_rubric`, etc. |
 
+## Attributes — GenAI worker span
+
+Per [OTel GenAI semantic conventions](https://opentelemetry.io/docs/specs/semconv/gen-ai/). Span name `{operation} {model}` (e.g. `chat gpt-4`).
+
+| Attribute | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `gen_ai.operation.name` | string | yes | e.g. `chat`, `embeddings` |
+| `gen_ai.system` | string | yes | Provider id (e.g. `openai`, `mock`) |
+| `gen_ai.request.model` | string | yes | Model id |
+| `gen_ai.usage.input_tokens` | int | no | Prompt tokens |
+| `gen_ai.usage.output_tokens` | int | no | Completion tokens |
+| `loop.latency_ms` | double | no | Wall time for the call |
+
 ## Events
 
 | Event name | Parent span | Attributes |
@@ -56,6 +70,7 @@ This document defines recommended span names and attributes for instrumenting au
 | `loop.worker.complete` | iteration | `loop.worker.id` |
 | `loop.evaluator.complete` | iteration | `loop.evaluator.id`, `loop.goal_score` |
 | `loop.safety.violation` | iteration | `loop.failure.code` |
+| `fail.*` | loop or iteration | `loop.failure.code`; `loop.failure.f_code` (`F1`–`F12`) when slug is canonical |
 
 ## Mapping LTF → OTLP
 

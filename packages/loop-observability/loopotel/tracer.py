@@ -11,6 +11,22 @@ from typing import Any, Callable
 from loopotel import les as les_metrics
 from loopotel.models import isoformat, new_span_id, new_trace_id, otel_attributes, spec_pins, utc_now
 
+# Canonical failure slugs → F-codes (packages/loop-core/specs/loop-ids.md §2).
+FAILURE_F_CODES: dict[str, str] = {
+    "fail.open_loop": "F1",
+    "fail.self_grade": "F2",
+    "fail.evaluator_drift": "F3",
+    "fail.tau_omission": "F4",
+    "fail.false_pass": "F5",
+    "fail.false_fail": "F6",
+    "fail.oscillation": "F7",
+    "fail.resource_bleed": "F8",
+    "fail.state_corruption": "F9",
+    "fail.orchestration_deadlock": "F10",
+    "fail.meta_instability": "F11",
+    "fail.safety_bypass": "F12",
+}
+
 _current_tracer: ContextVar[LoopTracer | None] = ContextVar("loopotel_current_tracer", default=None)
 
 
@@ -28,12 +44,12 @@ def emit_iteration(
     latency_ms: float | None = None,
     worker_id: str | None = None,
     evaluator_id: str | None = None,
-) -> None:
+) -> str | None:
     """Emit an iteration span on the active tracer (no-op if tracing disabled)."""
     tracer = current_tracer()
     if tracer is None or not tracer.enabled:
-        return
-    tracer.emit_iteration(
+        return None
+    return tracer.emit_iteration(
         iteration=iteration,
         goal_score=goal_score,
         goal_target=goal_target,
@@ -64,6 +80,13 @@ class LoopTracer:
     _goal_scores: list[float] = field(default_factory=list)
     _spans: list[dict[str, Any]] = field(default_factory=list)
     _token_total: int = 0
+    _last_iteration_span_id: str | None = None
+
+    def _span_for(self, span_id: str) -> dict[str, Any]:
+        for span in self._spans:
+            if span["span_id"] == span_id:
+                return span
+        raise ValueError(f"unknown span_id: {span_id}")
 
     def __enter__(self) -> LoopTracer:
         if self.enabled:
@@ -105,9 +128,9 @@ class LoopTracer:
         latency_ms: float | None = None,
         worker_id: str | None = None,
         evaluator_id: str | None = None,
-    ) -> None:
+    ) -> str | None:
         if not self.enabled:
-            return
+            return None
         target = goal_target if goal_target is not None else self.goal_target
         self._goal_scores.append(goal_score)
         self._token_total += tokens_delta
@@ -171,6 +194,73 @@ class LoopTracer:
                 "events": events,
             }
         )
+        self._last_iteration_span_id = span_id
+        return span_id
+
+    def emit_llm_call(
+        self,
+        *,
+        model: str,
+        system: str,
+        operation: str = "chat",
+        input_tokens: int | None = None,
+        output_tokens: int | None = None,
+        latency_ms: float | None = None,
+        parent_span_id: str | None = None,
+    ) -> str | None:
+        if not self.enabled:
+            return None
+        parent = (
+            parent_span_id
+            or self._last_iteration_span_id
+            or self._root_span_id
+        )
+        now = utc_now()
+        span_id = new_span_id()
+        attrs: dict[str, Any] = {
+            "gen_ai.operation.name": operation,
+            "gen_ai.system": system,
+            "gen_ai.request.model": model,
+        }
+        if input_tokens is not None:
+            attrs["gen_ai.usage.input_tokens"] = input_tokens
+        if output_tokens is not None:
+            attrs["gen_ai.usage.output_tokens"] = output_tokens
+        if latency_ms is not None:
+            attrs["loop.latency_ms"] = latency_ms
+        self._spans.append(
+            {
+                "span_id": span_id,
+                "parent_span_id": parent,
+                "name": f"{operation} {model}",
+                "kind": "worker",
+                "start_time": isoformat(now),
+                "end_time": isoformat(now),
+                "attributes": attrs,
+                "events": [],
+            }
+        )
+        return span_id
+
+    def emit_failure(self, code: str, *, span_id: str | None = None) -> None:
+        if not self.enabled:
+            return
+        if not code.startswith("fail."):
+            raise ValueError(f"failure code must start with 'fail.': {code}")
+        target_id = span_id if span_id is not None else self._root_span_id
+        span = self._span_for(target_id)
+        now = utc_now()
+        event_attrs: dict[str, Any] = {"loop.failure.code": code}
+        f_code = FAILURE_F_CODES.get(code)
+        if f_code is not None:
+            event_attrs["loop.failure.f_code"] = f_code
+        span["events"].append(
+            {
+                "name": code,
+                "timestamp": isoformat(now),
+                "attributes": event_attrs,
+            }
+        )
 
     def finish(
         self,
@@ -200,12 +290,10 @@ class LoopTracer:
     def build_trace(self) -> dict[str, Any]:
         if self.ended_at is None:
             self.finish()
-        return {
+        doc: dict[str, Any] = {
             "schema_version": "ltf/0.1",
             "trace_id": self.trace_id,
             "loop_name": self.loop_name,
-            "env_id": self.env_id,
-            "task_id": self.task_id,
             "started_at": isoformat(self.started_at),
             "ended_at": isoformat(self.ended_at or utc_now()),
             "outcome": self.outcome,
@@ -214,6 +302,11 @@ class LoopTracer:
             "spans": self._spans,
             "metadata": dict(self.metadata),
         }
+        if self.env_id is not None:
+            doc["env_id"] = self.env_id
+        if self.task_id is not None:
+            doc["task_id"] = self.task_id
+        return doc
 
 
 def trace_loop(
