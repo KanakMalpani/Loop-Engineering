@@ -30,6 +30,13 @@ The script creates `./.venv-demo` (or `$DEMO_VENV` if you set it), installs the 
 
 **3. BENCHMARK.** Imports `loopgym.evaluators.sandbox_tests` and scores each fixture: the reference patch in `packages/loopbench/fixtures/_reference` must be 1.0, and empty output must be 0.0. Then prints a three-loop table read from `benchmarks/loopbench-validity/results/stub-fixed-all-10.json`. That file is not modified.
 
+**4. PACKAGES.** After the trace step, loads `packages/loop-core/tools/validate_lss.py` by path with `importlib` (loop-core is not pip-installable) and validates the same LSS YAML against `specs/lss-1.0.schema.json`. Rebuilds a LoopGym episode dict from iteration spans in the trace, exports a LoopNet `ln/record-v1` via `loopgym.export.loopnet.episode_to_record`, validates the record against `packages/loopnet/schema/loopnet-record-v1.json`, and runs `loopnet.les.trajectory_diagnostics`. Feeds one MockLLM run through `loopbench.les_compute.compute_task_les` (scoring math only—not a benchmark run). Prints what loopgym and loopotel contributed (SimEnv path, `gen_ai` span counts, `fail.*` events, LTF validation). Writes `<outdir>/record.json`.
+
+## Known risks
+
+- `loopotel.integrations.loopgym.run_traced_episode` imports the private helper `loopgym.export.loopnet._infer_failure_mode` to choose the `fail.*` event name on failed episodes. A LoopGym refactor of that helper can break the emitted failure event without changing the demo script.
+- MockLLM `gen_ai` spans use `gen_ai.system=mock` and `gen_ai.request.model=mock-llm`; `run_traced_episode` does not pass output token counts, so those attributes are absent on worker spans.
+
 ## Sample output
 
 ```text

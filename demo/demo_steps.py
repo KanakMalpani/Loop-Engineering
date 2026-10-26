@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
-"""Offline deterministic demo steps: spec, trace, benchmark.
+"""Offline deterministic demo steps: spec, trace, packages, benchmark.
 
-No model calls. SimEnv uses MockLLM. Benchmark numbers come from the
-sandbox evaluator and a read-only stub results file.
+No model calls. SimEnv uses MockLLM. Step 4 exercises loop-core (loaded by
+path), loopnet, loopbench LES math, loopgym export, and loopotel trace checks.
+Benchmark numbers come from the sandbox evaluator and a read-only stub file.
 """
 
 from __future__ import annotations
 
+import importlib.util
 import json
 import os
 import sys
@@ -17,6 +19,8 @@ ROOT = Path(__file__).resolve().parents[1]
 SPEC_PATH = ROOT / "packages/loopgym/loopgym/envs/loopbench/code-repair-v1/spec.yaml"
 FIXTURES = ROOT / "packages/loopbench/fixtures"
 STUB_RESULTS = ROOT / "benchmarks/loopbench-validity/results/stub-fixed-all-10.json"
+RECORD_SCHEMA = ROOT / "packages/loopnet/schema/loopnet-record-v1.json"
+VALIDATE_LSS_PATH = ROOT / "packages/loop-core/tools/validate_lss.py"
 TABLE_LOOPS = ("bad-1-no-feedback", "bad-2-no-tests", "good-1-fast")
 PENDING = "pending fixed benchmark acceptance"
 
@@ -99,6 +103,154 @@ def trace_step(outdir: str | Path) -> dict[str, Any]:
     _print_shown_and_planned(trace)
     print()
     return trace
+
+
+def _load_validate_lss_module():
+    spec = importlib.util.spec_from_file_location("validate_lss", VALIDATE_LSS_PATH)
+    if spec is None or spec.loader is None:
+        raise RuntimeError(f"cannot load validate_lss from {VALIDATE_LSS_PATH}")
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = module
+    spec.loader.exec_module(module)
+    return module
+
+
+def _episode_from_trace(trace: dict[str, Any]) -> dict[str, Any]:
+    spans = trace.get("spans") or []
+    root_attrs = (spans[0].get("attributes") or {}) if spans else {}
+    tokens_total = int(root_attrs.get("loop.tokens_total") or 0)
+    iteration_spans = [span for span in spans if span.get("name") == "loop.iteration"]
+    iteration_spans.sort(
+        key=lambda span: int((span.get("attributes") or {}).get("loop.iteration", 0))
+    )
+    trajectory: list[dict[str, Any]] = []
+    for span in iteration_spans:
+        attrs = span.get("attributes") or {}
+        trajectory.append(
+            {
+                "iteration": int(attrs.get("loop.iteration", len(trajectory) + 1)),
+                "quality_score": float(attrs.get("loop.goal_score", 0.0)),
+            }
+        )
+    return {
+        "trajectory": trajectory,
+        "success": trace.get("outcome") == "success",
+        "termination_reason": str(trace.get("termination_reason") or ""),
+        "tokens_used": tokens_total,
+        "task_id": trace.get("task_id"),
+    }
+
+
+def _gen_ai_span_count(trace: dict[str, Any]) -> int:
+    count = 0
+    for span in trace.get("spans") or []:
+        attrs = span.get("attributes") or {}
+        if any(str(key).startswith("gen_ai.") for key in attrs):
+            count += 1
+    return count
+
+
+def _fail_event_names(trace: dict[str, Any]) -> list[str]:
+    names: list[str] = []
+    for span in trace.get("spans") or []:
+        for event in span.get("events") or []:
+            name = str(event.get("name") or "")
+            if name.startswith("fail."):
+                names.append(name)
+    return names
+
+
+def packages_step(trace: dict[str, Any], outdir: str | Path) -> dict[str, Any]:
+    """Exercise monorepo packages against one traced MockLLM episode."""
+    import jsonschema
+    import loopnet
+    from loopbench.les_compute import RunMetrics, compute_task_les
+    from loopgym.export.loopnet import episode_to_record
+    from loopgym.runtime.compiler import compile_lss
+    from loopgym.runtime.loop_runtime import load_lss_spec
+    from loopnet.les import trajectory_diagnostics
+    from loopotel.validate import validate_trace
+
+    print("=== 4. PACKAGES ===")
+
+    validate_lss = _load_validate_lss_module()
+    lss_spec = validate_lss.load_yaml(SPEC_PATH)
+    lss_schema = validate_lss.load_schema(validate_lss.DEFAULT_SCHEMA)
+    loop_core_errors = validate_lss.validate_spec(lss_spec, lss_schema)
+    if loop_core_errors:
+        err_text = "; ".join(loop_core_errors)
+        print(
+            f"loop-core: validate_lss.validate_spec called -> {len(loop_core_errors)} errors: {err_text}"
+        )
+    else:
+        print(f"loop-core: validate_lss.validate_spec called -> {len(loop_core_errors)} errors")
+
+    spec = load_lss_spec(SPEC_PATH)
+    graph = compile_lss(spec)
+    env_id = str(trace.get("env_id") or "loopbench/code-repair-v1")
+    episode = _episode_from_trace(trace)
+    record = episode_to_record(episode, spec=spec, env_id=env_id)
+    failure_mode = record.get("failure_mode")
+    if failure_mode is not None and failure_mode not in loopnet.FAILURE_MODES:
+        raise RuntimeError(f"unexpected failure_mode: {failure_mode}")
+
+    record_schema = json.loads(RECORD_SCHEMA.read_text(encoding="utf-8"))
+    validator = jsonschema.Draft202012Validator(record_schema)
+    schema_errors = sorted(validator.iter_errors(record), key=lambda e: list(e.absolute_path))
+    if schema_errors:
+        messages = "; ".join(err.message for err in schema_errors)
+        raise RuntimeError(f"loopnet record schema validation failed: {messages}")
+
+    traj = record["trajectory"]
+    diag = trajectory_diagnostics(traj)
+    out = Path(outdir)
+    out.mkdir(parents=True, exist_ok=True)
+    record_path = out / "record.json"
+    record_path.write_text(json.dumps(record, indent=2) + "\n", encoding="utf-8")
+    print(
+        "loopnet: loopgym.export.loopnet.episode_to_record called ->"
+        f" record_id={record['record_id']} failure_mode={failure_mode}"
+        f" trajectory_diagnostics={diag}"
+    )
+
+    goal_trace = [float(step["goal_score"]) for step in traj]
+    run = RunMetrics(
+        task_instance_id=str(trace.get("task_id") or "cr-001"),
+        seed=0,
+        g_final=float(traj[-1]["goal_score"]),
+        g_0=float(traj[0]["goal_score"]),
+        g_target=float(graph.quality_threshold),
+        iterations=len(traj),
+        t_budget=int(graph.max_iterations),
+        cost_usd=round(sum(float(step["cost_usd"]) for step in traj), 4),
+        elapsed_s=round(sum(float(step["latency_seconds"]) for step in traj), 4),
+        success=bool(episode["success"]),
+        termination_reason=str(episode["termination_reason"]),
+        goal_trace=goal_trace,
+    )
+    les_result = compute_task_les([run], backend="sim")
+    print(
+        "loopbench: les_compute.compute_task_les called ->"
+        f" les_observed={les_result.les_observed} {PENDING}"
+    )
+
+    print(
+        "loopgym: make('loopbench/code-repair-v1') + SimEnv/MockLLM,"
+        " loopgym.export.loopnet.episode_to_record called -> ok"
+    )
+
+    valid, ltf_errors = validate_trace(trace)
+    fail_names = _fail_event_names(trace)
+    print(
+        "loopotel: validate.validate_trace called ->"
+        f" valid={valid} gen_ai_spans={_gen_ai_span_count(trace)}"
+        f" fail_events={fail_names}"
+    )
+    if not valid:
+        raise RuntimeError("LTF validation failed: " + "; ".join(ltf_errors))
+
+    print()
+    return {"loop_core_errors": loop_core_errors, "record": record, "les": les_result}
 
 
 def bench_step() -> None:
@@ -274,15 +426,26 @@ def main(argv: list[str] | None = None) -> int:
         if "--outdir" in args:
             outdir = args[args.index("--outdir") + 1]
         trace_step(outdir)
+    elif command == "packages":
+        outdir = ROOT / "demo" / "out"
+        if "--outdir" in args:
+            outdir = args[args.index("--outdir") + 1]
+        trace = trace_step(outdir)
+        packages_step(trace, outdir)
     elif command == "bench":
         bench_step()
     elif command == "all":
+        demo_out = ROOT / "demo" / "out"
         spec_step()
-        trace_step(ROOT / "demo" / "out")
+        trace = trace_step(demo_out)
+        packages_step(trace, demo_out)
         bench_step()
     else:
         print(f"unknown command: {command}", file=sys.stderr)
-        print("usage: python demo/demo_steps.py [all|spec|trace|bench]", file=sys.stderr)
+        print(
+            "usage: python demo/demo_steps.py [all|spec|trace|packages|bench]",
+            file=sys.stderr,
+        )
         return 2
     return 0
 
