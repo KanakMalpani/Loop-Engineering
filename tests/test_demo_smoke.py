@@ -33,9 +33,10 @@ def test_demo_steps_complete(tmp_path, capsys):
     assert spans
     assert any(span.get("name") == "loop.run" for span in spans)
     assert any(span.get("name") == "loop.iteration" for span in spans)
-    # loopotel emits loop.* OpenTelemetry spans. gen_ai.* is not in the file.
-    assert "gen_ai." not in trace_path.read_text(encoding="utf-8")
+    # Row 4 C2: loopotel emits gen_ai.* worker spans; the file must contain them.
+    assert "gen_ai." in trace_path.read_text(encoding="utf-8")
     assert "gen_ai" in captured
-    assert "PLANNED (not built yet)" in captured
+    planned = captured.split("PLANNED (not built yet)", 1)[1] if "PLANNED" in captured else ""
+    assert "gen_ai.* spans" not in planned
     assert "SHOWN" in captured
     assert "pending fixed benchmark acceptance" in captured
