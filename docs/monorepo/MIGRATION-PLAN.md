@@ -1,6 +1,6 @@
 # Loop stack monorepo migration plan (Deliverable C)
 
-Branch `chore/monorepo-dryrun` of `KanakMalpani/Loop-Engineering`. Written Wed 21 Oct 2026, ~2:15 AM IST. Due Thu 22 Oct, 6 PM IST.
+Branch `chore/monorepo-dryrun` of `KanakMalpani/Loop-Engineering`. Written Wed 21 Oct 2026, ~2:15 AM IST. Due Thu 22 Oct, 6 PM IST. Revised Mon 26 Oct 2026.
 Updated Mon 26 Oct 2026, ~08:10 IST (status facts re-verified).
 Status: **dry run, not merged.** Nothing here has been done to `main`, the old repos, or CI unless stated.
 
@@ -17,7 +17,7 @@ Status: **dry run, not merged.** Nothing here has been done to `main`, the old r
 | `packages/loopnet` | loopnet | `a4ea88b` | 21 | `7a1e270` | `git subtree add`, no squash (keeps original SHAs, no history rewrite; see §1) |
 
 - All five are **KEEP** per `/workspace/loop-verdict-v2.md`. No component reached ALIGN (≥70%) or DROP. LTF scored 61%, LSS 44%, LES 33%, LoopBench 55% and LoopGym 61%.
-- loopnet stays **frozen** (no feature work). PR #17 ([feat(loop-library): document interview-coach domain inputs and validation (#1)](https://github.com/KanakMalpani/Loop-Engineering/pull/17), head `feat/1-validate-interview-coach` @ `283b604`, base `main`): **OPEN**, draft, not merged, mergeable; its "Validate loop-library" check **SUCCESS** (20 Oct). QA bot passed it at `283b604` merged onto `7212e5e` (relayed by Engineering Lead). Merging it still **needs Kanak's approval**; until then it stays **held**.
+- loopnet stays **frozen** (no feature work). PR #17 ([feat(loop-library): document interview-coach domain inputs and validation (#1)](https://github.com/KanakMalpani/Loop-Engineering/pull/17), head `feat/1-validate-interview-coach` @ `283b604`, base `main`): **OPEN**, draft, not merged, mergeable; its "Validate loop-library" check **SUCCESS** (20 Oct). QA bot passed it at `283b604` merged onto `7212e5e` (relayed by Engineering Lead). Kanak has **approved** the merge (relayed in the Eng Pod room), but it is **not merged yet**: still an open draft at `283b604` (gh, 26 Oct 2026 08:11 IST).
 - Remote `main` @ `7212e5e`. Remote `dryrun/loop-monorepo` still exists, empty at `7212e5e`. Deleting it **needs Kanak's approval**.
 - Remote `chore/monorepo-dryrun` @ `fe4c21a`; the local branch has further unpushed commits (Row 4 demo work). Pushing it **needs Kanak's approval**.
 - Old clones for comparison are in `/workspace/mono-survey/` (the 5 repos plus Argus and Trellis).
@@ -130,4 +130,4 @@ Total estimate is about 14–23 engineer-days. W1 to W3 are the KEEP follow-ups 
 2. **CI changes:** add the root `packages-ci.yml` (**TODO, not included** on this branch; no root package CI runs yet) and publish workflow, delete the per-package workflow files, and move PyPI trusted publishers and HF upload settings.
 3. **Archiving** the 5 superseded repos (§5A) after cutover, plus any decision on §5B and the forks in §5C.
 4. **Branch deletion:** `dryrun/loop-monorepo` (empty at `7212e5e`), and later `chore/monorepo-dryrun` after merge.
-5. Confirm loopnet stays frozen; PR #17 stays **held** unless Kanak approves merging it.
+5. Confirm loopnet stays frozen. PR #17: Kanak has **approved** the merge (relayed in the Eng Pod room); **not merged yet**, still an open draft at `283b604` (gh, 26 Oct 2026).
