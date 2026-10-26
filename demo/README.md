@@ -6,9 +6,11 @@ Cold start for the spec, a deterministic trace, and the fixed-benchmark stub tab
 
 - Python 3.12 or newer (`python3`)
 - bash
-- pip, able to install the declared package dependencies on the first run: PyYAML (loopgym, loopbench), jsonschema (loopbench, loopotel), and a build backend. The script also installs `pytest`, because `loopgym.evaluators.sandbox_tests` runs hidden tests with `python -m pytest`.
+- pip on the **first** run only: editable installs for `loopgym`, `loopbench`, `loop-observability`, and `loopnet`, plus `pytest` (hidden tests shell out to `python -m pytest`). `loop-core` is not pip-installable; the demo uses it from the tree.
 
-After that install, the three steps stay on this machine: SimEnv uses MockLLM, and the benchmark step reads local fixtures and a local results file.
+After install, `$DEMO_VENV` or `./.venv-demo` holds a `.demo-stamp` (sha256 of the five package `pyproject.toml` files, `demo/demo.sh`, and `python3 --version`). When the stamp matches and imports succeed, the script prints `deps: cached (stamp ok)` and skips `venv`/`pip`—warm runs need no network. Delete `.demo-stamp` (or change any stamped file) to force reinstall.
+
+After that, the three steps stay on this machine: SimEnv uses MockLLM, and the benchmark step reads local fixtures and a local results file.
 
 ## One command
 
@@ -18,7 +20,7 @@ From a fresh clone, at the repository root:
 ./demo/demo.sh
 ```
 
-The script creates `./.venv-demo` (or `$DEMO_VENV` if you set it), installs `packages/loopgym`, `packages/loopbench`, and `packages/loop-observability` in editable mode, then runs `python demo/demo_steps.py all`. A warm run finishes in a few seconds. The script prints total elapsed seconds at the end.
+The script creates `./.venv-demo` (or `$DEMO_VENV` if you set it), installs the editable packages above on a cold run, then runs `python demo/demo_steps.py all`. A warm run finishes in a few seconds. The script prints total elapsed seconds at the end.
 
 ## What each step shows
 
