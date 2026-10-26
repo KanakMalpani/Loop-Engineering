@@ -16,6 +16,20 @@ def _worker_evaluator_ids(spec: dict[str, Any]) -> tuple[str | None, str | None]
     return worker_id, evaluator_id
 
 
+def _llm_model_and_system(llm: Any) -> tuple[str, str]:
+    try:
+        from loopgym.runtime.loop_runtime import MockLLM
+    except ImportError:
+        MockLLM = None  # type: ignore[misc, assignment]
+    if MockLLM is not None and isinstance(llm, MockLLM):
+        return "mock-llm", "mock"
+    if type(llm).__name__ == "MockLLM":
+        return "mock-llm", "mock"
+    model = getattr(llm, "model", None) or type(llm).__name__
+    system = getattr(llm, "system", None) or "unknown"
+    return str(model), str(system)
+
+
 def _goal_target_from_spec(spec: dict[str, Any]) -> float:
     term = spec.get("termination_conditions")
     if isinstance(term, dict):
@@ -61,6 +75,7 @@ def run_traced_episode(
             prev_tokens = getattr(env._runtime.llm, "tokens_used", 0)
 
         last_latency_ms = 0.0
+        trajectory: list[dict[str, float]] = []
         while not env.done:
             t0 = time.perf_counter()
             obs, _reward, _done, info = env.step()
@@ -72,7 +87,7 @@ def run_traced_episode(
             prev_tokens = tokens_now
 
             if obs.iteration > 0:
-                tracer.emit_iteration(
+                iteration_span_id = tracer.emit_iteration(
                     iteration=obs.iteration,
                     goal_score=obs.quality_score,
                     goal_target=goal_target,
@@ -81,8 +96,32 @@ def run_traced_episode(
                     worker_id=worker_id,
                     evaluator_id=evaluator_id,
                 )
+                trajectory.append({"goal_score": float(obs.quality_score)})
+                runtime = getattr(env, "_runtime", None)
+                llm = getattr(runtime, "llm", None) if runtime else None
+                if llm is not None and iteration_span_id is not None:
+                    model, system = _llm_model_and_system(llm)
+                    tracer.emit_llm_call(
+                        model=model,
+                        system=system,
+                        operation="chat",
+                        input_tokens=tokens_delta,
+                        latency_ms=round(last_latency_ms, 2),
+                        parent_span_id=iteration_span_id,
+                    )
 
         outcome = "success" if info.get("success") else "failure"
+        if outcome != "success" and trajectory:
+            # Coupling risk: private LoopGym export helper for failure slug inference.
+            from loopgym.export.loopnet import _infer_failure_mode
+
+            slug, _modes = _infer_failure_mode(
+                outcome="failure",
+                termination_reason=str(info.get("termination_reason", "")),
+                trajectory=trajectory,
+            )
+            if slug:
+                tracer.emit_failure(slug)
         tracer.finish(
             outcome=outcome,
             termination_reason=str(info.get("termination_reason", "")),
